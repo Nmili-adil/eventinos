@@ -1,20 +1,14 @@
 // store/reducers/authReducer.ts
 
-import { AUTH_CLEAR_ERROR, AUTH_LOGIN_FAILURE, AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_CREDENTIALS, type AuthActionTypes } from "./auth.type"
+import { getAuthToken, getUserData } from "@/services/localStorage"
+import { AUTH_CLEAR_ERROR, AUTH_LOGIN_FAILURE, AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_CREDENTIALS, type AuthActionTypes, type AuthState } from "./auth.type"
 
 
-export interface AuthState {
-  user: null | object
-  token: string | null
-  isLoading: boolean
-  error: string | null
-  isAuthenticated: boolean
-  message: string | null
-}
+
 
 const initialState: AuthState = {
-  user: null ,
-  token: localStorage.getItem('token'),
+  user: getUserData() ,
+  token: getAuthToken(),
   isLoading: false,
   error: null,
   isAuthenticated: false,

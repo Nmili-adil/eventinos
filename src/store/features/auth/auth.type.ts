@@ -46,6 +46,15 @@ export interface SetCredentialsAction {
   }
 }
 
+export interface AuthState {
+  user: null | object
+  token: string | null
+  isLoading: boolean
+  error: string | null
+  isAuthenticated: boolean
+  message: string | null
+}
+
 export type AuthActionTypes =
   | LoginRequestAction
   | LoginSuccessAction

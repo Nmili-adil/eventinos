@@ -15,7 +15,7 @@ export const forgotPasswordOtpSchema = z.object({
     .string()
     .min(1, 'Le code de réinitialisation est requis')
     .length(4, 'Le code doit contenir 4 chiffres')
-    .regex(/^\d+$/, 'Le code doit contenir uniquement des chiffres'),
+    .regex(/^[A-Za-z0-9]+$/, 'Le code doit contenir uniquement des chiffres'),
 })
 
 export const resetPasswordSchema = z.object({

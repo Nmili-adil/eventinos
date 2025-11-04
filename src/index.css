@@ -110,14 +110,14 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-@layer base {
+/* @layer base {
   * {
     @apply outline-none;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
 
 input {
   outline: none;

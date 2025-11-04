@@ -1,19 +1,20 @@
 import { useEffect } from 'react'
-import { useAuthStore } from '@/store/authStore'
+import { useDispatch, useSelector } from 'react-redux'
+import type { RootState } from '@/store/app/rootReducer'
+import { setForgotPasswordStep } from '@/store/features/forgotpassword/forgotpassword.actions'
 import ForgotPasswordEmailStep from '@/components/partials/authComponents/forgotPasswordEmailStep'
 import ForgotPasswordOtpStep from '@/components/partials/authComponents/forgotPasswordOtpStep'
 import NewPasswordStep from '@/components/partials/authComponents/newPasswordStep'
 import ForgotPasswordCompleteStep from '@/components/partials/authComponents/forgotPasswordCompleteStep'
 
-
-
 export default function ForgotPasswordPage() {
-  const { forgotPasswordStep, setForgotPasswordStep } = useAuthStore()
+  const dispatch = useDispatch()
+  const forgotPasswordStep = useSelector((state: RootState) => state.forgotPassword.step)
 
   // Reset to first step when component mounts
   useEffect(() => {
-    setForgotPasswordStep('email')
-  }, [setForgotPasswordStep])
+    dispatch(setForgotPasswordStep('email'))
+  }, [dispatch])
 
   const steps = [
     { key: 'email', title: 'Email', component: ForgotPasswordEmailStep },
@@ -26,16 +27,18 @@ export default function ForgotPasswordPage() {
   const CurrentStepComponent = steps[currentStepIndex]?.component
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col">
       {/* main content  */}
-      <main className="flex-1 flex">
-        {/* Background Shapes */}
-        <div className="flex-1 bg-[url(/login-cover.png)] shadow-xl bg-center bg-no-repeat bg-cover relative">
+      <main className="flex-1 flex lg:flex-row relative">
+        {/* Background Image - full screen on mobile, right half on desktop */}
+        <div className="absolute lg:relative inset-0 lg:flex-1 bg-[url(/login-cover.png)] shadow-xl bg-center bg-no-repeat bg-cover">
           <div className='absolute flex items-center justify-center top-0 left-0 w-full h-full bg-black/40'>
             <img src="/logo-bg.svg" alt="UrEvent Logo" className='w-1/2 h-1/2' />
           </div>
         </div>
-        <div className='w-4/12 flex items-center justify-center p-8'>
+
+        {/* Form Section - absolutely positioned on mobile, left half on desktop */}
+        <div className='absolute lg:relative inset-0 lg:inset-auto lg:w-4/12 flex items-center justify-center p-8 z-10'>
           <div className="w-full max-w-md">
             {/* Progress Bar */}
             {forgotPasswordStep !== 'complete' && (

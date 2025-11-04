@@ -2,19 +2,22 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, ArrowLeft, Key } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useAuthStore } from '@/store/authStore'
 import { resetPasswordSchema, type ResetPasswordData } from '@/schema/authSchemas/forget-password-schema'
+import type { RootState } from '@/store/app/rootReducer'
+import { resetPassword, setForgotPasswordStep, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
 export default function NewPasswordStep() {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  
-  const { isLoading, error, resetPassword, setForgotPasswordStep, clearError } = useAuthStore()
+
+  const dispatch = useDispatch()
+  const { isLoading, error, email } = useSelector((state: RootState) => state.forgotPassword)
 
   const {
     register,
@@ -27,17 +30,13 @@ export default function NewPasswordStep() {
 
   const onSubmit = async (data: ResetPasswordData) => {
     console.log('New password submitted')
-    clearError()
-    try {
-      await resetPassword(data.newPassword, data.confirmPassword)
-    } catch (error) {
-      console.log('Error resetting password:', error)
-    }
+    dispatch(clearForgotPasswordError())
+    dispatch(resetPassword(email, data.newPassword, data.confirmPassword) as any)
   }
 
   const handleBack = () => {
-    setForgotPasswordStep('otp')
-    clearError()
+    dispatch(setForgotPasswordStep('otp'))
+    dispatch(clearForgotPasswordError())
   }
 
   const newPassword = watch('newPassword')

@@ -2,17 +2,20 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useAuthStore } from '@/store/authStore'
 import { forgotPasswordEmailSchema, type ForgotPasswordEmailData } from '@/schema/authSchemas/forget-password-schema'
 import { LOGIN_PAGE } from '@/constants/routerConstants'
+import type { RootState } from '@/store/app/rootReducer'
+import { requestPasswordReset, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
 export default function ForgotPasswordEmailStep() {
-  const { isLoading, error, requestPasswordReset, clearError } = useAuthStore()
+  const dispatch = useDispatch()
+  const { isLoading, error } = useSelector((state: RootState) => state.forgotPassword)
 
   const {
     register,
@@ -24,12 +27,8 @@ export default function ForgotPasswordEmailStep() {
 
   const onSubmit = async (data: ForgotPasswordEmailData) => {
     console.log('Forgot password email submitted:', data.email)
-    clearError()
-    try {
-      await requestPasswordReset(data.email)
-    } catch (error) {
-      console.log('Error requesting password reset:', error)
-    }
+    dispatch(clearForgotPasswordError())
+    dispatch(requestPasswordReset(data.email) as any)
   }
 
   return (

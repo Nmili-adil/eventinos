@@ -16,7 +16,7 @@ export default function LoginPage() {
     console.log('Auth state:', { isAuthenticated, user, message })
 
     if (isAuthenticated && user) {
-      toast.success(message || 'Connexion réussie!')
+      toast.success(message?.replace('_', ' ') || 'Connexion réussie!')
       navigate(DASHBOARD_OVERVIEW)
     }
 
@@ -33,13 +33,16 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen flex">
-      <main className="flex-1 flex">
-        <div className="md:flex-1 flex-1/2 bg-[url(/login-cover.png)] shadow-xl bg-center bg-no-repeat bg-cover relative">
+      <main className="flex-1 flex lg:flex-row relative">
+        {/* Background Image - full screen on mobile, right half on desktop */}
+        <div className="absolute lg:relative inset-0 lg:flex-1 bg-[url(/login-cover.png)] shadow-xl bg-center bg-no-repeat bg-cover">
           <div className='absolute flex items-center justify-center top-0 left-0 w-full h-full bg-black/40'>
             <img src="/logo-bg.svg" className='w-1/2 h-1/2' alt="UrEvent Logo" />
           </div>
         </div>
-        <div className='mx-6 xl:mx-3 lg:w-4/12 flex flex-col items-center justify-center'>
+
+        {/* Login Form - absolutely positioned on mobile, left half on desktop */}
+        <div className='absolute lg:relative inset-0 lg:inset-auto mx-6 xl:mx-3 lg:w-4/12 flex flex-col items-center justify-center z-10'>
           <div className="text-center mb-8">
             <h1 className="page-heading text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Bienvenue
