@@ -17,20 +17,7 @@ const Overviewpage = () => {
   const { events, count } = useSelector((state: RootState) => state.events)
   const { usersCount } = useSelector((state: RootState) => state.users)
 
-  const dispatch = useDispatch<AppDispatch>()
-
-  useEffect(() => {
-    const fetchEventsData = async () => {
-      try {
-        dispatch(fetchEventsRequest())
-        dispatch(fetchUsersRequest())
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    fetchEventsData()
-  }, [dispatch])
+  
 
   // Calculate real statistics from events data
   const stats = useMemo(() => {

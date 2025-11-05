@@ -1,7 +1,9 @@
 import Layout from '@/app/_layout'
-import { DASHBOARD_OVERVIEW, FORGOTPASSWORD_PAGE,LOGIN_PAGE  } from '@/constants/routerConstants'
+import { DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBER_PAGE  } from '@/constants/routerConstants'
+import EventsPageList from '@/pages/eventsPage-list'
 import ForgotPasswordPage from '@/pages/forgetPasswordPage'
 import LoginPage from '@/pages/loginPage'
+import MemberPage from '@/pages/memberPage'
 import Overviewpage from '@/pages/overviewpage'
 import ProtectedRoute from '@/services/protectedRoute'
 import { createBrowserRouter } from 'react-router-dom'
@@ -27,6 +29,14 @@ export const Router = createBrowserRouter([
             {
                 path:DASHBOARD_OVERVIEW,
                 element: <Overviewpage />
+            },
+            {
+                path:EVENT_LISTE_PAGE,
+                element: <EventsPageList />
+            },
+            {
+                path:MEMBER_PAGE,
+                element: <MemberPage />
             }
         ]
     }
