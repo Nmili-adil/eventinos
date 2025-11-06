@@ -1,4 +1,4 @@
-import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
+import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender, fetchCountApi } from "@/api/analyticsApi";
 import { 
   FETCH_ANALYTICS_FAILURE, 
   FETCH_ANALYTICS_REQUEST, 
@@ -14,7 +14,8 @@ export const fetchAnalyticsRequest = () => {
       const [responseCity, responseGender, responseDates] = await Promise.all([
         fetchAnalyticsByCity(),
         fetchAnalyticsByGender(),
-        fetchAnalyticsByDates()
+        fetchAnalyticsByDates(),
+        fetchCountApi()
       ])
 
       if(responseCity.status === 200 && responseGender.status === 200 && responseDates.status != null) {

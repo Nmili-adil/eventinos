@@ -27,3 +27,13 @@ export const fetchAnalyticsByGender = async () => {
       },
     })
 }
+
+
+export const fetchCountApi = async () => {
+  return api.get('/analytics/counts', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthToken()}`,
+    },
+  })
+}

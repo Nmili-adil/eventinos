@@ -14,14 +14,16 @@ import { EmptyState } from './empty-state'
 import type { EventsFilters, EventsSort, PaginationState } from '@/types/eventsTypes'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
+import { useNavigate } from 'react-router-dom'
+import { EVENT_EDIT_PAGE } from '@/constants/routerConstants'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20
 
 export function EventsTable() {
   const [eventsData, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const { events} = useSelector((state: RootState) => state.events)
-
+  const navigate = useNavigate()
 
   const [filters, setFilters] = useState<EventsFilters>({
     search: '',
@@ -85,7 +87,7 @@ export function EventsTable() {
   }
 
   const handleEdit = (eventId: string) => {
-    console.log('Edit event:', eventId)
+      navigate(EVENT_EDIT_PAGE(eventId))
   }
 
   const handleChangeStatus = (eventId: string) => {
