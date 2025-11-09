@@ -7,6 +7,7 @@ import ForgotPasswordPage from '@/pages/forgetPasswordPage'
 import LoginPage from '@/pages/loginPage'
 import MemberPage from '@/pages/memberPage'
 import Overviewpage from '@/pages/overviewpage'
+import NotFoundPage from '@/pages/NotFoundPage'
 import ProtectedRoute from '@/services/protectedRoute'
 import { createBrowserRouter } from 'react-router-dom'
 
@@ -47,7 +48,15 @@ export const Router = createBrowserRouter([
             {
                 path:MEMBER_PAGE,
                 element: <MemberPage />
+            },
+            {
+                path: '*',
+                element: <NotFoundPage />
             }
         ]
+    },
+    {
+        path: '*',
+        element: <NotFoundPage />
     }
 ])

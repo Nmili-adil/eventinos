@@ -23,7 +23,7 @@ const EventsPageList = () => {
   }, [dispatch, setLoading])
 
   return (
-    <div>
+    <div className="container mx-auto  py-6">
         <EventsTable />
     </div>
   )

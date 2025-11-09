@@ -4,7 +4,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Table, TableBody } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { List, Plus } from 'lucide-react'
 import { filterEvents, sortEvents, paginateEvents } from '@/lib/events-utils'
 import { TableHeader } from './table-header'
 import { EventTableRow } from './table-row'
@@ -153,7 +153,9 @@ export function EventsTable() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Événements</h1>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <List className="h-6 w-6 mr-2" />
+            Événements</h1>
           <p className="text-muted-foreground">
             Gérez tous les événements de votre organisation
           </p>

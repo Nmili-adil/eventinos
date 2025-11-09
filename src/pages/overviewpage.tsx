@@ -1,6 +1,6 @@
 import StatCard from "@/components/partials/dashboardComponents/StatCard";
 import { fetchEventsRequest } from "@/store/features/events/events.actions";
-import { Calendar, CheckCircle, XCircle, Clock, Users } from "lucide-react";
+import { Calendar, CheckCircle, XCircle, Clock, Users, LayoutDashboard } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -124,10 +124,12 @@ const Overviewpage = () => {
   }, [datesData])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Statistiques</h1>
+        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+          <LayoutDashboard className="h-6 w-6 mr-2" />
+          Statistiques</h1>
         <p className="text-gray-600 mt-2">
           Vue d'ensemble de vos événements et utilisateurs
         </p>

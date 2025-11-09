@@ -23,6 +23,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import type { date } from "zod";
+import { useNavigate } from "react-router-dom";
 
 interface EventEditFormProps {
   event: any;
@@ -67,6 +68,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
       requirements: event.requirements || [],
     },
   });
+  const navigate = useNavigate();
 
   const handleSubmit = (data: EventFormData) => {
     onSubmit(data);
@@ -499,7 +501,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setActiveTab("basic")}
+                  onClick={() => navigate(-1)}
                 >
                   Cancel
                 </Button>
