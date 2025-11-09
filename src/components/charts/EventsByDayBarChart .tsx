@@ -1,14 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import type { RootState } from '@/store/app/rootReducer'
-import type { AppDispatch } from '@/store/app/store'
-import { fetchAnalyticsRequest } from '@/store/features/analytics/analytics.actions'
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface EventByDayData {
   date: string
   count: number
+}
+
+interface EventsByDayBarChartProps {
+  data: any[]
+  isLoading: boolean
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -38,20 +39,18 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null
 }
 
-export default function EventsByDayBarChart() {
+export default function EventsByDayBarChart({ data, isLoading }: EventsByDayBarChartProps) {
   const [eventsData, setEventsData] = useState<EventByDayData[]>([])
-  const { statistics, isLoading } = useSelector((state: RootState) => state.analytics)
-  const dispatch = useDispatch<AppDispatch>()
   
   useEffect(() => {
-    dispatch(fetchAnalyticsRequest())
-  }, [dispatch])
-
-  useEffect(() => {
-    if (statistics.byDates && Array.isArray(statistics.byDates)) {
-      setEventsData(statistics.byDates)
+    console.log('Events By Day Chart - Received data:', data)
+    if (data && Array.isArray(data)) {
+      console.log('Events By Day Chart - Setting data:', data)
+      setEventsData(data)
+    } else {
+      console.log('Events By Day Chart - No valid data')
     }
-  }, [statistics.byDates])
+  }, [data])
 
   if (isLoading) {
     return (

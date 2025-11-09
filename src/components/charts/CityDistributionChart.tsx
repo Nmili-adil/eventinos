@@ -1,9 +1,5 @@
-import { fetchAnalyticsRequest } from '@/store/features/analytics/analytics.actions'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import type { RootState } from '@/store/app/rootReducer'
-import type { AppDispatch } from '@/store/app/store'
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 
 interface CityData {
@@ -11,6 +7,11 @@ interface CityData {
   users: number
   percentage: number
   color: string
+}
+
+interface CityDistributionBarChartProps {
+  data: any[]
+  isLoading: boolean
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -31,28 +32,25 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null
 }
 
-export default function CityDistributionBarChart() {
+export default function CityDistributionBarChart({ data, isLoading }: CityDistributionBarChartProps) {
   const [cityData, setCityData] = useState<CityData[]>([])
-  const { statistics, isLoading } = useSelector((state: RootState) => state.analytics)
-  const dispatch = useDispatch<AppDispatch>()
   
   useEffect(() => {
-    dispatch(fetchAnalyticsRequest())
-  }, [dispatch])
-
-  useEffect(() => {
-    console.log(statistics)
-    if (statistics.byCity) {
+    console.log('City Chart - Received data:', data)
+    if (data && Array.isArray(data)) {
       // Ensure the data has the correct structure
-      const formattedData = statistics.byCity.map((city: any) => ({
+      const formattedData = data.map((city: any) => ({
         name: city.name || city.city,
         users: city.users || city.count,
         percentage: city.percentage || 0,
         color: city.color || '#0088FE'
       }))
+      console.log('City Chart - Formatted data:', formattedData)
       setCityData(formattedData)
+    } else {
+      console.log('City Chart - No valid data')
     }
-  }, [statistics.byCity])
+  }, [data])
 
   if (isLoading) {
     return (

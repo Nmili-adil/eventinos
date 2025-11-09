@@ -1,9 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import type { RootState } from '@/store/app/rootReducer'
-import type { AppDispatch } from '@/store/app/store'
-import { fetchAnalyticsRequest } from '@/store/features/analytics/analytics.actions'
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 
 interface GenderData {
@@ -11,6 +7,11 @@ interface GenderData {
   value: number
   percentage: number
   color: string
+}
+
+interface GenderDistributionPieChartProps {
+  data: any[]
+  isLoading: boolean
 }
 
 // Gender colors - you can customize these
@@ -67,20 +68,15 @@ const renderLegend = (props: any) => {
   )
 }
 
-export default function GenderDistributionPieChart() {
+export default function GenderDistributionPieChart({ data, isLoading }: GenderDistributionPieChartProps) {
   const [genderData, setGenderData] = useState<GenderData[]>([])
-  const { statistics, isLoading } = useSelector((state: RootState) => state.analytics)
-  const dispatch = useDispatch<AppDispatch>()
   
   useEffect(() => {
-    dispatch(fetchAnalyticsRequest())
-  }, [dispatch])
-
-  useEffect(() => {
-    if (statistics.byGender && Array.isArray(statistics.byGender)) {
-      const totalCount = statistics.byGender.reduce((sum: number, item: any) => sum + item.count, 0)
+    console.log('Gender Chart - Received data:', data)
+    if (data && Array.isArray(data)) {
+      const totalCount = data.reduce((sum: number, item: any) => sum + item.count, 0)
       
-      const formattedData = statistics.byGender.map((item: any, index: number) => {
+      const formattedData = data.map((item: any, index: number) => {
         const genderName = item.gender
         const percentage = totalCount > 0 ? Math.round((item.count / totalCount) * 100) : 0
         
@@ -92,9 +88,12 @@ export default function GenderDistributionPieChart() {
         }
       })
       
+      console.log('Gender Chart - Formatted data:', formattedData)
       setGenderData(formattedData)
+    } else {
+      console.log('Gender Chart - No valid data')
     }
-  }, [statistics.byGender])
+  }, [data])
 
   if (isLoading) {
     return (

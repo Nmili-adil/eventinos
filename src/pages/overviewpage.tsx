@@ -1,7 +1,7 @@
 import StatCard from "@/components/partials/dashboardComponents/StatCard";
 import { fetchEventsRequest } from "@/store/features/events/events.actions";
 import { Calendar, CheckCircle, XCircle, Clock, Users } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
 import type { RootState } from "@/store/app/rootReducer";
@@ -10,12 +10,17 @@ import { fetchUsersRequest } from "@/store/features/users/users.actions";
 import CityDistributionBarChart from "@/components/charts/CityDistributionChart";
 import GenderDistributionPieChart from "@/components/charts/GenderDistributionPieChart";
 import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart ";
-import { fetchAnalyticsRequest } from "@/store/features/analytics/analytics.actions";
+import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
 
 const Overviewpage = () => {
   const { events, count } = useSelector((state: RootState) => state.events);
   const { usersCount } = useSelector((state: RootState) => state.users);
   const dispatch = useDispatch<AppDispatch>();
+  
+  const [cityData, setCityData] = useState<any[]>([]);
+  const [genderData, setGenderData] = useState<any[]>([]);
+  const [datesData, setDatesData] = useState<any[]>([]);
+  const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
 
   // Calculate real statistics from events data
   const stats = useMemo(() => {
@@ -41,14 +46,73 @@ const Overviewpage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch(fetchAnalyticsRequest());
+        dispatch(fetchEventsRequest());
+        dispatch(fetchUsersRequest());
+        
+        // Fetch analytics data directly with individual error handling
+        setIsLoadingAnalytics(true);
+        
+        // Fetch each endpoint separately to avoid Promise.all failing all requests
+        const cityPromise = fetchAnalyticsByCity().catch(err => {
+          console.error('City API failed:', err);
+          return null;
+        });
+        
+        const genderPromise = fetchAnalyticsByGender().catch(err => {
+          console.error('Gender API failed:', err);
+          return null;
+        });
+        
+        const datesPromise = fetchAnalyticsByDates().catch(err => {
+          console.error('Dates API failed (likely CORS issue):', err);
+          console.warn('⚠️ The /analytics/events-per-dates endpoint has a CORS error. Please enable CORS on your backend for this endpoint.');
+          return null;
+        });
+        
+        const [cityResponse, genderResponse, datesResponse] = await Promise.all([
+          cityPromise,
+          genderPromise,
+          datesPromise
+        ]);
+        
+        console.log('City Response:', cityResponse);
+        console.log('Gender Response:', genderResponse);
+        console.log('Dates Response:', datesResponse);
+        
+        if (cityResponse && cityResponse.status === 200) {
+          console.log('Setting city data:', cityResponse.data.data);
+          setCityData(cityResponse.data.data || []);
+        }
+        if (genderResponse && genderResponse.status === 200) {
+          console.log('Setting gender data:', genderResponse.data.data);
+          setGenderData(genderResponse.data.data || []);
+        }
+        if (datesResponse && datesResponse.status === 200) {
+          console.log('Setting dates data:', datesResponse.data.data);
+          setDatesData(datesResponse.data.data || []);
+        }
+        
+        setIsLoadingAnalytics(false);
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching data:', error);
+        setIsLoadingAnalytics(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log('📊 City Data Updated:', cityData)
+  }, [cityData])
+  
+  useEffect(() => {
+    console.log('📊 Gender Data Updated:', genderData)
+  }, [genderData])
+  
+  useEffect(() => {
+    console.log('📊 Dates Data Updated:', datesData)
+  }, [datesData])
 
   return (
     <div className="space-y-6">
@@ -132,11 +196,11 @@ const Overviewpage = () => {
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CityDistributionBarChart />
-        <GenderDistributionPieChart />
+        <CityDistributionBarChart data={cityData} isLoading={isLoadingAnalytics} />
+        <GenderDistributionPieChart data={genderData} isLoading={isLoadingAnalytics} />
       </div>
       <div>
-        <EventsByDayBarChart />
+        <EventsByDayBarChart data={datesData} isLoading={isLoadingAnalytics} />
       </div>
     </div>
   );
