@@ -11,11 +11,13 @@ import CityDistributionBarChart from "@/components/charts/CityDistributionChart"
 import GenderDistributionPieChart from "@/components/charts/GenderDistributionPieChart";
 import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart ";
 import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
+import { useLoading } from "@/contexts/LoadingContext";
 
 const Overviewpage = () => {
   const { events, count } = useSelector((state: RootState) => state.events);
   const { usersCount } = useSelector((state: RootState) => state.users);
   const dispatch = useDispatch<AppDispatch>();
+  const { setLoading } = useLoading();
   
   const [cityData, setCityData] = useState<any[]>([]);
   const [genderData, setGenderData] = useState<any[]>([]);
@@ -46,8 +48,11 @@ const Overviewpage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch(fetchEventsRequest());
-        dispatch(fetchUsersRequest());
+        // Show global loading screen
+        setLoading(true, 'Chargement des statistiques...');
+        
+        await dispatch(fetchEventsRequest());
+        await dispatch(fetchUsersRequest());
         
         // Fetch analytics data directly with individual error handling
         setIsLoadingAnalytics(true);
@@ -93,14 +98,18 @@ const Overviewpage = () => {
         }
         
         setIsLoadingAnalytics(false);
+        // Hide global loading screen
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
         setIsLoadingAnalytics(false);
+        // Hide global loading screen even on error
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, setLoading]);
 
   useEffect(() => {
     console.log('📊 City Data Updated:', cityData)
