@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
+import type { date } from "zod";
 
 interface EventEditFormProps {
   event: any;
@@ -29,7 +31,7 @@ interface EventEditFormProps {
 }
 
 const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProps) => {
-  const [accordionValue, setAccordionValue] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState("basic");
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema),
@@ -71,7 +73,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl ">
+    <div className="container mx-auto p-6 max-w-4xl">
       <Card className="border-slate-300">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Edit Event</CardTitle>
@@ -82,22 +84,35 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-              <Accordion
-                type="multiple"
-                value={accordionValue}
-                onValueChange={setAccordionValue}
-                className="space-y-4"
-                defaultValue="basic-info"
-              >
-                {/* Basic Information */}
-                <AccordionItem value="basic-info" className="border border-slate-300 rounded-lg">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                      <span className="font-semibold">Basic Information</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4 space-y-4">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-5 mb-8">
+                  <TabsTrigger value="basic" className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                    <span>Basic</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="datetime" className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full" />
+                    <span>Date & Time</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="location" className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                    <span>Location</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="social" className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full" />
+                    <span>Social</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="program" className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span>Program</span>
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Basic Information Tab */}
+                <TabsContent value="basic" className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Basic Information</h3>
+                    
                     <FormField
                       control={form.control}
                       name="name"
@@ -214,46 +229,91 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         </FormItem>
                       )}
                     />
-                  </AccordionContent>
-                </AccordionItem>
+                  </div>
 
-                {/* Date & Time */}
-                <AccordionItem value="datetime" className="border border-slate-300 rounded-lg">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full" />
-                      <span className="font-semibold">Date & Time</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="startDate">Start Date</Label>
-                        <Input
-                          type="datetime-local"
-                          {...form.register("startDate.date")}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="endDate">End Date</Label>
-                        <Input
-                          type="datetime-local"
-                          {...form.register("endDate.date")}
-                        />
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  <div className="flex justify-end pt-4 ">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("datetime")}
+                      className="place-self-end"
+                    >
+                      Next: Date & Time
+                    </Button>
+                  </div>
+                </TabsContent>
 
-                {/* Location */}
-                <AccordionItem value="location" className="border border-slate-300 rounded-lg ">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                      <span className="font-semibold">Location</span>
+                {/* Date & Time Tab */}
+                <TabsContent value="datetime" className="space-y-6  ">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Date & Time</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <Label className="text-base font-medium">Start Date & Time</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="startDate">Start Date</Label>
+                          <Controller 
+                            control={form.control}
+                            name="startDate.date"
+                            render={({ field }) => (
+                              <DateTimePicker
+                              date={field.value as date}
+                              onDateChange={field.onChange}
+                              placeholder="Select start date & time"
+                              className="w-full"
+                              fromDate={new Date()}
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <Label className="text-base font-medium">End Date & Time</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="endDate">End Date</Label>
+                          <Controller 
+                            control={form.control}
+                            name="endDate.date"
+                            render={({ field }) => (
+                              <DateTimePicker
+                              date={field.value as date}
+                              onDateChange={field.onChange}
+                              placeholder="Select end date & time"
+                              className="w-full"
+                              fromDate={new Date()}
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4 space-y-4">
+                  </div>
+
+                  <div className="flex justify-between pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("basic")}
+                    >
+                      Previous: Basic
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("location")}
+                    >
+                      Next: Location
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                {/* Location Tab */}
+                <TabsContent value="location" className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Location Information</h3>
+                    
                     <FormField
                       control={form.control}
                       name="location.name"
@@ -297,18 +357,31 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         )}
                       />
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  </div>
 
-                {/* Social Networks */}
-                <AccordionItem value="social" className="border border-slate-300 rounded-lg">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full" />
-                      <span className="font-semibold">Social Networks</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4 space-y-4">
+                  <div className="flex justify-between pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("datetime")}
+                    >
+                      Previous: Date & Time
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("social")}
+                    >
+                      Next: Social Networks
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                {/* Social Networks Tab */}
+                <TabsContent value="social" className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Social Networks</h3>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
@@ -366,18 +439,31 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         )}
                       />
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  </div>
 
-                {/* Program */}
-                <AccordionItem value="program" className="border border-slate-300 rounded-lg mb-4">
-                  <AccordionTrigger className="px-4 hover:no-underline">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full" />
-                      <span className="font-semibold">Program</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
+                  <div className="flex justify-between pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("location")}
+                    >
+                      Previous: Location
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("program")}
+                    >
+                      Next: Program
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                {/* Program Tab */}
+                <TabsContent value="program" className="space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Event Program</h3>
+                    
                     <FormField
                       control={form.control}
                       name="program"
@@ -395,15 +481,25 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         </FormItem>
                       )}
                     />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  </div>
 
-              <div className="flex justify-end space-x-4 pt-6 mt-2">
+                  <div className="flex justify-between pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveTab("social")}
+                    >
+                      Previous: Social
+                    </Button>
+                  </div>
+                </TabsContent>
+              </Tabs>
+
+              <div className="flex justify-end space-x-4 pt-6 border-t">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setAccordionValue([])}
+                  onClick={() => setActiveTab("basic")}
                 >
                   Cancel
                 </Button>

@@ -42,6 +42,7 @@ export function EventsPagination({ pagination, onPageChange }: PaginationProps) 
           size="sm"
           onClick={() => onPageChange(pagination.currentPage + 1)}
           disabled={pagination.currentPage === totalPages}
+          className=''
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

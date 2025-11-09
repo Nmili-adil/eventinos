@@ -41,6 +41,7 @@ export default function CityDistributionBarChart() {
   }, [dispatch])
 
   useEffect(() => {
+    console.log(statistics)
     if (statistics.byCity) {
       // Ensure the data has the correct structure
       const formattedData = statistics.byCity.map((city: any) => ({

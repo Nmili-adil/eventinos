@@ -24,9 +24,9 @@ export const fetchEventByIdApi = async (eventId: string): Promise<any> => { // U
   }
 }
 
-export const updateEventApi = async (event: any) => {
+export const updateEventApi = async (id: string | undefined, event: any) => {
   try {
-    const response = await api.put(`/events/${event._id}`, event, {
+    const response = await api.put(`/events/${id}`, event, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthToken()}`
@@ -34,7 +34,22 @@ export const updateEventApi = async (event: any) => {
     });
     return response.data; // Return only the data part
   } catch (error) {
-    console.error(`Error updating event ${event._id}:`, error);
+    console.error(`Error updating event ${id}:`, error);
+    throw error; // Re-throw to handle in the component
+  }
+}
+
+export const deleteEventApi = async (id: string) => {
+  try {
+    const response = await api.delete(`/events/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`
+      }
+    });
+    return response.data; // Return only the data part
+  } catch (error) {
+    console.error(`Error deleting event ${id}:`, error);
     throw error; // Re-throw to handle in the component
   }
 }

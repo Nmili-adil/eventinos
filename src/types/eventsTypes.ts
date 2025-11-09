@@ -20,6 +20,7 @@ export interface Location {
 }
 
 export interface Event {
+  title: string
   _id: string
   name: string
   description: string

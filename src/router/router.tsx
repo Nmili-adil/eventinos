@@ -1,5 +1,6 @@
 import Layout from '@/app/_layout'
-import { DASHBOARD_OVERVIEW, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBER_PAGE  } from '@/constants/routerConstants'
+import { DASHBOARD_OVERVIEW, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBER_PAGE  } from '@/constants/routerConstants'
+import EventDetailsPage from '@/pages/eventDetailsPage'
 import EventEditPage from '@/pages/eventEdit-page'
 import EventsPageList from '@/pages/eventsPage-list'
 import ForgotPasswordPage from '@/pages/forgetPasswordPage'
@@ -38,6 +39,10 @@ export const Router = createBrowserRouter([
             {
                 path: EVENT_EDIT_PAGE(':eventId'),
                 element: <EventEditPage />  
+            },
+            {
+                path: EVENT_DETAILS_PAGE(':eventId'),
+                element: <EventDetailsPage />  
             },
             {
                 path:MEMBER_PAGE,

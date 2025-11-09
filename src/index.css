@@ -122,3 +122,107 @@
 input {
   outline: none;
 }
+/* QuillTextEditor.css */
+.quill-editor-container {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e1e4e8;
+}
+
+.quill-editor-container .ql-container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 200px;
+}
+
+.quill-editor-container .ql-toolbar {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e1e4e8;
+  padding: 8px;
+}
+
+.quill-editor-container .ql-editor {
+  min-height: 200px;
+  line-height: 1.6;
+  padding: 16px;
+}
+
+.quill-editor-container .ql-editor.ql-blank::before {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Custom toolbar styling */
+.quill-editor-container .ql-toolbar .ql-stroke {
+  stroke: #495057;
+}
+
+.quill-editor-container .ql-toolbar .ql-fill {
+  fill: #495057;
+}
+
+.quill-editor-container .ql-toolbar .ql-picker-label {
+  color: #495057;
+}
+
+.quill-editor-container .ql-toolbar button:hover,
+.quill-editor-container .ql-toolbar button:focus,
+.quill-editor-container .ql-toolbar button.ql-active {
+  color: #007bff;
+}
+
+.quill-editor-container .ql-toolbar button:hover .ql-stroke,
+.quill-editor-container .ql-toolbar button:focus .ql-stroke,
+.quill-editor-container .ql-toolbar button.ql-active .ql-stroke {
+  stroke: #007bff;
+}
+
+.quill-editor-container .ql-toolbar button:hover .ql-fill,
+.quill-editor-container .ql-toolbar button:focus .ql-fill,
+.quill-editor-container .ql-toolbar button.ql-active .ql-fill {
+  fill: #007bff;
+}
+
+.quill-editor-container .ql-toolbar .ql-picker-options {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+.quill-editor-container .ql-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.quill-editor-container .ql-editor::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.quill-editor-container .ql-editor::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.quill-editor-container .ql-editor::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .quill-editor-container .ql-toolbar {
+    padding: 4px;
+  }
+  
+  .quill-editor-container .ql-toolbar .ql-formats {
+    margin-right: 4px;
+  }
+  
+  .quill-editor-container .ql-editor {
+    padding: 12px;
+  }
+}

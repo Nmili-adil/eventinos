@@ -1,9 +1,12 @@
+import TextEditor from "@/components/shared/textEditor";
+
 const MemberPage =  () => {
-    return (
-        <div>
-            <h1>Member Page</h1>
-        </div>
-    )
+    
+  return ( 
+     <div>
+      <TextEditor />
+    </div>
+  );
 }
 
 export default MemberPage;

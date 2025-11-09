@@ -1,5 +1,5 @@
-import { fetchEventByIdApi, fetchEvents, updateEventApi } from "@/api/eventsApi";
-import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE } from "./events.type"
+import { deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi } from "@/api/eventsApi";
+import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction } from "./events.type"
 
 export const fetchEventsRequest = (): FetchEventsRequestAction => {
     return async (dispatch: any) => {
@@ -56,11 +56,11 @@ export const fetchEventByIdFailure = (error: string): FetchEventByIdFailureActio
   payload: error,
 })
 
-export const updateEventRequest = (event: any) => {
+export const updateEventRequest = (eventId: string | undefined,event: any) : UpdateEventRequestAction => {
   return async (dispatch: any) => {
-    dispatch({ type: UPDATE_EVENT_REQUEST, payload: event })
+    dispatch({ type: UPDATE_EVENT_REQUEST, payload: { eventId, event} })
     try {
-      const response = await updateEventApi(event)
+      const response = await updateEventApi(eventId,event)
       if(response.status ===200) {
         dispatch(updateEventSuccess(response.data))
       } else {
@@ -79,5 +79,31 @@ export const updateEventSuccess = (event: any): UpdateEventSuccessAction => ({
 
 export const updateEventFailure = (error: string): UpdateEventFailureAction => ({
   type: UPDATE_EVENT_FAILURE,
+  payload: error,
+})
+
+
+
+export const deleteEventRequest = (eventId: string) => {
+  return async (dispatch: any) => {
+    dispatch({ type: DELETE_EVENT_REQUEST, payload: eventId })
+    try {
+      const response = await deleteEventApi(eventId)
+      if(response.status ===200) {
+        dispatch({ type: DELETE_EVENT_SUCCESS })
+      } else {
+        dispatch({ type: DELETE_EVENT_FAILURE, payload: response.message })
+      }
+    } catch (error: any) {
+      // Handle error
+    }
+  }
+}
+export const deleteEventSuccess = () : DeleteEventSuccessAction => ({
+  type: DELETE_EVENT_SUCCESS,
+})
+
+export const deleteEventFailure = (error: string) : DeleteEventFailureAction => ({
+  type: DELETE_EVENT_FAILURE,
   payload: error,
 })

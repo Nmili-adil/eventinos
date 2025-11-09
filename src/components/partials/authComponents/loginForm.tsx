@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { loginSchema, type LoginFormData } from '@/schema/authSchemas/login-schema'
 import type { RootState } from '@/store/app/rootReducer'
+import type { AppDispatch } from '@/store/app/store'
 import { authLoginRequest } from '@/store/features/auth/auth.actions' // Import clear error action
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Label } from '@radix-ui/react-label'
@@ -17,7 +18,7 @@ import { Link } from 'react-router-dom'
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false)
     const { isLoading, error } = useSelector((state: RootState) => state.auth)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<AppDispatch>()
 
 
     const {

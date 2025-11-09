@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import type { RootState } from "@/store/app/rootReducer"
 import type { AppDispatch } from "@/store/app/store"
-import { fetchEventByIdRequest, updateEventRequest } from "@/store/features/events/events.actions"
+import { fetchEventByIdRequest, fetchEventsRequest, updateEventRequest } from "@/store/features/events/events.actions"
 import type { EventFormData } from "@/schema/eventSchema"
 import EventEditForm from "@/components/partials/eventsComponents/EventEditForm"
+import LoadingComponent from "@/components/shared/loadingComponent"
+import { toast } from "sonner"
+import { EVENT_LISTE_PAGE } from "@/constants/routerConstants"
 
 const EventEditPage = () => {
-  const { event } = useSelector((state: RootState) => state.events)
+  const { event, isLoading: isEventLoading, error: eventError, isUpdating } = useSelector((state: RootState) => state.events)
   const dispatch = useDispatch<AppDispatch>()
-  const { eventId } = useParams<{ eventId: string }>()
+  const { eventId } = useParams<{ eventId: string | undefined }>()
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
 
 
   useEffect(() => {
@@ -28,11 +32,21 @@ const EventEditPage = () => {
   }, [eventId, dispatch])
 
   const handleSubmit = async (data: EventFormData) => {
+    console.log("Submitting data:", data)
     setIsLoading(true)
+    
     try {
-      // Here you would dispatch an update action
-      console.log("Updating event:", data)
-      await dispatch(updateEventRequest(data))
+      toast.promise(
+        async () => await dispatch(updateEventRequest(eventId!, data)),
+        {
+          loading: 'Updating event...',
+          success: 'Event updated successfully',
+          error: 'Failed to update event'
+        }
+      )
+      // dispatch(updateEventRequest(eventId, data))
+      
+      setTimeout(() => navigate(EVENT_LISTE_PAGE),1000) // Refresh events list
     } catch (error) {
       console.error("Failed to update event:", error)
     } finally {
@@ -41,7 +55,7 @@ const EventEditPage = () => {
   }
 
   if (!event) {
-    return <div>Loading event...</div>
+    return <LoadingComponent />
   }
 
   return (

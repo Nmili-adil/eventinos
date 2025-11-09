@@ -12,8 +12,8 @@ interface TableHeaderProps {
 const headers: { key: SortField; label: string }[] = [
   { key: 'name', label: 'Nom' },
   { key: 'type', label: 'Type' },
-  { key: 'visibility', label: 'Website' },
-  { key: 'location', label: 'Location*' },
+  { key: 'visibility', label: 'Visibility' },
+  { key: 'location', label: 'Location' },
   { key: 'startDate', label: 'Date début' },
   { key: 'endDate', label: 'Date fin' },
   { key: 'status', label: 'Status' },

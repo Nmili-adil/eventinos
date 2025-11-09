@@ -11,7 +11,7 @@ export const fetchAnalyticsByCity = async () => {
 }
 
 export const fetchAnalyticsByDates = async () => {
-  return api.get('analytics/events-per-dates', {
+  return api.get('/analytics/events-per-dates', {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAuthToken()}`,

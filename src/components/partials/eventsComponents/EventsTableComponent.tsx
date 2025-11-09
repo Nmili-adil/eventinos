@@ -11,19 +11,26 @@ import { EventTableRow } from './table-row'
 import { Filters } from './filters'
 import { EventsPagination } from './pagination'
 import { EmptyState } from './empty-state'
-import type { EventsFilters, EventsSort, PaginationState } from '@/types/eventsTypes'
-import { useSelector } from 'react-redux'
+import type { Event, EventsFilters, EventsSort, PaginationState } from '@/types/eventsTypes'
+import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
 import { useNavigate } from 'react-router-dom'
-import { EVENT_EDIT_PAGE } from '@/constants/routerConstants'
+import { EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE } from '@/constants/routerConstants'
+import LoadingComponent from '@/components/shared/loadingComponent'
+import type { AppDispatch } from '@/store/app/store'
+import { deleteEventRequest } from '@/store/features/events/events.actions'
+import { DeleteDialog } from '@/components/shared/alert-dialog-reusable'
+import { toast } from 'sonner'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 10
 
 export function EventsTable() {
   const [eventsData, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
-  const { events} = useSelector((state: RootState) => state.events)
+  const { events, isLoading} = useSelector((state: RootState) => state.events)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
 
   const [filters, setFilters] = useState<EventsFilters>({
     search: '',
@@ -42,6 +49,15 @@ export function EventsTable() {
     totalItems: 0
   })
 
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean
+    eventId: string | null
+    eventTitle?: string
+  }>({
+    open: false,
+    eventId: null,
+    eventTitle: ''
+  })
   // Fetch events on component mount
   useEffect(() => {
     const loadEvents = async () => {
@@ -57,6 +73,7 @@ export function EventsTable() {
   const processedEvents = useMemo(() => {
     const filtered = filterEvents(eventsData, filters)
     const sorted = sortEvents(filtered, sort.field, sort.direction)
+    
     
     // Update total items for pagination
     setPagination(prev => ({ ...prev, totalItems: sorted.length }))
@@ -95,20 +112,38 @@ export function EventsTable() {
   }
 
   const handlePreview = (eventId: string) => {
-    console.log('Preview event:', eventId)
+    navigate(EVENT_DETAILS_PAGE(eventId))
   }
 
-  const handleDelete = (eventId: string) => {
-    console.log('Delete event:', eventId)
+  const handleDelete = (eventId: string, eventTitle: string) => {
+    setDeleteDialog({ open: true, eventId, eventTitle })
   }
 
-  if (loading) {
+  const handleConfirmDelete = async () => {
+    if (!deleteDialog.eventId) return
+    setDeleteLoading(true)
+    try {
+      setEvents(prev => prev.filter(event => event._id !== deleteDialog.eventId))
+      setDeleteDialog({ open: false, eventId: null })
+      toast.promise(
+        dispatch(deleteEventRequest(deleteDialog.eventId)),
+        {
+          loading: 'Suppression en cours',
+          success: 'Événement supprimé avec successe',
+          error: "Une erreur est survenue lors de la suppression de l'événement"
+        }
+      )
+      // Simulate API call
+      // await dispatch(deleteEventRequest(deleteDialog.eventId))
+    } catch (error) {
+      console.error('Failed to delete event:', error)
+    }
+    setDeleteLoading(false)
+  }
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Chargement des événements...</p>
-        </div>
+      <div className='h-screen w-screen m-0 '>
+        <LoadingComponent />
       </div>
     )
   }
@@ -148,7 +183,7 @@ export function EventsTable() {
                 onEdit={handleEdit}
                 onChangeStatus={handleChangeStatus}
                 onPreview={handlePreview}
-                onDelete={handleDelete}
+                onDelete={() => handleDelete(event._id, event.title)}
               />
             ))}
           </TableBody>
@@ -165,6 +200,14 @@ export function EventsTable() {
         pagination={pagination}
         onPageChange={handlePageChange}
       />
+
+      <DeleteDialog
+      open={deleteDialog.open}
+      onOpenChange={(open) => setDeleteDialog(prev => ({ ...prev, open }))}
+      onConfirm={handleConfirmDelete}
+      eventTitle={deleteDialog.eventTitle}
+      isLoading={deleteLoading}
+    />
     </div>
   )
 }

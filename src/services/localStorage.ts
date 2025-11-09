@@ -1,6 +1,6 @@
 export const storageKeys = {
-  TOKEN: 'token',
-  USER: 'user'
+  TOKEN: 'auth-token',
+  USER: 'auth-user'
 }
 
 export const setAuthToken = (token: string) => {
