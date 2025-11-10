@@ -4,6 +4,7 @@ export interface EventState {
   count: number
   isLoading: boolean
   isUpdating: boolean
+  isCreating: boolean
   isDeleted: boolean
   error: string | null
 }
@@ -20,10 +21,13 @@ export const UPDATE_EVENT_REQUEST = 'UPDATE_EVENT_REQUEST'
 export const UPDATE_EVENT_SUCCESS = 'UPDATE_EVENT_SUCCESS'
 export const UPDATE_EVENT_FAILURE = 'UPDATE_EVENT_FAILURE'
 
+export const CREATE_EVENT_REQUEST = 'CREATE_EVENT_REQUEST'
+export const CREATE_EVENT_SUCCESS = 'CREATE_EVENT_SUCCESS'
+export const CREATE_EVENT_FAILURE = 'CREATE_EVENT_FAILURE'
+
 export const DELETE_EVENT_REQUEST = 'DELETE_EVENT_REQUEST'
 export const DELETE_EVENT_SUCCESS = 'DELETE_EVENT_SUCCESS'
 export const DELETE_EVENT_FAILURE = 'DELETE_EVENT_FAILURE'
-
 
 
 export interface FetchEventsRequestAction {
@@ -72,6 +76,20 @@ export interface UpdateEventFailureAction {
   payload: string
 }
 
+export interface CreateEventRequestAction {
+  type: typeof CREATE_EVENT_REQUEST
+  payload: any
+}
+
+export interface CreateEventSuccessAction {
+  type: typeof CREATE_EVENT_SUCCESS
+  payload: any
+}
+
+export interface CreateEventFailureAction {
+  type: typeof CREATE_EVENT_FAILURE
+  payload: string
+}
 
 export interface DeleteEventRequestAction {
   type: typeof DELETE_EVENT_REQUEST
@@ -97,6 +115,9 @@ export type EventActionTypes =
   | UpdateEventRequestAction
   | UpdateEventSuccessAction
   | UpdateEventFailureAction
+  | CreateEventRequestAction
+  | CreateEventSuccessAction
+  | CreateEventFailureAction
   | DeleteEventRequestAction
   | DeleteEventSuccessAction
   | DeleteEventFailureAction

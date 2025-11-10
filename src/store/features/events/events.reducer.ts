@@ -10,6 +10,9 @@ import {
   UPDATE_EVENT_SUCCESS,
   UPDATE_EVENT_FAILURE,
   UPDATE_EVENT_REQUEST,
+  CREATE_EVENT_REQUEST,
+  CREATE_EVENT_SUCCESS,
+  CREATE_EVENT_FAILURE,
   DELETE_EVENT_REQUEST,
   DELETE_EVENT_SUCCESS,
   DELETE_EVENT_FAILURE,
@@ -21,6 +24,7 @@ const initialState: EventState = {
   count: 0,
   isLoading: false,
   isUpdating: false,
+  isCreating: false,
   isDeleted: false,
   error: null,
 };
@@ -89,6 +93,25 @@ const eventReducrer = (
         ...state,
         isLoading: true,
         error: null,
+      };
+    // Event creating cases
+    case CREATE_EVENT_REQUEST:
+      return {
+        ...state,
+        isCreating: true,
+        error: null,
+      };
+    case CREATE_EVENT_SUCCESS:
+      return {
+        ...state,
+        isCreating: false,
+        event: action.payload,
+      };
+    case CREATE_EVENT_FAILURE:
+      return {  
+        ...state,
+        isCreating: false,
+        error: action.payload,
       };
     case DELETE_EVENT_REQUEST:
       return {

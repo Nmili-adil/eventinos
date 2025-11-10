@@ -1,5 +1,5 @@
-import { deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi } from "@/api/eventsApi";
-import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction } from "./events.type"
+import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi } from "@/api/eventsApi";
+import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction } from "./events.type"
 
 export const fetchEventsRequest = (): FetchEventsRequestAction => {
     return async (dispatch: any) => {
@@ -61,12 +61,10 @@ export const updateEventRequest = (eventId: string | undefined,event: any) : Upd
     dispatch({ type: UPDATE_EVENT_REQUEST, payload: { eventId, event} })
     try {
       const response = await updateEventApi(eventId,event)
-      if(response.status ===200) {
-        dispatch(updateEventSuccess(response.data))
-      } else {
-        dispatch(updateEventFailure(response.message))
-      }
+      // updateEventApi returns response.data directly, not full response
+      dispatch(updateEventSuccess(response))
     } catch (error: any) {
+      console.error('Update event error:', error);
       dispatch(updateEventFailure(error.response?.data?.message || error.message || 'Update event failed'))
     }
   };
@@ -82,20 +80,40 @@ export const updateEventFailure = (error: string): UpdateEventFailureAction => (
   payload: error,
 })
 
+export const createEventRequest = (event: any): CreateEventRequestAction => {
+  return async (dispatch: any) => {
+    dispatch({ type: CREATE_EVENT_REQUEST, payload: event })
+    try {
+      const response = await createEventApi(event)
+      // createEventApi returns response.data directly, not full response
+      dispatch(createEventSuccess(response))
+    } catch (error: any) {
+      console.error('Create event error:', error);
+      dispatch(createEventFailure(error.response?.data?.message || error.message || 'Create event failed'))
+    }
+  };
+}
 
+export const createEventSuccess = (event: any): CreateEventSuccessAction => ({
+  type: CREATE_EVENT_SUCCESS,
+  payload: event,
+})
+
+export const createEventFailure = (error: string): CreateEventFailureAction => ({
+  type: CREATE_EVENT_FAILURE,
+  payload: error,
+})
 
 export const deleteEventRequest = (eventId: string) => {
   return async (dispatch: any) => {
     dispatch({ type: DELETE_EVENT_REQUEST, payload: eventId })
     try {
-      const response = await deleteEventApi(eventId)
-      if(response.status ===200) {
-        dispatch({ type: DELETE_EVENT_SUCCESS })
-      } else {
-        dispatch({ type: DELETE_EVENT_FAILURE, payload: response.message })
-      }
+      await deleteEventApi(eventId)
+      // deleteEventApi returns response.data directly, not full response
+      dispatch({ type: DELETE_EVENT_SUCCESS })
     } catch (error: any) {
-      // Handle error
+      console.error('Delete event error:', error);
+      dispatch({ type: DELETE_EVENT_FAILURE, payload: error.response?.data?.message || error.message || 'Delete event failed' })
     }
   }
 }

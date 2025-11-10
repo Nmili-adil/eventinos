@@ -15,7 +15,7 @@ import type { Event, EventsFilters, EventsSort, PaginationState } from '@/types/
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
 import { useNavigate } from 'react-router-dom'
-import { EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE } from '@/constants/routerConstants'
+import { EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE } from '@/constants/routerConstants'
 import LoadingComponent from '@/components/shared/loadingComponent'
 import type { AppDispatch } from '@/store/app/store'
 import { deleteEventRequest } from '@/store/features/events/events.actions'
@@ -160,7 +160,9 @@ export function EventsTable() {
             Gérez tous les événements de votre organisation
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button 
+        onClick={() => navigate(EVENT_ADD_PAGE)}
+        className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Nouvel événement
         </Button>

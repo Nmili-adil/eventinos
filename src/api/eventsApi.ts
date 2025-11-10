@@ -39,6 +39,21 @@ export const updateEventApi = async (id: string | undefined, event: any) => {
   }
 }
 
+export const createEventApi = async (event: any) => {
+  try {
+    const response = await api.post('/events', event, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`
+      }
+    });
+    return response.data; // Return only the data part
+  } catch (error) {
+    console.error('Error creating event:', error);
+    throw error; // Re-throw to handle in the component
+  }
+}
+
 export const deleteEventApi = async (id: string) => {
   try {
     const response = await api.delete(`/events/${id}`, {
