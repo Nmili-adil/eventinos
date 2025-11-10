@@ -5,7 +5,7 @@ const NotFoundPage = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="h-full flex items-center justify-center px-4">
+    <div className="h-full w-full flex items-center justify-center px-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <div className="max-w-2xl w-full text-center">
         {/* 404 Illustration */}
         <div className="relative mb-8">

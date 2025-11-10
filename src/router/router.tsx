@@ -28,6 +28,7 @@ export const Router = createBrowserRouter([
                 <Layout />
             </ProtectedRoute>
          ),
+         
         children: [
             {
                 path:DASHBOARD_OVERVIEW,

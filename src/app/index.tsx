@@ -9,10 +9,10 @@ import { LoadingProvider } from "@/contexts/LoadingContext"
 const App = () => {
   return (
     <Provider store={store}>
-      <LoadingProvider>
         <Toaster position="bottom-right" />
+        <LoadingProvider>
         <RouterProvider router={Router} />
-      </LoadingProvider>
+        </LoadingProvider>
     </Provider>
   )
 }
