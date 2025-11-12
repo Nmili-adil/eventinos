@@ -21,6 +21,7 @@ import type { AppDispatch } from '@/store/app/store'
 import { deleteEventRequest } from '@/store/features/events/events.actions'
 import { DeleteDialog } from '@/components/shared/alert-dialog-reusable'
 import { toast } from 'sonner'
+import PageHead from '@/components/shared/page-head'
 
 const PAGE_SIZE = 10
 
@@ -152,14 +153,7 @@ export function EventsTable() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <List className="h-6 w-6 mr-2" />
-            Événements</h1>
-          <p className="text-muted-foreground">
-            Gérez tous les événements de votre organisation
-          </p>
-        </div>
+          <PageHead title='Événements' icon={List} description=' Gérez tous les événements de votre organisation' />
         <Button 
         onClick={() => navigate(EVENT_ADD_PAGE)}
         className="flex items-center gap-2">

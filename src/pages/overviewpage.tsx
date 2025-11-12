@@ -12,6 +12,7 @@ import GenderDistributionPieChart from "@/components/charts/GenderDistributionPi
 import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart ";
 import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
 import { useLoading } from "@/contexts/LoadingContext";
+import PageHead from "@/components/shared/page-head";
 
 const Overviewpage = () => {
   const { events, count } = useSelector((state: RootState) => state.events);
@@ -127,12 +128,8 @@ const Overviewpage = () => {
     <div className="space-y-6 ">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <LayoutDashboard className="h-6 w-6 mr-2" />
-          Statistiques</h1>
-        <p className="text-gray-600 mt-2">
-          Vue d'ensemble de vos événements et utilisateurs
-        </p>
+       
+        <PageHead title="Statistiques" icon={LayoutDashboard} description="Vue d'ensemble de vos événements et utilisateurs"/>
       </div>
 
       {/* Statistics Cards Grid */}

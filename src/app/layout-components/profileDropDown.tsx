@@ -12,8 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { User } from 'lucide-react'
-import { useNavigate } from "react-router-dom"
-import { LOGIN_PAGE } from "@/constants/routerConstants"
+import { Link, useNavigate } from "react-router-dom"
+import { LOGIN_PAGE, SETTINGS_PAGE } from "@/constants/routerConstants"
 import { useDispatch, useSelector } from "react-redux"
 import { authLogout } from "@/store/features/auth/auth.actions"
 import type { AppDispatch } from "@/store/app/store"
@@ -29,6 +29,8 @@ const ProfileDropDown = () => {
     dispatch(authLogout())
     navigate(LOGIN_PAGE)
   }
+
+
 
 
   return (
@@ -53,8 +55,10 @@ const ProfileDropDown = () => {
             Profile
           </DropdownMenuItem>
 
-          <DropdownMenuItem>
+          <DropdownMenuItem >
+            <Link to={SETTINGS_PAGE}>
             Settings
+            </Link>
           </DropdownMenuItem>
 
         </DropdownMenuGroup>

@@ -64,6 +64,7 @@ export interface FetchBadgeByIdFailureAction {
 export interface UpdateBadgeRequestAction {
     type: typeof UPDATE_BADGE_REQUEST
     payload: any
+    badgeId: string
 }
 
 export interface UpdateBadgeSuccessAction {
