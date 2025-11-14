@@ -18,9 +18,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import BadgeDetailsPopup from './BadgeDetailsPopup'
 import { Eye, Edit, Trash2, Award } from 'lucide-react'
 import DeleteConfirmationDialog from '@/components/shared/DeleteConfirmationDialog'
+import BadgeDetailsPopup from './badgeDetailsPopup'
 
 interface Badge {
   _id: string

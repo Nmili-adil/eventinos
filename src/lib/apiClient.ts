@@ -2,10 +2,6 @@ import axios from 'axios'
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-console.log('🔧 API Client Configuration:', {
-  backendUrl,
-  env: import.meta.env.VITE_BACKEND_URL
-});
 
 export const api = axios.create({
   baseURL: backendUrl,
@@ -21,13 +17,6 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
-  console.log('🚀 API Request:', {
-    method: config.method?.toUpperCase(),
-    url: config.url,
-    baseURL: config.baseURL,
-    fullURL: `${config.baseURL}${config.url}`,
-    hasToken: !!token
-  });
   return config
 }, (error) => {
   console.error('❌ Request Error:', error);
@@ -37,11 +26,6 @@ api.interceptors.request.use((config) => {
 // Add response interceptor for debugging
 api.interceptors.response.use(
   (response) => {
-    console.log('✅ API Response:', {
-      status: response.status,
-      url: response.config.url,
-      data: response.data
-    });
     return response;
   },
   (error) => {

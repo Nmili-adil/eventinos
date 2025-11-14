@@ -9,3 +9,13 @@ export const fetchUsers = async () => {
     },
   })
 }
+
+
+export const getUserById = async (userId: string) => {
+  return api.get(`/users/${userId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthToken()}`,
+    },
+  })
+}

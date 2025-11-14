@@ -6,6 +6,7 @@ import usersReducer from '../features/users/users.reducer'
 import analyticsReducer from '../features/analytics/analytics.reducer'
 import { categoryReducer } from '../features/categories/categories.reducer'
 import { badgesReducer } from '../features/badges/badges.reducer'
+import rolesReducer from '../features/roles/roles.reducer'
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -14,7 +15,9 @@ const rootReducer = combineReducers({
   users: usersReducer,
   analytics: analyticsReducer,
   categories: categoryReducer,
-  badges : badgesReducer
+  badges : badgesReducer,
+  roles: rolesReducer,  
+  members: usersReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

@@ -1,17 +1,18 @@
 import Layout from '@/app/_layout'
-import { DASHBOARD_OVERVIEW, EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBER_PAGE, SETTINGS_PAGE  } from '@/constants/routerConstants'
+import { DASHBOARD_OVERVIEW, EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBER_PAGE, PROFILE_PAGE, SETTINGS_PAGE  } from '@/constants/routerConstants'
 import EventAddPage from '@/pages/eventAdd-page'
 import EventDetailsPage from '@/pages/eventDetailsPage'
 import EventEditPage from '@/pages/eventEdit-page'
 import EventsPageList from '@/pages/eventsPage-list'
 import ForgotPasswordPage from '@/pages/forgetPasswordPage'
 import LoginPage from '@/pages/loginPage'
-import MemberPage from '@/pages/memberPage'
+import  { MembersPage } from '@/pages/memberPage'
 import Overviewpage from '@/pages/overviewpage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import ProtectedRoute from '@/services/protectedRoute'
 import { createBrowserRouter } from 'react-router-dom'
 import SettingsPage from '@/pages/settingsPage'
+import ProfilePage from '@/pages/profilePage'
 
 
 export const Router = createBrowserRouter([
@@ -54,11 +55,15 @@ export const Router = createBrowserRouter([
             },
             {
                 path:MEMBER_PAGE,
-                element: <MemberPage />
+                element: <MembersPage />
             },
             {
                 path: SETTINGS_PAGE,
                 element: <SettingsPage />
+            },
+            {
+                path: PROFILE_PAGE(':userId'),
+                element: <ProfilePage />
             },
             {
                 path: '*',

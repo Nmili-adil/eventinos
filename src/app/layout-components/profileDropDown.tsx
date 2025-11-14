@@ -13,11 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { User } from 'lucide-react'
 import { Link, useNavigate } from "react-router-dom"
-import { LOGIN_PAGE, SETTINGS_PAGE } from "@/constants/routerConstants"
+import { LOGIN_PAGE, PROFILE_PAGE, SETTINGS_PAGE } from "@/constants/routerConstants"
 import { useDispatch, useSelector } from "react-redux"
 import { authLogout } from "@/store/features/auth/auth.actions"
 import type { AppDispatch } from "@/store/app/store"
 import type { RootState } from "@/store/app/rootReducer"
+import { getUserData } from "@/services/localStorage"
 
 const ProfileDropDown = () => {
   const { user } = useSelector((state: RootState) => state.auth)
@@ -52,11 +53,13 @@ const ProfileDropDown = () => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
+            <Link className="w-full" to={PROFILE_PAGE(getUserData()._id)}>
             Profile
+            </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem >
-            <Link to={SETTINGS_PAGE}>
+            <Link to={SETTINGS_PAGE} className="w-full">
             Settings
             </Link>
           </DropdownMenuItem>
