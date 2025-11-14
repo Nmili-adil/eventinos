@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Home, ArrowLeft, Search, Calendar } from 'lucide-react'
+import { DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE } from '@/constants/routerConstants'
 
 const NotFoundPage = () => {
   const navigate = useNavigate()
@@ -55,7 +56,7 @@ const NotFoundPage = () => {
 
           {/* Home Button */}
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(DASHBOARD_OVERVIEW)}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
           >
             <Home className="h-5 w-5" />
@@ -68,19 +69,19 @@ const NotFoundPage = () => {
           <p className="text-sm text-gray-500 mb-4">Pages utiles :</p>
           <div className="flex flex-wrap gap-4 justify-center">
             <button
-              onClick={() => navigate('/events')}
+              onClick={() => navigate(EVENT_LISTE_PAGE)}
               className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium"
             >
               Événements
             </button>
             <button
-              onClick={() => navigate('/overview')}
+              onClick={() => navigate(DASHBOARD_OVERVIEW)}
               className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium"
             >
               Statistiques
             </button>
             <button
-              onClick={() => navigate('/members')}
+              onClick={() => navigate(MEMBERS_PAGE)}
               className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium"
             >
               Membres

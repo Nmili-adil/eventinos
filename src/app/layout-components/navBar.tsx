@@ -1,4 +1,4 @@
-import { DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBER_PAGE } from "@/constants/routerConstants"
+import { CONTACTS_PAGE, DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants"
 import { Link, useLocation } from "react-router-dom"
 
 interface NavLink {
@@ -9,9 +9,9 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { name: 'Tableau de bord', path: DASHBOARD_OVERVIEW },
   { name: 'Événements', path: EVENT_LISTE_PAGE },
-  { name: 'Membres', path: MEMBER_PAGE },
+  { name: 'Membres', path: MEMBERS_PAGE },
   { name: 'Comptes', path: '/accounts' },
-  { name: 'Contacts', path: '/contacts' },
+  { name: 'Contacts', path: CONTACTS_PAGE },
 ]
 
 const SimpleNavBar = () => {

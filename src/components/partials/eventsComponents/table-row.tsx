@@ -41,22 +41,22 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
           <DropdownMenuContent className="border-slate-400" align="end">
             <DropdownMenuItem onClick={() => onEdit(event._id)}>
               <Edit className="h-4 w-4 mr-2" />
-              Modifier
+              Edit
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onChangeStatus(event._id)}>
               <Download className="h-4 w-4 mr-2" />
-              Charger le statut
+              Change Status
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onPreview(event._id)}>
               <Eye className="h-4 w-4 mr-2" />
-              Prévisualiser
+              Preview
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => onDelete(event._id)}
               className="text-red-600"
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              Supprimer
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
