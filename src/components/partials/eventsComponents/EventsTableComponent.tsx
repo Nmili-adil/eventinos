@@ -4,7 +4,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Table, TableBody } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { List, Plus } from 'lucide-react'
+import { List, Plus, Calendar as CalendarIcon, Table2 } from 'lucide-react'
 import { filterEvents, sortEvents, paginateEvents } from '@/lib/events-utils'
 import { TableHeader } from './table-header'
 import { EventTableRow } from './table-row'
@@ -18,16 +18,22 @@ import { useNavigate } from 'react-router-dom'
 import { EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE } from '@/constants/routerConstants'
 import LoadingComponent from '@/components/shared/loadingComponent'
 import type { AppDispatch } from '@/store/app/store'
-import { deleteEventRequest } from '@/store/features/events/events.actions'
+import { deleteEventRequest, updateEventStatusRequest } from '@/store/features/events/events.actions'
 import { DeleteDialog } from '@/components/shared/alert-dialog-reusable'
 import { toast } from 'sonner'
 import PageHead from '@/components/shared/page-head'
+import { StatusChangeDialog } from './StatusChangeDialog'
+import { EventsCalendarView } from './EventsCalendarView'
+import type { EventStatus } from '@/types/eventsTypes'
 
 const PAGE_SIZE = 10
+
+type ViewMode = 'table' | 'calendar'
 
 export function EventsTable() {
   const [eventsData, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
   const { events, isLoading} = useSelector((state: RootState) => state.events)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
@@ -59,6 +65,20 @@ export function EventsTable() {
     eventId: null,
     eventTitle: ''
   })
+
+  const [statusDialog, setStatusDialog] = useState<{
+    open: boolean
+    eventId: string | null
+    currentStatus: EventStatus | null
+    eventName?: string
+  }>({
+    open: false,
+    eventId: null,
+    currentStatus: null,
+    eventName: ''
+  })
+
+  const [statusLoading, setStatusLoading] = useState(false)
   // Fetch events on component mount
   useEffect(() => {
     const loadEvents = async () => {
@@ -109,7 +129,29 @@ export function EventsTable() {
   }
 
   const handleChangeStatus = (eventId: string) => {
-    console.log('Change status for event:', eventId)
+    const event = eventsData.find(e => e._id === eventId)
+    if (event) {
+      setStatusDialog({
+        open: true,
+        eventId,
+        currentStatus: event.status as EventStatus,
+        eventName: event.name || event.title
+      })
+    }
+  }
+
+  const handleConfirmStatusChange = async (newStatus: EventStatus) => {
+    if (!statusDialog.eventId) return
+    setStatusLoading(true)
+    try {
+      await dispatch(updateEventStatusRequest(statusDialog.eventId, newStatus))
+      toast.success('Event status updated successfully')
+      setStatusDialog({ open: false, eventId: null, currentStatus: null })
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update event status')
+    } finally {
+      setStatusLoading(false)
+    }
   }
 
   const handlePreview = (eventId: string) => {
@@ -153,51 +195,91 @@ export function EventsTable() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <PageHead title='Événements' icon={List} description=' Gérez tous les événements de votre organisation' />
-        <Button 
-        onClick={() => navigate(EVENT_ADD_PAGE)}
-        className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Nouvel événement
-        </Button>
+        <PageHead title='Événements' icon={List} description=' Gérez tous les événements de votre organisation' />
+        <div className="flex items-center gap-2">
+          {/* View Toggle */}
+          <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
+            <Button
+              variant={viewMode === 'table' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('table')}
+              className="gap-2"
+            >
+              <Table2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Table</span>
+            </Button>
+            <Button
+              variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('calendar')}
+              className="gap-2"
+            >
+              <CalendarIcon className="h-4 w-4" />
+              <span className="hidden sm:inline">Calendar</span>
+            </Button>
+          </div>
+          <Button 
+            onClick={() => navigate(EVENT_ADD_PAGE)}
+            className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Nouvel événement
+          </Button>
+        </div>
       </div>
 
-      {/* Filters */}
-      <Filters filters={filters} onFiltersChange={setFilters} />
+      {/* Filters - Only show for table view */}
+      {viewMode === 'table' && (
+        <Filters filters={filters} onFiltersChange={setFilters} />
+      )}
 
-      {/* Table */}
-      <div className="border border-slate-400 shadow-md rounded-lg overflow-hidden">
-        <Table className=''>
-          <TableHeader 
-            sortField={sort.field}
-            sortDirection={sort.direction}
-            onSort={handleSort}
-          />
-          <TableBody>
-            {paginatedEvents.map((event) => (
-              <EventTableRow
-                key={event._id}
-                event={event}
-                onEdit={handleEdit}
-                onChangeStatus={handleChangeStatus}
-                onPreview={handlePreview}
-                onDelete={() => handleDelete(event._id, event.title)}
+      {/* Table View */}
+      {viewMode === 'table' && (
+        <>
+          <div className="border border-slate-400 shadow-md rounded-lg overflow-hidden">
+            <Table className=''>
+              <TableHeader 
+                sortField={sort.field}
+                sortDirection={sort.direction}
+                onSort={handleSort}
               />
-            ))}
-          </TableBody>
-        </Table>
+              <TableBody>
+                {paginatedEvents.map((event) => (
+                  <EventTableRow
+                    key={event._id}
+                    event={event}
+                    onEdit={handleEdit}
+                    onChangeStatus={handleChangeStatus}
+                    onPreview={handlePreview}
+                    onDelete={() => handleDelete(event._id, event.title)}
+                  />
+                ))}
+              </TableBody>
+            </Table>
 
-        {/* Empty State */}
-        {paginatedEvents.length === 0 && !loading && (
-          <EmptyState onResetFilters={handleResetFilters} />
-        )}
-      </div>
+            {/* Empty State */}
+            {paginatedEvents.length === 0 && !loading && (
+              <EmptyState onResetFilters={handleResetFilters} />
+            )}
+          </div>
 
-      {/* Pagination */}
-      <EventsPagination 
-        pagination={pagination}
-        onPageChange={handlePageChange}
-      />
+          {/* Pagination */}
+          <EventsPagination 
+            pagination={pagination}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
+
+      {/* Calendar View */}
+      {viewMode === 'calendar' && (
+        <EventsCalendarView
+          events={processedEvents}
+          onEventClick={(event) => handlePreview(event._id)}
+          onEdit={handleEdit}
+          onChangeStatus={handleChangeStatus}
+          onDelete={handleDelete}
+        />
+      )}
 
       <DeleteDialog
       open={deleteDialog.open}
@@ -206,6 +288,15 @@ export function EventsTable() {
       eventTitle={deleteDialog.eventTitle}
       isLoading={deleteLoading}
     />
+
+      <StatusChangeDialog
+        open={statusDialog.open}
+        onOpenChange={(open) => setStatusDialog(prev => ({ ...prev, open }))}
+        currentStatus={statusDialog.currentStatus || 'PENDING'}
+        onConfirm={handleConfirmStatusChange}
+        isLoading={statusLoading}
+        eventName={statusDialog.eventName}
+      />
     </div>
   )
 }

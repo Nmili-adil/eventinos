@@ -62,7 +62,7 @@ export interface FetchCategoryByIdFailureAction {
 
 export interface UpdateCategoryRequestAction {
   type: typeof UPDATE_CATEGORY_REQUEST
-  payload: any
+  payload?: any
 }
 
 export interface UpdateCategorySuccessAction {
@@ -77,7 +77,7 @@ export interface UpdateCategoryFailureAction {
 
 export interface CreateCategoryRequestAction {
   type: typeof CREATE_CATEGORY_REQUEST
-  payload: any
+  payload?: any
 }
 
 export interface CreateCategorySuccessAction {

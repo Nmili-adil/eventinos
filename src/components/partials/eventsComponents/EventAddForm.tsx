@@ -17,12 +17,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Checkbox } from "@/components/ui/checkbox";
 import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2, Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store/app/store";
 import type { RootState } from "@/store/app/rootReducer";
 import { fetchCategoriesRequest } from "@/store/features/categories/categories.actions";
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
+import { FileUpload } from "./FileUpload";
+import { EventPreview } from "./EventPreview";
 
 interface EventAddFormProps {
   onSubmit: (data: EventFormData) => void;
@@ -32,6 +34,7 @@ interface EventAddFormProps {
 const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   const [currentSection, setCurrentSection] = useState(0);
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [showPreview, setShowPreview] = useState(false); // Hidden on mobile by default
 
   const dispatch = useDispatch<AppDispatch>()
 const {categories} = useSelector((state: RootState) => state.categories)
@@ -242,16 +245,42 @@ const {badges} = useSelector((state: RootState) => state.badges)
     }
   };
 
+  const formData = form.watch();
+
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <Card className="border-slate-300">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Create New Event</CardTitle>
-          <p className="text-muted-foreground">
-            Fill in the event details step by step
-          </p>
-        </CardHeader>
-        <CardContent>
+    <div className="container mx-auto p-4 md:p-6 max-w-7xl">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Form Section */}
+        <div className={`flex-1 transition-all ${showPreview ? 'lg:w-2/3' : 'lg:w-full'}`}>
+          <Card className="border-slate-300">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-xl md:text-2xl font-bold">Create New Event</CardTitle>
+                <p className="text-muted-foreground text-sm md:text-base">
+                  Fill in the event details step by step
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPreview(!showPreview)}
+                className="flex"
+              >
+                {showPreview ? (
+                  <>
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Hide Preview</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Show Preview</span>
+                  </>
+                )}
+              </Button>
+            </CardHeader>
+            <CardContent>
           {/* Progress Indicator */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
@@ -441,9 +470,25 @@ const {badges} = useSelector((state: RootState) => state.badges)
                     name="image"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Event Image URL</FormLabel>
+                        <FormLabel>Event Image</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://example.com/image.jpg" {...field} />
+                          <div className="space-y-2">
+                            <FileUpload
+                              onUploadComplete={(url) => field.onChange(url)}
+                              currentUrl={field.value}
+                              label="Upload Event Image"
+                              accept="image/*"
+                              disabled={isLoading}
+                            />
+                            <div className="text-xs text-muted-foreground">
+                              Or enter image URL manually:
+                            </div>
+                            <Input 
+                              placeholder="https://example.com/image.jpg" 
+                              {...field}
+                              value={field.value || ''}
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -973,11 +1018,24 @@ const {badges} = useSelector((state: RootState) => state.badges)
                       <FormItem>
                         <FormLabel>Gallery Images</FormLabel>
                         <div className="space-y-4">
+                          {/* File Upload Option */}
+                          <FileUpload
+                            onUploadComplete={(url) => {
+                              if (url) {
+                                const currentGallery = field.value || [];
+                                field.onChange([...currentGallery, url]);
+                              }
+                            }}
+                            label="Upload Gallery Image"
+                            accept="image/*"
+                            disabled={isLoading}
+                          />
+                          
                           {/* Add new image input */}
                           <div className="flex gap-2">
                             <Input
                               type="url"
-                              placeholder="Enter image URL (https://...)"
+                              placeholder="Or enter image URL (https://...)"
                               value={newImageUrl}
                               onChange={(e) => setNewImageUrl(e.target.value)}
                               onKeyDown={(e) => {
@@ -1004,7 +1062,7 @@ const {badges} = useSelector((state: RootState) => state.badges)
                               }}
                             >
                               <Plus className="w-4 h-4 mr-2" />
-                              Add Image
+                              Add URL
                             </Button>
                           </div>
 
@@ -1396,6 +1454,25 @@ const {badges} = useSelector((state: RootState) => state.badges)
           </Form>
         </CardContent>
       </Card>
+        </div>
+
+        {/* Preview Section */}
+        {showPreview && (
+          <div className="w-full lg:w-1/3 lg:sticky lg:top-6 h-fit order-first lg:order-last">
+            <Card className="border-slate-300">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Live Preview</CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  See how your event will look
+                </p>
+              </CardHeader>
+              <CardContent className="overflow-x-auto">
+                <EventPreview formData={formData} />
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

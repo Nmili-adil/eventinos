@@ -1,7 +1,34 @@
-import { fetchBadgeByIdApi, fetchBadgesApi, updateBadgeApi } from "@/api/badgesApi"
-import { FETCH_BADGE_BY_ID_REQUEST, FETCH_BADGES_FAILURE, FETCH_BADGES_REQUEST, FETCH_BADGES_SUCCESS, UPDATE_BADGE_FAILURE, UPDATE_BADGE_REQUEST, UPDATE_BADGE_SUCCESS, type FetchBadgeByIdRequestAction, type FetchBadgesFailureAction, type FetchBadgesFailureAction, type FetchBadgesRequestAction, type FetchBadgesSuccessAction, type UpdateBadgeFailureAction, type UpdateBadgeRequestAction, type UpdateBadgeSuccessAction } from "./badges.type"
+import { fetchBadgeByIdApi, fetchBadgesApi, updateBadgeApi, createBadgeApi, deleteBadgeApi } from "@/api/badgesApi"
+import { 
+  FETCH_BADGE_BY_ID_REQUEST, 
+  FETCH_BADGES_FAILURE, 
+  FETCH_BADGES_REQUEST, 
+  FETCH_BADGES_SUCCESS, 
+  UPDATE_BADGE_FAILURE, 
+  UPDATE_BADGE_REQUEST, 
+  UPDATE_BADGE_SUCCESS,
+  CREATE_BADGE_REQUEST,
+  CREATE_BADGE_SUCCESS,
+  CREATE_BADGE_FAILURE,
+  DELETE_BADGE_REQUEST,
+  DELETE_BADGE_SUCCESS,
+  DELETE_BADGE_FAILURE,
+  type FetchBadgeByIdRequestAction, 
+  type FetchBadgesFailureAction, 
+  type FetchBadgesRequestAction, 
+  type FetchBadgesSuccessAction, 
+  type UpdateBadgeFailureAction, 
+  type UpdateBadgeRequestAction, 
+  type UpdateBadgeSuccessAction,
+  type CreateBadgeRequestAction,
+  type CreateBadgeSuccessAction,
+  type CreateBadgeFailureAction,
+  type DeleteBadgeRequestAction,
+  type DeleteBadgeSuccessAction,
+  type DeleteBadgeFailureAction
+} from "./badges.type"
 
-export const fetchBadgesRequest = () : FetchBadgesRequestAction => {
+export const fetchBadgesRequest = () => {
     return async (dispatch: any) => {
         dispatch({ type: FETCH_BADGES_REQUEST })
         try {
@@ -30,19 +57,20 @@ export const fetchBadgesRequest = () : FetchBadgesRequestAction => {
 })
 
 
-export const updateBadgerequest = (payload: any, badgeId:string) :UpdateBadgeRequestAction => {
+export const updateBadgeRequest = (badgeId: string, payload: any) => {
     return async (dispatch: any) => {
-        dispatch({type: UPDATE_BADGE_REQUEST})
+        dispatch({ type: UPDATE_BADGE_REQUEST, payload, badgeId })
         try {
             const response = await updateBadgeApi(badgeId, payload);
-            console.log(response)
             if(response?.status === 200) {
-                dispatch( updateBadgeSuccess(response?.data.data))
+                dispatch(updateBadgeSuccess(response?.data.data || response?.data))
+                dispatch(fetchBadgesRequest())
             } else {
-                dispatch(updateBadgeFailure(response?.data.message))
+                dispatch(updateBadgeFailure(response?.data.message || 'Update badge failed'))
             }
         } catch (error: any) {
             dispatch(updateBadgeFailure(error.response?.data?.message || error.message || 'Updating badge failure.'))
+            throw error
         }
     }
 }
@@ -58,5 +86,41 @@ const updateBadgeFailure = (payload: any) : UpdateBadgeFailureAction => {
     return {
         type: UPDATE_BADGE_FAILURE,
         payload
+    }
+}
+
+export const createBadgeRequest = (data: any) => {
+    return async (dispatch: any) => {
+        dispatch({ type: CREATE_BADGE_REQUEST, payload: data })
+        try {
+            const response = await createBadgeApi(data)
+            if (response?.status === 200 || response?.status === 201) {
+                dispatch({ type: CREATE_BADGE_SUCCESS, payload: response.data })
+                dispatch(fetchBadgesRequest())
+            } else {
+                dispatch({ type: CREATE_BADGE_FAILURE, payload: response?.data?.message || 'Create badge failed' })
+            }
+        } catch (error: any) {
+            dispatch({ type: CREATE_BADGE_FAILURE, payload: error.response?.data?.message || error.message || 'Create badge failed' })
+            throw error
+        }
+    }
+}
+
+export const deleteBadgeRequest = (badgeId: string) => {
+    return async (dispatch: any) => {
+        dispatch({ type: DELETE_BADGE_REQUEST, payload: badgeId })
+        try {
+            const response = await deleteBadgeApi(badgeId)
+            if (response?.status === 200) {
+                dispatch({ type: DELETE_BADGE_SUCCESS, payload: response.data })
+                dispatch(fetchBadgesRequest())
+            } else {
+                dispatch({ type: DELETE_BADGE_FAILURE, payload: response?.data?.message || 'Delete badge failed' })
+            }
+        } catch (error: any) {
+            dispatch({ type: DELETE_BADGE_FAILURE, payload: error.response?.data?.message || error.message || 'Delete badge failed' })
+            throw error
+        }
     }
 }

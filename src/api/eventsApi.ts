@@ -68,3 +68,18 @@ export const deleteEventApi = async (id: string) => {
     throw error; // Re-throw to handle in the component
   }
 }
+
+export const updateEventStatusApi = async (id: string, status: string) => {
+  try {
+    const response = await api.patch(`/events/${id}/status`, { status }, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`
+      }
+    });
+    return response.data; // Return only the data part
+  } catch (error) {
+    console.error(`Error updating event status ${id}:`, error);
+    throw error; // Re-throw to handle in the component
+  }
+}

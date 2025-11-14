@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
+import { toast } from 'sonner';
 
 // Shadcn Components
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,18 +27,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 // Icons
 import {
-  Search,
   MoreVertical,
   Edit,
   Eye,
@@ -40,35 +41,69 @@ import {
   MapPin,
   Calendar,
   Users,
-  Filter,
   Plus,
-  AlertCircle,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
-import { fetchMembersRequest } from '@/store/features/members/members.actions';
+import { 
+  fetchMembersRequest, 
+  deleteMemberRequest, 
+  updateMemberRequest,
+  updateMemberStatusRequest,
+  createMemberRequest
+} from '@/store/features/members/members.actions';
 import type { AppDispatch } from '@/store/app/store';
 import type { Member } from '@/types/membersType';
+import PageHead from '@/components/shared/page-head';
+import ErrorState from '@/components/partials/membersComponents/errorState';
+import MemberDetailsDialog from '@/components/partials/membersComponents/MemberDetailsDialog';
+import MemberEditDialog from '@/components/partials/membersComponents/MemberEditDialog';
+import MemberAddDialog from '@/components/partials/membersComponents/MemberAddDialog';
+import { MembersFilters } from '@/components/partials/membersComponents/MembersFilters';
+import { MembersPagination } from '@/components/partials/membersComponents/MembersPagination';
+import { filterMembers, sortMembers, type MembersFilters as MembersFiltersType, type MemberSortField, type MemberSortDirection } from '@/lib/members-utils';
 
 export const MembersPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { members = [], loading, error, total = 0 } = useSelector((state: RootState) => state.members) || {};
+  const { members, loading, error, total, pagination } = useSelector((state: RootState) => state.members) || {};
   
-  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  
+  const [filters, setFilters] = useState<MembersFiltersType>({
+    search: '',
+    status: 'all',
+    registrationStatus: 'all',
+    gender: 'all',
+  });
+  
+  const [sort, setSort] = useState<{
+    field: MemberSortField;
+    direction: MemberSortDirection;
+  }>({
+    field: 'createdAt',
+    direction: 'desc',
+  });
+
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // Fetch members on component mount
+  // Fetch members when page changes
   useEffect(() => {
-    dispatch(fetchMembersRequest());
-  }, [dispatch]);
+    dispatch(fetchMembersRequest(currentPage, pageSize));
+  }, [dispatch, currentPage, pageSize]);
 
-  // Filter members based on search term
-  const filteredMembers = (members || []).filter(member =>
-    (member.firstName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-    (member.lastName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-    (member.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-    (member.phoneNumber || '').includes(searchTerm)
-  );
+  // Filter and sort members
+  const processedMembers = useMemo(() => {
+    const filtered = filterMembers(members || [], filters);
+    const sorted = sortMembers(filtered, sort.field, sort.direction);
+    return sorted;
+  }, [members, filters, sort.field, sort.direction]);
 
   const formatDate = (dateInput: any): string => {
     try {
@@ -99,41 +134,82 @@ export const MembersPage: React.FC = () => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   };
 
-  const handleEdit = (member: Member) => {
-    // Navigate to edit page or open edit modal
-    console.log('Edit member:', member);
-    // history.push(`/members/${member._id.$oid}/edit`);
+  const handleViewDetails = (member: Member) => {
+    setSelectedMember(member);
+    setDetailsDialogOpen(true);
   };
 
-  const handleViewDetails = (member: Member) => {
-    // Navigate to details page
-    console.log('View details:', member);
-    // history.push(`/members/${member._id.$oid}`);
+  const handleEdit = (member: Member) => {
+    setSelectedMember(member);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveMember = async (memberId: string, data: Partial<Member>) => {
+    setActionLoading(memberId);
+    try {
+      await dispatch(updateMemberRequest(memberId, data));
+      toast.success('Member updated successfully');
+      setEditDialogOpen(false);
+      setSelectedMember(null);
+      // Refresh current page
+      dispatch(fetchMembersRequest(currentPage, pageSize));
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update member');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCreateMember = async (data: any) => {
+    setActionLoading('create');
+    try {
+      await dispatch(createMemberRequest(data));
+      toast.success('Member created successfully');
+      setAddDialogOpen(false);
+      setCurrentPage(1); // Reset to first page
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to create member');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (member: Member) => {
-    setActionLoading(member._id.$oid);
+    setActionLoading(member._id.toString());
     try {
-      // TODO: Implement delete member action
-      // await dispatch(deleteMemberRequest(member._id.$oid));
-      console.log('Delete member:', member._id.$oid);
+      await dispatch(deleteMemberRequest(member._id.toString()));
+      toast.success('Member deleted successfully');
       setDeleteDialogOpen(false);
       setSelectedMember(null);
-    } catch (error) {
-      console.error('Failed to delete member:', error);
+      // Refresh current page, or go to previous page if current page is empty
+      const remainingMembers = (members || []).length - 1;
+      if (remainingMembers === 0 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      } else {
+        dispatch(fetchMembersRequest(currentPage, pageSize));
+      }
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to delete member');
     } finally {
       setActionLoading(null);
     }
   };
 
   const handleToggleStatus = async (member: Member) => {
-    setActionLoading(member._id.$oid);
+    setActionLoading(member._id.toString());
     try {
-      // TODO: Implement toggle status action
-      // await dispatch(toggleMemberStatusRequest(member._id.$oid));
-      console.log('Toggle status for:', member._id.$oid);
-    } catch (error) {
-      console.error('Failed to toggle status:', error);
+      await dispatch(updateMemberStatusRequest(member._id.toString(), !member.isActive));
+      toast.success(`Member ${!member.isActive ? 'activated' : 'deactivated'} successfully`);
+      // Refresh current page
+      dispatch(fetchMembersRequest(currentPage, pageSize));
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update member status');
     } finally {
       setActionLoading(null);
     }
@@ -144,8 +220,26 @@ export const MembersPage: React.FC = () => {
     setDeleteDialogOpen(true);
   };
 
+  const handleSort = (field: MemberSortField) => {
+    setSort(prev => ({
+      field,
+      direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  const getSortIcon = (field: MemberSortField) => {
+    if (sort.field !== field) {
+      return <ArrowUpDown className="w-4 h-4" />;
+    }
+    return sort.direction === 'asc' ? (
+      <ArrowUp className="w-4 h-4" />
+    ) : (
+      <ArrowDown className="w-4 h-4" />
+    );
+  };
+
   // Loading state
-  if (loading && members.length === 0) {
+  if (loading && (!members || members.length === 0)) {
     return (
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex justify-between items-center">
@@ -189,67 +283,72 @@ export const MembersPage: React.FC = () => {
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Users className="w-8 h-8" />
-            Members
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your organization members ({total} total members)
-          </p>
-        </div>
-        <Button>
+        <PageHead 
+          title='Members' 
+          icon={Users} 
+          description={`Manage your organization members (${total || 0} total members)`} 
+        />
+        <Button onClick={() => setAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Add Member
         </Button>
       </div>
 
-      {/* Search and Filters */}
+      {/* Filters */}
+      <MembersFilters filters={filters} onFiltersChange={setFilters} />
+
+      {/* Sort Options */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search members by name, email, or phone..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <span className="text-sm font-medium text-muted-foreground">Sort by:</span>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSort('firstName')}
+                className="gap-2"
+              >
+                Name {getSortIcon('firstName')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSort('email')}
+                className="gap-2"
+              >
+                Email {getSortIcon('email')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSort('createdAt')}
+                className="gap-2"
+              >
+                Join Date {getSortIcon('createdAt')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleSort('isActive')}
+                className="gap-2"
+              >
+                Status {getSortIcon('isActive')}
+              </Button>
             </div>
-            <Button variant="outline">
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
-            </Button>
           </div>
         </CardContent>
       </Card>
 
       {/* Error State */}
       {error && (
-        <Card className="border-destructive">
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2 text-destructive">
-              <AlertCircle className="h-6 w-6" />
-              <div>
-                <h3 className="font-semibold">Error Loading Members</h3>
-                <p className="text-sm">{error}</p>
-              </div>
-            </div>
-            <Button 
-              className="mt-4" 
-              onClick={() => dispatch(fetchMembersRequest())}
-            >
-              Try Again
-            </Button>
-          </CardContent>
-        </Card>
+        <ErrorState error={error} />
       )}
 
       {/* Members Grid */}
-      {filteredMembers.length > 0 ? (
+      {processedMembers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMembers.map((member) => (
+          {processedMembers.map((member) => (
             <Card key={member._id.$oid} className="overflow-hidden hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
@@ -365,14 +464,24 @@ export const MembersPage: React.FC = () => {
             <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="font-semibold">No Members Found</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {searchTerm ? 'No members match your search criteria.' : 'No members have been added yet.'}
+              {filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all'
+                ? 'No members match your search criteria.' 
+                : 'No members have been added yet.'}
             </p>
-            {searchTerm ? (
-              <Button variant="outline" onClick={() => setSearchTerm('')}>
-                Clear Search
+            {(filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all') ? (
+              <Button 
+                variant="outline" 
+                onClick={() => setFilters({
+                  search: '',
+                  status: 'all',
+                  registrationStatus: 'all',
+                  gender: 'all',
+                })}
+              >
+                Clear Filters
               </Button>
             ) : (
-              <Button>
+              <Button onClick={() => setAddDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Add First Member
               </Button>
@@ -381,28 +490,70 @@ export const MembersPage: React.FC = () => {
         </Card>
       )}
 
+      {/* Member Details Dialog */}
+      <MemberDetailsDialog
+        member={selectedMember}
+        isOpen={detailsDialogOpen}
+        onClose={() => {
+          setDetailsDialogOpen(false);
+          setSelectedMember(null);
+        }}
+        onEdit={handleEdit}
+        onDelete={openDeleteDialog}
+      />
+
+      {/* Member Edit Dialog */}
+      <MemberEditDialog
+        member={selectedMember}
+        isOpen={editDialogOpen}
+        onClose={() => {
+          setEditDialogOpen(false);
+          setSelectedMember(null);
+        }}
+        onSave={handleSaveMember}
+        isLoading={actionLoading === selectedMember?._id.toString()}
+      />
+
+      {/* Member Add Dialog */}
+      <MemberAddDialog
+        isOpen={addDialogOpen}
+        onClose={() => setAddDialogOpen(false)}
+        onSave={handleCreateMember}
+        isLoading={actionLoading === 'create'}
+      />
+
+      {/* Pagination */}
+      {pagination && (
+        <MembersPagination
+          pagination={pagination}
+          onPageChange={handlePageChange}
+        />
+      )}
+
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Member</DialogTitle>
-            <DialogDescription>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Member</AlertDialogTitle>
+            <AlertDialogDescription>
               Are you sure you want to delete {selectedMember?.firstName} {selectedMember?.lastName}? 
               This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setSelectedMember(null);
+              }}
               disabled={actionLoading === selectedMember?._id.$oid}
             >
               Cancel
-            </Button>
-            <Button
-              variant="destructive"
+            </AlertDialogCancel>
+            <AlertDialogAction
               onClick={() => selectedMember && handleDelete(selectedMember)}
               disabled={actionLoading === selectedMember?._id.$oid}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {actionLoading === selectedMember?._id.$oid ? (
                 <>
@@ -415,10 +566,10 @@ export const MembersPage: React.FC = () => {
                   Delete
                 </>
               )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

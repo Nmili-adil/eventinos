@@ -23,7 +23,15 @@ export interface MembersState {
   members: any[];
   loading: boolean;
   error: string | null;
-  
+  total: number;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    pageSize: number;
+    totalItems: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  } | null;
 }
 
 export interface FetchMembersRequest {
@@ -34,9 +42,14 @@ export interface FetchMembersSuccess {
     payload: {
         members: any[];
         total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
+        pagination: {
+            currentPage: number;
+            totalPages: number;
+            pageSize: number;
+            totalItems: number;
+            hasNextPage: boolean;
+            hasPreviousPage: boolean;
+        };
     };
 }
 export interface FetchMembersFailure {

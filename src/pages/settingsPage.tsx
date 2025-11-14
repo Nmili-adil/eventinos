@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import CategoriesTable from "@/components/partials/categoriesComponent/categorieTable";
 import BadgesTable from "@/components/partials/badgesComponent/badgesTable";
 import PageHead from "@/components/shared/page-head";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,24 +10,49 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { RootState } from "@/store/app/rootReducer";
 import type { AppDispatch } from "@/store/app/store";
-import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
-import { fetchCategoriesRequest } from "@/store/features/categories/categories.actions";
-import { SlidersHorizontal, Plus, FolderOpen, Award } from "lucide-react";
+import { 
+  fetchBadgesRequest,
+  updateBadgeRequest,
+  createBadgeRequest,
+  deleteBadgeRequest
+} from "@/store/features/badges/badges.actions";
+import { 
+  fetchCategoriesRequest,
+  updateCategoryRequest,
+  createCategoryRequest,
+  deleteCategoryRequest
+} from "@/store/features/categories/categories.actions";
+import { SlidersHorizontal, Plus, FolderOpen, Award, Folder, Sparkles } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import CategoryEditDialog from "@/components/partials/categoriesComponent/CategoryEditDialog";
+import CategoryAddDialog from "@/components/partials/categoriesComponent/CategoryAddDialog";
+import BadgeEditDialog from "@/components/partials/badgesComponent/BadgeEditDialog";
+import BadgeAddDialog from "@/components/partials/badgesComponent/BadgeAddDialog";
 
-
-interface Badge {
-    id:string
-    name: string
-    description: string
-    image: string
-
+interface Category {
+  _id: string;
+  name: string;
+  description: string;
+  icon: string;
 }
 
+interface Badge {
+  _id: string;
+  name: string;
+  description: string;
+  design: string;
+  image: string;
+}
+
+type SettingsView = 'categories' | 'badges';
 
 const SettingsPage = () => {
+  const [activeView, setActiveView] = useState<SettingsView>('categories');
   const {
     categories,
     isLoading: categoriesLoading,
@@ -39,15 +63,25 @@ const SettingsPage = () => {
     isLoading: badgesLoading,
     pagination: badgesPagination,
   } = useSelector((state: RootState) => state.badges);
-  const [categoryData, setCategoryData] = useState([]);
-  const [badgeData, setBadgeData] = useState([]);
+  
+  const [categoryData, setCategoryData] = useState<Category[]>([]);
+  const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [currentCategoriesPage, setCurrentCategoriesPage] = useState(1);
   const [currentBadgesPage, setCurrentBadgesPage] = useState(1);
+
+  // Dialog states
+  const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false);
+  const [categoryAddDialogOpen, setCategoryAddDialogOpen] = useState(false);
+  const [badgeEditDialogOpen, setBadgeEditDialogOpen] = useState(false);
+  const [badgeAddDialogOpen, setBadgeAddDialogOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchCategoriesRequest())
+    dispatch(fetchCategoriesRequest());
     dispatch(fetchBadgesRequest());
   }, [dispatch]);
 
@@ -60,20 +94,87 @@ const SettingsPage = () => {
     }
   }, [categories, badges]);
 
-const handleEditCategory = async (category: Category) => {
-  console.log('Edit category:', category)
-    
+  const handleEditCategory = (category: Category) => {
+    setSelectedCategory(category);
+    setCategoryEditDialogOpen(true);
+  };
 
-}
+  const handleSaveCategory = async (categoryId: string, data: Partial<Category>) => {
+    setActionLoading(categoryId);
+    try {
+      await dispatch(updateCategoryRequest(categoryId, data));
+      toast.success('Category updated successfully');
+      setCategoryEditDialogOpen(false);
+      setSelectedCategory(null);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update category');
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
-const handleDeleteCategory = async (category: Category) => {
-  try {
-    await dispatch(deleteCategoryRequest(category._id))
-    console.log('Category deleted successfully')
-  } catch (error) {
-    console.error('Failed to delete category:', error)
-  }
-}
+  const handleCreateCategory = async (data: any) => {
+    setActionLoading('create-category');
+    try {
+      await dispatch(createCategoryRequest(data));
+      toast.success('Category created successfully');
+      setCategoryAddDialogOpen(false);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to create category');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteCategory = async (category: Category) => {
+    try {
+      await dispatch(deleteCategoryRequest(category._id));
+      toast.success('Category deleted successfully');
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to delete category');
+    }
+  };
+
+  const handleEditBadge = (badge: Badge) => {
+    setSelectedBadge(badge);
+    setBadgeEditDialogOpen(true);
+  };
+
+  const handleSaveBadge = async (badgeId: string, data: Partial<Badge>) => {
+    setActionLoading(badgeId);
+    try {
+      await dispatch(updateBadgeRequest(badgeId, data));
+      toast.success('Badge updated successfully');
+      setBadgeEditDialogOpen(false);
+      setSelectedBadge(null);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update badge');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCreateBadge = async (data: any) => {
+    setActionLoading('create-badge');
+    try {
+      await dispatch(createBadgeRequest(data));
+      toast.success('Badge created successfully');
+      setBadgeAddDialogOpen(false);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to create badge');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteBadge = async (badge: Badge) => {
+    try {
+      await dispatch(deleteBadgeRequest(badge._id));
+      toast.success('Badge deleted successfully');
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to delete badge');
+    }
+  };
 
   const handleCategoriesPageChange = (page: number) => {
     setCurrentCategoriesPage(page);
@@ -83,23 +184,6 @@ const handleDeleteCategory = async (category: Category) => {
     setCurrentBadgesPage(page);
   };
 
-  const handleEditBadge = (badge: Badge) => {
-  console.log('Edit badge:', badge)
-}
-
-  const handleDeleteBadge = async (badge: Badge) => {
-    try {
-      // Your API call to delete the badge
-      await dispatch(deleteBadgeRequest(badge._id));
-      // Show success message
-      console.log("Badge deleted successfully");
-    } catch (error) {
-      console.error("Failed to delete badge:", error);
-      // Show error message
-    }
-  };
-
-  // Empty state components remain the same...
   const CategoriesEmptyState = () => (
     <Card>
       <CardHeader className="text-center">
@@ -112,7 +196,7 @@ const handleDeleteCategory = async (category: Category) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
-        <Button>
+        <Button onClick={() => setCategoryAddDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Create Category
         </Button>
@@ -132,7 +216,7 @@ const handleDeleteCategory = async (category: Category) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center">
-        <Button>
+        <Button onClick={() => setBadgeAddDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Create Badge
         </Button>
@@ -141,59 +225,162 @@ const handleDeleteCategory = async (category: Category) => {
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div>
+    <div className="container mx-auto p-6">
+      <div className="mb-6">
         <PageHead
-          title="Settings page"
+          title="Settings"
           icon={SlidersHorizontal}
           description="Manage your categories and badges"
         />
       </div>
-      <Tabs
-        defaultValue="categories"
-        className="w-[1000px] mx-auto border-slate-300 shadow-md"
-      >
-        <TabsList className="justify-evenly flex w-full">
-          <TabsTrigger value="categories">Categories</TabsTrigger>
-          <TabsTrigger value="badges">Badges</TabsTrigger>
-        </TabsList>
 
-        <TabsContent value="categories">
-          {categoriesLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-          ) : categoryData.length > 0 ? (
-            <CategoriesTable
-              data={categoryData}
-              pagination={categoriesPagination}
-              onPageChange={handleCategoriesPageChange}
-              onDelete={handleDeleteCategory}
-              onEdit={handleEditCategory}
-            />
-          ) : (
-            <CategoriesEmptyState />
-          )}
-        </TabsContent>
+      <div className="flex gap-6">
+        {/* Sidebar Navigation */}
+        <aside className="w-64 flex-shrink-0">
+          <Card className="sticky top-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Navigation</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <nav className="space-y-1 p-2">
+                <Button
+                  variant={activeView === 'categories' ? 'default' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setActiveView('categories')}
+                >
+                  <Folder className="h-4 w-4 mr-2" />
+                  Categories
+                </Button>
+                <Button
+                  variant={activeView === 'badges' ? 'default' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setActiveView('badges')}
+                >
+                  <Award className="h-4 w-4 mr-2" />
+                  Badges
+                </Button>
+              </nav>
+            </CardContent>
+          </Card>
+        </aside>
 
-        <TabsContent value="badges">
-          {badgesLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        {/* Main Content */}
+        <main className="flex-1 min-w-0">
+          {activeView === 'categories' ? (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold">Categories</h2>
+                  <p className="text-muted-foreground">
+                    Organize your content with categories
+                  </p>
+                </div>
+                <Button onClick={() => setCategoryAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Category
+                </Button>
+              </div>
+
+              {categoriesLoading ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i}>
+                      <CardContent className="p-6">
+                        <Skeleton className="h-20 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : categoryData.length > 0 ? (
+                <CategoriesTable
+                  data={categoryData}
+                  pagination={categoriesPagination}
+                  onPageChange={handleCategoriesPageChange}
+                  onDelete={handleDeleteCategory}
+                  onEdit={handleEditCategory}
+                />
+              ) : (
+                <CategoriesEmptyState />
+              )}
             </div>
-          ) : badgeData.length > 0 ? (
-            <BadgesTable
-              data={badgeData}
-              pagination={badgesPagination}
-              onPageChange={handleBadgesPageChange}
-              onDelete={handleDeleteBadge}
-              onEdit={handleEditBadge}
-            />
           ) : (
-            <BadgesEmptyState />
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold">Badges</h2>
+                  <p className="text-muted-foreground">
+                    Reward your users with badges
+                  </p>
+                </div>
+                <Button onClick={() => setBadgeAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Badge
+                </Button>
+              </div>
+
+              {badgesLoading ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i}>
+                      <CardContent className="p-6">
+                        <Skeleton className="h-20 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : badgeData.length > 0 ? (
+                <BadgesTable
+                  data={badgeData}
+                  pagination={badgesPagination}
+                  onPageChange={handleBadgesPageChange}
+                  onDelete={handleDeleteBadge}
+                  onEdit={handleEditBadge}
+                />
+              ) : (
+                <BadgesEmptyState />
+              )}
+            </div>
           )}
-        </TabsContent>
-      </Tabs>
+        </main>
+      </div>
+
+      {/* Category Dialogs */}
+      <CategoryEditDialog
+        category={selectedCategory}
+        isOpen={categoryEditDialogOpen}
+        onClose={() => {
+          setCategoryEditDialogOpen(false);
+          setSelectedCategory(null);
+        }}
+        onSave={handleSaveCategory}
+        isLoading={actionLoading === selectedCategory?._id}
+      />
+
+      <CategoryAddDialog
+        isOpen={categoryAddDialogOpen}
+        onClose={() => setCategoryAddDialogOpen(false)}
+        onSave={handleCreateCategory}
+        isLoading={actionLoading === 'create-category'}
+      />
+
+      {/* Badge Dialogs */}
+      <BadgeEditDialog
+        badge={selectedBadge}
+        isOpen={badgeEditDialogOpen}
+        onClose={() => {
+          setBadgeEditDialogOpen(false);
+          setSelectedBadge(null);
+        }}
+        onSave={handleSaveBadge}
+        isLoading={actionLoading === selectedBadge?._id}
+      />
+
+      <BadgeAddDialog
+        isOpen={badgeAddDialogOpen}
+        onClose={() => setBadgeAddDialogOpen(false)}
+        onSave={handleCreateBadge}
+        isLoading={actionLoading === 'create-badge'}
+      />
     </div>
   );
 };

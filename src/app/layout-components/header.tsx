@@ -7,7 +7,7 @@ const Header = () => {
     return (
         <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-50 w-full">
             {/* Top Header Section */}
-            <div className="flex items-center justify-between h-14 py-3 container mx-auto px-6">
+            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-6">
                 {/* Left Section - Brand & Search */}
                 <div className="flex items-center justify-between gap-6">
                     {/* Mobile Menu Button */}
@@ -17,9 +17,15 @@ const Header = () => {
 
                     {/* Brand */}
                     <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                        {/* <h1 className="text-2xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                             Eventify
-                        </h1>
+                        </h1> */}
+                        <img
+                            src="/Eventinas Logo.jpeg"
+                            className="w-20 h-20 object-cover"
+                            alt="Eventinas Logo"
+                        />
+                        
                     </div>
 
                     {/* Search Bar */}

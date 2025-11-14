@@ -16,6 +16,9 @@ import {
   DELETE_EVENT_REQUEST,
   DELETE_EVENT_SUCCESS,
   DELETE_EVENT_FAILURE,
+  UPDATE_EVENT_STATUS_REQUEST,
+  UPDATE_EVENT_STATUS_SUCCESS,
+  UPDATE_EVENT_STATUS_FAILURE,
 } from "./events.type";
 
 const initialState: EventState = {
@@ -133,6 +136,29 @@ const eventReducrer = (
             isDeleted: false,
             error: action.payload,
         };
+    // Event status update cases
+    case UPDATE_EVENT_STATUS_REQUEST:
+      return {
+        ...state,
+        isUpdating: true,
+        error: null,
+      };
+    case UPDATE_EVENT_STATUS_SUCCESS:
+      return {
+        ...state,
+        isUpdating: false,
+        event: action.payload,
+        // Update the event in the events array if it exists
+        events: state.events.map((e) =>
+          e._id === action.payload._id ? action.payload : e
+        ),
+      };
+    case UPDATE_EVENT_STATUS_FAILURE:
+      return {
+        ...state,
+        isUpdating: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

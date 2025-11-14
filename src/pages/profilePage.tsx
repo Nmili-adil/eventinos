@@ -28,6 +28,8 @@ import ProfileNotFound from '@/components/profileComponents/profileNotFound';
 import ErrorAlert from '@/components/profileComponents/errorAlert';
 import PageHead from '@/components/shared/page-head';
 import { fetchRoleByIdRequest } from '@/store/features/roles/roles.actions';
+import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
+import { toast } from 'sonner';
 
 // Validation Schema
 const profileFormSchema = z.object({
@@ -181,10 +183,15 @@ export const ProfilePage: React.FC = () => {
   const onSubmit = async (data: ProfileFormData) => {
     setIsLoading(true);
     try {
-      // TODO: Implement update profile action
-      // await dispatch(updateUserProfileRequest({ userId: params.userId!, data }));
-      setIsEditing(false);
-    } catch (error) {
+      if (params.userId) {
+        await updateUserApi(params.userId, data);
+        toast.success('Profile updated successfully');
+        setIsEditing(false);
+        // Refresh user data
+        dispatch(fetchUserByIdRequest(params.userId));
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to update profile');
       console.error('Failed to update profile:', error);
     } finally {
       setIsLoading(false);
@@ -211,13 +218,15 @@ export const ProfilePage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // TODO: Implement change password action
-      // await dispatch(changePasswordRequest({ userId: params.userId!, newPassword }));
-      setShowPasswordChange(false);
-      setNewPassword('');
-      setConfirmPassword('');
-    } catch (error) {
-      setPasswordError('Failed to change password. Please try again.');
+      if (params.userId) {
+        await updateUserPasswordApi(params.userId, newPassword);
+        toast.success('Password updated successfully');
+        setShowPasswordChange(false);
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    } catch (error: any) {
+      setPasswordError(error?.response?.data?.message || 'Failed to change password. Please try again.');
       console.error('Failed to change password:', error);
     } finally {
       setIsLoading(false);
@@ -241,7 +250,7 @@ export const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <PageHead title='Profile' description='Manage your account settings and personal information' icon={User} />
@@ -265,32 +274,54 @@ export const ProfilePage: React.FC = () => {
         <TabsContent value="personal" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profile Card */}
-            <Card className="lg:col-span-1">
-              <CardHeader>
-                <CardTitle>Profile Picture</CardTitle>
+            <Card className="lg:col-span-1 border-slate-300 shadow-md p-0 overflow-hidden">
+              <CardHeader className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-t-lg py-4 px-6">
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                    <User className="h-5 w-5 text-white" />
+                  </div>
+                  Profile Picture
+                </CardTitle>
                 <CardDescription>
                   This will be displayed on your profile
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pt-6">
                 <div className="flex flex-col items-center space-y-4">
-                  <Avatar className="w-32 h-32">
-                    <AvatarImage src={user.picture} alt={`${user.firstName} ${user.lastName}`} />
-                    <AvatarFallback className="text-2xl">
-                      {getInitials(user.firstName, user.lastName)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Button variant="outline" size="sm" disabled={!isEditing}>
-                    <Camera className="w-4 h-4 mr-2" />
-                    Change Photo
-                  </Button>
+                  <div className="relative">
+                    <Avatar className="w-32 h-32 border-4 border-white shadow-lg ring-2 ring-blue-200">
+                      <AvatarImage src={user.picture} alt={`${user.firstName} ${user.lastName}`} />
+                      <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-500 to-purple-500 text-white">
+                        {getInitials(user.firstName, user.lastName)}
+                      </AvatarFallback>
+                    </Avatar>
+                    {isEditing && (
+                      <div className="absolute bottom-0 right-0">
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          className="rounded-full w-10 h-10 p-0 shadow-md"
+                          disabled={!isEditing}
+                        >
+                          <Camera className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  {isEditing && (
+                    <Button variant="outline" size="sm" disabled={!isEditing}>
+                      <Camera className="w-4 h-4 mr-2" />
+                      Change Photo
+                    </Button>
+                  )}
                 </div>
                 
                 <Separator />
                 
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Account Status</h4>
                   {hasValue(user.isActive) && (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                       <span className="text-sm font-medium">Status</span>
                       <Badge variant={user.isActive ? "default" : "secondary"}>
                         {user.isActive ? 'Active' : 'Inactive'}
@@ -298,7 +329,7 @@ export const ProfilePage: React.FC = () => {
                     </div>
                   )}
                   {hasValue(user.registrationCompleted) && (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                       <span className="text-sm font-medium">Registration</span>
                       <Badge variant={user.registrationCompleted ? "default" : "secondary"}>
                         {user.registrationCompleted ? 'Completed' : 'Pending'}
@@ -306,7 +337,7 @@ export const ProfilePage: React.FC = () => {
                     </div>
                   )}
                   {hasValue(role) && (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                       <span className="text-sm font-medium">Role</span>
                       <Badge variant="default">
                         {role}
@@ -318,14 +349,17 @@ export const ProfilePage: React.FC = () => {
             </Card>
 
             {/* Personal Information Form */}
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle>Personal Information</CardTitle>
+            <Card className="lg:col-span-2 border-slate-300 shadow-md overflow-hidden p-0">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg py-4 px-6">
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5 text-blue-600" />
+                  Personal Information
+                </CardTitle>
                 <CardDescription>
                   Update your personal details and contact information
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6 px-6">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -519,17 +553,17 @@ export const ProfilePage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="professional" className="space-y-6">
-          <Card>
-            <CardHeader>
+          <Card className="border-slate-300 shadow-md overflow-hidden p-0">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-blue-50 rounded-t-lg py-4 px-6">
               <CardTitle className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5" />
+                <Briefcase className="w-5 h-5 text-green-600" />
                 Professional Information
               </CardTitle>
               <CardDescription>
                 Your company and professional details
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6 px-6">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -690,42 +724,51 @@ export const ProfilePage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="account" className="space-y-6">
-           <Card>
-            <CardHeader>
-              <CardTitle>Account Information</CardTitle>
+           <Card className="border-slate-300 shadow-md overflow-hidden pt-0">
+            <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 rounded-t-lg py-4 px-6">
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5 text-orange-600" />
+                Account Information
+              </CardTitle>
               <CardDescription>
                 Your account details and verification status
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-6 px-6">
+              <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {hasValue(user.user) && (
-                    <div className="flex items-center space-x-3 p-3 rounded-lg border">
-                      <User className="w-5 h-5 text-muted-foreground" />
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-blue-50/50 to-purple-50/50 hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <User className="w-5 h-5 text-blue-600" />
+                      </div>
                       <div>
-                        <p className="text-sm font-medium">User Type</p>
-                        <p className="text-sm text-muted-foreground">{user.user}</p>
+                        <p className="text-sm font-medium text-muted-foreground">User Type</p>
+                        <p className="text-sm font-semibold text-gray-900">{user.user}</p>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.verificationCode?.code) && (
-                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-slate-400">
-                      <Mail className="w-5 h-5 text-muted-foreground" />
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-green-50/50 to-blue-50/50 hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                        <Mail className="w-5 h-5 text-green-600" />
+                      </div>
                       <div>
-                        <p className="text-sm font-medium">Verification Code</p>
-                        <p className="text-sm text-muted-foreground">{user.verificationCode?.code}</p>
+                        <p className="text-sm font-medium text-muted-foreground">Verification Code</p>
+                        <p className="text-sm font-semibold text-gray-900 font-mono">{user.verificationCode?.code}</p>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.createdAt) && (
-                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-slate-400">
-                      <Calendar className="w-5 h-5 text-muted-foreground" />
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-purple-50/50 to-pink-50/50 hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                        <Calendar className="w-5 h-5 text-purple-600" />
+                      </div>
                       <div>
-                        <p className="text-sm font-medium">Member Since</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground">Member Since</p>
+                        <p className="text-sm font-semibold text-gray-900">
                           {formatDateForDisplay(user.createdAt)}
                         </p>
                       </div>
@@ -733,11 +776,13 @@ export const ProfilePage: React.FC = () => {
                   )}
 
                   {hasValue(user.updatedAt) && (
-                    <div className="flex items-center space-x-3 p-3 rounded-lg border border-slate-400">
-                      <Calendar className="w-5 h-5 text-muted-foreground" />
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-orange-50/50 to-yellow-50/50 hover:shadow-md transition-shadow">
+                      <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                        <Calendar className="w-5 h-5 text-orange-600" />
+                      </div>
                       <div>
-                        <p className="text-sm font-medium">Last Updated</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm font-medium text-muted-foreground">Last Updated</p>
+                        <p className="text-sm font-semibold text-gray-900">
                           {formatDateForDisplay(user.updatedAt)}
                         </p>
                       </div>
@@ -746,21 +791,32 @@ export const ProfilePage: React.FC = () => {
                 </div>
 
                 <Separator />
-
-                <div className="space-y-2">
-                  <h4 className="font-medium">Security</h4>
-                  <div className="flex items-center justify-between p-3 rounded-lg border border-slate-400">
-                    <div>
-                      <p className="text-sm font-medium">Password</p>
-                      <p className="text-sm text-muted-foreground">
-                        Last updated {formatDateForDisplay(user.updatedAt)}
-                      </p>
+                
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-lg flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                    </div>
+                    Security
+                  </h4>
+                  <div className="flex items-center justify-between p-4 rounded-lg border border-slate-300 bg-gradient-to-r from-red-50/50 to-orange-50/50 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                        <AlertCircle className="w-5 h-5 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Password</p>
+                        <p className="text-sm text-muted-foreground">
+                          Last updated {formatDateForDisplay(user.updatedAt)}
+                        </p>
+                      </div>
                     </div>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => setShowPasswordChange(!showPasswordChange)}
                       disabled={isLoading}
+                      className="border-red-200 hover:bg-red-50"
                     >
                       {showPasswordChange ? 'Cancel' : 'Change Password'}
                     </Button>

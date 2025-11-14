@@ -6,25 +6,23 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200">
+    <footer className="bg-white border-t border-gray-100">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           {/* Brand */}
           <div className="flex items-center mb-4 md:mb-0">
             <img 
-              src="/logo-bg.svg" 
+              src="/Eventinas Logo.jpeg" 
               alt="UrEvent Logo" 
-              className="h-8 w-8 mr-2"
+              className="h-12 w-12 mr-2 object-cover"
             />
-            <span className="text-lg font-semibold text-gray-900">
-              Eventinos
-            </span>
+           
           </div>
 
           {/* Copyright */}
           <div className="text-center md:text-left">
             <p className="text-sm text-gray-600">
-              &copy; {currentYear} Eventinos. Tous droits réservés.
+              &copy; {currentYear} Eventinas. Tous droits réservés.
             </p>
           </div>
 

@@ -1,5 +1,5 @@
-import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi } from "@/api/eventsApi";
-import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction } from "./events.type"
+import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi, updateEventStatusApi } from "@/api/eventsApi";
+import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction, UPDATE_EVENT_STATUS_REQUEST, UPDATE_EVENT_STATUS_SUCCESS, UPDATE_EVENT_STATUS_FAILURE, type UpdateEventStatusRequestAction, type UpdateEventStatusSuccessAction, type UpdateEventStatusFailureAction } from "./events.type"
 
 export const fetchEventsRequest = (): FetchEventsRequestAction => {
     return async (dispatch: any) => {
@@ -123,5 +123,30 @@ export const deleteEventSuccess = () : DeleteEventSuccessAction => ({
 
 export const deleteEventFailure = (error: string) : DeleteEventFailureAction => ({
   type: DELETE_EVENT_FAILURE,
+  payload: error,
+})
+
+export const updateEventStatusRequest = (eventId: string, status: string) => {
+  return async (dispatch: any) => {
+    dispatch({ type: UPDATE_EVENT_STATUS_REQUEST, payload: { eventId, status } })
+    try {
+      const response = await updateEventStatusApi(eventId, status)
+      dispatch(updateEventStatusSuccess(response))
+      // Refresh events list
+      dispatch(fetchEventsRequest())
+    } catch (error: any) {
+      console.error('Update event status error:', error);
+      dispatch(updateEventStatusFailure(error.response?.data?.message || error.message || 'Update event status failed'))
+    }
+  };
+}
+
+export const updateEventStatusSuccess = (event: any): UpdateEventStatusSuccessAction => ({
+  type: UPDATE_EVENT_STATUS_SUCCESS,
+  payload: event,
+})
+
+export const updateEventStatusFailure = (error: string): UpdateEventStatusFailureAction => ({
+  type: UPDATE_EVENT_STATUS_FAILURE,
   payload: error,
 })
