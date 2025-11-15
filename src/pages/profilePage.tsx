@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserProfile, ProfileFormData } from './types';
 
 // Shadcn Components
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -17,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Icons
-import { User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, Link as LinkIcon } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, Link as LinkIcon, Plus } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
 import { useParams } from 'react-router-dom';
@@ -28,10 +27,22 @@ import ProfileNotFound from '@/components/profileComponents/profileNotFound';
 import ErrorAlert from '@/components/profileComponents/errorAlert';
 import PageHead from '@/components/shared/page-head';
 import { fetchRoleByIdRequest } from '@/store/features/roles/roles.actions';
+import { fetchRightsRequest } from '@/store/features/rights/rights.actions';
 import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
 import { toast } from 'sonner';
 
-// Validation Schema
+interface ProfileFormData {
+
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  birthday: string;
+  country: string;
+  city: string;
+  gender: string;
+}
+        // Validation Schema
 const profileFormSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -62,6 +73,7 @@ export const ProfilePage: React.FC = () => {
   const [passwordError, setPasswordError] = useState('');
   const { user, isLoading: loadingData, error } = useSelector((state: RootState) => state.users);
   const { role } = useSelector((state: RootState) => state.roles);
+  const { rights, loading: rightsLoading } = useSelector((state: RootState) => state.rights);
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -170,8 +182,9 @@ export const ProfilePage: React.FC = () => {
       });
 
       dispatch(fetchRoleByIdRequest(user.role));
+      dispatch(fetchRightsRequest());
     }
-  }, [user, form]);
+  }, [user, form, dispatch]);
 
   // Fetch user data when component mounts or userId changes
   useEffect(() => {
@@ -269,6 +282,7 @@ export const ProfilePage: React.FC = () => {
           <TabsTrigger value="personal">Personal Information</TabsTrigger>
           <TabsTrigger value="professional">Professional</TabsTrigger>
           <TabsTrigger value="account">Account Details</TabsTrigger>
+          <TabsTrigger value="roles-rights">Roles & Rights</TabsTrigger>
         </TabsList>
 
         <TabsContent value="personal" className="space-y-6">
@@ -340,7 +354,7 @@ export const ProfilePage: React.FC = () => {
                     <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
                       <span className="text-sm font-medium">Role</span>
                       <Badge variant="default">
-                        {role}
+                        {typeof role === 'object' && role !== null ? role.name : role}
                       </Badge>
                     </div>
                   )}
@@ -359,7 +373,7 @@ export const ProfilePage: React.FC = () => {
                   Update your personal details and contact information
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6 px-6">
+              <CardContent className="py-6 px-6">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -563,7 +577,7 @@ export const ProfilePage: React.FC = () => {
                 Your company and professional details
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-6 px-6">
+            <CardContent className="py-6 px-6">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -887,6 +901,158 @@ export const ProfilePage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="roles-rights" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Role Information */}
+            <Card className="border-slate-300 shadow-md overflow-hidden p-0">
+              <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-t-lg py-4 px-6">
+                <CardTitle className="flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-indigo-600" />
+                  Role Information
+                </CardTitle>
+                <CardDescription>
+                  Current role and permissions
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="py-6 px-6">
+                {rightsLoading ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-5/6" />
+                  </div>
+                ) : role ? (
+                  <div className="space-y-4 ">
+                    <div className="flex items-center justify-between p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-indigo-50/50 to-purple-50/50">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Role Name</p>
+                        <p className="text-lg font-semibold text-gray-900">
+                          {typeof role === 'object' && role !== null ? role.name : role}
+                        </p>
+                      </div>
+                      <Badge variant={role.systemRole ? "default" : "secondary"}>
+                        {role.systemRole ? 'System Role' : 'Custom Role'}
+                      </Badge>
+                    </div>
+                    
+                    {role.rights && Array.isArray(role.rights) && (
+                      <div className="p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-blue-50/50 to-cyan-50/50">
+                        <p className="text-sm font-medium text-muted-foreground mb-2">Total Rights</p>
+                        <p className="text-2xl font-bold text-gray-900">{role.rights.length}</p>
+                      </div>
+                    )}
+
+                    {role.createdAt && (
+                      <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
+                        <Calendar className="w-5 h-5 text-purple-600" />
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Created</p>
+                          <p className="text-sm font-semibold text-gray-900">
+                            {formatDateForDisplay(role.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-sm text-muted-foreground">No role information available</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Rights List */}
+            <Card className="border-slate-300 shadow-md overflow-hidden p-0">
+              <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-lg py-4 px-6">
+                <CardTitle className="flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-green-600" />
+                  Assigned Rights
+                </CardTitle>
+                <CardDescription>
+                  Permissions granted to this role
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6 px-6">
+                {rightsLoading ? (
+                  <div className="space-y-3">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Skeleton key={index} className="h-12 w-full" />
+                    ))}
+                  </div>
+                ) : role && role.rights && Array.isArray(role.rights) ? (
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto px-4" style={{ scrollbarWidth: 'thin', scrollbarColor: '#6b7280 #e5e7eb', borderRadius: '10px' }}>
+                    {(() => {
+                      // Filter rights by role's rights array
+                      const assignedRights = rights.filter((right) => 
+                        role.rights.includes(right._id)
+                      );
+                      
+                      // Group rights by group
+                      const groupedRights = assignedRights.reduce((acc, right) => {
+                        if (!acc[right.group]) {
+                          acc[right.group] = [];
+                        }
+                        acc[right.group].push(right);
+                        return acc;
+                      }, {} as Record<string, typeof assignedRights>);
+
+                      if (assignedRights.length === 0) {
+                        return (
+                          <div className="text-center py-8">
+                            <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                            <p className="text-sm text-muted-foreground">No rights assigned</p>
+                          </div>
+                        );
+                      }
+
+                      return Object.entries(groupedRights).map(([group, groupRights]) => (
+                        <div key={group} className="space-y-2">
+                          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                            {group}
+                          </h4>
+                          {groupRights.map((right) => (
+                            <div
+                              key={right._id}
+                              className="flex items-center justify-between p-3 rounded-lg border border-slate-300 bg-gradient-to-r from-white to-gray-50/50 hover:shadow-md transition-shadow"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {right.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">{right.group}</p>
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="text-xs">
+                                {right.name}
+                              </Badge>
+                            </div>
+                          ))}
+                          <Separator className="my-3" />
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-sm text-muted-foreground">No rights information available</p>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="mb-4">
+                <Button variant="outline" size="sm">
+                  <Plus className="w-4 h-4" />
+                  Add Right
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

@@ -31,8 +31,8 @@ interface StatusChangeDialogProps {
 const statusOptions: { value: EventStatus; label: string; description: string }[] = [
   { value: 'PENDING', label: 'Pending', description: 'Event is awaiting approval' },
   { value: 'ACCEPTED', label: 'Accepted', description: 'Event has been approved' },
-  { value: 'REJECTED', label: 'Rejected', description: 'Event has been rejected' },
-  { value: 'CANCELLED', label: 'Cancelled', description: 'Event has been cancelled' },
+  { value: 'REFUSED', label: 'Rejected', description: 'Event has been rejected' },
+  { value: 'CLOSED', label: 'Closed', description: 'Event has been close' },
 ]
 
 export const StatusChangeDialog: React.FC<StatusChangeDialogProps> = ({

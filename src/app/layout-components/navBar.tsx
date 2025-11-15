@@ -1,4 +1,4 @@
-import { CONTACTS_PAGE, DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants"
+import { COMPTES_PAGE, CONTACTS_PAGE, DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants"
 import { Link, useLocation } from "react-router-dom"
 
 interface NavLink {
@@ -10,7 +10,7 @@ const navLinks: NavLink[] = [
   { name: 'Tableau de bord', path: DASHBOARD_OVERVIEW },
   { name: 'Événements', path: EVENT_LISTE_PAGE },
   { name: 'Membres', path: MEMBERS_PAGE },
-  { name: 'Comptes', path: '/accounts' },
+  { name: 'Comptes', path: COMPTES_PAGE },
   { name: 'Contacts', path: CONTACTS_PAGE },
 ]
 

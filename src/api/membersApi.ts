@@ -66,7 +66,7 @@ export const updateMemberApi = async (memberId: string, data: any) => {
 
 export const updateMemberStatusApi = async (memberId: string, isActive: boolean) => {
     try {
-        const response = await api.patch(`/members/${memberId}/status`, { isActive }, {
+        const response = await api.put(`/members/${memberId}/status`, { isActive }, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getAuthToken()}`,

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { LogOut } from 'lucide-react'
+import { LogOut, Settings } from 'lucide-react'
 
 import {
   DropdownMenu,
@@ -52,24 +52,24 @@ const ProfileDropDown = () => {
         <DropdownMenuLabel className="" >My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link className="w-full" to={PROFILE_PAGE(getUserData()._id)}>
+          <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900">
+            <Link className="w-full flex items-center gap-2" to={PROFILE_PAGE(getUserData()._id)}>
             Profile
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem >
-            <Link to={SETTINGS_PAGE} className="w-full">
+          <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900">
+            <Link to={SETTINGS_PAGE} className="w-full flex items-center gap-2" onClick={handleLogout}>
+            <Settings className="w-4 h-4" />
             Settings
             </Link>
           </DropdownMenuItem>
 
         </DropdownMenuGroup>
-        <DropdownMenuItem>Invite Users</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:bg-red-600" onClick={handleLogout}>
+        <DropdownMenuItem className="hover:bg-red-600 hover:text-white flex items-center gap-2" onClick={handleLogout}>
+          <LogOut className="w-4 h-4" />
           Log out
-          <DropdownMenuShortcut><LogOut /></DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

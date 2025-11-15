@@ -9,4 +9,5 @@ export const EVENT_DETAILS_PAGE= (eventId: string) =>  `/dashboard/event-page/${
 export const SETTINGS_PAGE = '/dashboard/settings'
 export const PROFILE_PAGE = (userId: string ) => `/dashboard/profile/${userId}`
 export const CONTACTS_PAGE = '/dashboard/contacts'
+export const COMPTES_PAGE = '/dashboard/comptes'
 export const NOTFOUND_PAGE = '/not-found'

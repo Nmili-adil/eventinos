@@ -70,8 +70,8 @@ const ContactsPage: React.FC = () => {
       try {
         const response = await fetchContactsApi();
         // Handle both array and object with data property
-        const contactsData = Array.isArray(response.data) 
-          ? response.data 
+        const contactsData = Array.isArray(response.data.data) 
+          ? response.data.data
           : response.data?.data || response.data?.contacts || [];
         setContacts(contactsData);
       } catch (err: any) {
@@ -362,7 +362,7 @@ const ContactsPage: React.FC = () => {
               <CardContent className="pb-3">
                 <div className="space-y-3">
                   <div className="flex items-start space-x-2 text-sm">
-                    <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                     <p className="text-muted-foreground line-clamp-3">
                       {contact.message}
                     </p>

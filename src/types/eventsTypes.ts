@@ -1,4 +1,4 @@
-export type EventStatus = 'ACCEPTED' | 'PENDING' | 'REJECTED' | 'CANCELLED'
+export type EventStatus = 'ACCEPTED' | 'PENDING' | 'REFUSED' | 'CLOSED'
 export type EventType = 'FACETOFACE' | 'ONLINE' | 'HYBRID'
 export type EventVisibility = 'PUBLIC' | 'PRIVATE'
 

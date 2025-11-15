@@ -71,7 +71,7 @@ export const deleteEventApi = async (id: string) => {
 
 export const updateEventStatusApi = async (id: string, status: string) => {
   try {
-    const response = await api.patch(`/events/${id}/status`, { status }, {
+    const response = await api.put(`/events/${id}/status`, { status }, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthToken()}`

@@ -28,7 +28,7 @@ import type { EventStatus } from '@/types/eventsTypes'
 
 const PAGE_SIZE = 10
 
-type ViewMode = 'table' | 'calendar'
+type ViewMode = 'table' | 'calendar' | 'maps'
 
 export function EventsTable() {
   const [eventsData, setEvents] = useState<Event[]>([])
