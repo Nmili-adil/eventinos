@@ -4,7 +4,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Table, TableBody } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { List, Plus, Calendar as CalendarIcon, Table2 } from 'lucide-react'
+import { List, Plus, Calendar as CalendarIcon, Table2, MapPin } from 'lucide-react'
 import { filterEvents, sortEvents, paginateEvents } from '@/lib/events-utils'
 import { TableHeader } from './table-header'
 import { EventTableRow } from './table-row'
@@ -24,6 +24,7 @@ import { toast } from 'sonner'
 import PageHead from '@/components/shared/page-head'
 import { StatusChangeDialog } from './StatusChangeDialog'
 import { EventsCalendarView } from './EventsCalendarView'
+import { EventsMapView } from './EventsMapView'
 import type { EventStatus } from '@/types/eventsTypes'
 
 const PAGE_SIZE = 10
@@ -217,6 +218,15 @@ export function EventsTable() {
               <CalendarIcon className="h-4 w-4" />
               <span className="hidden sm:inline">Calendar</span>
             </Button>
+            <Button
+              variant={viewMode === 'maps' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('maps')}
+              className="gap-2"
+            >
+              <MapPin className="h-4 w-4" />
+              <span className="hidden sm:inline">Maps</span>
+            </Button>
           </div>
           <Button 
             onClick={() => navigate(EVENT_ADD_PAGE)}
@@ -273,6 +283,17 @@ export function EventsTable() {
       {/* Calendar View */}
       {viewMode === 'calendar' && (
         <EventsCalendarView
+          events={processedEvents}
+          onEventClick={(event) => handlePreview(event._id)}
+          onEdit={handleEdit}
+          onChangeStatus={handleChangeStatus}
+          onDelete={handleDelete}
+        />
+      )}
+
+      {/* Maps View */}
+      {viewMode === 'maps' && (
+        <EventsMapView
           events={processedEvents}
           onEventClick={(event) => handlePreview(event._id)}
           onEdit={handleEdit}

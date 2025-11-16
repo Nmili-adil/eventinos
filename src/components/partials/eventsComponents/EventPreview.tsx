@@ -1,4 +1,6 @@
 import React from 'react'
+import { DeviceFrameset } from 'react-device-frameset'
+import 'react-device-frameset/styles/marvel-devices.min.css'
 import { CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, MapPin, Clock, Users, Globe, Lock } from 'lucide-react'
@@ -31,30 +33,15 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      {/* Phone Frame */}
-      <div className="relative bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
-        {/* Notch */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-b-2xl z-10"></div>
-        
-        {/* Screen */}
-        <div className="bg-white rounded-[2.5rem] overflow-hidden">
-          {/* Status Bar */}
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-8 flex items-center justify-center text-white text-xs font-semibold">
-            <span>9:41</span>
-            <div className="absolute right-4 flex gap-1">
-              <div className="w-4 h-2 border border-white rounded-sm"></div>
-              <div className="w-1 h-1 bg-white rounded-full"></div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
+    <div className="w-full flex justify-center">
+      <DeviceFrameset device="iPhone X" color="white" zoom={0.75} width={375} height={812}>
+        {/* Content */}
+        <div className="bg-white w-full h-full overflow-y-auto" style={{ minHeight: '812px', maxHeight: '812px' }}>
             {/* Event Image */}
             <div className="relative w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500">
-              {formData.image ? (
+              {(formData.image?.data?.path || formData.image?.url || formData.image) ? (
                 <img
-                  src={formData.image}
+                  src={formData.image?.data?.path || formData.image?.url || formData.image || ''}
                   alt={formData.name || 'Event'}
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -67,10 +54,10 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                   {formData.name ? formData.name.charAt(0).toUpperCase() : 'E'}
                 </div>
               )}
-              <div className="absolute top-4 right-4">
+              <div className="absolute top-5 right-4">
                 <Badge
                   variant="secondary"
-                  className="bg-white/90 text-gray-900 backdrop-blur-sm"
+                  className="bg-white/90 text-gray-900 backdrop-blur-sm text-xs"
                 >
                   {formData.visibility === 'PUBLIC' ? (
                     <Globe className="w-3 h-3 mr-1" />
@@ -215,9 +202,8 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                 </div>
               )}
             </CardContent>
-          </div>
         </div>
-      </div>
+      </DeviceFrameset>
     </div>
   )
 }

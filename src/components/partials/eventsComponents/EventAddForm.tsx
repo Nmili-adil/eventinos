@@ -474,7 +474,7 @@ const {badges} = useSelector((state: RootState) => state.badges)
                         <FormControl>
                           <div className="space-y-2">
                             <FileUpload
-                              onUploadComplete={(url) => field.onChange(url)}
+                              onUploadComplete={(url) => field.onChange({ data: { path: url } })}
                               currentUrl={field.value}
                               label="Upload Event Image"
                               accept="image/*"
@@ -486,7 +486,7 @@ const {badges} = useSelector((state: RootState) => state.badges)
                             <Input 
                               placeholder="https://example.com/image.jpg" 
                               {...field}
-                              value={field.value || ''}
+                              value={field.value?.data?.path || field.value?.url || field.value || ''}
                             />
                           </div>
                         </FormControl>
@@ -1460,13 +1460,13 @@ const {badges} = useSelector((state: RootState) => state.badges)
         {showPreview && (
           <div className="w-full lg:w-1/3 lg:sticky lg:top-6 h-fit order-first lg:order-last">
             <Card className="border-slate-300">
-              <CardHeader>
+              <CardHeader className="m-0">
                 <CardTitle className="text-lg font-semibold">Live Preview</CardTitle>
                 <p className="text-xs text-muted-foreground">
                   See how your event will look
                 </p>
               </CardHeader>
-              <CardContent className="overflow-x-auto">
+              <CardContent className="overflow-x-auto p-0">
                 <EventPreview formData={formData} />
               </CardContent>
             </Card>

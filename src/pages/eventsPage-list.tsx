@@ -4,14 +4,16 @@ import { fetchEventsRequest } from "@/store/features/events/events.actions"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { useLoading } from "@/contexts/LoadingContext"
+import { useTranslation } from "react-i18next"
 
 const EventsPageList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { setLoading } = useLoading()
+  const { t } = useTranslation()
   
   useEffect(() => {
     const loadEvents = async () => {
-      setLoading(true, 'Chargement des événements...')
+      setLoading(true, t('events.loadingEvents'))
       try {
         await dispatch(fetchEventsRequest())
       } finally {
@@ -20,7 +22,7 @@ const EventsPageList = () => {
     }
     
     loadEvents()
-  }, [dispatch, setLoading])
+  }, [dispatch, setLoading, t])
 
   return (
     <div className="container mx-auto  py-6">

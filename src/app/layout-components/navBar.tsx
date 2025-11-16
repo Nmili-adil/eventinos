@@ -1,21 +1,23 @@
 import { COMPTES_PAGE, CONTACTS_PAGE, DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants"
 import { Link, useLocation } from "react-router-dom"
+import { useTranslation } from 'react-i18next'
 
 interface NavLink {
-  name: string
+  nameKey: string
   path: string
 }
 
 const navLinks: NavLink[] = [
-  { name: 'Tableau de bord', path: DASHBOARD_OVERVIEW },
-  { name: 'Événements', path: EVENT_LISTE_PAGE },
-  { name: 'Membres', path: MEMBERS_PAGE },
-  { name: 'Comptes', path: COMPTES_PAGE },
-  { name: 'Contacts', path: CONTACTS_PAGE },
+  { nameKey: 'navigation.dashboard', path: DASHBOARD_OVERVIEW },
+  { nameKey: 'navigation.events', path: EVENT_LISTE_PAGE },
+  { nameKey: 'navigation.members', path: MEMBERS_PAGE },
+  { nameKey: 'navigation.accounts', path: COMPTES_PAGE },
+  { nameKey: 'navigation.contacts', path: CONTACTS_PAGE },
 ]
 
 const SimpleNavBar = () => {
   const location = useLocation()
+  const { t } = useTranslation()
 
   const isActive = (path: string): boolean => {
     return location.pathname === path
@@ -30,7 +32,7 @@ const SimpleNavBar = () => {
           <div className="flex  items-center space-x-6 justify-center ">
             {navLinks.map((link) => (
               <Link
-                key={link.name}
+                key={link.nameKey}
                 to={link.path}
                 className={`
                   relative text-sm font-medium transition-colors duration-200 py-2
@@ -40,7 +42,7 @@ const SimpleNavBar = () => {
                   }
                 `}
               >
-                {link.name}
+                {t(link.nameKey)}
                 {isActive(link.path) && (
                   <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-full" />
                 )}

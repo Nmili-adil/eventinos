@@ -2,8 +2,12 @@ import { Input } from '@/components/ui/input'
 import { Bell, Search, Menu } from 'lucide-react'
 import ProfileDropDown from './profileDropDown'
 import NavBar from './navBar'
+import LanguageSwitcher from '@/components/shared/languageSwitcher'
+import { useTranslation } from 'react-i18next'
 
 const Header = () => {
+    const { t } = useTranslation()
+    
     return (
         <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-50 w-full">
             {/* Top Header Section */}
@@ -33,7 +37,7 @@ const Header = () => {
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                             className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
-                            placeholder="Rechercher des événements, membres..."
+                            placeholder={t('header.searchPlaceholder')}
                         />
                     </div>
                 </div>
@@ -43,6 +47,9 @@ const Header = () => {
                 </div>
                 {/* Right Section - Notifications & Profile */}
                 <div className="flex items-center gap-4">
+                    {/* Language Switcher */}
+                    <LanguageSwitcher />
+                    
                     {/* Search Button (Mobile) */}
                     <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
                         <Search className="w-5 h-5 text-gray-600" />
@@ -79,7 +86,7 @@ const Header = () => {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                         className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
-                        placeholder="Rechercher..."
+                        placeholder={t('header.searchPlaceholderMobile')}
                     />
                 </div>
             </div>

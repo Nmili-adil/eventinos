@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Trash2, AlertTriangle } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface DeleteConfirmationDialogProps {
   isOpen: boolean
@@ -30,6 +31,8 @@ const DeleteConfirmationDialog = ({
   itemName,
   isLoading = false
 }: DeleteConfirmationDialogProps) => {
+  const { t } = useTranslation()
+  
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
@@ -46,12 +49,12 @@ const DeleteConfirmationDialog = ({
               {itemName}
             </span>
             <p className="text-red-600 text-sm mt-2">
-              This action cannot be undone.
+              {t('common.cannotUndo')}
             </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>{t('common.cancel')}</AlertDialogCancel>
           <Button
             variant="destructive"
             onClick={onConfirm}
@@ -61,12 +64,12 @@ const DeleteConfirmationDialog = ({
             {isLoading ? (
               <>
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Deleting...
+                {t('common.deleting')}
               </>
             ) : (
               <>
                 <Trash2 className="h-4 w-4" />
-                Delete
+                {t('common.delete')}
               </>
             )}
           </Button>

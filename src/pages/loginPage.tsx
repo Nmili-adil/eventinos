@@ -6,24 +6,27 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 export default function LoginPage() {
   const { message, isAuthenticated, user, isLoading, error } = useSelector((state: RootState) => state.auth)
   const navigate = useNavigate()
   const location = useLocation()
   const token = getAuthToken()
+  const { t } = useTranslation()
+  
   useEffect(() => {
     console.log('Auth state:', { isAuthenticated, user, message })
 
     if (isAuthenticated && user) {
-      toast.success(message?.replace('_', ' ') || 'Connexion réussie!')
+      toast.success(message?.replace('_', ' ') || t('auth.loginSuccess'))
       navigate(DASHBOARD_OVERVIEW)
     }
 
     if (error) {
-      toast.error(typeof error === 'string' ? error : error?.message || 'Erreur de connexion')
+      toast.error(typeof error === 'string' ? error : error?.message || t('auth.loginError'))
     }
-  }, [isAuthenticated, user, message, error, navigate])
+  }, [isAuthenticated, user, message, error, navigate, t])
 
   useEffect(() => {
     if (token) {
@@ -45,10 +48,10 @@ export default function LoginPage() {
         <div className='absolute lg:relative inset-0 lg:inset-auto mx-6 xl:mx-3 lg:w-4/12 flex flex-col items-center justify-center z-10'>
           <div className="text-center mb-8">
             <h1 className="page-heading text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Bienvenue
+              {t('auth.welcome')}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Accédez à votre compte <span className='font-semibold text-[#6e51e7] underline cursor-pointer'>Eventify</span>
+              {t('auth.accessAccount')} <span className='font-semibold text-[#6e51e7] underline cursor-pointer'>{t('auth.account')}</span>
             </p>
           </div>
           <LoginForm />
