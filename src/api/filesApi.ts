@@ -48,3 +48,16 @@ export const getFileUrlApi = async (fileId: string): Promise<string> => {
   }
 }
 
+
+export const deleteFileApi = async (fileId: string): Promise<void> => {
+  try {
+    await api.delete(`/files/${fileId}`, {
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`,
+      },
+    })
+  } catch (error: any) {
+    console.error('Error deleting file:', error)
+    throw new Error(error.response?.data?.message || error.message || 'Failed to delete file')
+  }
+}

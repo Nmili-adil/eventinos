@@ -108,6 +108,147 @@
     "preview": "Aperçu",
     "changeStatus": "Changer le statut"
   },
+  "eventForm": {
+      "title": "Créer un nouvel événement",
+      "description": "Remplissez les détails de l'événement étape par étape",
+      "preview": {
+        "show": "Afficher l'aperçu",
+        "hide": "Masquer l'aperçu",
+        "title": "Aperçu en direct",
+        "description": "Voyez à quoi ressemblera votre événement"
+      },
+      "sections": {
+        "basicInfo": "Informations de base",
+        "dateTime": "Date et heure",
+        "location": "Informations de localisation",
+        "socialNetworks": "Réseaux sociaux",
+        "program": "Programme de l'événement",
+        "badges": "Badges",
+        "gallery": "Galerie de l'événement",
+        "exhibitorsSponsors": "Exposants et Sponsors"
+      },
+      "fields": {
+        "name": "Nom de l'événement",
+        "description": "Description",
+        "image": "Image de l'événement",
+        "visibility": "Visibilité",
+        "type": "Type d'événement",
+        "status": "Statut",
+        "categories": "Catégorie",
+        "capacity": "Capacité de l'événement",
+        "allowRegistration": "Autoriser l'inscription",
+        "registrationDeadline": "Date limite d'inscription",
+        "startDate": "Date et heure de début",
+        "endDate": "Date et heure de fin",
+        "venueName": "Nom du lieu",
+        "city": "Ville",
+        "country": "Pays",
+        "countryCode": "Code pays",
+        "placeId": "ID du lieu",
+        "website": "Site web",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "twitter": "Twitter",
+        "linkedin": "LinkedIn",
+        "program": "Programme de l'événement",
+        "galleryImages": "Images de la galerie",
+        "exhibitors": "Exposants",
+        "sponsors": "Sponsors",
+        "fullName": "Nom complet",
+        "picture": "URL de l'image",
+        "logo": "URL du logo",
+        "sponsorName": "Nom du sponsor"
+      },
+      "placeholders": {
+        "enterEventName": "Entrez le nom de l'événement",
+        "enterDescription": "Entrez la description de l'événement",
+        "enterImageUrl": "https://exemple.com/image.jpg",
+        "selectVisibility": "Sélectionnez la visibilité",
+        "selectCategory": "Sélectionnez la catégorie",
+        "selectType": "Sélectionnez le type",
+        "selectStatus": "Sélectionnez le statut",
+        "enterCapacity": "Nombre maximum de participants",
+        "enterVenueName": "Entrez le nom du lieu",
+        "enterCity": "Entrez la ville",
+        "enterCountry": "Entrez le pays",
+        "enterCountryCode": "ex. : FR, US, GB",
+        "enterPlaceId": "ID Google Places",
+        "enterWebsite": "https://exemple.com",
+        "enterFacebook": "https://facebook.com/evenement",
+        "enterInstagram": "https://instagram.com/evenement",
+        "enterTwitter": "https://twitter.com/evenement",
+        "enterLinkedIn": "https://linkedin.com/evenement",
+        "enterProgram": "Entrez le programme détaillé",
+        "enterImageUrlManual": "Ou entrez l'URL de l'image manuellement :",
+        "enterImageUrlGallery": "Ou entrez l'URL de l'image (https://...)",
+        "enterExhibitorName": "Entrez le nom de l'exposant",
+        "enterExhibitorPicture": "https://exemple.com/image.jpg",
+        "enterSponsorName": "Entrez le nom du sponsor",
+        "enterSponsorLogo": "https://exemple.com/logo.jpg"
+      },
+      "options": {
+        "visibility": {
+          "public": "Public",
+          "private": "Privé"
+        },
+        "type": {
+          "faceToFace": "En présentiel",
+          "virtual": "Virtuel"
+        },
+        "status": {
+          "pending": "En attente",
+          "accepted": "Accepté",
+          "refused": "Refusé",
+          "closed": "Fermé"
+        }
+      },
+      "descriptions": {
+        "capacity": "Mettez 0 pour une capacité illimitée",
+        "allowRegistration": "Activer l'inscription des participants pour cet événement",
+        "registrationDeadline": "Dernière date et heure pour que les participants s'inscrivent",
+        "isNearestEvent": "Afficher cet événement dans la section des événements proches",
+        "isUpcomingEvent": "Mettre en avant cet événement dans la section des événements à venir",
+        "badges": "Sélectionnez les badges que les participants peuvent gagner lors de cet événement",
+        "gallery": "Ajoutez des images pour présenter votre événement",
+        "socialNetworks": "Réseaux sociaux"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "createEvent": "Créer l'événement",
+        "creating": "Création en cours...",
+        "addUrl": "Ajouter l'URL",
+        "addExhibitor": "Ajouter un exposant",
+        "addSponsor": "Ajouter un sponsor",
+        "uploadImage": "Télécharger l'image de l'événement",
+        "uploadGalleryImage": "Télécharger l'image de la galerie"
+      },
+      "labels": {
+        "eventHighlights": "Points forts de l'événement",
+        "markAsNearestEvent": "Marquer comme événement proche",
+        "markAsUpcomingEvent": "Marquer comme événement à venir",
+        "availableBadges": "Badges disponibles",
+        "selected": "Sélectionné",
+        "selectedBadges": "Badges sélectionnés",
+        "totalImages": "Total des images",
+        "noBadges": "Aucun badge disponible. Veuillez d'abord créer des badges.",
+        "noImages": "Aucune image ajoutée pour le moment",
+        "noImagesDescription": "Ajoutez des URL d'images pour créer votre galerie d'événement",
+        "imageNumber": "Image {{number}}"
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidUrl": "Veuillez entrer une URL valide",
+        "invalidEmail": "Veuillez entrer une adresse email valide",
+        "invalidDate": "Veuillez entrer une date valide",
+        "endDateBeforeStart": "La date de fin doit être après la date de début"
+      },
+      "messages": {
+        "debugLocation": "Données de localisation :",
+        "notSet": "Non défini"
+      }
+    },
   "notFound": {
     "title": "Page introuvable",
     "message": "Oups ! La page que vous recherchez n'existe pas.",

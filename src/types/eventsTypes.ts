@@ -125,3 +125,12 @@ export interface EmptyStateProps {
 }
 
 // types/eventsTypes.ts
+export interface EventCardProps {
+  event: Event
+  isSelected: boolean
+  onClick: () => void
+  onPreview: () => void
+  onEdit: () => void
+  onChangeStatus: () => void
+  onDelete: () => void
+}

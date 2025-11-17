@@ -77,13 +77,12 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             <div className="flex-1">
               <Select value={filters.gender} onValueChange={handleGenderChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Gender" />
+                  <SelectValue placeholder="Gender" />  
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Gender</SelectItem>
                   <SelectItem value="MALE">Male</SelectItem>
                   <SelectItem value="FEMALE">Female</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -22,11 +22,11 @@ const LanguageSwitcher = () => {
     // Update HTML lang attribute for accessibility
     document.documentElement.lang = lng
     // Update dir attribute for RTL languages
-    if (lng === 'ar') {
-      document.documentElement.dir = 'rtl'
-    } else {
-      document.documentElement.dir = 'ltr'
-    }
+    // if (lng === 'ar') {
+    //   document.documentElement.dir = 'rtl'
+    // } else {
+    //   document.documentElement.dir = 'ltr'
+    // }
   }
 
   const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0]

@@ -54,7 +54,7 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                   {formData.name ? formData.name.charAt(0).toUpperCase() : 'E'}
                 </div>
               )}
-              <div className="absolute top-5 right-4">
+              <div className="absolute top-7 right-4">
                 <Badge
                   variant="secondary"
                   className="bg-white/90 text-gray-900 backdrop-blur-sm text-xs"

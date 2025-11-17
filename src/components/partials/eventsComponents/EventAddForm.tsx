@@ -25,6 +25,7 @@ import { fetchCategoriesRequest } from "@/store/features/categories/categories.a
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
 import { EventPreview } from "./EventPreview";
+import { useTranslation } from "react-i18next";
 
 interface EventAddFormProps {
   onSubmit: (data: EventFormData) => void;
@@ -34,11 +35,13 @@ interface EventAddFormProps {
 const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   const [currentSection, setCurrentSection] = useState(0);
   const [newImageUrl, setNewImageUrl] = useState("");
-  const [showPreview, setShowPreview] = useState(false); // Hidden on mobile by default
+  const [showPreview, setShowPreview] = useState(false); 
+  const { t } = useTranslation();
 
-  const dispatch = useDispatch<AppDispatch>()
-const {categories} = useSelector((state: RootState) => state.categories)
-const {badges} = useSelector((state: RootState) => state.badges)
+  const dispatch = useDispatch<AppDispatch>();
+  const { categories } = useSelector((state: RootState) => state.categories);
+  const { badges } = useSelector((state: RootState) => state.badges);
+  
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
@@ -82,6 +85,7 @@ const {badges} = useSelector((state: RootState) => state.badges)
       tags: [],
     },
   });
+  
   const navigate = useNavigate();
 
   // Field arrays for dynamic fields
@@ -96,24 +100,24 @@ const {badges} = useSelector((state: RootState) => state.badges)
   });
 
   useEffect(() => {
-    dispatch(fetchCategoriesRequest())
-    dispatch(fetchBadgesRequest())
-  }, [])
+    dispatch(fetchCategoriesRequest());
+    dispatch(fetchBadgesRequest());
+  }, []);
 
   useEffect(() => {
-    console.log(categories)
-    console.log(badges)
-  }, [categories, badges])
+    console.log(categories);
+    console.log(badges);
+  }, [categories, badges]);
 
   const sections = [
-    { id: 0, title: "Basic Information", color: "blue" },
-    { id: 1, title: "Date & Time", color: "green" },
-    { id: 2, title: "Location", color: "purple" },
-    { id: 3, title: "Social Networks", color: "orange" },
-    { id: 4, title: "Program", color: "red" },
-    { id: 5, title: "Badges", color: "yellow" },
-    { id: 6, title: "Gallery", color: "pink" },
-    { id: 7, title: "Exhibitors & Sponsors", color: "indigo" },
+    { id: 0, title: t('eventForm.sections.basicInfo'), color: "blue" },
+    { id: 1, title: t('eventForm.sections.dateTime'), color: "green" },
+    { id: 2, title: t('eventForm.sections.location'), color: "purple" },
+    { id: 3, title: t('eventForm.sections.socialNetworks'), color: "orange" },
+    { id: 4, title: t('eventForm.sections.program'), color: "red" },
+    { id: 5, title: t('eventForm.sections.badges'), color: "yellow" },
+    { id: 6, title: t('eventForm.sections.gallery'), color: "pink" },
+    { id: 7, title: t('eventForm.sections.exhibitorsSponsors'), color: "indigo" },
   ];
 
   const handleNext = async () => {
@@ -143,7 +147,6 @@ const {badges} = useSelector((state: RootState) => state.badges)
       case 1:
         return ["startDate", "endDate"] as (keyof EventFormData)[];
       case 2:
-        // For location, validate all required nested fields
         return [
           "location.name",
           "location.city",
@@ -171,7 +174,6 @@ const {badges} = useSelector((state: RootState) => state.badges)
     console.log('Current section:', currentSection);
     console.log('Last section:', sections.length - 1);
     
-    // Only process submission if on the last section
     if (currentSection !== sections.length - 1) {
       console.log('Not on last section, preventing submission');
       return;
@@ -179,12 +181,11 @@ const {badges} = useSelector((state: RootState) => state.badges)
     
     console.log('Processing submission...');
     
-    // Extract time from datetime-local input (format: HH:mm)
     const extractTime = (isoString: string): string => {
       if (!isoString) return '';
       try {
         const date = new Date(isoString);
-        return date.toTimeString().slice(0, 5); // HH:mm format
+        return date.toTimeString().slice(0, 5);
       } catch {
         return '';
       }
@@ -221,10 +222,8 @@ const {badges} = useSelector((state: RootState) => state.badges)
     onSubmit(cleaned);
   };
 
-  // Helper function to format date for datetime-local input
   const formatDateForInput = (dateString: string): string => {
     if (!dateString) return '';
-    
     try {
       const date = new Date(dateString);
       return date.toISOString().slice(0, 16);
@@ -233,15 +232,13 @@ const {badges} = useSelector((state: RootState) => state.badges)
     }
   };
 
-  // Helper function to parse datetime-local input
   const parseDateFromInput = (inputValue: string): string => {
     if (!inputValue) return '';
-    
     try {
       const date = new Date(inputValue);
       return date.toISOString();
     } catch {
-      return inputValue; // Return as-is if parsing fails
+      return inputValue;
     }
   };
 
@@ -255,9 +252,11 @@ const {badges} = useSelector((state: RootState) => state.badges)
           <Card className="border-slate-300">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-xl md:text-2xl font-bold">Create New Event</CardTitle>
+                <CardTitle className="text-xl md:text-2xl font-bold">
+                  {t('eventForm.title')}
+                </CardTitle>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  Fill in the event details step by step
+                  {t('eventForm.description')}
                 </p>
               </div>
               <Button
@@ -270,1190 +269,1281 @@ const {badges} = useSelector((state: RootState) => state.badges)
                 {showPreview ? (
                   <>
                     <EyeOff className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Hide Preview</span>
+                    <span className="hidden sm:inline">
+                      {t('eventForm.preview.hide')}
+                    </span>
                   </>
                 ) : (
                   <>
                     <Eye className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Show Preview</span>
+                    <span className="hidden sm:inline">
+                      {t('eventForm.preview.show')}
+                    </span>
                   </>
                 )}
               </Button>
             </CardHeader>
             <CardContent>
-          {/* Progress Indicator */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              {sections.map((section, index) => (
-                <div key={section.id} className="flex items-center flex-1">
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                      index === currentSection
-                        ? "border-blue-500 bg-blue-500 text-white"
-                        : index < currentSection
-                        ? "border-green-500 bg-green-500 text-white"
-                        : "border-gray-300 bg-white text-gray-400"
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                  {index < sections.length - 1 && (
+              {/* Progress Indicator */}
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-2">
+                  {sections.map((section, index) => (
+                    <div key={section.id} className="flex items-center flex-1">
+                      <div
+                        className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
+                          index === currentSection
+                            ? "border-blue-500 bg-blue-500 text-white"
+                            : index < currentSection
+                            ? "border-green-500 bg-green-500 text-white"
+                            : "border-gray-300 bg-white text-gray-400"
+                        }`}
+                      >
+                        {index + 1}
+                      </div>
+                      {index < sections.length - 1 && (
+                        <div
+                          className={`flex-1 h-1 mx-2 transition-all ${
+                            index < currentSection ? "bg-green-500" : "bg-gray-300"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between">
+                  {sections.map((section, index) => (
                     <div
-                      className={`flex-1 h-1 mx-2 transition-all ${
-                        index < currentSection ? "bg-green-500" : "bg-gray-300"
+                      key={section.id}
+                      className={`text-xs text-center flex-1 ${
+                        index === currentSection ? "font-semibold" : "text-gray-500"
                       }`}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between">
-              {sections.map((section, index) => (
-                <div
-                  key={section.id}
-                  className={`text-xs text-center flex-1 ${
-                    index === currentSection ? "font-semibold" : "text-gray-500"
-                  }`}
-                >
-                  {section.title}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Form {...form}>
-            <form 
-              onSubmit={form.handleSubmit(handleSubmit)} 
-              onKeyDown={(e) => {
-                // Prevent form submission on Enter key unless on last section
-                if (e.key === 'Enter' && currentSection < sections.length - 1) {
-                  e.preventDefault();
-                }
-              }}
-              className="space-y-6"
-            >
-              {/* Section 0: Basic Information */}
-              {currentSection === 0 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Basic Information</h3>
-                  
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Event Name *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter event name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description *</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter event description"
-                            className="min-h-[100px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="visibility"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Visibility</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select visibility" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="PUBLIC">Public</SelectItem>
-                              <SelectItem value="PRIVATE">Private</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="categories"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {
-                                categories && categories.map((category: any) => (
-                                  <SelectItem key={category._id} value={category._id}>
-                                    {category.name}
-                                  </SelectItem>
-                                ))
-                              }
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="type"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Event Type</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="FACETOFACE">Face to Face</SelectItem>
-                              <SelectItem value="VIRTUEL">Virtual</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Status</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="PENDING">Pending</SelectItem>
-                              <SelectItem value="ACCEPTED">Accepted</SelectItem>
-                              <SelectItem value="REFUSED">Refused</SelectItem>
-                              <SelectItem value="CLOSED">Closed</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="image"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Event Image</FormLabel>
-                        <FormControl>
-                          <div className="space-y-2">
-                            <FileUpload
-                              onUploadComplete={(url) => field.onChange({ data: { path: url } })}
-                              currentUrl={field.value}
-                              label="Upload Event Image"
-                              accept="image/*"
-                              disabled={isLoading}
-                            />
-                            <div className="text-xs text-muted-foreground">
-                              Or enter image URL manually:
-                            </div>
-                            <Input 
-                              placeholder="https://example.com/image.jpg" 
-                              {...field}
-                              value={field.value?.data?.path || field.value?.url || field.value || ''}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="capacity"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Event Capacity</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              placeholder="Maximum number of participants" 
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Set to 0 for unlimited capacity
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="allowRegistration"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              Allow Registration
-                            </FormLabel>
-                            <FormDescription>
-                              Enable participant registration for this event
-                            </FormDescription>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {form.watch('allowRegistration') && (
-                    <FormField
-                      control={form.control}
-                      name="registrationDeadline.date"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Registration Deadline</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="datetime-local"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Last date and time for participants to register
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-medium text-sm">Event Highlights</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="isNearestEvent"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Mark as Nearest Event
-                              </FormLabel>
-                              <FormDescription>
-                                Show this event in nearest events section
-                              </FormDescription>
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="isUpCommingEvent"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Mark as Upcoming Event
-                              </FormLabel>
-                              <FormDescription>
-                                Feature this event in upcoming events section
-                              </FormDescription>
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Section 1: Date & Time - FIXED */}
-              {currentSection === 1 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Date & Time</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <Label className="text-base font-medium">Start Date & Time *</Label>
-                      
-                      <FormField
-                        control={form.control}
-                        name="startDate.date"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Start Date & Time</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="datetime-local"
-                                {...field}
-                                value={formatDateForInput(field.value)}
-                                onChange={(e) => {
-                                  const newValue = parseDateFromInput(e.target.value);
-                                  field.onChange(newValue);
-                                }}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label className="text-base font-medium">End Date & Time *</Label>
-                      
-                      <FormField
-                        control={form.control}
-                        name="endDate.date"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>End Date & Time</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="datetime-local"
-                                {...field}
-                                value={formatDateForInput(field.value)}
-                                onChange={(e) => {
-                                  const newValue = parseDateFromInput(e.target.value);
-                                  field.onChange(newValue);
-                                }}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* Display date validation error */}
-                  {form.formState.errors.endDate?.date && (
-                    <div className="text-sm text-red-500 mt-2">
-                      {form.formState.errors.endDate.date.message}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Section 2: Location - FIXED */}
-              {currentSection === 2 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Location Information</h3>
-                  
-                  <FormField
-                    control={form.control}
-                    name="location.name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Venue Name *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="Enter venue name" 
-                            {...field} 
-                            value={field.value || ''}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="location.city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>City *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Enter city" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="location.country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Country *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Enter country" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* Optional location fields */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="location.countryCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Country Code *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="e.g., US, GB, FR" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="location.place_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Place ID *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Google Places ID" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* Debug information */}
-                  <div className="text-xs text-gray-500 mt-4 p-2 bg-gray-50 rounded">
-                    <div>Location Data:</div>
-                    <div>Name: {form.watch('location.name') || 'Not set'}</div>
-                    <div>City: {form.watch('location.city') || 'Not set'}</div>
-                    <div>Country: {form.watch('location.country') || 'Not set'}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Section 3: Social Networks */}
-              {currentSection === 3 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Social Networks</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="socialNetworks.website"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Website</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="https://example.com" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="socialNetworks.facebook"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Facebook</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="https://facebook.com/event" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="socialNetworks.instagram"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Instagram</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="https://instagram.com/event" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="socialNetworks.twitter"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Twitter</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="https://twitter.com/event" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="socialNetworks.linkedin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>LinkedIn</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="https://linkedin.com/event" 
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Section 4: Program */}
-              {currentSection === 4 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Event Program</h3>
-                  
-                  <FormField
-                    control={form.control}
-                    name="program"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Event Program</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter detailed program schedule"
-                            className="min-h-[150px]"
-                            {...field}
-                            value={field.value || ''}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-
-              {/* Section 5: Badges */}
-              {currentSection === 5 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Badges</h3>
-                  <p className="text-sm text-gray-600">Select badges that participants can earn at this event</p>
-                  
-                  <FormField
-                    control={form.control}
-                    name="badges"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Available Badges</FormLabel>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
-                          {badges && badges.length > 0 ? (
-                            badges.map((badge: any) => (
-                              <div
-                                key={badge._id}
-                                className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                                  field.value?.includes(badge._id)
-                                    ? 'border-blue-500 bg-blue-50'
-                                    : 'border-gray-200 hover:border-gray-300'
-                                }`}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const currentBadges = field.value || [];
-                                  if (currentBadges.includes(badge._id)) {
-                                    field.onChange(currentBadges.filter((id: string) => id !== badge._id));
-                                  } else {
-                                    field.onChange([...currentBadges, badge._id]);
-                                  }
-                                }}
-                              >
-                                <div className="flex items-start gap-3">
-                                  <div className="flex-shrink-0">
-                                    {badge.icon ? (
-                                      <img
-                                        src={badge.icon}
-                                        alt={badge.name}
-                                        className="w-12 h-12 object-cover rounded"
-                                      />
-                                    ) : (
-                                      <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                                        <span className="text-2xl">🏆</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-medium text-sm truncate">{badge.name}</h4>
-                                    {badge.description && (
-                                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                                        {badge.description}
-                                      </p>
-                                    )}
-                                    {field.value?.includes(badge._id) && (
-                                      <div className="mt-2 text-xs text-blue-600 font-medium">
-                                        ✓ Selected
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="col-span-full text-center py-8 text-gray-500">
-                              No badges available. Please create badges first.
-                            </div>
-                          )}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Selected badges summary */}
-                  {form.watch('badges')?.length > 0 && (
-                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                      <p className="text-sm font-medium text-blue-900">
-                        Selected Badges: {form.watch('badges').length}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Section 6: Gallery */}
-              {currentSection === 6 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <h3 className="text-lg font-semibold">Event Gallery</h3>
-                  <p className="text-sm text-gray-600">Add images to showcase your event</p>
-                  
-                  <FormField
-                    control={form.control}
-                    name="gallery"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Gallery Images</FormLabel>
-                        <div className="space-y-4">
-                          {/* File Upload Option */}
-                          <FileUpload
-                            onUploadComplete={(url) => {
-                              if (url) {
-                                const currentGallery = field.value || [];
-                                field.onChange([...currentGallery, url]);
-                              }
-                            }}
-                            label="Upload Gallery Image"
-                            accept="image/*"
-                            disabled={isLoading}
-                          />
-                          
-                          {/* Add new image input */}
-                          <div className="flex gap-2">
-                            <Input
-                              type="url"
-                              placeholder="Or enter image URL (https://...)"
-                              value={newImageUrl}
-                              onChange={(e) => setNewImageUrl(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  e.preventDefault();
-                                  if (newImageUrl.trim()) {
-                                    const currentGallery = field.value || [];
-                                    field.onChange([...currentGallery, newImageUrl.trim()]);
-                                    setNewImageUrl("");
-                                  }
-                                }
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                if (newImageUrl.trim()) {
-                                  const currentGallery = field.value || [];
-                                  field.onChange([...currentGallery, newImageUrl.trim()]);
-                                  setNewImageUrl("");
-                                }
-                              }}
-                            >
-                              <Plus className="w-4 h-4 mr-2" />
-                              Add URL
-                            </Button>
-                          </div>
-
-                          {/* Gallery preview grid */}
-                          {field.value && field.value.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                              {field.value.map((imageUrl: string, index: number) => (
-                                <div
-                                  key={index}
-                                  className="relative group rounded-lg overflow-hidden border border-gray-200 aspect-square"
-                                >
-                                  <img
-                                    src={imageUrl}
-                                    alt={`Gallery image ${index + 1}`}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
-                                    }}
-                                  />
-                                  {/* Delete button overlay */}
-                                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
-                                    <Button
-                                      type="button"
-                                      variant="destructive"
-                                      size="sm"
-                                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        const currentGallery = field.value || [];
-                                        field.onChange(currentGallery.filter((_: string, i: number) => i !== index));
-                                      }}
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </Button>
-                                  </div>
-                                  {/* Image number badge */}
-                                  <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
-                                    {index + 1}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-                              <p className="text-gray-500">No images added yet</p>
-                              <p className="text-sm text-gray-400 mt-1">Add image URLs to create your event gallery</p>
-                            </div>
-                          )}
-
-                          {/* Gallery count */}
-                          {field.value && field.value.length > 0 && (
-                            <div className="text-sm text-gray-600">
-                              Total images: <span className="font-medium">{field.value.length}</span>
-                            </div>
-                          )}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-
-              {/* Section 7: Exhibitors & Sponsors */}
-              {
-                currentSection === 7 && (
-                  <div className="space-y-6 animate-in fade-in duration-300">
-                    <h3 className="text-lg font-semibold">Exhibitors & Sponsors</h3>
-                    
-                    {/* Exhibitors Section */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-md font-medium">Exhibitors</h4>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => appendExhibitor({
-                            fullName: "",
-                            picture: "",
-                            socialNetworks: {
-                              facebook: "",
-                              instagram: "",
-                              linkedin: "",
-                              twitter: "",
-                              website: "",
-                            },
-                          })}
-                        >
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Exhibitor
-                        </Button>
-                      </div>
-
-                      {exhibitorFields.map((field, index) => (
-                        <Card key={field.id} className="p-4">
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <h5 className="font-medium">Exhibitor {index + 1}</h5>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeExhibitor(index)}
-                              >
-                                <Trash2 className="w-4 h-4 text-red-500" />
-                              </Button>
-                            </div>
-
-                            <FormField
-                              control={form.control}
-                              name={`exhibitors.${index}.fullName`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Full Name *</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="Enter exhibitor name" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`exhibitors.${index}.picture`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Picture URL</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="https://example.com/image.jpg" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">Social Networks</Label>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <FormField
-                                  control={form.control}
-                                  name={`exhibitors.${index}.socialNetworks.facebook`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Facebook URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`exhibitors.${index}.socialNetworks.instagram`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Instagram URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`exhibitors.${index}.socialNetworks.linkedin`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="LinkedIn URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`exhibitors.${index}.socialNetworks.twitter`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Twitter URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`exhibitors.${index}.socialNetworks.website`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Website URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-
-                    {/* Sponsors Section */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-md font-medium">Sponsors</h4>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => appendSponsor({
-                            name: "",
-                            logo: "",
-                            socialNetworks: {
-                              facebook: "",
-                              instagram: "",
-                              linkedin: "",
-                              twitter: "",
-                              website: "",
-                            },
-                          })}
-                        >
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Sponsor
-                        </Button>
-                      </div>
-
-                      {sponsorFields.map((field, index) => (
-                        <Card key={field.id} className="p-4">
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <h5 className="font-medium">Sponsor {index + 1}</h5>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeSponsor(index)}
-                              >
-                                <Trash2 className="w-4 h-4 text-red-500" />
-                              </Button>
-                            </div>
-
-                            <FormField
-                              control={form.control}
-                              name={`sponsors.${index}.name`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Sponsor Name *</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="Enter sponsor name" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`sponsors.${index}.logo`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Logo URL</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="https://example.com/logo.jpg" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">Social Networks</Label>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <FormField
-                                  control={form.control}
-                                  name={`sponsors.${index}.socialNetworks.facebook`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Facebook URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`sponsors.${index}.socialNetworks.instagram`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Instagram URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`sponsors.${index}.socialNetworks.linkedin`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="LinkedIn URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`sponsors.${index}.socialNetworks.twitter`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Twitter URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name={`sponsors.${index}.socialNetworks.website`}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Input placeholder="Website URL" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                )
-              }
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6 border-t">
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => navigate(-1)}
-                  >
-                    Cancel
-                  </Button>
-                  {currentSection > 0 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handlePrevious}
                     >
-                      <ChevronLeft className="w-4 h-4 mr-2" />
-                      Previous
-                    </Button>
-                  )}
-                </div>
-
-                <div>
-                  {currentSection < sections.length - 1 ? (
-                    <Button
-                      type="button"
-                      onClick={handleNext}
-                    >
-                      Next
-                      <ChevronRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  ) : (
-                    <Button type="submit" disabled={isLoading}>
-                      {isLoading ? "Creating..." : "Create Event"}
-                    </Button>
-                  )}
+                      {section.title}
+                    </div>
+                  ))}
                 </div>
               </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+
+              <Form {...form}>
+                <form 
+                  onSubmit={form.handleSubmit(handleSubmit)} 
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && currentSection < sections.length - 1) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="space-y-6"
+                >
+                  {/* Section 0: Basic Information */}
+                  {currentSection === 0 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.basicInfo')}
+                      </h3>
+                      
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.fields.name')} *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterEventName')} 
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.fields.description')} *</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder={t('eventForm.placeholders.enterDescription')}
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="visibility"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.visibility')}</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder={t('eventForm.placeholders.selectVisibility')} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="PUBLIC">
+                                    {t('eventForm.options.visibility.public')}
+                                  </SelectItem>
+                                  <SelectItem value="PRIVATE">
+                                    {t('eventForm.options.visibility.private')}
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="categories"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.categories')}</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder={t('eventForm.placeholders.selectCategory')} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {categories && categories.map((category: any) => (
+                                    <SelectItem key={category._id} value={category._id}>
+                                      {category.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="type"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.type')}</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder={t('eventForm.placeholders.selectType')} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="FACETOFACE">
+                                    {t('eventForm.options.type.faceToFace')}
+                                  </SelectItem>
+                                  <SelectItem value="VIRTUEL">
+                                    {t('eventForm.options.type.virtual')}
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.status')}</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder={t('eventForm.placeholders.selectStatus')} />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="PENDING">
+                                    {t('eventForm.options.status.pending')}
+                                  </SelectItem>
+                                  <SelectItem value="ACCEPTED">
+                                    {t('eventForm.options.status.accepted')}
+                                  </SelectItem>
+                                  <SelectItem value="REFUSED">
+                                    {t('eventForm.options.status.refused')}
+                                  </SelectItem>
+                                  <SelectItem value="CLOSED">
+                                    {t('eventForm.options.status.closed')}
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name="image"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.fields.image')}</FormLabel>
+                            <FormControl>
+                              <div className="space-y-2">
+                                <FileUpload
+                                  onUploadComplete={(url) => field.onChange(url)}
+                                  currentUrl={field.value || ''}
+                                  label={t('eventForm.buttons.uploadImage')}
+                                  accept="image/*"
+                                  disabled={isLoading}
+                                />
+                                <div className="text-xs text-muted-foreground">
+                                  {t('eventForm.placeholders.enterImageUrlManual')}
+                                </div>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterImageUrl')} 
+                                  {...field}
+                                  value={field.value || ''}
+                                  onChange={(e) => field.onChange(e.target.value)}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="capacity"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.capacity')}</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder={t('eventForm.placeholders.enterCapacity')} 
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                {t('eventForm.descriptions.capacity')}
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="allowRegistration"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                  {t('eventForm.fields.allowRegistration')}
+                                </FormLabel>
+                                <FormDescription>
+                                  {t('eventForm.descriptions.allowRegistration')}
+                                </FormDescription>
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {form.watch('allowRegistration') && (
+                        <FormField
+                          control={form.control}
+                          name="registrationDeadline.date"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.registrationDeadline')}</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="datetime-local"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                {t('eventForm.descriptions.registrationDeadline')}
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+
+                      <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-medium text-sm">
+                          {t('eventForm.labels.eventHighlights')}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="isNearestEvent"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                  <FormLabel>
+                                    {t('eventForm.labels.markAsNearestEvent')}
+                                  </FormLabel>
+                                  <FormDescription>
+                                    {t('eventForm.descriptions.isNearestEvent')}
+                                  </FormDescription>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="isUpCommingEvent"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                  <FormLabel>
+                                    {t('eventForm.labels.markAsUpcomingEvent')}
+                                  </FormLabel>
+                                  <FormDescription>
+                                    {t('eventForm.descriptions.isUpcomingEvent')}
+                                  </FormDescription>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 1: Date & Time */}
+                  {currentSection === 1 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.dateTime')}
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <Label className="text-base font-medium">
+                            {t('eventForm.fields.startDate')} *
+                          </Label>
+                          
+                          <FormField
+                            control={form.control}
+                            name="startDate.date"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{t('eventForm.fields.startDate')}</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="datetime-local"
+                                    {...field}
+                                    value={formatDateForInput(field.value)}
+                                    onChange={(e) => {
+                                      const newValue = parseDateFromInput(e.target.value);
+                                      field.onChange(newValue);
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="space-y-4">
+                          <Label className="text-base font-medium">
+                            {t('eventForm.fields.endDate')} *
+                          </Label>
+                          
+                          <FormField
+                            control={form.control}
+                            name="endDate.date"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{t('eventForm.fields.endDate')}</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="datetime-local"
+                                    {...field}
+                                    value={formatDateForInput(field.value)}
+                                    onChange={(e) => {
+                                      const newValue = parseDateFromInput(e.target.value);
+                                      field.onChange(newValue);
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                      
+                      {form.formState.errors.endDate?.date && (
+                        <div className="text-sm text-red-500 mt-2">
+                          {form.formState.errors.endDate.date.message}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Section 2: Location */}
+                  {currentSection === 2 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.location')}
+                      </h3>
+                      
+                      <FormField
+                        control={form.control}
+                        name="location.name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.fields.venueName')} *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterVenueName')} 
+                                {...field} 
+                                value={field.value || ''}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="location.city"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.city')} *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterCity')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="location.country"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.country')} *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterCountry')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="location.countryCode"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.countryCode')} *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterCountryCode')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="location.place_id"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.placeId')} *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterPlaceId')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="text-xs text-gray-500 mt-4 p-2 bg-gray-50 rounded">
+                        <div>{t('eventForm.messages.debugLocation')}</div>
+                        <div>{t('eventForm.fields.name')}: {form.watch('location.name') || t('eventForm.messages.notSet')}</div>
+                        <div>{t('eventForm.fields.city')}: {form.watch('location.city') || t('eventForm.messages.notSet')}</div>
+                        <div>{t('eventForm.fields.country')}: {form.watch('location.country') || t('eventForm.messages.notSet')}</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 3: Social Networks */}
+                  {currentSection === 3 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.socialNetworks')}
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="socialNetworks.website"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.website')}</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterWebsite')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="socialNetworks.facebook"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.facebook')}</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterFacebook')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="socialNetworks.instagram"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.instagram')}</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterInstagram')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="socialNetworks.twitter"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.twitter')}</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterTwitter')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="socialNetworks.linkedin"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('eventForm.fields.linkedin')}</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder={t('eventForm.placeholders.enterLinkedIn')} 
+                                  {...field} 
+                                  value={field.value || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 4: Program */}
+                  {currentSection === 4 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.program')}
+                      </h3>
+                      
+                      <FormField
+                        control={form.control}
+                        name="program"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.fields.program')}</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder={t('eventForm.placeholders.enterProgram')}
+                                className="min-h-[150px]"
+                                {...field}
+                                value={field.value || ''}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  {/* Section 5: Badges */}
+                  {currentSection === 5 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.badges')}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t('eventForm.descriptions.badges')}
+                      </p>
+                      
+                      <FormField
+                        control={form.control}
+                        name="badges"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.labels.availableBadges')}</FormLabel>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+                              {badges && badges.length > 0 ? (
+                                badges.map((badge: any) => (
+                                  <div
+                                    key={badge._id}
+                                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                                      field.value?.includes(badge._id)
+                                        ? 'border-blue-500 bg-blue-50'
+                                        : 'border-gray-200 hover:border-gray-300'
+                                    }`}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      const currentBadges = field.value || [];
+                                      if (currentBadges.includes(badge._id)) {
+                                        field.onChange(currentBadges.filter((id: string) => id !== badge._id));
+                                      } else {
+                                        field.onChange([...currentBadges, badge._id]);
+                                      }
+                                    }}
+                                  >
+                                    <div className="flex items-start gap-3">
+                                      <div className="flex-shrink-0">
+                                        {badge.icon ? (
+                                          <img
+                                            src={badge.icon}
+                                            alt={badge.name}
+                                            className="w-12 h-12 object-cover rounded"
+                                          />
+                                        ) : (
+                                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                            <span className="text-2xl">🏆</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <h4 className="font-medium text-sm truncate">{badge.name}</h4>
+                                        {badge.description && (
+                                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                                            {badge.description}
+                                          </p>
+                                        )}
+                                        {field.value?.includes(badge._id) && (
+                                          <div className="mt-2 text-xs text-blue-600 font-medium">
+                                            ✓ {t('eventForm.labels.selected')}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="col-span-full text-center py-8 text-gray-500">
+                                  {t('eventForm.labels.noBadges')}
+                                </div>
+                              )}
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {form.watch('badges')?.length > 0 && (
+                        <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                          <p className="text-sm font-medium text-blue-900">
+                            {t('eventForm.labels.selectedBadges')}: {form.watch('badges').length}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Section 6: Gallery */}
+                  {currentSection === 6 && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.gallery')}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t('eventForm.descriptions.gallery')}
+                      </p>
+                      
+                      <FormField
+                        control={form.control}
+                        name="gallery"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('eventForm.fields.galleryImages')}</FormLabel>
+                            <div className="space-y-4">
+                              <FileUpload
+                                onUploadComplete={(url) => {
+                                  if (url) {
+                                    const currentGallery = field.value || [];
+                                    field.onChange([...currentGallery, url]);
+                                  }
+                                }}
+                                label={t('eventForm.buttons.uploadGalleryImage')}
+                                accept="image/*"
+                                disabled={isLoading}
+                              />
+                              
+                              <div className="flex gap-2">
+                                <Input
+                                  type="url"
+                                  placeholder={t('eventForm.placeholders.enterImageUrlGallery')}
+                                  value={newImageUrl}
+                                  onChange={(e) => setNewImageUrl(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      if (newImageUrl.trim()) {
+                                        const currentGallery = field.value || [];
+                                        field.onChange([...currentGallery, newImageUrl.trim()]);
+                                        setNewImageUrl("");
+                                      }
+                                    }
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (newImageUrl.trim()) {
+                                      const currentGallery = field.value || [];
+                                      field.onChange([...currentGallery, newImageUrl.trim()]);
+                                      setNewImageUrl("");
+                                    }
+                                  }}
+                                >
+                                  <Plus className="w-4 h-4 mr-2" />
+                                  {t('eventForm.buttons.addUrl')}
+                                </Button>
+                              </div>
+
+                              {field.value && field.value.length > 0 ? (
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                  {field.value.map((imageUrl: string, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="relative group rounded-lg overflow-hidden border border-gray-200 aspect-square"
+                                    >
+                                      <img
+                                        src={imageUrl}
+                                        alt={t('eventForm.labels.imageNumber', { number: index + 1 })}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
+                                        }}
+                                      />
+                                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
+                                        <Button
+                                          type="button"
+                                          variant="destructive"
+                                          size="sm"
+                                          className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            const currentGallery = field.value || [];
+                                            field.onChange(currentGallery.filter((_: string, i: number) => i !== index));
+                                          }}
+                                        >
+                                          <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </div>
+                                      <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                                        {index + 1}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+                                  <p className="text-gray-500">{t('eventForm.labels.noImages')}</p>
+                                  <p className="text-sm text-gray-400 mt-1">
+                                    {t('eventForm.labels.noImagesDescription')}
+                                  </p>
+                                </div>
+                              )}
+
+                              {field.value && field.value.length > 0 && (
+                                <div className="text-sm text-gray-600">
+                                  {t('eventForm.labels.totalImages')}: <span className="font-medium">{field.value.length}</span>
+                                </div>
+                              )}
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  {/* Section 7: Exhibitors & Sponsors */}
+                  {currentSection === 7 && (
+                    <div className="space-y-6 animate-in fade-in duration-300">
+                      <h3 className="text-lg font-semibold">
+                        {t('eventForm.sections.exhibitorsSponsors')}
+                      </h3>
+                      
+                      {/* Exhibitors Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-md font-medium">
+                            {t('eventForm.fields.exhibitors')}
+                          </h4>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => appendExhibitor({
+                              fullName: "",
+                              picture: "",
+                              socialNetworks: {
+                                facebook: "",
+                                instagram: "",
+                                linkedin: "",
+                                twitter: "",
+                                website: "",
+                              },
+                            })}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            {t('eventForm.buttons.addExhibitor')}
+                          </Button>
+                        </div>
+
+                        {exhibitorFields.map((field, index) => (
+                          <Card key={field.id} className="p-4">
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="font-medium">
+                                  {t('eventForm.fields.exhibitors')} {index + 1}
+                                </h5>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeExhibitor(index)}
+                                >
+                                  <Trash2 className="w-4 h-4 text-red-500" />
+                                </Button>
+                              </div>
+
+                              <FormField
+                                control={form.control}
+                                name={`exhibitors.${index}.fullName`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{t('eventForm.fields.fullName')} *</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder={t('eventForm.placeholders.enterExhibitorName')} 
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <FormField
+                                control={form.control}
+                                name={`exhibitors.${index}.picture`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{t('eventForm.fields.picture')}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder={t('eventForm.placeholders.enterExhibitorPicture')} 
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">
+                                  {t('eventForm.descriptions.socialNetworks')}
+                                </Label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <FormField
+                                    control={form.control}
+                                    name={`exhibitors.${index}.socialNetworks.facebook`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterFacebook')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`exhibitors.${index}.socialNetworks.instagram`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterInstagram')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`exhibitors.${index}.socialNetworks.linkedin`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterLinkedIn')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`exhibitors.${index}.socialNetworks.twitter`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterTwitter')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`exhibitors.${index}.socialNetworks.website`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterWebsite')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+
+                      {/* Sponsors Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-md font-medium">
+                            {t('eventForm.fields.sponsors')}
+                          </h4>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => appendSponsor({
+                              name: "",
+                              logo: "",
+                              socialNetworks: {
+                                facebook: "",
+                                instagram: "",
+                                linkedin: "",
+                                twitter: "",
+                                website: "",
+                              },
+                            })}
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            {t('eventForm.buttons.addSponsor')}
+                          </Button>
+                        </div>
+
+                        {sponsorFields.map((field, index) => (
+                          <Card key={field.id} className="p-4">
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="font-medium">
+                                  {t('eventForm.fields.sponsors')} {index + 1}
+                                </h5>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeSponsor(index)}
+                                >
+                                  <Trash2 className="w-4 h-4 text-red-500" />
+                                </Button>
+                              </div>
+
+                              <FormField
+                                control={form.control}
+                                name={`sponsors.${index}.name`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{t('eventForm.fields.sponsorName')} *</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder={t('eventForm.placeholders.enterSponsorName')} 
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <FormField
+                                control={form.control}
+                                name={`sponsors.${index}.logo`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{t('eventForm.fields.logo')}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder={t('eventForm.placeholders.enterSponsorLogo')} 
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">
+                                  {t('eventForm.descriptions.socialNetworks')}
+                                </Label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  <FormField
+                                    control={form.control}
+                                    name={`sponsors.${index}.socialNetworks.facebook`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterFacebook')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`sponsors.${index}.socialNetworks.instagram`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterInstagram')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`sponsors.${index}.socialNetworks.linkedin`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterLinkedIn')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`sponsors.${index}.socialNetworks.twitter`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterTwitter')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`sponsors.${index}.socialNetworks.website`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input 
+                                            placeholder={t('eventForm.placeholders.enterWebsite')} 
+                                            {...field} 
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Navigation Buttons */}
+                  <div className="flex justify-between pt-6 border-t">
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => navigate(-1)}
+                      >
+                        {t('eventForm.buttons.cancel')}
+                      </Button>
+                      {currentSection > 0 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handlePrevious}
+                        >
+                          <ChevronLeft className="w-4 h-4 mr-2" />
+                          {t('eventForm.buttons.previous')}
+                        </Button>
+                      )}
+                    </div>
+
+                    <div>
+                      {currentSection < sections.length - 1 ? (
+                        <Button
+                          type="button"
+                          onClick={handleNext}
+                        >
+                          {t('eventForm.buttons.next')}
+                          <ChevronRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      ) : (
+                        <Button type="submit" disabled={isLoading}>
+                          {isLoading ? t('eventForm.buttons.creating') : t('eventForm.buttons.createEvent')}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Preview Section */}
@@ -1461,9 +1551,11 @@ const {badges} = useSelector((state: RootState) => state.badges)
           <div className="w-full lg:w-1/3 lg:sticky lg:top-6 h-fit order-first lg:order-last">
             <Card className="border-slate-300">
               <CardHeader className="m-0">
-                <CardTitle className="text-lg font-semibold">Live Preview</CardTitle>
+                <CardTitle className="text-lg font-semibold">
+                  {t('eventForm.preview.title')}
+                </CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  See how your event will look
+                  {t('eventForm.preview.description')}
                 </p>
               </CardHeader>
               <CardContent className="overflow-x-auto p-0">

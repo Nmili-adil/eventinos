@@ -79,7 +79,6 @@ export function MembersFilters({ filters, onFiltersChange }: MembersFiltersProps
                   <SelectItem value="all">All Gender</SelectItem>
                   <SelectItem value="MALE">Male</SelectItem>
                   <SelectItem value="FEMALE">Female</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>

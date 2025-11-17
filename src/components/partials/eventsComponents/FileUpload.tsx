@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Upload, X, Loader2, CheckCircle2 } from 'lucide-react'
-import { uploadFileApi, getFileUrlApi } from '@/api/filesApi'
+import { uploadFileApi, getFileUrlApi, deleteFileApi } from '@/api/filesApi'
 import { toast } from 'sonner'
 
 interface FileUploadProps {
@@ -41,9 +41,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     setUploading(true)
     try {
       const fileId = await uploadFileApi(file)
-      const url = await getFileUrlApi(fileId)
-      setUploadedUrl(url)
-      onUploadComplete(url)
+      const url: any = await getFileUrlApi(fileId)
+      setUploadedUrl(fileId)
+      console.log('url', url)
+      onUploadComplete(url.data?.path || url.url || url.data?.url || url)
       toast.success('File uploaded successfully')
     } catch (error: any) {
       toast.error(error.message || 'Failed to upload file')
@@ -53,12 +54,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     }
   }
 
-  const handleRemove = () => {
-    setPreview(null)
-    setUploadedUrl(null)
-    onUploadComplete('')
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+  const handleRemove = async () => {
+    setUploading(true)
+    try {
+      if (uploadedUrl) {
+        console.log('uploadedUrl', uploadedUrl)
+        await deleteFileApi(uploadedUrl as string)
+        toast.success('File deleted successfully')
+        setUploadedUrl(null)
+        setPreview(null)
+        onUploadComplete('')
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to delete file')
+    } finally {
+      setUploading(false)
+      setPreview(null)
+      setUploadedUrl(null)
     }
   }
 

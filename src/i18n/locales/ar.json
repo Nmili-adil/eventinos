@@ -108,6 +108,147 @@
     "preview": "معاينة",
     "changeStatus": "تغيير الحالة"
   },
+  "eventForm": {
+      "title": "إنشاء حدث جديد",
+      "description": "املأ تفاصيل الحدث خطوة بخطوة",
+      "preview": {
+        "show": "عرض المعاينة",
+        "hide": "إخفاء المعاينة",
+        "title": "معاينة مباشرة",
+        "description": "شاهد كيف سيبدو حدثك"
+      },
+      "sections": {
+        "basicInfo": "المعلومات الأساسية",
+        "dateTime": "التاريخ والوقت",
+        "location": "معلومات الموقع",
+        "socialNetworks": "الشبكات الاجتماعية",
+        "program": "برنامج الحدث",
+        "badges": "الشارات",
+        "gallery": "معرض الصور",
+        "exhibitorsSponsors": "العارضون والرعاة"
+      },
+      "fields": {
+        "name": "اسم الحدث",
+        "description": "الوصف",
+        "image": "صورة الحدث",
+        "visibility": "الرؤية",
+        "type": "نوع الحدث",
+        "status": "الحالة",
+        "categories": "الفئة",
+        "capacity": "سعة الحدث",
+        "allowRegistration": "السماح بالتسجيل",
+        "registrationDeadline": "موعد انتهاء التسجيل",
+        "startDate": "تاريخ ووقت البدء",
+        "endDate": "تاريخ ووقت الانتهاء",
+        "venueName": "اسم المكان",
+        "city": "المدينة",
+        "country": "الدولة",
+        "countryCode": "رمز الدولة",
+        "placeId": "معرف المكان",
+        "website": "الموقع الإلكتروني",
+        "facebook": "فيسبوك",
+        "instagram": "إنستغرام",
+        "twitter": "تويتر",
+        "linkedin": "لينكدإن",
+        "program": "برنامج الحدث",
+        "galleryImages": "صور المعرض",
+        "exhibitors": "العارضون",
+        "sponsors": "الرعاة",
+        "fullName": "الاسم الكامل",
+        "picture": "رابط الصورة",
+        "logo": "رابط الشعار",
+        "sponsorName": "اسم الراعي"
+      },
+      "placeholders": {
+        "enterEventName": "أدخل اسم الحدث",
+        "enterDescription": "أدخل وصف الحدث",
+        "enterImageUrl": "https://example.com/image.jpg",
+        "selectVisibility": "اختر الرؤية",
+        "selectCategory": "اختر الفئة",
+        "selectType": "اختر النوع",
+        "selectStatus": "اختر الحالة",
+        "enterCapacity": "العدد الأقصى للمشاركين",
+        "enterVenueName": "أدخل اسم المكان",
+        "enterCity": "أدخل المدينة",
+        "enterCountry": "أدخل الدولة",
+        "enterCountryCode": "مثال: SA, US, FR",
+        "enterPlaceId": "معرف Google Places",
+        "enterWebsite": "https://example.com",
+        "enterFacebook": "https://facebook.com/event",
+        "enterInstagram": "https://instagram.com/event",
+        "enterTwitter": "https://twitter.com/event",
+        "enterLinkedIn": "https://linkedin.com/event",
+        "enterProgram": "أدخل الجدول الزمني التفصيلي للبرنامج",
+        "enterImageUrlManual": "أو أدخل رابط الصورة يدويًا:",
+        "enterImageUrlGallery": "أو أدخل رابط الصورة (https://...)",
+        "enterExhibitorName": "أدخل اسم العارض",
+        "enterExhibitorPicture": "https://example.com/image.jpg",
+        "enterSponsorName": "أدخل اسم الراعي",
+        "enterSponsorLogo": "https://example.com/logo.jpg"
+      },
+      "options": {
+        "visibility": {
+          "public": "عام",
+          "private": "خاص"
+        },
+        "type": {
+          "faceToFace": "وجهاً لوجه",
+          "virtual": "افتراضي"
+        },
+        "status": {
+          "pending": "قيد الانتظار",
+          "accepted": "مقبول",
+          "refused": "مرفوض",
+          "closed": "مغلق"
+        }
+      },
+      "descriptions": {
+        "capacity": "اضبط على 0 لسعة غير محدودة",
+        "allowRegistration": "تمكين تسجيل المشاركين لهذا الحدث",
+        "registrationDeadline": "آخر تاريخ ووقت لتسجيل المشاركين",
+        "isNearestEvent": "عرض هذا الحدث في قسم الأحداث القريبة",
+        "isUpcomingEvent": "إبراز هذا الحدث في قسم الأحداث القادمة",
+        "badges": "اختر الشارات التي يمكن للمشاركين كسبها في هذا الحدث",
+        "gallery": "أضف صورًا لعرض حدثك",
+        "socialNetworks": "الشبكات الاجتماعية"
+      },
+      "buttons": {
+        "cancel": "إلغاء",
+        "previous": "السابق",
+        "next": "التالي",
+        "createEvent": "إنشاء الحدث",
+        "creating": "جاري الإنشاء...",
+        "addUrl": "إضافة الرابط",
+        "addExhibitor": "إضافة عارض",
+        "addSponsor": "إضافة راعي",
+        "uploadImage": "رفع صورة الحدث",
+        "uploadGalleryImage": "رفع صورة المعرض"
+      },
+      "labels": {
+        "eventHighlights": "أبرز الأحداث",
+        "markAsNearestEvent": "وضع علامة كحدث قريب",
+        "markAsUpcomingEvent": "وضع علامة كحدث قادم",
+        "availableBadges": "الشارات المتاحة",
+        "selected": "محدد",
+        "selectedBadges": "الشارات المحددة",
+        "totalImages": "إجمالي الصور",
+        "noBadges": "لا توجد شارات متاحة. يرجى إنشاء الشارات أولاً.",
+        "noImages": "لم تتم إضافة أي صور بعد",
+        "noImagesDescription": "أضف روابط الصور لإنشاء معرض الأحداث الخاص بك",
+        "imageNumber": "الصورة {{number}}"
+      },
+      "validation": {
+        "required": "هذا الحقل مطلوب",
+        "invalidUrl": "يرجى إدخال رابط صحيح",
+        "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+        "invalidDate": "يرجى إدخال تاريخ صحيح",
+        "endDateBeforeStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء"
+      },
+      "messages": {
+        "debugLocation": "بيانات الموقع:",
+        "notSet": "غير محدد"
+      }
+    },
   "notFound": {
     "title": "الصفحة غير موجودة",
     "message": "عذراً! الصفحة التي تبحث عنها غير موجودة.",

@@ -16,7 +16,7 @@ import {
   Filter as FilterIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { Event, EventStatus } from '@/types/eventsTypes'
+import type { Event, EventCardProps, EventStatus } from '@/types/eventsTypes'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +47,7 @@ const defaultCenter = {
   lng: -7.080168,
 }
 
-const defaultZoom = 5
+const defaultZoom = 7
 
 interface EventsMapViewProps {
   events: Event[]
@@ -187,7 +187,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
 
             {/* City Filter */}
             <Select value={selectedCity} onValueChange={handleCityChange}>
-              <SelectTrigger className="bg-white text-gray-900">
+              <SelectTrigger className="bg-white text-gray-900 w-full">
                 <FilterIcon className="h-4 w-4 mr-2" />
                 <SelectValue placeholder={t('events.selectCity')} />
               </SelectTrigger>
@@ -300,12 +300,22 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
                       maxWidth: 300,
                     }}
                   >
-                    <div className="p-2">
-                      <h3 className="font-semibold text-sm mb-1">{event.name || event.title}</h3>
-                      <p className="text-xs text-gray-600 mb-2">{event.location?.city}</p>
-                      <Badge className={cn('text-xs', getStatusColor(event.status))}>
-                        {getStatusText(event.status)}
-                      </Badge>
+                    <div className="p-2 bg-cover bg-center h-48 w-full" style={{ backgroundImage: `url(${event.image})` }}>
+                      <div className="flex flex-col">
+                        <h3 className="font-semibold text-sm mb-1">{event.name || event.title}</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="default" className="text-xs">{event.location?.city}</Badge>
+                        <Badge variant="default" className={cn('text-xs', getStatusColor(event.status))}>
+                          {getStatusText(event.status)}
+                        </Badge>
+                        <Badge variant="default" className="text-xs">
+                          {getVisibilityText(event.visibility)}
+                        </Badge>
+                        <Badge variant="default" className="text-xs">
+                          {getTypeText(event.type)}
+                        </Badge>
+                        </div>
+                      </div>
                     </div>
                   </InfoWindow>
                 )}
@@ -319,15 +329,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
 }
 
 // Event Card Component
-interface EventCardProps {
-  event: Event
-  isSelected: boolean
-  onClick: () => void
-  onPreview: () => void
-  onEdit: () => void
-  onChangeStatus: () => void
-  onDelete: () => void
-}
+
 
 const EventCard: React.FC<EventCardProps> = ({
   event,
@@ -352,7 +354,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <Card
       className={cn(
-        'cursor-pointer transition-all hover:shadow-lg border-2',
+        'cursor-pointer transition-all hover:shadow-lg border-2 py-0',
         isSelected
           ? 'border-blue-500 shadow-lg ring-2 ring-blue-200'
           : 'border-gray-200 hover:border-blue-300'
