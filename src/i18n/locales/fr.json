@@ -87,27 +87,72 @@
     }
   },
   "events": {
-    "title": "Événements",
-    "addEvent": "Ajouter un événement",
-    "editEvent": "Modifier l'événement",
-    "eventName": "Nom de l'événement",
-    "eventDescription": "Description",
-    "eventDetails": "Détails de l'événement",
-    "basicInformation": "Informations de base",
-    "enterEventName": "Entrez le nom de l'événement",
-    "enterEventDescription": "Entrez la description de l'événement",
-    "loadingEvents": "Chargement des événements...",
-    "noEventsFound": "Aucun événement trouvé",
-    "resetFilters": "Réinitialiser les filtres",
-    "searchPlaceholder": "Rechercher un événement...",
-    "mapView": "Vue Carte",
-    "selectCity": "Sélectionner une ville",
-    "allCities": "Toutes les villes",
-    "eventsFound": "événements trouvés",
-    "showEvents": "Afficher les événements",
-    "preview": "Aperçu",
-    "changeStatus": "Changer le statut"
-  },
+      "title": "Événements",
+      "addEvent": "Ajouter un événement",
+      "editEvent": "Modifier l'événement",
+      "eventName": "Nom de l'événement",
+      "eventDescription": "Description",
+      "eventDetails": "Détails de l'événement",
+      "basicInformation": "Informations de base",
+      "enterEventName": "Entrez le nom de l'événement",
+      "enterEventDescription": "Entrez la description de l'événement",
+      "loadingEvents": "Chargement des événements...",
+      "noEventsFound": "Aucun événement trouvé",
+      "resetFilters": "Réinitialiser les filtres",
+      "searchPlaceholder": "Rechercher un événement...",
+      "mapView": "Vue carte",
+      "selectCity": "Sélectionner une ville",
+      "allCities": "Toutes les villes",
+      "eventsFound": "événements trouvés",
+      "showEvents": "Afficher les événements",
+      "preview": "Aperçu",
+      "changeStatus": "Changer le statut",
+      "allStatuses": "Tous les statuts",
+      "allTypes": "Tous les types",
+      "faceToFace": "En présentiel",
+      "virtual": "Virtuel",
+      "hybrid": "Hybride",
+      "today":"aujourd'hui",
+      "inPerson": "En personne",
+      "statusAccepted": "Accepté",
+      "statusPending": "En attente",
+      "statusRejected": "Rejeté",
+      "statusCancelled": "Annulé",
+      "statusClosed": "Fermé",
+      "eventStatusUpdated": "Statut de l'événement mis à jour avec succès",
+      "deleteEventTitle": "Supprimer l'événement",
+      "deleteEventConfirm": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+      "sections": {
+        "basicInfo": "Informations de base",
+        "dateTime": "Date et heure",
+        "location": "Lieu",
+        "socialNetworks": "Réseaux sociaux",
+        "program": "Programme",
+        "badges": "Badges",
+        "gallery": "Galerie",
+        "exhibitorsSponsors": "Exposants et sponsors"
+      },
+      "table": {
+        "title": "Titre",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "location": "Lieu",
+        "status": "Statut",
+        "actions": "Actions",
+        "visibility": "Visibilité",
+        "type":"Type d'événement",
+        "changeStatus": "Changer le statut",
+        "deleteEvent": "Supprimer l'événement",
+        "previewEvent": "Aperçu de l'événement",
+        "editEvent": "Modifier l'événement",
+        "totalEvents": " événements trouvé"
+      },
+      "view": {
+        "calendar": "Vue calendrier",
+        "table": "Vue tableau",
+        "maps": "Vue maps"
+      }
+    },
   "eventForm": {
       "title": "Créer un nouvel événement",
       "description": "Remplissez les détails de l'événement étape par étape",
@@ -247,6 +292,206 @@
       "messages": {
         "debugLocation": "Données de localisation :",
         "notSet": "Non défini"
+      }
+    },
+    "members": {
+      "title": "Membres",
+      "description": "Gérez vos membres",
+      "addMember": "Ajouter un membre",
+      "memberSearchPlaceholder": "Rechercher des membres par nom, email, téléphone ou localisation",
+      "status": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "registration": {
+        "all": "Toutes les inscriptions",
+        "completed": "Complété",
+        "pending": "En attente",
+        "status": "Inscription"
+      },
+      "gender": {
+        "all": "Tous les genres",
+        "male": "Homme",
+        "female": "Femme"
+      },
+      "sort": {
+        "by": "Trier par",
+        "name": "Nom",
+        "email": "Email",
+        "dateJoing": "Date d'adhésion",
+        "status": "Statut"
+      },
+      "active": "Actif",
+      "inActive": "Inactif",
+      "activated": "Activer",
+      "deactivated": "Désactiver",
+      "delete": "Supprimer",
+      "preview": "Aperçu",
+      "edit": "Modifier",
+      "cancel": "Annuler",
+      "clearFilters": "Effacer les filtres",
+      "joinedOn": "Rejoint le",
+      "notAvailable": "Non disponible",
+      "deleting": "Suppression en cours...",
+      "addFirstMember": "Ajouter le premier membre",
+      "emptyState": {
+        "title": "Aucun membre trouvé",
+        "noResults": "Aucun membre ne correspond à vos critères de recherche.",
+        "noMembers": "Aucun membre n'a été ajouté pour le moment."
+      },
+      "deleteDialog": {
+        "title": "Supprimer le membre",
+        "description": "Êtes-vous sûr de vouloir supprimer Cette action ne peut pas être annulée."
+      },
+      "messages": {
+        "updateSuccess": "Membre mis à jour avec succès",
+        "updateError": "Échec de la mise à jour du membre",
+        "createSuccess": "Membre créé avec succès",
+        "createError": "Échec de la création du membre",
+        "deleteSuccess": "Membre supprimé avec succès",
+        "deleteError": "Échec de la suppression du membre",
+        "activateSuccess": "Membre activé avec succès",
+        "deactivateSuccess": "Membre désactivé avec succès",
+        "statusUpdateError": "Échec de la mise à jour du statut du membre"
+      },
+      "editDialog": {
+        "title": "Modifier le membre",
+        "description": "Mettez à jour les informations du membre. Les modifications seront enregistrées immédiatement.",
+        "sections": {
+          "personalInfo": "Informations personnelles",
+          "contactInfo": "Informations de contact",
+          "locationInfo": "Informations de localisation",
+          "accountStatus": "Statut du compte"
+        },
+        "fields": {
+          "firstName": "Prénom",
+          "lastName": "Nom",
+          "email": "Adresse email",
+          "phoneNumber": "Numéro de téléphone",
+          "city": "Ville",
+          "country": "Pays",
+          "gender": "Genre",
+          "accountStatus": "Statut du compte"
+        },
+        "placeholders": {
+          "enterFirstName": "Entrez le prénom",
+          "enterLastName": "Entrez le nom",
+          "enterEmail": "Entrez l'adresse email",
+          "enterPhone": "Entrez le numéro de téléphone",
+          "enterCity": "Entrez la ville",
+          "enterCountry": "Entrez le pays",
+          "selectGender": "Sélectionnez le genre",
+          "selectStatus": "Sélectionnez le statut"
+        },
+        "genderOptions": {
+          "male": "Homme",
+          "female": "Femme"
+        },
+        "statusOptions": {
+          "active": "Actif",
+          "inactive": "Inactif"
+        },
+        "buttons": {
+          "cancel": "Annuler",
+          "save": "Enregistrer les modifications",
+          "saving": "Enregistrement..."
+        },
+        "validation": {
+          "required": "Ce champ est obligatoire",
+          "invalidEmail": "Adresse email invalide"
+        }
+      },
+      "addDialog": {
+        "title": "Ajouter un nouveau membre",
+        "description": "Créez un nouveau compte membre. Tous les champs obligatoires doivent être remplis.",
+        "sections": {
+          "personalInfo": "Informations personnelles",
+          "contactInfo": "Informations de contact",
+          "locationInfo": "Informations de localisation",
+          "accountInfo": "Informations du compte"
+        },
+        "fields": {
+          "firstName": "Prénom",
+          "lastName": "Nom",
+          "email": "Adresse email",
+          "phoneNumber": "Numéro de téléphone",
+          "city": "Ville",
+          "country": "Pays",
+          "gender": "Genre",
+          "password": "Mot de passe",
+          "accountStatus": "Statut du compte"
+        },
+        "placeholders": {
+          "enterFirstName": "Entrez le prénom",
+          "enterLastName": "Entrez le nom",
+          "enterEmail": "Entrez l'adresse email",
+          "enterPhone": "Entrez le numéro de téléphone",
+          "enterCity": "Entrez la ville",
+          "enterCountry": "Entrez le pays",
+          "enterPassword": "Entrez le mot de passe",
+          "selectGender": "Sélectionnez le genre",
+          "selectStatus": "Sélectionnez le statut"
+        },
+        "genderOptions": {
+          "male": "Homme",
+          "female": "Femme",
+          "other": "Autre"
+        },
+        "statusOptions": {
+          "active": "Actif",
+          "inactive": "Inactif"
+        },
+        "buttons": {
+          "cancel": "Annuler",
+          "create": "Créer le membre",
+          "creating": "Création en cours..."
+        },
+        "validation": {
+          "required": "Ce champ est obligatoire",
+          "invalidEmail": "Adresse email invalide",
+          "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères"
+        }
+      },
+      "detailsDialog": {
+        "title": "Détails du membre",
+        "description": "Informations complètes sur le membre",
+        "sections": {
+          "contactInfo": "Informations de contact",
+          "personalInfo": "Informations personnelles",
+          "accountInfo": "Informations du compte",
+          "timestamps": "Horodatages"
+        },
+        "fields": {
+          "email": "Adresse email",
+          "phone": "Numéro de téléphone",
+          "location": "Localisation",
+          "firstName": "Prénom",
+          "lastName": "Nom",
+          "gender": "Genre",
+          "birthday": "Date de naissance",
+          "accountStatus": "Statut du compte",
+          "registrationStatus": "Statut d'inscription",
+          "userId": "ID utilisateur",
+          "roleId": "ID rôle",
+          "joinedDate": "Date d'adhésion",
+          "lastUpdated": "Dernière mise à jour",
+          "memberId": "ID membre"
+        },
+        "status": {
+          "active": "Actif",
+          "inactive": "Inactif",
+          "registrationComplete": "Inscription complétée",
+          "registrationPending": "Inscription en attente",
+          "completed": "Complété",
+          "pending": "En attente"
+        },
+        "buttons": {
+          "close": "Fermer",
+          "editMember": "Modifier le membre",
+          "deleteMember": "Supprimer le membre"
+        },
+        "notAvailable": "N/D"
       }
     },
   "notFound": {

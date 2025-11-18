@@ -25,13 +25,15 @@ import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import type { date } from "zod";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
 import type { RootState } from "@/store/app/rootReducer";
 import { fetchCategoriesRequest } from "@/store/features/categories/categories.actions";
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
+import { useTranslation } from "react-i18next";
+import { EventPreview } from "./EventPreview";
 
 interface EventEditFormProps {
   event: any;
@@ -42,6 +44,8 @@ interface EventEditFormProps {
 const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProps) => {
   const [activeTab, setActiveTab] = useState("basic");
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [showPreview, setShowPreview] = useState(true); 
+  const { t } = useTranslation();
   
   const dispatch = useDispatch<AppDispatch>()
   const { categories } = useSelector((state: RootState) => state.categories)
@@ -113,14 +117,50 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
     onSubmit(data);
   };
 
+  const formData = form.watch();
+
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-4 md:p-6 max-w-7xl">
+      <div className="flex flex-col lg:flex-row gap-6">
+      <div className={`flex-1 transition-all ${showPreview ? 'lg:w-2/3' : 'lg:w-full'}`}>
       <Card className="border-slate-300">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Edit Event</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="flex items-start gap-4">
+
+            <Button variant={"outline"} size={'icon'} onClick={() => navigate(-1)}>
+              <ArrowLeft />
+            </Button>
+          <div>
+          <CardTitle className="text-2xl font-bold">
+            {t('events.editEvent')}
+          </CardTitle>
           <p className="text-muted-foreground">
-            Update your event details in the sections below
+            {t('eventForm.description')}
           </p>
+          </div>
+          </div><Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPreview(!showPreview)}
+                className="flex"
+              >
+                {showPreview ? (
+                  <>
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">
+                      {t('eventForm.preview.hide')}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">
+                      {t('eventForm.preview.show')}
+                    </span>
+                  </>
+                )}
+              </Button>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -129,51 +169,56 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 <TabsList className="grid w-full grid-cols-8 mb-8 overflow-x-auto">
                   <TabsTrigger value="basic" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    <span>Basic</span>
+                    <span className="truncate">{t('eventForm.sections.basicInfo')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="datetime" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-green-500 rounded-full" />
-                    <span>Date & Time</span>
+                    <span className="truncate">{t('eventForm.sections.dateTime')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="location" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                    <span>Location</span>
+                    <span className="truncate">{t('eventForm.sections.location')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="social" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-orange-500 rounded-full" />
-                    <span>Social</span>
+                    <span className="truncate">{t('eventForm.sections.socialNetworks')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="program" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-red-500 rounded-full" />
-                    <span>Program</span>
+                    <span className="truncate">{t('eventForm.sections.program')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="badges" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                    <span>Badges</span>
+                    <span className="truncate">{t('eventForm.sections.badges')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="gallery" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-pink-500 rounded-full" />
-                    <span>Gallery</span>
+                    <span className="truncate">{t('eventForm.sections.gallery')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="exhibitors" className="flex items-center space-x-2 text-xs">
                     <div className="w-2 h-2 bg-indigo-500 rounded-full" />
-                    <span>Exhibitors</span>
+                    <span className="truncate">{t('eventForm.sections.exhibitorsSponsors')}</span>
                   </TabsTrigger>
                 </TabsList>
 
                 {/* Basic Information Tab */}
                 <TabsContent value="basic" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Basic Information</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.basicInfo')}
+                    </h3>
                     
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Event Name</FormLabel>
+                          <FormLabel>{t('eventForm.fields.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter event name" {...field} />
+                            <Input 
+                              placeholder={t('eventForm.placeholders.enterEventName')} 
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -185,10 +230,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Description</FormLabel>
+                          <FormLabel>{t('eventForm.fields.description')}</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Enter event description"
+                              placeholder={t('eventForm.placeholders.enterDescription')}
                               className="min-h-[100px]"
                               {...field}
                             />
@@ -204,16 +249,20 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="visibility"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Visibility</FormLabel>
+                            <FormLabel>{t('eventForm.fields.visibility')}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select visibility" />
+                                  <SelectValue placeholder={t('eventForm.placeholders.selectVisibility')} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="PUBLIC">Public</SelectItem>
-                                <SelectItem value="PRIVATE">Private</SelectItem>
+                                <SelectItem value="PUBLIC">
+                                  {t('eventForm.options.visibility.public')}
+                                </SelectItem>
+                                <SelectItem value="PRIVATE">
+                                  {t('eventForm.options.visibility.private')}
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -226,11 +275,11 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="categories"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Category</FormLabel>
+                            <FormLabel>{t('eventForm.fields.categories')}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select category" />
+                                  <SelectValue placeholder={t('eventForm.placeholders.selectCategory')} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -251,17 +300,23 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="type"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Event Type</FormLabel>
+                            <FormLabel>{t('eventForm.fields.type')}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select type" />
+                                  <SelectValue placeholder={t('eventForm.placeholders.selectType')} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="FACETOFACE">Face to Face</SelectItem>
-                                <SelectItem value="VIRTUEL">Virtual</SelectItem>
-                                <SelectItem value="HYBRID">Hybrid</SelectItem>
+                                <SelectItem value="FACETOFACE">
+                                  {t('eventForm.options.type.faceToFace')}
+                                </SelectItem>
+                                <SelectItem value="VIRTUEL">
+                                  {t('eventForm.options.type.virtual')}
+                                </SelectItem>
+                                <SelectItem value="HYBRID">
+                                  {t('events.hybrid')}
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -274,18 +329,26 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="status"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Status</FormLabel>
+                            <FormLabel>{t('eventForm.fields.status')}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select status" />
+                                  <SelectValue placeholder={t('eventForm.placeholders.selectStatus')} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="PENDING">Pending</SelectItem>
-                                <SelectItem value="ACCEPTED">Accepted</SelectItem>
-                                <SelectItem value="REFUSED">Refused</SelectItem>
-                                <SelectItem value="CLOSED">Closed</SelectItem>
+                                <SelectItem value="PENDING">
+                                  {t('eventForm.options.status.pending')}
+                                </SelectItem>
+                                <SelectItem value="ACCEPTED">
+                                  {t('eventForm.options.status.accepted')}
+                                </SelectItem>
+                                <SelectItem value="REFUSED">
+                                  {t('eventForm.options.status.refused')}
+                                </SelectItem>
+                                <SelectItem value="CLOSED">
+                                  {t('eventForm.options.status.closed')}
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -299,21 +362,21 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       name="image"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Event Image</FormLabel>
+                          <FormLabel>{t('eventForm.fields.image')}</FormLabel>
                           <FormControl>
                             <div className="space-y-2">
                               <FileUpload
                                 onUploadComplete={(url) => field.onChange(url)}
                                 currentUrl={field.value}
-                                label="Upload Event Image"
+                                label={t('eventForm.buttons.uploadImage')}
                                 accept="image/*"
                                 disabled={isLoading}
                               />
                               <div className="text-xs text-muted-foreground">
-                                Or enter image URL manually:
+                                {t('eventForm.placeholders.enterImageUrlManual')}
                               </div>
                               <Input 
-                                placeholder="https://example.com/image.jpg" 
+                                placeholder={t('eventForm.placeholders.enterImageUrl')} 
                                 {...field}
                                 value={field.value || ''}
                               />
@@ -330,18 +393,18 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="capacity"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Event Capacity</FormLabel>
+                            <FormLabel>{t('eventForm.fields.capacity')}</FormLabel>
                             <FormControl>
                               <Input 
                                 type="number" 
-                                placeholder="Maximum number of participants" 
+                                placeholder={t('eventForm.placeholders.enterCapacity')} 
                                 {...field}
                                 onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                                 value={field.value || 0}
                               />
                             </FormControl>
                             <FormDescription>
-                              Set to 0 for unlimited capacity
+                              {t('eventForm.descriptions.capacity')}
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -361,10 +424,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                             </FormControl>
                             <div className="space-y-1 leading-none">
                               <FormLabel>
-                                Allow Registration
+                                {t('eventForm.fields.allowRegistration')}
                               </FormLabel>
                               <FormDescription>
-                                Enable participant registration for this event
+                                {t('eventForm.descriptions.allowRegistration')}
                               </FormDescription>
                             </div>
                           </FormItem>
@@ -378,7 +441,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="registrationDeadline.date"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Registration Deadline</FormLabel>
+                            <FormLabel>{t('eventForm.fields.registrationDeadline')}</FormLabel>
                             <FormControl>
                               <Input
                                 type="datetime-local"
@@ -387,7 +450,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               />
                             </FormControl>
                             <FormDescription>
-                              Last date and time for participants to register
+                              {t('eventForm.descriptions.registrationDeadline')}
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -396,7 +459,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                     )}
 
                     <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-medium text-sm">Event Highlights</h4>
+                      <h4 className="font-medium text-sm">
+                        {t('eventForm.labels.eventHighlights')}
+                      </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
@@ -411,10 +476,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               </FormControl>
                               <div className="space-y-1 leading-none">
                                 <FormLabel>
-                                  Mark as Nearest Event
+                                  {t('eventForm.labels.markAsNearestEvent')}
                                 </FormLabel>
                                 <FormDescription>
-                                  Show this event in nearest events section
+                                  {t('eventForm.descriptions.isNearestEvent')}
                                 </FormDescription>
                               </div>
                             </FormItem>
@@ -434,10 +499,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               </FormControl>
                               <div className="space-y-1 leading-none">
                                 <FormLabel>
-                                  Mark as Upcoming Event
+                                  {t('eventForm.labels.markAsUpcomingEvent')}
                                 </FormLabel>
                                 <FormDescription>
-                                  Feature this event in upcoming events section
+                                  {t('eventForm.descriptions.isUpcomingEvent')}
                                 </FormDescription>
                               </div>
                             </FormItem>
@@ -447,28 +512,34 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                     </div>
                   </div>
 
-                  <div className="flex justify-end pt-4 ">
+                  <div className="flex justify-end pt-4">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("datetime")}
                       className="place-self-end"
                     >
-                      Next: Date & Time
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.dateTime')}
                     </Button>
                   </div>
                 </TabsContent>
 
                 {/* Date & Time Tab */}
-                <TabsContent value="datetime" className="space-y-6  ">
+                <TabsContent value="datetime" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Date & Time</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.dateTime')}
+                    </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
-                        <Label className="text-base font-medium">Start Date & Time</Label>
+                        <Label className="text-base font-medium">
+                          {t('eventForm.fields.startDate')}
+                        </Label>
                         <div className="space-y-2">
-                          <Label htmlFor="startDate">Start Date</Label>
+                          <Label htmlFor="startDate">
+                            {t('eventForm.fields.startDate')}
+                          </Label>
                           <Controller 
                             control={form.control}
                             name="startDate.date"
@@ -476,7 +547,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               <DateTimePicker
                               date={field.value as date}
                               onDateChange={field.onChange}
-                              placeholder="Select start date & time"
+                              placeholder={t('eventForm.placeholders.enterEventName')}
                               className="w-full"
                               fromDate={new Date()}
                               />
@@ -486,9 +557,13 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       </div>
 
                       <div className="space-y-4">
-                        <Label className="text-base font-medium">End Date & Time</Label>
+                        <Label className="text-base font-medium">
+                          {t('eventForm.fields.endDate')}
+                        </Label>
                         <div className="space-y-2">
-                          <Label htmlFor="endDate">End Date</Label>
+                          <Label htmlFor="endDate">
+                            {t('eventForm.fields.endDate')}
+                          </Label>
                           <Controller 
                             control={form.control}
                             name="endDate.date"
@@ -496,7 +571,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               <DateTimePicker
                               date={field.value as date}
                               onDateChange={field.onChange}
-                              placeholder="Select end date & time"
+                              placeholder={t('eventForm.placeholders.enterEventName')}
                               className="w-full"
                               fromDate={new Date()}
                               />
@@ -513,14 +588,14 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("basic")}
                     >
-                      Previous: Basic
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.basicInfo')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("location")}
                     >
-                      Next: Location
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.location')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -528,16 +603,21 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 {/* Location Tab */}
                 <TabsContent value="location" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Location Information</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.location')}
+                    </h3>
                     
                     <FormField
                       control={form.control}
                       name="location.name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Venue Name</FormLabel>
+                          <FormLabel>{t('eventForm.fields.venueName')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter venue name" {...field} />
+                            <Input 
+                              placeholder={t('eventForm.placeholders.enterVenueName')} 
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -550,9 +630,13 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="location.city"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>City *</FormLabel>
+                            <FormLabel>{t('eventForm.fields.city')} *</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter city" {...field} value={field.value || ''} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterCity')} 
+                                {...field} 
+                                value={field.value || ''} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -564,9 +648,13 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="location.country"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Country *</FormLabel>
+                            <FormLabel>{t('eventForm.fields.country')} *</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter country" {...field} value={field.value || ''} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterCountry')} 
+                                {...field} 
+                                value={field.value || ''} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -580,10 +668,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="location.countryCode"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Country Code *</FormLabel>
+                            <FormLabel>{t('eventForm.fields.countryCode')} *</FormLabel>
                             <FormControl>
                               <Input 
-                                placeholder="e.g., US, GB, FR" 
+                                placeholder={t('eventForm.placeholders.enterCountryCode')} 
                                 {...field} 
                                 value={field.value || ''}
                               />
@@ -598,10 +686,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="location.place_id"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Place ID *</FormLabel>
+                            <FormLabel>{t('eventForm.fields.placeId')} *</FormLabel>
                             <FormControl>
                               <Input 
-                                placeholder="Google Places ID" 
+                                placeholder={t('eventForm.placeholders.enterPlaceId')} 
                                 {...field} 
                                 value={field.value || ''}
                               />
@@ -611,6 +699,13 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         )}
                       />
                     </div>
+
+                    <div className="text-xs text-gray-500 mt-4 p-2 bg-gray-50 rounded">
+                      <div>{t('eventForm.messages.debugLocation')}</div>
+                      <div>{t('eventForm.fields.name')}: {form.watch('location.name') || t('eventForm.messages.notSet')}</div>
+                      <div>{t('eventForm.fields.city')}: {form.watch('location.city') || t('eventForm.messages.notSet')}</div>
+                      <div>{t('eventForm.fields.country')}: {form.watch('location.country') || t('eventForm.messages.notSet')}</div>
+                    </div>
                   </div>
 
                   <div className="flex justify-between pt-4">
@@ -619,14 +714,14 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("datetime")}
                     >
-                      Previous: Date & Time
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.dateTime')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("social")}
                     >
-                      Next: Social Networks
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.socialNetworks')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -634,7 +729,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 {/* Social Networks Tab */}
                 <TabsContent value="social" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Social Networks</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.socialNetworks')}
+                    </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
@@ -642,9 +739,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="socialNetworks.website"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Website</FormLabel>
+                            <FormLabel>{t('eventForm.fields.website')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="https://example.com" {...field} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterWebsite')} 
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -656,9 +756,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="socialNetworks.facebook"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Facebook</FormLabel>
+                            <FormLabel>{t('eventForm.fields.facebook')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="https://facebook.com/event" {...field} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterFacebook')} 
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -670,9 +773,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="socialNetworks.twitter"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Twitter</FormLabel>
+                            <FormLabel>{t('eventForm.fields.twitter')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="https://twitter.com/event" {...field} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterTwitter')} 
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -684,9 +790,13 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="socialNetworks.instagram"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Instagram</FormLabel>
+                            <FormLabel>{t('eventForm.fields.instagram')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="https://instagram.com/event" {...field} value={field.value || ''} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterInstagram')} 
+                                {...field} 
+                                value={field.value || ''} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -698,9 +808,13 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         name="socialNetworks.linkedin"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>LinkedIn</FormLabel>
+                            <FormLabel>{t('eventForm.fields.linkedin')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="https://linkedin.com/event" {...field} value={field.value || ''} />
+                              <Input 
+                                placeholder={t('eventForm.placeholders.enterLinkedIn')} 
+                                {...field} 
+                                value={field.value || ''} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -715,14 +829,14 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("location")}
                     >
-                      Previous: Location
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.location')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("program")}
                     >
-                      Next: Program
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.program')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -730,17 +844,19 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 {/* Program Tab */}
                 <TabsContent value="program" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Event Program</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.program')}
+                    </h3>
                     
                     <FormField
                       control={form.control}
                       name="program"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Event Program</FormLabel>
+                          <FormLabel>{t('eventForm.fields.program')}</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Enter detailed program schedule"
+                              placeholder={t('eventForm.placeholders.enterProgram')}
                               className="min-h-[150px]"
                               {...field}
                             />
@@ -757,14 +873,14 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("social")}
                     >
-                      Previous: Social
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.socialNetworks')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("badges")}
                     >
-                      Next: Badges
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.badges')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -772,15 +888,19 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 {/* Badges Tab */}
                 <TabsContent value="badges" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Badges</h3>
-                    <p className="text-sm text-gray-600">Select badges that participants can earn at this event</p>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.badges')}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {t('eventForm.descriptions.badges')}
+                    </p>
                     
                     <FormField
                       control={form.control}
                       name="badges"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Available Badges</FormLabel>
+                          <FormLabel>{t('eventForm.labels.availableBadges')}</FormLabel>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
                             {badges && badges.length > 0 ? (
                               badges.map((badge: any) => (
@@ -825,7 +945,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                       )}
                                       {field.value?.includes(badge._id) && (
                                         <div className="mt-2 text-xs text-blue-600 font-medium">
-                                          ✓ Selected
+                                          ✓ {t('eventForm.labels.selected')}
                                         </div>
                                       )}
                                     </div>
@@ -834,7 +954,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               ))
                             ) : (
                               <div className="col-span-full text-center py-8 text-gray-500">
-                                No badges available. Please create badges first.
+                                {t('eventForm.labels.noBadges')}
                               </div>
                             )}
                           </div>
@@ -846,7 +966,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                     {form.watch('badges')?.length > 0 && (
                       <div className="mt-4 p-4 bg-blue-50 rounded-lg">
                         <p className="text-sm font-medium text-blue-900">
-                          Selected Badges: {form.watch('badges').length}
+                          {t('eventForm.labels.selectedBadges')}: {form.watch('badges').length}
                         </p>
                       </div>
                     )}
@@ -858,14 +978,14 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("program")}
                     >
-                      Previous: Program
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.program')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("gallery")}
                     >
-                      Next: Gallery
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.gallery')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -873,15 +993,19 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 {/* Gallery Tab */}
                 <TabsContent value="gallery" className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Event Gallery</h3>
-                    <p className="text-sm text-gray-600">Add images to showcase your event</p>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.gallery')}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {t('eventForm.descriptions.gallery')}
+                    </p>
                     
                     <FormField
                       control={form.control}
                       name="gallery"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gallery Images</FormLabel>
+                          <FormLabel>{t('eventForm.fields.galleryImages')}</FormLabel>
                           <div className="space-y-4">
                             {/* File Upload Option */}
                             <FileUpload
@@ -891,7 +1015,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   field.onChange([...currentGallery, url]);
                                 }
                               }}
-                              label="Upload Gallery Image"
+                              label={t('eventForm.buttons.uploadGalleryImage')}
                               accept="image/*"
                               disabled={isLoading}
                             />
@@ -900,7 +1024,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                             <div className="flex gap-2">
                               <Input
                                 type="url"
-                                placeholder="Or enter image URL (https://...)"
+                                placeholder={t('eventForm.placeholders.enterImageUrlGallery')}
                                 value={newImageUrl}
                                 onChange={(e) => setNewImageUrl(e.target.value)}
                                 onKeyDown={(e) => {
@@ -927,7 +1051,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                 }}
                               >
                                 <Plus className="w-4 h-4 mr-2" />
-                                Add URL
+                                {t('eventForm.buttons.addUrl')}
                               </Button>
                             </div>
 
@@ -941,7 +1065,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   >
                                     <img
                                       src={imageUrl}
-                                      alt={`Gallery image ${index + 1}`}
+                                      alt={t('eventForm.labels.imageNumber', { number: index + 1 })}
                                       className="w-full h-full object-cover"
                                       onError={(e) => {
                                         const target = e.target as HTMLImageElement;
@@ -973,14 +1097,16 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               </div>
                             ) : (
                               <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-                                <p className="text-gray-500">No images added yet</p>
-                                <p className="text-sm text-gray-400 mt-1">Add image URLs to create your event gallery</p>
+                                <p className="text-gray-500">{t('eventForm.labels.noImages')}</p>
+                                <p className="text-sm text-gray-400 mt-1">
+                                  {t('eventForm.labels.noImagesDescription')}
+                                </p>
                               </div>
                             )}
 
                             {field.value && field.value.length > 0 && (
                               <div className="text-sm text-gray-600">
-                                Total images: <span className="font-medium">{field.value.length}</span>
+                                {t('eventForm.labels.totalImages')}: <span className="font-medium">{field.value.length}</span>
                               </div>
                             )}
                           </div>
@@ -996,14 +1122,14 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("badges")}
                     >
-                      Previous: Badges
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.badges')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setActiveTab("exhibitors")}
                     >
-                      Next: Exhibitors & Sponsors
+                      {t('eventForm.buttons.next')}: {t('eventForm.sections.exhibitorsSponsors')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -1011,12 +1137,16 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                 {/* Exhibitors & Sponsors Tab */}
                 <TabsContent value="exhibitors" className="space-y-6">
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold">Exhibitors & Sponsors</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t('eventForm.sections.exhibitorsSponsors')}
+                    </h3>
                     
                     {/* Exhibitors Section */}
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-md font-medium">Exhibitors</h4>
+                        <h4 className="text-md font-medium">
+                          {t('eventForm.fields.exhibitors')}
+                        </h4>
                         <Button
                           type="button"
                           variant="outline"
@@ -1034,7 +1164,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                           })}
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Add Exhibitor
+                          {t('eventForm.buttons.addExhibitor')}
                         </Button>
                       </div>
 
@@ -1042,7 +1172,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         <Card key={field.id} className="p-4">
                           <div className="space-y-4">
                             <div className="flex items-center justify-between mb-2">
-                              <h5 className="font-medium">Exhibitor {index + 1}</h5>
+                              <h5 className="font-medium">
+                                {t('eventForm.fields.exhibitors')} {index + 1}
+                              </h5>
                               <Button
                                 type="button"
                                 variant="ghost"
@@ -1058,9 +1190,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               name={`exhibitors.${index}.fullName`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Full Name *</FormLabel>
+                                  <FormLabel>{t('eventForm.fields.fullName')} *</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="Enter exhibitor name" {...field} />
+                                    <Input 
+                                      placeholder={t('eventForm.placeholders.enterExhibitorName')} 
+                                      {...field} 
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -1072,9 +1207,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               name={`exhibitors.${index}.picture`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Picture URL</FormLabel>
+                                  <FormLabel>{t('eventForm.fields.picture')}</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="https://example.com/image.jpg" {...field} />
+                                    <Input 
+                                      placeholder={t('eventForm.placeholders.enterExhibitorPicture')} 
+                                      {...field} 
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -1082,7 +1220,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                             />
 
                             <div className="space-y-2">
-                              <Label className="text-sm font-medium">Social Networks</Label>
+                              <Label className="text-sm font-medium">
+                                {t('eventForm.descriptions.socialNetworks')}
+                              </Label>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <FormField
                                   control={form.control}
@@ -1090,7 +1230,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Facebook URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterFacebook')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1102,7 +1245,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Instagram URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterInstagram')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1114,7 +1260,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="LinkedIn URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterLinkedIn')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1126,7 +1275,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Twitter URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterTwitter')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1138,7 +1290,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Website URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterWebsite')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1154,7 +1309,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                     {/* Sponsors Section */}
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-md font-medium">Sponsors</h4>
+                        <h4 className="text-md font-medium">
+                          {t('eventForm.fields.sponsors')}
+                        </h4>
                         <Button
                           type="button"
                           variant="outline"
@@ -1172,7 +1329,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                           })}
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Add Sponsor
+                          {t('eventForm.buttons.addSponsor')}
                         </Button>
                       </div>
 
@@ -1180,7 +1337,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         <Card key={field.id} className="p-4">
                           <div className="space-y-4">
                             <div className="flex items-center justify-between mb-2">
-                              <h5 className="font-medium">Sponsor {index + 1}</h5>
+                              <h5 className="font-medium">
+                                {t('eventForm.fields.sponsors')} {index + 1}
+                              </h5>
                               <Button
                                 type="button"
                                 variant="ghost"
@@ -1196,9 +1355,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               name={`sponsors.${index}.name`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Sponsor Name *</FormLabel>
+                                  <FormLabel>{t('eventForm.fields.sponsorName')} *</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="Enter sponsor name" {...field} />
+                                    <Input 
+                                      placeholder={t('eventForm.placeholders.enterSponsorName')} 
+                                      {...field} 
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -1210,9 +1372,12 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                               name={`sponsors.${index}.logo`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Logo URL</FormLabel>
+                                  <FormLabel>{t('eventForm.fields.logo')}</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="https://example.com/logo.jpg" {...field} />
+                                    <Input 
+                                      placeholder={t('eventForm.placeholders.enterSponsorLogo')} 
+                                      {...field} 
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -1220,7 +1385,9 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                             />
 
                             <div className="space-y-2">
-                              <Label className="text-sm font-medium">Social Networks</Label>
+                              <Label className="text-sm font-medium">
+                                {t('eventForm.descriptions.socialNetworks')}
+                              </Label>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <FormField
                                   control={form.control}
@@ -1228,7 +1395,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Facebook URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterFacebook')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1240,7 +1410,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Instagram URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterInstagram')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1252,7 +1425,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="LinkedIn URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterLinkedIn')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1264,7 +1440,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Twitter URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterTwitter')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1276,7 +1455,10 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormControl>
-                                        <Input placeholder="Website URL" {...field} />
+                                        <Input 
+                                          placeholder={t('eventForm.placeholders.enterWebsite')} 
+                                          {...field} 
+                                        />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -1296,7 +1478,7 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                       variant="outline"
                       onClick={() => setActiveTab("gallery")}
                     >
-                      Previous: Gallery
+                      {t('eventForm.buttons.previous')}: {t('eventForm.sections.gallery')}
                     </Button>
                   </div>
                 </TabsContent>
@@ -1308,16 +1490,37 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                   variant="outline"
                   onClick={() => navigate(-1)}
                 >
-                  Cancel
+                  {t('eventForm.buttons.cancel')}
                 </Button>
                 <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Updating..." : "Update Event"}
+                  {isLoading ? "Updating..." : t('events.editEvent')}
                 </Button>
               </div>
             </form>
           </Form>
         </CardContent>
       </Card>
+      </div>
+
+           {/* Preview Section */}
+           {showPreview && (
+          <div className="w-full lg:w-1/3 lg:sticky lg:top-6 h-fit order-first lg:order-last">
+            <Card className="border-slate-300">
+              <CardHeader className="m-0">
+                <CardTitle className="text-lg font-semibold">
+                  {t('eventForm.preview.title')}
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  {t('eventForm.preview.description')}
+                </p>
+              </CardHeader>
+              <CardContent className="overflow-x-auto p-0bg-red-400">
+                <EventPreview formData={formData} />
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

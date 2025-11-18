@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Eye, Edit, MoreVertical } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Eye, Edit, MoreVertical,  Pen, Trash } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, startOfWeek, endOfWeek, addMonths, subMonths } from 'date-fns'
 import { cn } from '@/lib/utils'
 import type { Event } from '@/types/eventsTypes'
@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
-import { getStatusColor, getStatusText } from '@/lib/events-utils'
+import { t } from 'i18next'
 
 interface EventsCalendarViewProps {
   events: Event[]
@@ -39,11 +39,13 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
 
+
   // Get month start and end
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
   const calendarStart = startOfWeek(monthStart)
   const calendarEnd = endOfWeek(monthEnd)
+  
 
   // Generate calendar days
   const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
@@ -153,11 +155,11 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
                 size="sm"
                 onClick={goToToday}
               >
-                Today
+                {t("events.today")}
               </Button>
-              <Badge variant="secondary" className="px-3 py-1">
+              {/* <Badge variant="secondary" className="px-3 py-1">
                 {monthEventsCount} {monthEventsCount === 1 ? 'event' : 'events'} this month
-              </Badge>
+              </Badge> */}
             </div>
           </div>
         </CardContent>
@@ -338,18 +340,19 @@ const EventTicket: React.FC<EventTicketProps> = ({
               {onClick && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onClick() }}>
                   <Eye className="w-3 h-3 mr-2" />
-                  View
+                  {t('events.table.previewEvent')}
                 </DropdownMenuItem>
               )}
               {onEdit && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit() }}>
                   <Edit className="w-3 h-3 mr-2" />
-                  Edit
+                  {t('events.table.editEvent')}
                 </DropdownMenuItem>
               )}
               {onChangeStatus && (
                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onChangeStatus() }}>
-                  Change Status
+                  <Pen className="w-3 h-3 mr-2"/>
+                  {t('events.table.changeStatus')}
                 </DropdownMenuItem>
               )}
               {onDelete && (
@@ -357,7 +360,8 @@ const EventTicket: React.FC<EventTicketProps> = ({
                   onClick={(e) => { e.stopPropagation(); onDelete() }}
                   className="text-red-600"
                 >
-                  Delete
+                  <Trash className="w-3 h-3 mr-2" />
+                  {t('events.table.deleteEvent')}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

@@ -17,44 +17,44 @@ export const getStatusColor = (status: EventStatus): string => {
 }
 
 
-export const getStatusText = (status: EventStatus): string => {
-  switch (status) {
-    case 'ACCEPTED':
-      return 'Accepté'
-    case 'PENDING':
-      return 'En attente'
-    case 'REFUSED':
-      return 'Rejeté'
-    case 'CLOSED':
-      return 'Fermé'
-    default:
-      return status
-  }
-}
+// export const getStatusText = (status: EventStatus): string => {
+//   switch (status) {
+//     case 'ACCEPTED':
+//       return 'Accepté'
+//     case 'PENDING':
+//       return 'En attente'
+//     case 'REFUSED':
+//       return 'Rejeté'
+//     case 'CLOSED':
+//       return 'Fermé'
+//     default:
+//       return status
+//   }
+// }
 
-export const getTypeText = (type: string): string => {
-  switch (type) {
-    case 'FACETOFACE':
-      return 'Présentiel'
-    case 'ONLINE':
-      return 'En ligne'
-    case 'HYBRID':
-      return 'Hybride'
-    default:
-      return type
-  }
-}
+// export const getTypeText = (type: string): string => {
+//   switch (type) {
+//     case 'FACETOFACE':
+//       return 'Présentiel'
+//     case 'ONLINE':
+//       return 'En ligne'
+//     case 'HYBRID':
+//       return 'Hybride'
+//     default:
+//       return type
+//   }
+// }
 
-export const getVisibilityText = (visibility: string): string => {
-  switch (visibility) {
-    case 'PUBLIC':
-      return 'Publique'
-    case 'PRIVATE':
-      return 'Privée'
-    default:
-      return visibility
-  }
-}
+// export const getVisibilityText = (visibility: string): string => {
+//   switch (visibility) {
+//     case 'PUBLIC':
+//       return 'Publique'
+//     case 'PRIVATE':
+//       return 'Privée'
+//     default:
+//       return visibility
+//   }
+// }
 
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
@@ -115,8 +115,8 @@ export const transformEventForTable = (event: Event) => {
   return {
     id: event._id,
     name: event.name,
-    type: getTypeText(event.type),
-    website: getVisibilityText(event.visibility),
+    type: event.type,
+    website: event.visibility,
     location: `${event.location.city}, ${event.location.country}`,
     startDate: formatDate(event.startDate.date),
     endDate: formatDate(event.endDate.date),

@@ -20,6 +20,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import type { Member } from "@/types/membersType"
+import { useTranslation } from "react-i18next"
 
 interface MemberEditDialogProps {
   member: Member | null
@@ -47,6 +48,7 @@ const MemberEditDialog = ({
   onSave,
   isLoading = false,
 }: MemberEditDialogProps) => {
+  const { t } = useTranslation()
   const {
     register,
     handleSubmit,
@@ -101,9 +103,11 @@ const MemberEditDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Edit Member</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {t('members.editDialog.title', 'Edit Member')}
+          </DialogTitle>
           <DialogDescription>
-            Update member information. Changes will be saved immediately.
+            {t('members.editDialog.description', 'Update member information. Changes will be saved immediately.')}
           </DialogDescription>
         </DialogHeader>
 
@@ -112,43 +116,60 @@ const MemberEditDialog = ({
             <div className="space-y-6">
               {/* Personal Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Personal Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.editDialog.sections.personalInfo', 'Personal Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name *</Label>
+                    <Label htmlFor="firstName">
+                      {t('members.editDialog.fields.firstName', 'First Name')} *
+                    </Label>
                     <Input
                       id="firstName"
-                      {...register('firstName', { required: 'First name is required' })}
-                      placeholder="Enter first name"
+                      {...register('firstName', { 
+                        required: t('members.editDialog.validation.required', 'This field is required') 
+                      })}
+                      placeholder={t('members.editDialog.placeholders.enterFirstName', 'Enter first name')}
                     />
                     {errors.firstName && (
                       <p className="text-sm text-destructive">{errors.firstName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Label htmlFor="lastName">
+                      {t('members.editDialog.fields.lastName', 'Last Name')} *
+                    </Label>
                     <Input
                       id="lastName"
-                      {...register('lastName', { required: 'Last name is required' })}
-                      placeholder="Enter last name"
+                      {...register('lastName', { 
+                        required: t('members.editDialog.validation.required', 'This field is required') 
+                      })}
+                      placeholder={t('members.editDialog.placeholders.enterLastName', 'Enter last name')}
                     />
                     {errors.lastName && (
                       <p className="text-sm text-destructive">{errors.lastName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="gender">Gender</Label>
+                    <Label htmlFor="gender">
+                      {t('members.editDialog.fields.gender', 'Gender')}
+                    </Label>
                     <Select
                       value={watch('gender')}
                       onValueChange={(value) => setValue('gender', value as 'MALE' | 'FEMALE' | 'OTHER')}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
+                        <SelectValue 
+                          placeholder={t('members.editDialog.placeholders.selectGender', 'Select gender')} 
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="MALE">Male</SelectItem>
-                        <SelectItem value="FEMALE">Female</SelectItem>
-                        <SelectItem value="OTHER">Other</SelectItem>
+                        <SelectItem value="MALE">
+                          {t('members.editDialog.genderOptions.male', 'Male')}
+                        </SelectItem>
+                        <SelectItem value="FEMALE">
+                          {t('members.editDialog.genderOptions.female', 'Female')}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -159,32 +180,38 @@ const MemberEditDialog = ({
 
               {/* Contact Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Contact Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.editDialog.sections.contactInfo', 'Contact Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email">
+                      {t('members.editDialog.fields.email', 'Email Address')} *
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       {...register('email', {
-                        required: 'Email is required',
+                        required: t('members.editDialog.validation.required', 'This field is required'),
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Invalid email address',
+                          message: t('members.editDialog.validation.invalidEmail', 'Invalid email address'),
                         },
                       })}
-                      placeholder="Enter email address"
+                      placeholder={t('members.editDialog.placeholders.enterEmail', 'Enter email address')}
                     />
                     {errors.email && (
                       <p className="text-sm text-destructive">{errors.email.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                    <Label htmlFor="phoneNumber">
+                      {t('members.editDialog.fields.phoneNumber', 'Phone Number')}
+                    </Label>
                     <Input
                       id="phoneNumber"
                       {...register('phoneNumber')}
-                      placeholder="Enter phone number"
+                      placeholder={t('members.editDialog.placeholders.enterPhone', 'Enter phone number')}
                     />
                     {errors.phoneNumber && (
                       <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>
@@ -197,22 +224,28 @@ const MemberEditDialog = ({
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Location Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.editDialog.sections.locationInfo', 'Location Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">
+                      {t('members.editDialog.fields.city', 'City')}
+                    </Label>
                     <Input
                       id="city"
                       {...register('city')}
-                      placeholder="Enter city"
+                      placeholder={t('members.editDialog.placeholders.enterCity', 'Enter city')}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
+                    <Label htmlFor="country">
+                      {t('members.editDialog.fields.country', 'Country')}
+                    </Label>
                     <Input
                       id="country"
                       {...register('country')}
-                      placeholder="Enter country"
+                      placeholder={t('members.editDialog.placeholders.enterCountry', 'Enter country')}
                     />
                   </div>
                 </div>
@@ -222,19 +255,29 @@ const MemberEditDialog = ({
 
               {/* Account Status */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Account Status</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.editDialog.sections.accountStatus', 'Account Status')}
+                </h4>
                 <div className="space-y-2">
-                  <Label htmlFor="isActive">Account Status</Label>
+                  <Label htmlFor="isActive">
+                    {t('members.editDialog.fields.accountStatus', 'Account Status')}
+                  </Label>
                   <Select
                     value={isActive ? 'active' : 'inactive'}
                     onValueChange={(value) => setValue('isActive', value === 'active')}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
+                      <SelectValue 
+                        placeholder={t('members.editDialog.placeholders.selectStatus', 'Select status')} 
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="active">
+                        {t('members.editDialog.statusOptions.active', 'Active')}
+                      </SelectItem>
+                      <SelectItem value="inactive">
+                        {t('members.editDialog.statusOptions.inactive', 'Inactive')}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -245,16 +288,16 @@ const MemberEditDialog = ({
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-4 border-t mt-4">
             <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-              Cancel
+              {t('members.editDialog.buttons.cancel', 'Cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Saving...
+                  {t('members.editDialog.buttons.saving', 'Saving...')}
                 </>
               ) : (
-                'Save Changes'
+                t('members.editDialog.buttons.save', 'Save Changes')
               )}
             </Button>
           </div>
@@ -265,4 +308,3 @@ const MemberEditDialog = ({
 }
 
 export default MemberEditDialog
-

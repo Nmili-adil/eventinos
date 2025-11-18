@@ -87,27 +87,73 @@
     }
   },
   "events": {
-    "title": "الفعاليات",
-    "addEvent": "إضافة فعالية",
-    "editEvent": "تعديل الفعالية",
-    "eventName": "اسم الفعالية",
-    "eventDescription": "الوصف",
-    "eventDetails": "تفاصيل الفعالية",
-    "basicInformation": "المعلومات الأساسية",
-    "enterEventName": "أدخل اسم الفعالية",
-    "enterEventDescription": "أدخل وصف الفعالية",
-    "loadingEvents": "جاري تحميل الفعاليات...",
-    "noEventsFound": "لم يتم العثور على فعاليات",
-    "resetFilters": "إعادة تعيين المرشحات",
-    "searchPlaceholder": "البحث عن فعالية...",
-    "mapView": "عرض الخريطة",
-    "selectCity": "اختر المدينة",
-    "allCities": "جميع المدن",
-    "eventsFound": "فعاليات موجودة",
-    "showEvents": "عرض الفعاليات",
-    "preview": "معاينة",
-    "changeStatus": "تغيير الحالة"
-  },
+      "title": "الفعاليات",
+      "addEvent": "إضافة فعالية",
+      "editEvent": "تعديل الفعالية",
+      "eventName": "اسم الفعالية",
+      "eventDescription": "الوصف",
+      "eventDetails": "تفاصيل الفعالية",
+      "basicInformation": "المعلومات الأساسية",
+      "enterEventName": "أدخل اسم الفعالية",
+      "enterEventDescription": "أدخل وصف الفعالية",
+      "loadingEvents": "جاري تحميل الفعاليات...",
+      "noEventsFound": "لم يتم العثور على فعاليات",
+      "resetFilters": "إعادة تعيين الفلاتر",
+      "searchPlaceholder": "ابحث عن فعالية...",
+      "mapView": "عرض الخريطة",
+      "selectCity": "اختر المدينة",
+      "allCities": "جميع المدن",
+      "eventsFound": "فعالية تم العثور عليها",
+      "showEvents": "عرض الفعاليات",
+      "preview": "معاينة",
+      "changeStatus": "تغيير الحالة",
+      "allStatuses": "جميع الحالات",
+      "allTypes": "جميع الأنواع",
+      "faceToFace": "وجهاً لوجه",
+      "virtual": "افتراضي",
+      "hybrid": "هجين",
+      "today":"اليوم",
+      "inPerson": "حضوري",
+      "statusAccepted": "مقبول",
+      "statusPending": "قيد الانتظار",
+      "statusRejected": "مرفوض",
+      "statusCancelled": "ملغى",
+      "statusClosed": "مغلق",
+      "eventStatusUpdated": "تم تحديث حالة الفعالية بنجاح",
+      "deleteEventTitle": "حذف الفعالية",
+      "deleteEventConfirm": "هل أنت متأكد من رغبتك في حذف هذه الفعالية؟",
+      "sections": {
+        "basicInfo": "المعلومات الأساسية",
+        "dateTime": "التاريخ والوقت",
+        "location": "الموقع",
+        "socialNetworks": "الشبكات الاجتماعية",
+        "program": "البرنامج",
+        "badges": "الشارات",
+        "gallery": "المعرض",
+        "exhibitorsSponsors": "العارضون والرعاة"
+      },
+      "table": {
+        "title": "العنوان",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "location": "الموقع",
+        "status": "الحالة",
+        "actions": "الإجراءات",
+        "visibility": "الرؤية",
+        "type":"نوع الحدث",
+        "changeStatus": "تغيير الحالة",
+        "deleteEvent": "حذف الحدث",
+        "previewEvent": "معاينة الحدث",
+        "editEvent": "تعديل الحدث",
+        "totalEvents": "إجمالي الأحداث"
+      },
+      "view": {
+        "calendar": "عرض التقويم",
+        "table": "عرض الجدول",
+        "maps": "عرض الخرائط"
+       }
+    },
+  
   "eventForm": {
       "title": "إنشاء حدث جديد",
       "description": "املأ تفاصيل الحدث خطوة بخطوة",
@@ -260,6 +306,207 @@
     "appName": "Eventinos",
     "tagline": "إدارة الفعاليات",
     "loading": "جاري التحميل..."
-  }
+  },
+    "members": {
+      "title": "أعضاء",
+      "description": "إدارة أعضائك",
+      "addMember": "إضافة أعضاء",
+      "memberSearchPlaceholder": "ابحث عن الأعضاء حسب الاسم أو البريد الإلكتروني أو الهاتف أو الموقع",
+      "status": {
+        "all": "كل الحالة",
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "registration": {
+        "all": "جميع التسجيلات",
+        "completed": "مكتمل",
+        "pending": "قيد الانتظار",
+        "status": "التسجيل"
+      },
+      "gender": {
+        "all": "جميع الأجناس",
+        "male": "ذكر",
+        "female": "أنثى"
+      },
+      "sort": {
+        "by": "فرز حسب",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "dateJoing": "تاريخ الانضمام",
+        "status": "الحالة"
+      },
+      "active": "نشط",
+      "inActive": "غير نشط",
+      "activated": "تفعيل",
+      "deactivated": "إلغاء تفعيل",
+      "delete": "حذف",
+      "preview": "معاينة",
+      "edit": "تعديل",
+      "cancel": "إلغاء",
+      "clearFilters": "مسح الفلاتر",
+      "joinedOn": "انضم في",
+      "notAvailable": "غير متوفر",
+      "deleting": "جاري الحذف...",
+      "addFirstMember": "إضافة أول عضو",
+      "emptyState": {
+        "title": "لم يتم العثور على أعضاء",
+        "noResults": "لا توجد أعضاء تطابق معايير البحث الخاصة بك.",
+        "noMembers": "لم تتم إضافة أي أعضاء بعد."
+      },
+      "deleteDialog": {
+        "title": "حذف العضو",
+        "description": "هل أنت متأكد من رغبتك في حذف  لا يمكن التراجع عن هذا الإجراء."
+      },
+      "messages": {
+        "updateSuccess": "تم تحديث العضو بنجاح",
+        "updateError": "فشل في تحديث العضو",
+        "createSuccess": "تم إنشاء العضو بنجاح",
+        "createError": "فشل في إنشاء العضو",
+        "deleteSuccess": "تم حذف العضو بنجاح",
+        "deleteError": "فشل في حذف العضو",
+        "activateSuccess": "تم تفعيل العضو بنجاح",
+        "deactivateSuccess": "تم إلغاء تفعيل العضو بنجاح",
+        "statusUpdateError": "فشل في تحديث حالة العضو"
+      },
+      "editDialog": {
+        "title": "تعديل العضو",
+        "description": "قم بتحديث معلومات العضو. سيتم حفظ التغييرات فورًا.",
+        "sections": {
+          "personalInfo": "المعلومات الشخصية",
+          "contactInfo": "معلومات الاتصال",
+          "locationInfo": "معلومات الموقع",
+          "accountStatus": "حالة الحساب"
+        },
+        "fields": {
+          "firstName": "الاسم الأول",
+          "lastName": "الاسم الأخير",
+          "email": "البريد الإلكتروني",
+          "phoneNumber": "رقم الهاتف",
+          "city": "المدينة",
+          "country": "الدولة",
+          "gender": "الجنس",
+          "accountStatus": "حالة الحساب"
+        },
+        "placeholders": {
+          "enterFirstName": "أدخل الاسم الأول",
+          "enterLastName": "أدخل الاسم الأخير",
+          "enterEmail": "أدخل البريد الإلكتروني",
+          "enterPhone": "أدخل رقم الهاتف",
+          "enterCity": "أدخل المدينة",
+          "enterCountry": "أدخل الدولة",
+          "selectGender": "اختر الجنس",
+          "selectStatus": "اختر الحالة"
+        },
+        "genderOptions": {
+          "male": "ذكر",
+          "female": "أنثى"
+        },
+        "statusOptions": {
+          "active": "نشط",
+          "inactive": "غير نشط"
+        },
+        "buttons": {
+          "cancel": "إلغاء",
+          "save": "حفظ التغييرات",
+          "saving": "جاري الحفظ..."
+        },
+        "validation": {
+          "required": "هذا الحقل مطلوب",
+          "invalidEmail": "بريد إلكتروني غير صالح"
+        }
+      },
+      "addDialog": {
+        "title": "إضافة عضو جديد",
+        "description": "أنشئ حساب عضو جديد. يجب ملء جميع الحقول المطلوبة.",
+        "sections": {
+          "personalInfo": "المعلومات الشخصية",
+          "contactInfo": "معلومات الاتصال",
+          "locationInfo": "معلومات الموقع",
+          "accountInfo": "معلومات الحساب"
+        },
+        "fields": {
+          "firstName": "الاسم الأول",
+          "lastName": "الاسم الأخير",
+          "email": "البريد الإلكتروني",
+          "phoneNumber": "رقم الهاتف",
+          "city": "المدينة",
+          "country": "الدولة",
+          "gender": "الجنس",
+          "password": "كلمة المرور",
+          "accountStatus": "حالة الحساب"
+        },
+        "placeholders": {
+          "enterFirstName": "أدخل الاسم الأول",
+          "enterLastName": "أدخل الاسم الأخير",
+          "enterEmail": "أدخل البريد الإلكتروني",
+          "enterPhone": "أدخل رقم الهاتف",
+          "enterCity": "أدخل المدينة",
+          "enterCountry": "أدخل الدولة",
+          "enterPassword": "أدخل كلمة المرور",
+          "selectGender": "اختر الجنس",
+          "selectStatus": "اختر الحالة"
+        },
+        "genderOptions": {
+          "male": "ذكر",
+          "female": "أنثى",
+          "other": "أخرى"
+        },
+        "statusOptions": {
+          "active": "نشط",
+          "inactive": "غير نشط"
+        },
+        "buttons": {
+          "cancel": "إلغاء",
+          "create": "إنشاء العضو",
+          "creating": "جاري الإنشاء..."
+        },
+        "validation": {
+          "required": "هذا الحقل مطلوب",
+          "invalidEmail": "بريد إلكتروني غير صالح",
+          "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل"
+        }
+      },
+      "detailsDialog": {
+        "title": "تفاصيل العضو",
+        "description": "معلومات كاملة عن العضو",
+        "sections": {
+          "contactInfo": "معلومات الاتصال",
+          "personalInfo": "المعلومات الشخصية",
+          "accountInfo": "معلومات الحساب",
+          "timestamps": "الطوابع الزمنية"
+        },
+        "fields": {
+          "email": "البريد الإلكتروني",
+          "phone": "رقم الهاتف",
+          "location": "الموقع",
+          "firstName": "الاسم الأول",
+          "lastName": "الاسم الأخير",
+          "gender": "الجنس",
+          "birthday": "تاريخ الميلاد",
+          "accountStatus": "حالة الحساب",
+          "registrationStatus": "حالة التسجيل",
+          "userId": "معرف المستخدم",
+          "roleId": "معرف الدور",
+          "joinedDate": "تاريخ الانضمام",
+          "lastUpdated": "آخر تحديث",
+          "memberId": "معرف العضو"
+        },
+        "status": {
+          "active": "نشط",
+          "inactive": "غير نشط",
+          "registrationComplete": "اكتمل التسجيل",
+          "registrationPending": "التسجيل معلق",
+          "completed": "مكتمل",
+          "pending": "قيد الانتظار"
+        },
+        "buttons": {
+          "close": "إغلاق",
+          "editMember": "تعديل العضو",
+          "deleteMember": "حذف العضو"
+        },
+        "notAvailable": "غير متوفر"
+      }
+    }
+  
 }
 

@@ -258,7 +258,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           </Card>
 
           {/* Event Details Tabs */}
-          <Card>
+          <Card className="p-0">
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}

@@ -26,6 +26,7 @@ import { StatusChangeDialog } from './StatusChangeDialog'
 import { EventsCalendarView } from './EventsCalendarView'
 import { EventsMapView } from './EventsMapView'
 import type { EventStatus } from '@/types/eventsTypes'
+import { useTranslation } from 'react-i18next'
 
 const PAGE_SIZE = 10
 
@@ -39,6 +40,7 @@ export function EventsTable() {
   const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
+  const { t } = useTranslation()
 
   const [filters, setFilters] = useState<EventsFilters>({
     search: '',
@@ -196,7 +198,7 @@ export function EventsTable() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHead title='Événements' icon={List} description=' Gérez tous les événements de votre organisation' />
+        <PageHead title={t('events.title')} icon={List} description={t('events.eventDescription')}/>
         <div className="flex items-center gap-2">
           {/* View Toggle */}
           <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
@@ -207,7 +209,7 @@ export function EventsTable() {
               className="gap-2"
             >
               <Table2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Table</span>
+              <span className="hidden sm:inline">{t('events.view.table')}</span>
             </Button>
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'ghost'}
@@ -216,7 +218,7 @@ export function EventsTable() {
               className="gap-2"
             >
               <CalendarIcon className="h-4 w-4" />
-              <span className="hidden sm:inline">Calendar</span>
+              <span className="hidden sm:inline">{t('events.view.calendar')}</span>
             </Button>
             <Button
               variant={viewMode === 'maps' ? 'default' : 'ghost'}
@@ -225,14 +227,14 @@ export function EventsTable() {
               className="gap-2"
             >
               <MapPin className="h-4 w-4" />
-              <span className="hidden sm:inline">Maps</span>
+              <span className="hidden sm:inline">{t('events.view.maps')}</span>
             </Button>
           </div>
           <Button 
             onClick={() => navigate(EVENT_ADD_PAGE)}
             className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Nouvel événement
+            {t('events.addEvent')}
           </Button>
         </div>
       </div>

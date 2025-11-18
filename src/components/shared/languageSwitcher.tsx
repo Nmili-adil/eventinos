@@ -37,7 +37,7 @@ const LanguageSwitcher = () => {
         <Button
           variant="outline"
           size="sm"
-          className="flex items-center gap-2 h-10 px-3 bg-gray-100 hover:bg-gray-200 transition-colors"
+          className="flex items-center gap-2 h-10 px-3 bg-gray-100 hover:bg-gray-200 transition-colors border-slate-300"
         >
           <Globe className="w-4 h-4 text-gray-600" />
           <span className="text-lg">{currentLanguage.flag}</span>

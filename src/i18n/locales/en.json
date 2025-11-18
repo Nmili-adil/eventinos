@@ -135,6 +135,7 @@
     "faceToFace": "Face to Face",
     "virtual": "Virtual",
     "hybrid": "Hybrid",
+    "today":"Today",
     "inPerson": "In Person",
     "statusAccepted": "Accepted",
     "statusPending": "Pending",
@@ -154,7 +155,29 @@
       "gallery": "Gallery",
       "exhibitorsSponsors": "Exhibitors & Sponsors"
     },
-    "eventForm": {
+    
+   "table": {
+      "title": "Title",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "location": "Location",
+      "status": "Status",
+      "actions": "Actions",
+      "visibility": "Visibility",
+      "type":"Event Type",
+      "changeStatus": "Change Status",
+      "deleteEvent": "Delete Event",
+      "previewEvent": "Preview Event",
+      "editEvent": "Edit Event",
+      "totalEvents": "Events found"
+    },
+    "view": {
+      "calendar": "Calendar View",
+      "table": "Table View",
+      "maps": "Maps View"
+    }
+  },
+  "eventForm": {
     "title": "Create New Event",
     "description": "Fill in the event details step by step",
     "preview": {
@@ -295,55 +318,205 @@
       "notSet": "Not set"
     }
   },
-    "table": {
-      "title": "Title",
-      "date": "Date",
-      "location": "Location",
-      "status": "Status",
-      "actions": "Actions",
-      "changeStatus": "Change Status",
-      "deleteEvent": "Delete Event"
+ "members": {
+      "title": "Members",
+      "description": "Manage your members",
+      "addMember": "Add Member",
+      "memberSearchPlaceholder": "Search members by name, email, phone, or location",
+      "status": {
+        "all": "All Status",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "registration": {
+        "all": "All Registrations",
+        "completed": "Completed",
+        "pending": "Pending",
+        "status": "Registration"
+      },
+      "gender": {
+        "all": "All Genders",
+        "male": "Male",
+        "female": "Female"
+      },
+      "sort": {
+        "by": "Sort by",
+        "name": "Name",
+        "email": "Email",
+        "dateJoing": "Join Date",
+        "status": "Status"
+      },
+      "active": "Active",
+      "inActive": "Inactive",
+      "activated": "Activate",
+      "deactivated": "Deactivate",
+      "delete": "Delete",
+      "preview": "Preview",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "clearFilters": "Clear Filters",
+      "joinedOn": "Joined on",
+      "notAvailable": "Not available",
+      "deleting": "Deleting...",
+      "addFirstMember": "Add First Member",
+      "emptyState": {
+        "title": "No Members Found",
+        "noResults": "No members match your search criteria.",
+        "noMembers": "No members have been added yet."
+      },
+      "deleteDialog": {
+        "title": "Delete Member",
+        "description": "Are you sure you want to delete  This action cannot be undone."
+      },
+      "messages": {
+        "updateSuccess": "Member updated successfully",
+        "updateError": "Failed to update member",
+        "createSuccess": "Member created successfully",
+        "createError": "Failed to create member",
+        "deleteSuccess": "Member deleted successfully",
+        "deleteError": "Failed to delete member",
+        "activateSuccess": "Member activated successfully",
+        "deactivateSuccess": "Member deactivated successfully",
+        "statusUpdateError": "Failed to update member status"
+      },
+      "editDialog": {
+        "title": "Edit Member",
+        "description": "Update member information. Changes will be saved immediately.",
+        "sections": {
+          "personalInfo": "Personal Information",
+          "contactInfo": "Contact Information",
+          "locationInfo": "Location Information",
+          "accountStatus": "Account Status"
+        },
+        "fields": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "email": "Email Address",
+          "phoneNumber": "Phone Number",
+          "city": "City",
+          "country": "Country",
+          "gender": "Gender",
+          "accountStatus": "Account Status"
+        },
+        "placeholders": {
+          "enterFirstName": "Enter first name",
+          "enterLastName": "Enter last name",
+          "enterEmail": "Enter email address",
+          "enterPhone": "Enter phone number",
+          "enterCity": "Enter city",
+          "enterCountry": "Enter country",
+          "selectGender": "Select gender",
+          "selectStatus": "Select status"
+        },
+        "genderOptions": {
+          "male": "Male",
+          "female": "Female"
+        },
+        "statusOptions": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save Changes",
+          "saving": "Saving..."
+        },
+        "validation": {
+          "required": "This field is required",
+          "invalidEmail": "Invalid email address"
+        }
+      },
+      "addDialog": {
+        "title": "Add New Member",
+        "description": "Create a new member account. All required fields must be filled.",
+        "sections": {
+          "personalInfo": "Personal Information",
+          "contactInfo": "Contact Information",
+          "locationInfo": "Location Information",
+          "accountInfo": "Account Information"
+        },
+        "fields": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "email": "Email Address",
+          "phoneNumber": "Phone Number",
+          "city": "City",
+          "country": "Country",
+          "gender": "Gender",
+          "password": "Password",
+          "accountStatus": "Account Status"
+        },
+        "placeholders": {
+          "enterFirstName": "Enter first name",
+          "enterLastName": "Enter last name",
+          "enterEmail": "Enter email address",
+          "enterPhone": "Enter phone number",
+          "enterCity": "Enter city",
+          "enterCountry": "Enter country",
+          "enterPassword": "Enter password",
+          "selectGender": "Select gender",
+          "selectStatus": "Select status"
+        },
+        "genderOptions": {
+          "male": "Male",
+          "female": "Female",
+          "other": "Other"
+        },
+        "statusOptions": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Member",
+          "creating": "Creating..."
+        },
+        "validation": {
+          "required": "This field is required",
+          "invalidEmail": "Invalid email address",
+          "passwordMinLength": "Password must be at least 6 characters"
+        }
+      }, "detailsDialog": {
+        "title": "Member Details",
+        "description": "Complete information about the member",
+        "sections": {
+          "contactInfo": "Contact Information",
+          "personalInfo": "Personal Information",
+          "accountInfo": "Account Information",
+          "timestamps": "Timestamps"
+        },
+        "fields": {
+          "email": "Email Address",
+          "phone": "Phone Number",
+          "location": "Location",
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "gender": "Gender",
+          "birthday": "Birthday",
+          "accountStatus": "Account Status",
+          "registrationStatus": "Registration Status",
+          "userId": "User ID",
+          "roleId": "Role ID",
+          "joinedDate": "Joined Date",
+          "lastUpdated": "Last Updated",
+          "memberId": "Member ID"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive",
+          "registrationComplete": "Registration Complete",
+          "registrationPending": "Registration Pending",
+          "completed": "Completed",
+          "pending": "Pending"
+        },
+        "buttons": {
+          "close": "Close",
+          "editMember": "Edit Member",
+          "deleteMember": "Delete Member"
+        },
+        "notAvailable": "N/A"
+      }
     },
-    "calendar": {
-      "view": "Calendar View",
-      "table": "Table View"
-    }
-  },
-  "members": {
-    "title": "Members",
-    "addMember": "Add New Member",
-    "editMember": "Edit Member",
-    "createMember": "Create Member",
-    "personalInfo": "Personal Information",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "firstNameRequired": "First name is required",
-    "lastNameRequired": "Last name is required",
-    "enterFirstName": "Enter first name",
-    "enterLastName": "Enter last name",
-    "gender": "Gender",
-    "selectGender": "Select gender",
-    "male": "Male",
-    "female": "Female",
-    "other": "Other",
-    "contactInfo": "Contact Information",
-    "emailAddress": "Email Address",
-    "emailRequired": "Email is required",
-    "invalidEmail": "Invalid email address",
-    "enterEmail": "Enter email address",
-    "phoneNumber": "Phone Number",
-    "enterPhone": "Enter phone number",
-    "locationInfo": "Location Information",
-    "enterCity": "Enter city",
-    "enterCountry": "Enter country",
-    "accountInfo": "Account Information",
-    "accountStatus": "Account Status",
-    "selectStatus": "Select status",
-    "createDescription": "Create a new member account. All required fields must be filled.",
-    "loading": "Loading members...",
-    "noMembersFound": "No members found",
-    "resetFilters": "Reset filters"
-  },
   "categories": {
     "title": "Categories",
     "addCategory": "Add Category",

@@ -31,11 +31,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { getStatusColor, getStatusText, getTypeText, getVisibilityText } from '@/lib/events-utils'
+import { getStatusColor } from '@/lib/events-utils'
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyAusUjQnEavpTwLKYTj8vbJ4JOkdVus6sg'
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
 const mapContainerStyle = {
   width: '100%',
@@ -306,13 +306,13 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
                         <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant="default" className="text-xs">{event.location?.city}</Badge>
                         <Badge variant="default" className={cn('text-xs', getStatusColor(event.status))}>
-                          {getStatusText(event.status)}
+                          {event.status}
                         </Badge>
                         <Badge variant="default" className="text-xs">
-                          {getVisibilityText(event.visibility)}
+                          {event.visibility}
                         </Badge>
                         <Badge variant="default" className="text-xs">
-                          {getTypeText(event.type)}
+                          {event.type}
                         </Badge>
                         </div>
                       </div>
@@ -422,13 +422,13 @@ const EventCard: React.FC<EventCardProps> = ({
           {/* Status Badge */}
           <div className="flex items-center gap-2 flex-wrap">
             <Badge className={cn('text-xs', getStatusColor(event.status))}>
-              {getStatusText(event.status)}
+              {event.status}
             </Badge>
             <Badge variant="outline" className="text-xs">
-              {getVisibilityText(event.visibility)}
+              {event.visibility}
             </Badge>
             <Badge variant="outline" className="text-xs">
-              {getTypeText(event.type)}
+              {event.type}
             </Badge>
           </div>
 

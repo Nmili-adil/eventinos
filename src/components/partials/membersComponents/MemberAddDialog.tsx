@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { useTranslation } from "react-i18next"
 
 interface MemberAddDialogProps {
   isOpen: boolean
@@ -45,6 +46,7 @@ const MemberAddDialog = ({
   onSave,
   isLoading = false,
 }: MemberAddDialogProps) => {
+  const { t } = useTranslation()
   const {
     register,
     handleSubmit,
@@ -96,11 +98,13 @@ const MemberAddDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-3xl border-slate-300 max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Add New Member</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {t('members.addDialog.title', 'Add New Member')}
+          </DialogTitle>
           <DialogDescription>
-            Create a new member account. All required fields must be filled.
+            {t('members.addDialog.description', 'Create a new member account. All required fields must be filled.')}
           </DialogDescription>
         </DialogHeader>
 
@@ -109,43 +113,63 @@ const MemberAddDialog = ({
             <div className="space-y-6">
               {/* Personal Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Personal Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.addDialog.sections.personalInfo', 'Personal Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name *</Label>
+                    <Label htmlFor="firstName">
+                      {t('members.addDialog.fields.firstName', 'First Name')} *
+                    </Label>
                     <Input
                       id="firstName"
-                      {...register('firstName', { required: 'First name is required' })}
-                      placeholder="Enter first name"
+                      {...register('firstName', { 
+                        required: t('members.addDialog.validation.required', 'This field is required') 
+                      })}
+                      placeholder={t('members.addDialog.placeholders.enterFirstName', 'Enter first name')}
                     />
                     {errors.firstName && (
                       <p className="text-sm text-destructive">{errors.firstName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Label htmlFor="lastName">
+                      {t('members.addDialog.fields.lastName', 'Last Name')} *
+                    </Label>
                     <Input
                       id="lastName"
-                      {...register('lastName', { required: 'Last name is required' })}
-                      placeholder="Enter last name"
+                      {...register('lastName', { 
+                        required: t('members.addDialog.validation.required', 'This field is required') 
+                      })}
+                      placeholder={t('members.addDialog.placeholders.enterLastName', 'Enter last name')}
                     />
                     {errors.lastName && (
                       <p className="text-sm text-destructive">{errors.lastName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="gender">Gender</Label>
+                    <Label htmlFor="gender">
+                      {t('members.addDialog.fields.gender', 'Gender')}
+                    </Label>
                     <Select
                       value={watch('gender')}
                       onValueChange={(value) => setValue('gender', value as 'MALE' | 'FEMALE' | 'OTHER')}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
+                        <SelectValue 
+                          placeholder={t('members.addDialog.placeholders.selectGender', 'Select gender')} 
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="MALE">Male</SelectItem>
-                        <SelectItem value="FEMALE">Female</SelectItem>
-                        <SelectItem value="OTHER">Other</SelectItem>
+                        <SelectItem value="MALE">
+                          {t('members.addDialog.genderOptions.male', 'Male')}
+                        </SelectItem>
+                        <SelectItem value="FEMALE">
+                          {t('members.addDialog.genderOptions.female', 'Female')}
+                        </SelectItem>
+                        <SelectItem value="OTHER">
+                          {t('members.addDialog.genderOptions.other', 'Other')}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -156,32 +180,38 @@ const MemberAddDialog = ({
 
               {/* Contact Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Contact Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.addDialog.sections.contactInfo', 'Contact Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email">
+                      {t('members.addDialog.fields.email', 'Email Address')} *
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       {...register('email', {
-                        required: 'Email is required',
+                        required: t('members.addDialog.validation.required', 'This field is required'),
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Invalid email address',
+                          message: t('members.addDialog.validation.invalidEmail', 'Invalid email address'),
                         },
                       })}
-                      placeholder="Enter email address"
+                      placeholder={t('members.addDialog.placeholders.enterEmail', 'Enter email address')}
                     />
                     {errors.email && (
                       <p className="text-sm text-destructive">{errors.email.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                    <Label htmlFor="phoneNumber">
+                      {t('members.addDialog.fields.phoneNumber', 'Phone Number')}
+                    </Label>
                     <Input
                       id="phoneNumber"
                       {...register('phoneNumber')}
-                      placeholder="Enter phone number"
+                      placeholder={t('members.addDialog.placeholders.enterPhone', 'Enter phone number')}
                     />
                     {errors.phoneNumber && (
                       <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>
@@ -194,22 +224,28 @@ const MemberAddDialog = ({
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Location Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.addDialog.sections.locationInfo', 'Location Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">
+                      {t('members.addDialog.fields.city', 'City')}
+                    </Label>
                     <Input
                       id="city"
                       {...register('city')}
-                      placeholder="Enter city"
+                      placeholder={t('members.addDialog.placeholders.enterCity', 'Enter city')}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
+                    <Label htmlFor="country">
+                      {t('members.addDialog.fields.country', 'Country')}
+                    </Label>
                     <Input
                       id="country"
                       {...register('country')}
-                      placeholder="Enter country"
+                      placeholder={t('members.addDialog.placeholders.enterCountry', 'Enter country')}
                     />
                   </div>
                 </div>
@@ -219,38 +255,50 @@ const MemberAddDialog = ({
 
               {/* Account Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">Account Information</h4>
+                <h4 className="font-semibold text-lg">
+                  {t('members.addDialog.sections.accountInfo', 'Account Information')}
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password *</Label>
+                    <Label htmlFor="password">
+                      {t('members.addDialog.fields.password', 'Password')} *
+                    </Label>
                     <Input
                       id="password"
                       type="password"
                       {...register('password', {
-                        required: 'Password is required',
+                        required: t('members.addDialog.validation.required', 'This field is required'),
                         minLength: {
                           value: 6,
-                          message: 'Password must be at least 6 characters',
+                          message: t('members.addDialog.validation.passwordMinLength', 'Password must be at least 6 characters'),
                         },
                       })}
-                      placeholder="Enter password"
+                      placeholder={t('members.addDialog.placeholders.enterPassword', 'Enter password')}
                     />
                     {errors.password && (
                       <p className="text-sm text-destructive">{errors.password.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="isActive">Account Status</Label>
+                    <Label htmlFor="isActive">
+                      {t('members.addDialog.fields.accountStatus', 'Account Status')}
+                    </Label>
                     <Select
                       value={isActive ? 'active' : 'inactive'}
                       onValueChange={(value) => setValue('isActive', value === 'active')}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue 
+                          placeholder={t('members.addDialog.placeholders.selectStatus', 'Select status')} 
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="active">
+                          {t('members.addDialog.statusOptions.active', 'Active')}
+                        </SelectItem>
+                        <SelectItem value="inactive">
+                          {t('members.addDialog.statusOptions.inactive', 'Inactive')}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -262,16 +310,16 @@ const MemberAddDialog = ({
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-4 border-t mt-4">
             <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-              Cancel
+              {t('members.addDialog.buttons.cancel', 'Cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Creating...
+                  {t('members.addDialog.buttons.creating', 'Creating...')}
                 </>
               ) : (
-                'Create Member'
+                t('members.addDialog.buttons.create', 'Create Member')
               )}
             </Button>
           </div>
@@ -282,4 +330,3 @@ const MemberAddDialog = ({
 }
 
 export default MemberAddDialog
-

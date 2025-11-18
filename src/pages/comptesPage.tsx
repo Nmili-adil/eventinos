@@ -56,6 +56,7 @@ import PageHead from '@/components/shared/page-head';
 import { UsersFilters } from '@/components/partials/usersComponents/UsersFilters';
 import { filterUsers, sortUsers, type UsersFilters as UsersFiltersType, type UserSortField, type UserSortDirection } from '@/lib/users-utils';
 import { PROFILE_PAGE } from '@/constants/routerConstants';
+import { formatDate } from '@/lib/helperFunctions';
 
 export const ComptesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -94,30 +95,7 @@ export const ComptesPage: React.FC = () => {
     return sorted;
   }, [users, filters, sort.field, sort.direction]);
 
-  const formatDate = (dateInput: any): string => {
-    try {
-      if (!dateInput) return 'N/A';
-      
-      let timestamp: number;
-      
-      if (typeof dateInput === 'string') {
-        timestamp = parseInt(dateInput);
-      } else if (dateInput.$date && dateInput.$date.$numberLong) {
-        timestamp = parseInt(dateInput.$date.$numberLong);
-      } else if (dateInput.$numberLong) {
-        timestamp = parseInt(dateInput.$numberLong);
-      } else if (typeof dateInput === 'number') {
-        timestamp = dateInput;
-      } else {
-        return 'N/A';
-      }
-      
-      return new Date(timestamp).toLocaleDateString();
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'N/A';
-    }
-  };
+  
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();

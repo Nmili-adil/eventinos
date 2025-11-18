@@ -7,6 +7,8 @@ interface PropsType {
 }
 
 const PageHead = ({ title, icon: Icon, description = "" }: PropsType) => {
+ 
+
   return (
     <div className="flex flex-col gap-1 mb-6">
       <div className="flex items-center gap-3 ">

@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, Filter } from 'lucide-react'
 import type { MembersFilters } from '@/lib/members-utils'
+import { t } from 'i18next'
 
 interface MembersFiltersProps {
   filters: MembersFilters
@@ -34,7 +35,7 @@ export function MembersFilters({ filters, onFiltersChange }: MembersFiltersProps
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search members by name, email, phone, or location..."
+              placeholder={t('members.memberSearchPlaceholder')}
               value={filters.search}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
@@ -50,9 +51,9 @@ export function MembersFilters({ filters, onFiltersChange }: MembersFiltersProps
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="all">{t('members.status.all')}</SelectItem>
+                  <SelectItem value="active">{t('members.status.active')}</SelectItem>
+                  <SelectItem value="inactive">{t('members.status.inactive')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -63,9 +64,9 @@ export function MembersFilters({ filters, onFiltersChange }: MembersFiltersProps
                   <SelectValue placeholder="Registration" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Registration</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="all">{t('members.registration.all')}</SelectItem>
+                  <SelectItem value="completed">{t('members.registration.completed')}</SelectItem>
+                  <SelectItem value="pending">{t('members.registration.pending')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -76,9 +77,9 @@ export function MembersFilters({ filters, onFiltersChange }: MembersFiltersProps
                   <SelectValue placeholder="Gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Gender</SelectItem>
-                  <SelectItem value="MALE">Male</SelectItem>
-                  <SelectItem value="FEMALE">Female</SelectItem>
+                  <SelectItem value="all">{t('members.gender.all')}</SelectItem>
+                  <SelectItem value="MALE">{t('members.gender.male')}</SelectItem>
+                  <SelectItem value="FEMALE">{t('members.gender.female')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -33,10 +33,10 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
   }
 
   return (
-    <div className="w-full flex justify-center">
-      <DeviceFrameset device="iPhone X" color="white" zoom={0.75} width={375} height={812}>
+    <div className="w-full flex justify-center p-0">
+      <DeviceFrameset device="Galaxy Note 8" color="white" zoom={0.90} width={350} height={670}>
         {/* Content */}
-        <div className="bg-white w-full h-full overflow-y-auto" style={{ minHeight: '812px', maxHeight: '812px' }}>
+        <div className="bg-white w-full h-full overflow-y-auto" style={{ minHeight: '670px', maxHeight: '812px' }}>
             {/* Event Image */}
             <div className="relative w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500">
               {(formData.image?.data?.path || formData.image?.url || formData.image) ? (

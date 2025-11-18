@@ -1,17 +1,19 @@
 import { Button } from '@/components/ui/button'
 import type { PaginationProps } from '@/types/eventsTypes'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 
 export function EventsPagination({ pagination, onPageChange }: PaginationProps) {
   const totalPages = Math.ceil(pagination.totalItems / pagination.pageSize)
+  const { t } = useTranslation()
   
   if (totalPages <= 1) return null
 
   return (
     <div className="flex items-center justify-between">
       <div className="text-sm text-muted-foreground">
-        {pagination.totalItems} événement{pagination.totalItems !== 1 ? 's' : ''} trouvé{pagination.totalItems !== 1 ? 's' : ''}
+        {pagination.totalItems} {t('events.table.totalEvents')}
       </div>
       <div className="flex items-center gap-2">
         <Button

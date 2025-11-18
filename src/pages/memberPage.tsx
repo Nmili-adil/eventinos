@@ -63,6 +63,9 @@ import MemberAddDialog from '@/components/partials/membersComponents/MemberAddDi
 import { MembersFilters } from '@/components/partials/membersComponents/MembersFilters';
 import { MembersPagination } from '@/components/partials/membersComponents/MembersPagination';
 import { filterMembers, sortMembers, type MembersFilters as MembersFiltersType, type MemberSortField, type MemberSortDirection } from '@/lib/members-utils';
+import { useTranslation } from 'react-i18next';
+import { formatDate } from '@/lib/helperFunctions';
+
 
 export const MembersPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -85,6 +88,7 @@ export const MembersPage: React.FC = () => {
     field: 'createdAt',
     direction: 'desc',
   });
+  const { t } = useTranslation()
 
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
@@ -105,30 +109,7 @@ export const MembersPage: React.FC = () => {
     return sorted;
   }, [members, filters, sort.field, sort.direction]);
 
-  const formatDate = (dateInput: any): string => {
-    try {
-      if (!dateInput) return 'N/A';
-      
-      let timestamp: number;
-      
-      if (typeof dateInput === 'string') {
-        timestamp = parseInt(dateInput);
-      } else if (dateInput.$date && dateInput.$date.$numberLong) {
-        timestamp = parseInt(dateInput.$date.$numberLong);
-      } else if (dateInput.$numberLong) {
-        timestamp = parseInt(dateInput.$numberLong);
-      } else if (typeof dateInput === 'number') {
-        timestamp = dateInput;
-      } else {
-        return 'N/A';
-      }
-      
-      return new Date(timestamp).toLocaleDateString();
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'N/A';
-    }
-  };
+ 
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
@@ -148,13 +129,13 @@ export const MembersPage: React.FC = () => {
     setActionLoading(memberId);
     try {
       await dispatch(updateMemberRequest(memberId, data));
-      toast.success('Member updated successfully');
+      toast.success(t('members.messages.updateSuccess', 'Member updated successfully'));
       setEditDialogOpen(false);
       setSelectedMember(null);
       // Refresh current page
       dispatch(fetchMembersRequest(currentPage, pageSize));
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to update member');
+      toast.error(error?.message || t('members.messages.updateError', 'Failed to update member'));
     } finally {
       setActionLoading(null);
     }
@@ -164,11 +145,11 @@ export const MembersPage: React.FC = () => {
     setActionLoading('create');
     try {
       await dispatch(createMemberRequest(data));
-      toast.success('Member created successfully');
+      toast.success(t('members.messages.createSuccess', 'Member created successfully'));
       setAddDialogOpen(false);
       setCurrentPage(1); // Reset to first page
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to create member');
+      toast.error(error?.message || t('members.messages.createError', 'Failed to create member'));
     } finally {
       setActionLoading(null);
     }
@@ -184,7 +165,7 @@ export const MembersPage: React.FC = () => {
     setActionLoading(member._id.toString());
     try {
       await dispatch(deleteMemberRequest(member._id.toString()));
-      toast.success('Member deleted successfully');
+      toast.success(t('members.messages.deleteSuccess', 'Member deleted successfully'));
       setDeleteDialogOpen(false);
       setSelectedMember(null);
       // Refresh current page, or go to previous page if current page is empty
@@ -195,7 +176,7 @@ export const MembersPage: React.FC = () => {
         dispatch(fetchMembersRequest(currentPage, pageSize));
       }
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to delete member');
+      toast.error(error?.message || t('members.messages.deleteError', 'Failed to delete member'));
     } finally {
       setActionLoading(null);
     }
@@ -205,11 +186,16 @@ export const MembersPage: React.FC = () => {
     setActionLoading(member._id.toString());
     try {
       await dispatch(updateMemberStatusRequest(member._id.toString(), !member.isActive));
-      toast.success(`Member ${!member.isActive ? 'activated' : 'deactivated'} successfully`);
+      toast.success(
+        t(
+          `members.messages.${!member.isActive ? 'activateSuccess' : 'deactivateSuccess'}`,
+          `Member ${!member.isActive ? 'activated' : 'deactivated'} successfully`
+        )
+      );
       // Refresh current page
       dispatch(fetchMembersRequest(currentPage, pageSize));
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to update member status');
+      toast.error(error?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
     } finally {
       setActionLoading(null);
     }
@@ -284,13 +270,13 @@ export const MembersPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHead 
-          title='Members' 
+          title={t('members.title')}
           icon={Users} 
-          description={`Manage your organization members (${total || 0} total members)`} 
+          description={t('members.description')} 
         />
         <Button onClick={() => setAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          Add Member
+          {t('members.addMember')}
         </Button>
       </div>
 
@@ -301,7 +287,9 @@ export const MembersPage: React.FC = () => {
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <span className="text-sm font-medium text-muted-foreground">Sort by:</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              {t('members.sort.by')}
+            </span>
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
@@ -309,7 +297,7 @@ export const MembersPage: React.FC = () => {
                 onClick={() => handleSort('firstName')}
                 className="gap-2"
               >
-                Name {getSortIcon('firstName')}
+                {t('members.sort.name')} {getSortIcon('firstName')}
               </Button>
               <Button
                 variant="outline"
@@ -317,7 +305,7 @@ export const MembersPage: React.FC = () => {
                 onClick={() => handleSort('email')}
                 className="gap-2"
               >
-                Email {getSortIcon('email')}
+                {t('members.sort.email')} {getSortIcon('email')}
               </Button>
               <Button
                 variant="outline"
@@ -325,7 +313,7 @@ export const MembersPage: React.FC = () => {
                 onClick={() => handleSort('createdAt')}
                 className="gap-2"
               >
-                Join Date {getSortIcon('createdAt')}
+                {t('members.sort.dateJoing')} {getSortIcon('createdAt')}
               </Button>
               <Button
                 variant="outline"
@@ -333,7 +321,7 @@ export const MembersPage: React.FC = () => {
                 onClick={() => handleSort('isActive')}
                 className="gap-2"
               >
-                Status {getSortIcon('isActive')}
+                {t('members.sort.status')} {getSortIcon('isActive')}
               </Button>
             </div>
           </div>
@@ -367,11 +355,10 @@ export const MembersPage: React.FC = () => {
                         variant={member.isActive ? "default" : "secondary"}
                         className="mt-1"
                       >
-                        {member.isActive ? 'Active' : 'Inactive'}
+                        {member.isActive ? t('members.active') : t('members.inActive')}
                       </Badge>
                     </div>
                   </div>
-                  
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -381,11 +368,11 @@ export const MembersPage: React.FC = () => {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => handleViewDetails(member)}>
                         <Eye className="w-4 h-4 mr-2" />
-                        View Details
+                        {t('members.preview')}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleEdit(member)}>
                         <Edit className="w-4 h-4 mr-2" />
-                        Edit
+                        {t('members.edit')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
@@ -395,12 +382,12 @@ export const MembersPage: React.FC = () => {
                         {member.isActive ? (
                           <>
                             <UserX className="w-4 h-4 mr-2" />
-                            Deactivate
+                            {t('members.deactivated')}
                           </>
                         ) : (
                           <>
                             <UserCheck className="w-4 h-4 mr-2" />
-                            Activate
+                            {t('members.activated')}
                           </>
                         )}
                       </DropdownMenuItem>
@@ -411,7 +398,7 @@ export const MembersPage: React.FC = () => {
                         disabled={actionLoading === member._id.$oid}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
+                        {t('members.delete')}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -422,12 +409,16 @@ export const MembersPage: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm">
                     <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground truncate">{member.email || 'N/A'}</span>
+                    <span className="text-muted-foreground truncate">
+                      {member.email || t('members.notAvailable', 'N/A')}
+                    </span>
                   </div>
                   
                   <div className="flex items-center space-x-2 text-sm">
                     <Phone className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">{member.phoneNumber || 'N/A'}</span>
+                    <span className="text-muted-foreground">
+                      {member.phoneNumber || t('members.notAvailable', 'N/A')}
+                    </span>
                   </div>
 
                   {(member.city || member.country) && (
@@ -442,7 +433,7 @@ export const MembersPage: React.FC = () => {
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
-                      Joined {formatDate(member.createdAt)}
+                      {t('members.joinedOn', 'Joined')} {formatDate(member.createdAt)}
                     </span>
                   </div>
                 </div>
@@ -450,8 +441,14 @@ export const MembersPage: React.FC = () => {
                 <Separator className="my-3" />
 
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
-                  <span>Registration {member.registrationCompleted ? 'Completed' : 'Pending'}</span>
-                  <span>{member.user || 'N/A'}</span>
+                  <span>
+                    {t('members.registration.status', 'Registration')}{' '}
+                    {member.registrationCompleted ? 
+                      t('members.registration.completed') : 
+                      t('members.registration.pending')
+                    }
+                  </span>
+                  <span>{member.user || t('members.notAvailable', 'N/A')}</span>
                 </div>
               </CardContent>
             </Card>
@@ -462,11 +459,13 @@ export const MembersPage: React.FC = () => {
         <Card>
           <CardContent className="pt-6 text-center">
             <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="font-semibold">No Members Found</h3>
+            <h3 className="font-semibold">
+              {t('members.emptyState.title', 'No Members Found')}
+            </h3>
             <p className="text-sm text-muted-foreground mb-4">
               {filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all'
-                ? 'No members match your search criteria.' 
-                : 'No members have been added yet.'}
+                ? t('members.emptyState.noResults', 'No members match your search criteria.')
+                : t('members.emptyState.noMembers', 'No members have been added yet.')}
             </p>
             {(filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all') ? (
               <Button 
@@ -478,12 +477,12 @@ export const MembersPage: React.FC = () => {
                   gender: 'all',
                 })}
               >
-                Clear Filters
+                {t('members.clearFilters', 'Clear Filters')}
               </Button>
             ) : (
               <Button onClick={() => setAddDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Add First Member
+                {t('members.addFirstMember', 'Add First Member')}
               </Button>
             )}
           </CardContent>
@@ -534,10 +533,15 @@ export const MembersPage: React.FC = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Member</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t('members.deleteDialog.title', 'Delete Member')}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete {selectedMember?.firstName} {selectedMember?.lastName}? 
-              This action cannot be undone.
+              {t(
+                'members.deleteDialog.description', 
+                'Are you sure you want to delete This action cannot be undone.',
+                { name: `${selectedMember?.firstName} ${selectedMember?.lastName}` }
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -548,22 +552,22 @@ export const MembersPage: React.FC = () => {
               }}
               disabled={actionLoading === selectedMember?._id.$oid}
             >
-              Cancel
+              {t('members.cancel', 'Cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedMember && handleDelete(selectedMember)}
               disabled={actionLoading === selectedMember?._id.$oid}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive text-gray-100 hover:bg-destructive/90"
             >
               {actionLoading === selectedMember?._id.$oid ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Deleting...
+                  {t('members.deleting', 'Deleting...')}
                 </>
               ) : (
                 <>
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
+                  {t('members.delete', 'Delete')}
                 </>
               )}
             </AlertDialogAction>
