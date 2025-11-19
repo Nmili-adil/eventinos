@@ -6,6 +6,8 @@ import ForgotPasswordEmailStep from '@/components/partials/authComponents/forgot
 import ForgotPasswordOtpStep from '@/components/partials/authComponents/forgotPasswordOtpStep'
 import NewPasswordStep from '@/components/partials/authComponents/newPasswordStep'
 import ForgotPasswordCompleteStep from '@/components/partials/authComponents/forgotPasswordCompleteStep'
+import { Calendar } from 'lucide-react'
+import { t } from 'i18next'
 
 export default function ForgotPasswordPage() {
   const dispatch = useDispatch()
@@ -27,21 +29,69 @@ export default function ForgotPasswordPage() {
   const CurrentStepComponent = steps[currentStepIndex]?.component
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen bg-background flex">
       {/* main content  */}
-      <main className="flex-1 flex lg:flex-row relative">
         {/* Background Image - full screen on mobile, right half on desktop */}
-        <div className="absolute lg:relative inset-0 lg:flex-1 bg-[url(/login-cover.png)] shadow-xl bg-center bg-no-repeat bg-cover">
-          <div className='absolute flex items-center justify-center top-0 left-0 w-full h-full bg-black/40'>
-            <img src="/logo-bg.svg" alt="UrEvent Logo" className='w-1/2 h-1/2' />
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-72 h-72 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative z-10 w-full h-full flex items-center justify-center p-12">
+          <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+            <img
+              src="/event1.jpg"
+              alt="Event 1"
+              className="w-full h-40 object-cover rounded-lg shadow-lg"
+            />
+            <img
+              src="/event2.jpg"
+              alt="Event 2"
+              className="w-full h-40 object-cover rounded-lg shadow-lg"
+            />
+            <img
+              src="/event3.jpg"
+              alt="Event 3"
+              className="w-full h-40 object-cover rounded-lg shadow-lg"
+            />
+            <img
+              src="/event4.jpg"
+              alt="Event 4"
+              className="w-full h-40 object-cover rounded-lg shadow-lg"
+            />
           </div>
         </div>
 
+        <div className="absolute bottom-8 left-12 text-white z-20">
+          <div className="flex items-center gap-3 mb-2">
+            <Calendar className="w-6 h-6" />
+            <h2 className="text-2xl font-bold">Eventinas</h2>
+          </div>
+          <p className="text-sm text-slate-300">
+            Manage your events professionally
+          </p>
+        </div>
+      </div>
+
         {/* Form Section - absolutely positioned on mobile, left half on desktop */}
-        <div className='absolute lg:relative inset-0 lg:inset-auto lg:w-4/12 flex items-center justify-center p-8 z-10'>
-          <div className="w-full max-w-md">
-            {/* Progress Bar */}
-            {forgotPasswordStep !== 'complete' && (
+        
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-0 sm:p-12">
+        <div className="w-full max-w-lg">
+          <div className="mb-6">
+            <div className="inline-flex items-center justify-center w-full md:w-24 md:h-24 rounded-xl bg-white mb-6">
+              <img src="/Eventinas Logo.jpeg" alt="Eventinas Logo" className="w-24 h-24 object-cover" />
+            </div>
+            <h1 className="text-4xl font-bold text-foreground mb-1 text-center md:text-start">
+            {t('auth.welcome')}
+            </h1>
+            <p className="text-muted-foreground text-lg text-center md:text-start">
+            {t('auth.accessAccount')} 
+            </p>
+          </div>
+
+          <div className=" ">
+          {forgotPasswordStep !== 'complete' && (
               <div className="mb-8">
                 <div className="flex justify-between mb-2">
                   {steps.slice(0, -1).map((step, index) => (
@@ -70,9 +120,11 @@ export default function ForgotPasswordPage() {
             {CurrentStepComponent && (
               <CurrentStepComponent />
             )}
+          </div> 
+        
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    
   )
 }

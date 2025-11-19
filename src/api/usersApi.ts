@@ -49,3 +49,18 @@ export const updateUserPasswordApi = async (userId: string, newPassword: string)
     throw error;
   }
 }
+
+export const createUserApi = async (data: any) => {
+  try {
+    const response = await api.post('/users', data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

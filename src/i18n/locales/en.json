@@ -1,6 +1,6 @@
 {
   "common": {
-    "welcome": "Welcome",
+    "welcome": "Welcome back",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
@@ -67,8 +67,8 @@
     "loggingIn": "Logging in...",
     "loginSuccess": "Login successful!",
     "loginError": "Login error",
-    "welcome": "Welcome",
-    "accessAccount": "Access your",
+    "welcome": "Welcome back",
+    "accessAccount": "Sign in to your account to continue",
     "account": "account"
   },
   "navigation": {

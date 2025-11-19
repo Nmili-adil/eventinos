@@ -46,6 +46,7 @@ import {
   ArrowDown,
   Briefcase,
   UserCog,
+  Plus,
 } from 'lucide-react';
 import { 
   fetchUsersRequest
@@ -57,6 +58,8 @@ import { UsersFilters } from '@/components/partials/usersComponents/UsersFilters
 import { filterUsers, sortUsers, type UsersFilters as UsersFiltersType, type UserSortField, type UserSortDirection } from '@/lib/users-utils';
 import { PROFILE_PAGE } from '@/constants/routerConstants';
 import { formatDate } from '@/lib/helperFunctions';
+import AddAccountDialog from '@/components/partials/usersComponents/AddAccountDialog';
+import { createUserApi } from '@/api/usersApi';
 
 export const ComptesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -82,6 +85,8 @@ export const ComptesPage: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [addAccountDialogOpen, setAddAccountDialogOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
   // Fetch users when component mounts
   useEffect(() => {
@@ -156,6 +161,26 @@ export const ComptesPage: React.FC = () => {
     );
   };
 
+  const handleCreateAccount = async (data: any) => {
+    setCreateLoading(true);
+    try {
+      const response = await createUserApi(data);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success('Account created successfully');
+        setAddAccountDialogOpen(false);
+        dispatch(fetchUsersRequest());
+      } else {
+        toast.error(response?.data?.message || 'Failed to create account');
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to create account');
+      throw error;
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
+
   // Loading state
   if (loading && (!users || users.length === 0)) {
     return (
@@ -205,6 +230,10 @@ export const ComptesPage: React.FC = () => {
           icon={UserCog} 
           description={`Manage all users (${usersCount || 0} total users)`} 
         />
+        <Button onClick={() => setAddAccountDialogOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Account
+        </Button>
       </div>
 
       {/* Filters */}
@@ -469,6 +498,15 @@ export const ComptesPage: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Add Account Dialog */}
+      <AddAccountDialog
+        isOpen={addAccountDialogOpen}
+        onClose={() => setAddAccountDialogOpen(false)}
+        onSave={handleCreateAccount}
+        isLoading={createLoading}
+      />
+
     </div>
   );
 };

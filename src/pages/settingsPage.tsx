@@ -26,13 +26,22 @@ import {
   createCategoryRequest,
   deleteCategoryRequest
 } from "@/store/features/categories/categories.actions";
-import { SlidersHorizontal, Plus, FolderOpen, Award, Folder, Sparkles } from "lucide-react";
+import { SlidersHorizontal, Plus, FolderOpen, Award, Folder, Sparkles, Shield } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import CategoryEditDialog from "@/components/partials/categoriesComponent/CategoryEditDialog";
 import CategoryAddDialog from "@/components/partials/categoriesComponent/CategoryAddDialog";
 import BadgeEditDialog from "@/components/partials/badgesComponent/BadgeEditDialog";
 import BadgeAddDialog from "@/components/partials/badgesComponent/BadgeAddDialog";
+import RolesTable from "@/components/partials/rolesComponent/RolesTable";
+import RoleAddDialog from "@/components/partials/rolesComponent/RoleAddDialog";
+import RoleEditDialog from "@/components/partials/rolesComponent/RoleEditDialog";
+import { 
+  fetchRolesRequest,
+  createRoleRequest,
+  updateRoleRequest,
+  deleteRoleRequest
+} from "@/store/features/roles/roles.actions";
 
 interface Category {
   _id: string;
@@ -49,7 +58,7 @@ interface Badge {
   image: string;
 }
 
-type SettingsView = 'categories' | 'badges';
+type SettingsView = 'categories' | 'badges' | 'roles';
 
 const SettingsPage = () => {
   const [activeView, setActiveView] = useState<SettingsView>('categories');
@@ -63,9 +72,14 @@ const SettingsPage = () => {
     isLoading: badgesLoading,
     pagination: badgesPagination,
   } = useSelector((state: RootState) => state.badges);
+  const {
+    roles,
+    isLoading: rolesLoading,
+  } = useSelector((state: RootState) => state.roles);
   
   const [categoryData, setCategoryData] = useState<Category[]>([]);
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
+  const [roleData, setRoleData] = useState<any[]>([]);
   const [currentCategoriesPage, setCurrentCategoriesPage] = useState(1);
   const [currentBadgesPage, setCurrentBadgesPage] = useState(1);
 
@@ -74,8 +88,11 @@ const SettingsPage = () => {
   const [categoryAddDialogOpen, setCategoryAddDialogOpen] = useState(false);
   const [badgeEditDialogOpen, setBadgeEditDialogOpen] = useState(false);
   const [badgeAddDialogOpen, setBadgeAddDialogOpen] = useState(false);
+  const [roleEditDialogOpen, setRoleEditDialogOpen] = useState(false);
+  const [roleAddDialogOpen, setRoleAddDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [selectedRole, setSelectedRole] = useState<any | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -83,6 +100,7 @@ const SettingsPage = () => {
   useEffect(() => {
     dispatch(fetchCategoriesRequest());
     dispatch(fetchBadgesRequest());
+    dispatch(fetchRolesRequest());
   }, [dispatch]);
 
   useEffect(() => {
@@ -92,7 +110,10 @@ const SettingsPage = () => {
     if (badges.length > 0) {
       setBadgeData(badges);
     }
-  }, [categories, badges]);
+    if (roles.length > 0) {
+      setRoleData(roles);
+    }
+  }, [categories, badges, roles]);
 
   const handleEditCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -173,6 +194,47 @@ const SettingsPage = () => {
       toast.success('Badge deleted successfully');
     } catch (error: any) {
       toast.error(error?.message || 'Failed to delete badge');
+    }
+  };
+
+  const handleEditRole = (role: any) => {
+    setSelectedRole(role);
+    setRoleEditDialogOpen(true);
+  };
+
+  const handleSaveRole = async (roleId: string, data: any) => {
+    setActionLoading(roleId);
+    try {
+      await dispatch(updateRoleRequest(roleId, data));
+      toast.success('Role updated successfully');
+      setRoleEditDialogOpen(false);
+      setSelectedRole(null);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update role');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCreateRole = async (data: any) => {
+    setActionLoading('create-role');
+    try {
+      await dispatch(createRoleRequest(data));
+      toast.success('Role created successfully');
+      setRoleAddDialogOpen(false);
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to create role');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteRole = async (role: any) => {
+    try {
+      await dispatch(deleteRoleRequest(role._id));
+      toast.success('Role deleted successfully');
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to delete role');
     }
   };
 
@@ -259,13 +321,22 @@ const SettingsPage = () => {
                   <Award className="h-4 w-4 mr-2" />
                   Badges
                 </Button>
+                <Button
+                  variant={activeView === 'roles' ? 'default' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setActiveView('roles')}
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Roles
+                </Button>
               </nav>
             </CardContent>
           </Card>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0">
+                {/* Main Content */}
+                <main className="flex-1 min-w-0">
           {activeView === 'categories' ? (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -303,7 +374,7 @@ const SettingsPage = () => {
                 <CategoriesEmptyState />
               )}
             </div>
-          ) : (
+          ) : activeView === 'badges' ? (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div>
@@ -338,6 +409,57 @@ const SettingsPage = () => {
                 />
               ) : (
                 <BadgesEmptyState />
+              )}
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold">Roles</h2>
+                  <p className="text-muted-foreground">
+                    Manage user roles and their permissions
+                  </p>
+                </div>
+                <Button onClick={() => setRoleAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Role
+                </Button>
+              </div>
+
+              {rolesLoading ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i}>
+                      <CardContent className="p-6">
+                        <Skeleton className="h-20 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : roleData.length > 0 ? (
+                <RolesTable
+                  data={roleData}
+                  onDelete={handleDeleteRole}
+                  onEdit={handleEditRole}
+                />
+              ) : (
+                <Card>
+                  <CardHeader className="text-center">
+                    <div className="flex justify-center mb-4">
+                      <Shield className="h-16 w-16 text-muted-foreground" />
+                    </div>
+                    <CardTitle className="text-xl">No roles found</CardTitle>
+                    <CardDescription>
+                      Get started by creating your first role to manage user permissions.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex justify-center">
+                    <Button onClick={() => setRoleAddDialogOpen(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Role
+                    </Button>
+                  </CardContent>
+                </Card>
               )}
             </div>
           )}
@@ -380,6 +502,25 @@ const SettingsPage = () => {
         onClose={() => setBadgeAddDialogOpen(false)}
         onSave={handleCreateBadge}
         isLoading={actionLoading === 'create-badge'}
+      />
+
+      {/* Role Dialogs */}
+      <RoleEditDialog
+        role={selectedRole}
+        isOpen={roleEditDialogOpen}
+        onClose={() => {
+          setRoleEditDialogOpen(false);
+          setSelectedRole(null);
+        }}
+        onSave={handleSaveRole}
+        isLoading={actionLoading === selectedRole?._id}
+      />
+
+      <RoleAddDialog
+        isOpen={roleAddDialogOpen}
+        onClose={() => setRoleAddDialogOpen(false)}
+        onSave={handleCreateRole}
+        isLoading={actionLoading === 'create-role'}
       />
     </div>
   );

@@ -7,9 +7,18 @@ export const FETCH_ROLE_BY_ID_SUCCESS = 'FETCH_ROLE_BY_ID_SUCCESS';
 export const FETCH_ROLE_BY_ID_FAILURE = 'FETCH_ROLE_BY_ID_FAILURE';
 
 
+export interface Role {
+  _id: string;
+  name: string;
+  rights: string[];
+  systemRole?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface RolesState {
-  roles: string[];
-  role: any;
+  roles: Role[];
+  role: Role | null;
   loading: boolean;
   error: string | null;
 }
