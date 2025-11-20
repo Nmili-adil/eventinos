@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import enTranslations from './locales/en.json'
 import frTranslations from './locales/fr.json'
 import arTranslations from './locales/ar.json'
+import egTranslations from './locales/eg.json'
 
 i18n
   // Detect user language
@@ -23,9 +24,12 @@ i18n
       ar: {
         translation: arTranslations,
       },
+      eg: {
+        translation: egTranslations,
+      },
     },
     fallbackLng: 'en',
-    supportedLngs: ['en', 'fr', 'ar'],
+    supportedLngs: ['en', 'fr', 'ar', 'eg'],
     interpolation: {
       escapeValue: false, // React already escapes values
     },

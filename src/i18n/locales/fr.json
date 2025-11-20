@@ -505,6 +505,258 @@
     "appName": "Eventinos",
     "tagline": "Gestion d'événements",
     "loading": "Chargement en cours..."
+  },
+  "categories": {
+    "title": "Catégories",
+    "addCategory": "Ajouter une catégorie",
+    "editCategory": "Modifier la catégorie",
+    "createCategory": "Créer une catégorie",
+    "createNew": "Créer une nouvelle catégorie",
+    "categoryName": "Nom de la catégorie",
+    "categoryNameRequired": "Le nom de la catégorie est requis",
+    "enterCategoryName": "Saisissez le nom de la catégorie",
+    "categoryDescription": "Description",
+    "descriptionRequired": "La description est requise",
+    "enterDescription": "Saisissez la description de la catégorie",
+    "icon": "Icône (emoji)",
+    "iconRequired": "L'icône est obligatoire",
+    "enterIcon": "Saisissez un emoji (ex. 📁, 🎉, ⭐)",
+    "iconHint": "Utilisez un seul emoji pour représenter cette catégorie",
+    "addDescription": "Ajoutez une nouvelle catégorie pour organiser votre contenu. Tous les champs sont requis.",
+    "editDescription": "Mettez à jour les informations de la catégorie. Les modifications sont enregistrées immédiatement.",
+    "emojiPicker": {
+      "button": "Choisir un emoji",
+      "hint": "Sélectionnez un emoji ci-dessous ou collez le vôtre.",
+      "selected": "Emoji sélectionné"
+    },
+    "manageCategories": "Gérez vos catégories et vos badges",
+    "organizeContent": "Organisez votre contenu avec des catégories",
+    "noCategoriesFound": "Aucune catégorie trouvée",
+    "getStartedCategory": "Commencez par créer votre première catégorie pour organiser votre contenu.",
+    "createdSuccessfully": "Catégorie créée avec succès",
+    "updatedSuccessfully": "Catégorie mise à jour avec succès",
+    "deletedSuccessfully": "Catégorie supprimée avec succès",
+    "createFailed": "Échec de la création de la catégorie",
+    "updateFailed": "Échec de la mise à jour de la catégorie",
+    "deleteFailed": "Échec de la suppression de la catégorie"
+  },
+  "badges": {
+    "title": "Badges",
+    "addBadge": "Ajouter un badge",
+    "editBadge": "Modifier le badge",
+    "createBadge": "Créer un badge",
+    "createNew": "Créer un nouveau badge",
+    "createDescription": "Ajoutez un nouveau badge pour récompenser vos utilisateurs. Tous les champs requis doivent être remplis.",
+    "editDescription": "Mettez à jour les informations du badge. Les modifications sont enregistrées immédiatement.",
+    "fields": {
+      "name": "Nom du badge",
+      "namePlaceholder": "Saisissez le nom du badge",
+      "description": "Description",
+      "descriptionPlaceholder": "Saisissez la description du badge",
+      "design": "Design",
+      "designPlaceholder": "Choisissez un design",
+      "image": "URL de l'image",
+      "imagePlaceholder": "Saisissez l'URL de l'image",
+      "imageHint": "Optionnel : URL de l'image du badge",
+      "uploadLabel": "Image du badge"
+    },
+    "validation": {
+      "nameRequired": "Le nom du badge est requis",
+      "descriptionRequired": "La description est requise"
+    },
+    "designOptions": {
+      "gold": "Or",
+      "silver": "Argent",
+      "bronze": "Bronze",
+      "platinum": "Platine",
+      "diamond": "Diamant"
+    },
+    "buttons": {
+      "create": "Créer le badge",
+      "creating": "Création...",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement..."
+    },
+    "noBadgesFound": "Aucun badge trouvé",
+    "getStartedBadge": "Commencez par créer votre premier badge pour récompenser vos utilisateurs.",
+    "rewardUsers": "Récompensez vos utilisateurs avec des badges",
+    "createdSuccessfully": "Badge créé avec succès",
+    "updatedSuccessfully": "Badge mis à jour avec succès",
+    "deletedSuccessfully": "Badge supprimé avec succès",
+    "createFailed": "Échec de la création du badge",
+    "updateFailed": "Échec de la mise à jour du badge",
+    "deleteFailed": "Échec de la suppression du badge"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "description": "Gérez vos catégories et vos badges",
+    "navigation": "Navigation"
+  },
+  "roles": {
+    "title": "Rôles",
+    "description": "Gérez les rôles utilisateurs et leurs permissions",
+    "noRolesFound": "Aucun rôle trouvé",
+    "emptyDescription": "Commencez par créer votre premier rôle pour gérer les permissions.",
+    "createdSuccessfully": "Rôle créé avec succès",
+    "updatedSuccessfully": "Rôle mis à jour avec succès",
+    "deletedSuccessfully": "Rôle supprimé avec succès",
+    "createFailed": "Échec de la création du rôle",
+    "updateFailed": "Échec de la mise à jour du rôle",
+    "deleteFailed": "Échec de la suppression du rôle"
+  },
+  "profilePage": {
+    "title": "Profil",
+    "description": "Gérez les paramètres de votre compte et vos informations personnelles",
+    "buttons": {
+      "editProfile": "Modifier le profil",
+      "cancelEdit": "Annuler",
+      "changePhoto": "Changer de photo"
+    },
+    "tabs": {
+      "personal": "Informations personnelles",
+      "professional": "Professionnel",
+      "account": "Détails du compte",
+      "rolesRights": "Rôles et droits"
+    },
+    "personal": {
+      "profilePicture": {
+        "title": "Photo de profil",
+        "description": "Elle sera affichée sur votre profil"
+      },
+      "accountStatus": "Statut du compte",
+      "status": "Statut",
+      "registration": "Inscription",
+      "role": "Rôle",
+      "form": {
+        "title": "Informations personnelles",
+        "description": "Mettez à jour vos informations personnelles et de contact"
+      }
+    },
+    "fields": {
+      "firstName": {
+        "label": "Prénom",
+        "placeholder": "Saisissez votre prénom"
+      },
+      "lastName": {
+        "label": "Nom",
+        "placeholder": "Saisissez votre nom"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Saisissez votre email"
+      },
+      "phone": {
+        "label": "Numéro de téléphone",
+        "placeholder": "Saisissez votre numéro de téléphone"
+      },
+      "birthday": {
+        "label": "Date de naissance"
+      },
+      "gender": {
+        "label": "Genre",
+        "placeholder": "Sélectionnez un genre",
+        "options": {
+          "male": "Homme",
+          "female": "Femme"
+        }
+      },
+      "country": {
+        "label": "Pays",
+        "placeholder": "Saisissez votre pays"
+      },
+      "city": {
+        "label": "Ville",
+        "placeholder": "Saisissez votre ville"
+      }
+    },
+    "professional": {
+      "title": "Informations professionnelles",
+      "description": "Vos informations professionnelles et celles de votre entreprise",
+      "socialNetworks": "Réseaux sociaux",
+      "fields": {
+        "companyName": {
+          "label": "Nom de l'entreprise",
+          "placeholder": "Saisissez le nom de l'entreprise"
+        },
+        "jobTitle": {
+          "label": "Poste",
+          "placeholder": "Saisissez votre poste"
+        },
+        "industry": {
+          "label": "Secteur",
+          "placeholder": "Saisissez le secteur"
+        },
+        "companySize": {
+          "label": "Taille de l'entreprise",
+          "placeholder": "Saisissez la taille de l'entreprise"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "placeholder": "https://linkedin.com/in/votreprofil"
+        },
+        "website": {
+          "label": "Site web",
+          "placeholder": "https://votresite.com"
+        }
+      }
+    },
+    "account": {
+      "title": "Informations du compte",
+      "description": "Les détails de votre compte et votre statut de vérification",
+      "userType": "Type d'utilisateur",
+      "verificationCode": "Code de vérification",
+      "memberSince": "Membre depuis",
+      "lastUpdated": "Dernière mise à jour"
+    },
+    "security": {
+      "title": "Sécurité",
+      "password": "Mot de passe",
+      "lastUpdated": "Dernière mise à jour {{date}}",
+      "changePassword": "Changer le mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Saisissez un nouveau mot de passe (8 caractères min.)",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez le nouveau mot de passe",
+      "updatePassword": "Mettre à jour le mot de passe"
+    },
+    "roles": {
+      "roleInfo": {
+        "title": "Informations sur le rôle",
+        "description": "Rôle actuel et permissions",
+        "roleName": "Nom du rôle",
+        "systemRole": "Rôle système",
+        "customRole": "Rôle personnalisé",
+        "totalRights": "Nombre de droits",
+        "created": "Créé le",
+        "noRole": "Aucune information de rôle disponible"
+      },
+      "rights": {
+        "title": "Droits attribués",
+        "description": "Permissions accordées à ce rôle",
+        "noRights": "Aucun droit attribué",
+        "noInfo": "Aucune information sur les droits disponible"
+      }
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "completed": "Terminé",
+      "pending": "En attente"
+    },
+    "messages": {
+      "profileUpdated": "Profil mis à jour avec succès",
+      "profileUpdateFailed": "Échec de la mise à jour du profil",
+      "passwordUpdated": "Mot de passe mis à jour avec succès",
+      "passwordFailed": "Échec du changement de mot de passe. Veuillez réessayer."
+    },
+    "errors": {
+      "passwordRequired": "Les deux champs de mot de passe sont requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
+    },
+    "common": {
+      "notAvailable": "N/D"
+    }
   }
 }
 

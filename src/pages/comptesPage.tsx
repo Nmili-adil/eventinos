@@ -59,12 +59,13 @@ import { filterUsers, sortUsers, type UsersFilters as UsersFiltersType, type Use
 import { PROFILE_PAGE } from '@/constants/routerConstants';
 import { formatDate } from '@/lib/helperFunctions';
 import AddAccountDialog from '@/components/partials/usersComponents/AddAccountDialog';
+import { MembersPagination } from '@/components/partials/membersComponents/MembersPagination';
 import { createUserApi } from '@/api/usersApi';
 
 export const ComptesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { users, isLoading: loading, error, usersCount } = useSelector((state: RootState) => state.users) || {};
+  const { users, isLoading: loading, error, usersCount, pagination } = useSelector((state: RootState) => state.users) || {};
   
   const [filters, setFilters] = useState<UsersFiltersType>({
     search: '',
@@ -87,11 +88,37 @@ export const ComptesPage: React.FC = () => {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [addAccountDialogOpen, setAddAccountDialogOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
-
-  // Fetch users when component mounts
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [role, setRole] = useState<'all' | 'organizer' | 'member'>('all');
+  // Sync role filter with userType select
   useEffect(() => {
-    dispatch(fetchUsersRequest());
-  }, [dispatch]);
+    const mappedRole: 'all' | 'organizer' | 'member' =
+      filters.userType === 'Organizer'
+        ? 'organizer'
+        : filters.userType === 'Member'
+          ? 'member'
+          : 'all';
+
+    setRole((prev) => {
+      if (prev !== mappedRole) {
+        setCurrentPage(1);
+        return mappedRole;
+      }
+      return prev;
+    });
+  }, [filters.userType]);
+
+  // Fetch users when page/role changes
+  useEffect(() => {
+    dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
+  }, [dispatch, currentPage, role]);
+
+  useEffect(() => {
+    if (pagination && pagination.totalPages > 0 && currentPage > pagination.totalPages) {
+      setCurrentPage(pagination.totalPages);
+    }
+  }, [pagination, currentPage]);
 
   // Filter and sort users
   const processedUsers = useMemo(() => {
@@ -115,7 +142,7 @@ export const ComptesPage: React.FC = () => {
     try {
       // TODO: Implement toggle status API call
       toast.success(`User ${!user.isActive ? 'activated' : 'deactivated'} successfully`);
-      dispatch(fetchUsersRequest());
+      dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
     } catch (error: any) {
       toast.error(error?.message || 'Failed to update user status');
     } finally {
@@ -130,7 +157,7 @@ export const ComptesPage: React.FC = () => {
       toast.success('User deleted successfully');
       setDeleteDialogOpen(false);
       setSelectedUser(null);
-      dispatch(fetchUsersRequest());
+      dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
     } catch (error: any) {
       toast.error(error?.message || 'Failed to delete user');
     } finally {
@@ -168,7 +195,8 @@ export const ComptesPage: React.FC = () => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success('Account created successfully');
         setAddAccountDialogOpen(false);
-        dispatch(fetchUsersRequest());
+        setCurrentPage(1);
+        dispatch(fetchUsersRequest(1, PAGE_SIZE, role));
       } else {
         toast.error(response?.data?.message || 'Failed to create account');
       }
@@ -221,6 +249,14 @@ export const ComptesPage: React.FC = () => {
     );
   }
 
+  const totalUsers = pagination?.totalItems ?? usersCount ?? 0;
+
+  const handlePageChange = (page: number) => {
+    if (!pagination) return;
+    if (page < 1 || page > pagination.totalPages) return;
+    setCurrentPage(page);
+  };
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
@@ -228,7 +264,7 @@ export const ComptesPage: React.FC = () => {
         <PageHead 
           title='Comptes' 
           icon={UserCog} 
-          description={`Manage all users (${usersCount || 0} total users)`} 
+          description={`Manage all users (${totalUsers} total users)`}
         />
         <Button onClick={() => setAddAccountDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
@@ -295,7 +331,7 @@ export const ComptesPage: React.FC = () => {
         <Card>
           <CardContent className="pt-6 text-center">
             <div className="text-destructive mb-2">{error}</div>
-            <Button onClick={() => dispatch(fetchUsersRequest())}>
+            <Button onClick={() => dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role))}>
               Retry
             </Button>
           </CardContent>
@@ -457,6 +493,12 @@ export const ComptesPage: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      <MembersPagination
+        pagination={pagination || null}
+        onPageChange={handlePageChange}
+        entityLabel="users"
+      />
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

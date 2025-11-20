@@ -1,3 +1,5 @@
+export type Industry = 'IT' | 'FINANCE' | 'EDUCATION' | 'HEALTH' | 'MANUFACTURING' | 'RETAIL' | 'OTHER' | 'COMPANY' | 'STARTUP' | 'ASSOCIATION' | 'SCHOOL' | 'COMMUNICATION_AGENCY';
+
 export interface User {
   _id: { $oid: string };
   phoneNumber?: string;
@@ -7,7 +9,7 @@ export interface User {
     name?: string;
     jobTitle?: string;
     size?: string;
-    industry?: string;
+    industry?: Industry;
   };
   socialNetworks?: {
     facebook?: string;
@@ -18,7 +20,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  gender?: 'MALE' | 'FEMALE' | 'OTHER';
+  gender?: 'MALE' | 'FEMALE';
   picture?: string;
   password?: string;
   verificationCode?: {

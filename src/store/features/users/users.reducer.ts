@@ -6,6 +6,7 @@ const initialState: UserState = {
   usersCount: 0,
   isLoading: false,
   error: null,
+  pagination: null,
 }
 
 const usersReducer = (state = initialState, action: UserActionTypes): UserState => {
@@ -22,6 +23,7 @@ const usersReducer = (state = initialState, action: UserActionTypes): UserState 
         isLoading: false,
         usersCount: action.count,
         users: action.payload,
+        pagination: action.pagination ?? null,
       }
     case FETCH_USERS_FAILURE:
       return {

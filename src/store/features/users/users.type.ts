@@ -1,9 +1,21 @@
+import type { User } from "@/types/usersType"
+
+export interface PaginationInfo {
+  currentPage: number
+  totalPages: number
+  pageSize: number
+  totalItems: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
 export interface UserState {
-  users: any[]
-  user: any
+  users: User[]
+  user: User | null
   usersCount: number
   isLoading: boolean
   error: string | null
+  pagination: PaginationInfo | null
 }
 
 export const FETCH_USERS_REQUEST = 'FETCH_USERS_REQUEST'
@@ -17,7 +29,8 @@ export interface FetchUsersRequestAction {
 export interface FetchUsersSuccessAction {
   type: typeof FETCH_USERS_SUCCESS
   count: number
-  payload: any[]
+  payload: User[]
+  pagination: PaginationInfo | null
 }
 
 export const FETCH_USER_BY_ID_REQUEST = 'FETCH_USER_BY_ID_REQUEST'
@@ -30,7 +43,7 @@ export interface FetchUserByIdRequestAction {
 
 export interface FetchUserByIdSuccessAction {
   type: typeof FETCH_USER_BY_ID_SUCCESS
-  payload: any
+  payload: User
 }
 
 export interface FetchUserByIdFailureAction {

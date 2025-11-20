@@ -12,6 +12,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
@@ -177,7 +178,7 @@ const PermissionsDialog = ({
                             onCheckedChange={() => toggleAllInGroup(groupRights)}
                           />
                           <Label className="text-sm font-semibold capitalize">
-                            {group}
+                            {group.replaceAll('_', ' ')}
                           </Label>
                           <Badge variant="secondary" className="ml-2">
                             {groupRights.filter(r => selectedPermissions.includes(r._id)).length} / {groupRights.length}
@@ -186,22 +187,16 @@ const PermissionsDialog = ({
                       </div>
                       
                       <Table>
-                        <TableHeader>
-                          <TableRow>
-                            {/* <TableHead className="w-12"></TableHead> */}
-                            {/* <TableHead>Permission Name</TableHead> */}
-                          </TableRow>
-                        </TableHeader>
                         <TableBody className="divide-slate-300">
                           {groupRights.map((right) => (
                             <TableRow key={right._id}>
-                              <TableCell>
+                              <TableCell className="w-12">
                                 <Checkbox
                                   checked={selectedPermissions.includes(right._id)}
                                   onCheckedChange={() => togglePermission(right._id)}
                                 />
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="w-full">
                                 <div className="flex items-center space-x-2">
                                   <span className="font-medium text-gray-700">{right.name.replaceAll('_', ' ')}</span>
                                 </div>

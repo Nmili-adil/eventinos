@@ -30,6 +30,7 @@ import { fetchRoleByIdRequest } from '@/store/features/roles/roles.actions';
 import { fetchRightsRequest } from '@/store/features/rights/rights.actions';
 import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileFormData {
 
@@ -65,6 +66,7 @@ const profileFormSchema = z.object({
 });
 
 export const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -104,7 +106,7 @@ export const ProfilePage: React.FC = () => {
 
   // Safe date display formatting
   const formatDateForDisplay = (dateInput: any): string => {
-    if (!dateInput) return 'N/A';
+    if (!dateInput) return t('profilePage.common.notAvailable');
     
     try {
       let date: Date;
@@ -118,13 +120,14 @@ export const ProfilePage: React.FC = () => {
       } else if (dateInput instanceof Date) {
         date = dateInput;
       } else {
-        return 'N/A';
+        return t('profilePage.common.notAvailable');
       }
       
       return date.toLocaleDateString();
     } catch (error) {
       console.error('Error formatting date for display:', error);
-      return 'N/A';
+        return t('profilePage.common.notAvailable');
+      return t('profilePage.common.notAvailable');
     }
   };
 
@@ -198,13 +201,13 @@ export const ProfilePage: React.FC = () => {
     try {
       if (params.userId) {
         await updateUserApi(params.userId, data);
-        toast.success('Profile updated successfully');
+        toast.success(t('profilePage.messages.profileUpdated'));
         setIsEditing(false);
         // Refresh user data
         dispatch(fetchUserByIdRequest(params.userId));
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || error?.message || 'Failed to update profile');
+      toast.error(error?.response?.data?.message || error?.message || t('profilePage.messages.profileUpdateFailed'));
       console.error('Failed to update profile:', error);
     } finally {
       setIsLoading(false);
@@ -215,17 +218,17 @@ export const ProfilePage: React.FC = () => {
     
     // Validation
     if (!newPassword || !confirmPassword) {
-      setPasswordError('Both password fields are required');
+      setPasswordError(t('profilePage.errors.passwordRequired'));
       return;
     }
     
     if (newPassword.length < 8) {
-      setPasswordError('Password must be at least 8 characters long');
+      setPasswordError(t('profilePage.errors.passwordMinLength'));
       return;
     }
     
     if (newPassword !== confirmPassword) {
-      setPasswordError('Passwords do not match');
+      setPasswordError(t('profilePage.errors.passwordMismatch'));
       return;
     }
 
@@ -233,13 +236,13 @@ export const ProfilePage: React.FC = () => {
     try {
       if (params.userId) {
         await updateUserPasswordApi(params.userId, newPassword);
-        toast.success('Password updated successfully');
+        toast.success(t('profilePage.messages.passwordUpdated'));
         setShowPasswordChange(false);
         setNewPassword('');
         setConfirmPassword('');
       }
     } catch (error: any) {
-      setPasswordError(error?.response?.data?.message || 'Failed to change password. Please try again.');
+      setPasswordError(error?.response?.data?.message || t('profilePage.messages.passwordFailed'));
       console.error('Failed to change password:', error);
     } finally {
       setIsLoading(false);
@@ -266,38 +269,42 @@ export const ProfilePage: React.FC = () => {
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <PageHead title='Profile' description='Manage your account settings and personal information' icon={User} />
+        <PageHead
+          title={t('profilePage.title')}
+          description={t('profilePage.description')}
+          icon={User}
+        />
         <Button
           variant={isEditing ? "outline" : "default"}
           onClick={() => setIsEditing(!isEditing)}
           disabled={isLoading}
         >
           <Edit className="w-4 h-4 mr-2" />
-          {isEditing ? 'Cancel' : 'Edit Profile'}
+          {isEditing ? t('profilePage.buttons.cancelEdit') : t('profilePage.buttons.editProfile')}
         </Button>
       </div>
 
       <Tabs defaultValue="personal" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="personal">Personal Information</TabsTrigger>
-          <TabsTrigger value="professional">Professional</TabsTrigger>
-          <TabsTrigger value="account">Account Details</TabsTrigger>
-          <TabsTrigger value="roles-rights">Roles & Rights</TabsTrigger>
+          <TabsTrigger value="personal">{t('profilePage.tabs.personal')}</TabsTrigger>
+          <TabsTrigger value="professional">{t('profilePage.tabs.professional')}</TabsTrigger>
+          <TabsTrigger value="account">{t('profilePage.tabs.account')}</TabsTrigger>
+          <TabsTrigger value="roles-rights">{t('profilePage.tabs.rolesRights')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="personal" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profile Card */}
             <Card className="lg:col-span-1 border-slate-300 shadow-md p-0 overflow-hidden">
-              <CardHeader className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-t-lg py-4 px-6">
+              <CardHeader className="bg-linear-to-br from-blue-50 to-purple-50 rounded-t-lg py-4 px-6">
                 <CardTitle className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center">
                     <User className="h-5 w-5 text-white" />
                   </div>
-                  Profile Picture
+                  {t('profilePage.personal.profilePicture.title')}
                 </CardTitle>
                 <CardDescription>
-                  This will be displayed on your profile
+                  {t('profilePage.personal.profilePicture.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
@@ -305,7 +312,7 @@ export const ProfilePage: React.FC = () => {
                   <div className="relative">
                     <Avatar className="w-32 h-32 border-4 border-white shadow-lg ring-2 ring-blue-200">
                       <AvatarImage src={user.picture} alt={`${user.firstName} ${user.lastName}`} />
-                      <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-500 to-purple-500 text-white">
+                      <AvatarFallback className="text-3xl bg-linear-to-br from-blue-500 to-purple-500 text-white">
                         {getInitials(user.firstName, user.lastName)}
                       </AvatarFallback>
                     </Avatar>
@@ -325,7 +332,7 @@ export const ProfilePage: React.FC = () => {
                   {isEditing && (
                     <Button variant="outline" size="sm" disabled={!isEditing}>
                       <Camera className="w-4 h-4 mr-2" />
-                      Change Photo
+                      {t('profilePage.buttons.changePhoto')}
                     </Button>
                   )}
                 </div>
@@ -333,26 +340,28 @@ export const ProfilePage: React.FC = () => {
                 <Separator />
                 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Account Status</h4>
+                  <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                    {t('profilePage.personal.accountStatus')}
+                  </h4>
                   {hasValue(user.isActive) && (
                     <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                      <span className="text-sm font-medium">Status</span>
+                      <span className="text-sm font-medium">{t('profilePage.personal.status')}</span>
                       <Badge variant={user.isActive ? "default" : "secondary"}>
-                        {user.isActive ? 'Active' : 'Inactive'}
+                        {user.isActive ? t('profilePage.status.active') : t('profilePage.status.inactive')}
                       </Badge>
                     </div>
                   )}
                   {hasValue(user.registrationCompleted) && (
                     <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                      <span className="text-sm font-medium">Registration</span>
+                      <span className="text-sm font-medium">{t('profilePage.personal.registration')}</span>
                       <Badge variant={user.registrationCompleted ? "default" : "secondary"}>
-                        {user.registrationCompleted ? 'Completed' : 'Pending'}
+                        {user.registrationCompleted ? t('profilePage.status.completed') : t('profilePage.status.pending')}
                       </Badge>
                     </div>
                   )}
                   {hasValue(role) && (
                     <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                      <span className="text-sm font-medium">Role</span>
+                      <span className="text-sm font-medium">{t('profilePage.personal.role')}</span>
                       <Badge variant="default">
                         {typeof role === 'object' && role !== null ? role.name : role}
                       </Badge>
@@ -364,13 +373,13 @@ export const ProfilePage: React.FC = () => {
 
             {/* Personal Information Form */}
             <Card className="lg:col-span-2 border-slate-300 shadow-md overflow-hidden p-0">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg py-4 px-6">
+              <CardHeader className="bg-linear-to-r from-blue-50 to-purple-50 rounded-t-lg py-4 px-6">
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-blue-600" />
-                  Personal Information
+                  {t('profilePage.personal.form.title')}
                 </CardTitle>
                 <CardDescription>
-                  Update your personal details and contact information
+                  {t('profilePage.personal.form.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="py-6 px-6">
@@ -382,12 +391,12 @@ export const ProfilePage: React.FC = () => {
                         name="firstName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>First Name</FormLabel>
+                            <FormLabel>{t('profilePage.fields.firstName.label')}</FormLabel>
                             <FormControl>
                               <Input 
                                 {...field} 
                                 disabled={!isEditing || isLoading}
-                                placeholder="Enter your first name"
+                                placeholder={t('profilePage.fields.firstName.placeholder')}
                               />
                             </FormControl>
                             <FormMessage />
@@ -400,12 +409,12 @@ export const ProfilePage: React.FC = () => {
                         name="lastName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Last Name</FormLabel>
+                            <FormLabel>{t('profilePage.fields.lastName.label')}</FormLabel>
                             <FormControl>
                               <Input 
                                 {...field} 
                                 disabled={!isEditing || isLoading}
-                                placeholder="Enter your last name"
+                                placeholder={t('profilePage.fields.lastName.placeholder')}
                               />
                             </FormControl>
                             <FormMessage />
@@ -419,13 +428,13 @@ export const ProfilePage: React.FC = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                        <FormLabel>{t('profilePage.fields.email.label')}</FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               type="email"
                               disabled={!isEditing || isLoading}
-                              placeholder="Enter your email"
+                              placeholder={t('profilePage.fields.email.placeholder')}
                             />
                           </FormControl>
                           <FormMessage />
@@ -438,12 +447,12 @@ export const ProfilePage: React.FC = () => {
                       name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
+                        <FormLabel>{t('profilePage.fields.phone.label')}</FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               disabled={!isEditing || isLoading}
-                              placeholder="Enter your phone number"
+                              placeholder={t('profilePage.fields.phone.placeholder')}
                             />
                           </FormControl>
                           <FormMessage />
@@ -458,7 +467,7 @@ export const ProfilePage: React.FC = () => {
                           name="birthday"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Birthday</FormLabel>
+                              <FormLabel>{t('profilePage.fields.birthday.label')}</FormLabel>
                               <FormControl>
                                 <Input 
                                   {...field} 
@@ -478,7 +487,7 @@ export const ProfilePage: React.FC = () => {
                           name="gender"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Gender</FormLabel>
+                              <FormLabel>{t('profilePage.fields.gender.label')}</FormLabel>
                               <Select 
                                 onValueChange={field.onChange} 
                                 defaultValue={field.value}
@@ -486,12 +495,12 @@ export const ProfilePage: React.FC = () => {
                               >
                                 <FormControl>
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Select gender" />
+                                    <SelectValue placeholder={t('profilePage.fields.gender.placeholder')} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="MALE">Male</SelectItem>
-                                  <SelectItem value="FEMALE">Female</SelectItem>
+                                  <SelectItem value="MALE">{t('profilePage.fields.gender.options.male')}</SelectItem>
+                                  <SelectItem value="FEMALE">{t('profilePage.fields.gender.options.female')}</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -508,12 +517,12 @@ export const ProfilePage: React.FC = () => {
                           name="country"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Country</FormLabel>
+                              <FormLabel>{t('profilePage.fields.country.label')}</FormLabel>
                               <FormControl>
                                 <Input 
                                   {...field} 
                                   disabled={!isEditing || isLoading}
-                                  placeholder="Enter your country"
+                                  placeholder={t('profilePage.fields.country.placeholder')}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -528,12 +537,12 @@ export const ProfilePage: React.FC = () => {
                           name="city"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>City</FormLabel>
+                              <FormLabel>{t('profilePage.fields.city.label')}</FormLabel>
                               <FormControl>
                                 <Input 
                                   {...field} 
                                   disabled={!isEditing || isLoading}
-                                  placeholder="Enter your city"
+                                  placeholder={t('profilePage.fields.city.placeholder')}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -551,11 +560,11 @@ export const ProfilePage: React.FC = () => {
                           onClick={() => setIsEditing(false)}
                           disabled={isLoading}
                         >
-                          Cancel
+                          {t('common.cancel')}
                         </Button>
                         <Button type="submit" disabled={isLoading}>
                           <Save className="w-4 h-4 mr-2" />
-                          {isLoading ? 'Saving...' : 'Save Changes'}
+                          {isLoading ? t('common.updating') : t('common.save')}
                         </Button>
                       </div>
                     )}
@@ -568,13 +577,13 @@ export const ProfilePage: React.FC = () => {
 
         <TabsContent value="professional" className="space-y-6">
           <Card className="border-slate-300 shadow-md overflow-hidden p-0">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-blue-50 rounded-t-lg py-4 px-6">
+            <CardHeader className="bg-linear-to-r from-green-50 to-blue-50 rounded-t-lg py-4 px-6">
               <CardTitle className="flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-green-600" />
-                Professional Information
+                {t('profilePage.professional.title')}
               </CardTitle>
               <CardDescription>
-                Your company and professional details
+                {t('profilePage.professional.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="py-6 px-6">
@@ -587,12 +596,12 @@ export const ProfilePage: React.FC = () => {
                         name="company.name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Company Name</FormLabel>
+                            <FormLabel>{t('profilePage.professional.fields.companyName.label')}</FormLabel>
                             <FormControl>
                               <Input 
                                 {...field} 
                                 disabled={!isEditing || isLoading}
-                                placeholder="Enter company name"
+                                placeholder={t('profilePage.professional.fields.companyName.placeholder')}
                               />
                             </FormControl>
                             <FormMessage />
@@ -607,12 +616,12 @@ export const ProfilePage: React.FC = () => {
                         name="company.jobTitle"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Job Title</FormLabel>
+                            <FormLabel>{t('profilePage.professional.fields.jobTitle.label')}</FormLabel>
                             <FormControl>
                               <Input 
                                 {...field} 
                                 disabled={!isEditing || isLoading}
-                                placeholder="Enter your job title"
+                                placeholder={t('profilePage.professional.fields.jobTitle.placeholder')}
                               />
                             </FormControl>
                             <FormMessage />
@@ -627,12 +636,12 @@ export const ProfilePage: React.FC = () => {
                         name="company.industry"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Industry</FormLabel>
+                            <FormLabel>{t('profilePage.professional.fields.industry.label')}</FormLabel>
                             <FormControl>
                               <Input 
                                 {...field} 
                                 disabled={!isEditing || isLoading}
-                                placeholder="Enter industry"
+                                placeholder={t('profilePage.professional.fields.industry.placeholder')}
                               />
                             </FormControl>
                             <FormMessage />
@@ -647,12 +656,12 @@ export const ProfilePage: React.FC = () => {
                         name="company.size"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Company Size</FormLabel>
+                            <FormLabel>{t('profilePage.professional.fields.companySize.label')}</FormLabel>
                             <FormControl>
                               <Input 
                                 {...field} 
                                 disabled={!isEditing || isLoading}
-                                placeholder="Enter company size"
+                                placeholder={t('profilePage.professional.fields.companySize.placeholder')}
                               />
                             </FormControl>
                             <FormMessage />
@@ -665,9 +674,9 @@ export const ProfilePage: React.FC = () => {
                   <Separator />
 
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
                       <LinkIcon className="w-5 h-5" />
-                      Social Networks
+                    {t('profilePage.professional.socialNetworks')}
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -677,13 +686,13 @@ export const ProfilePage: React.FC = () => {
                           name="socialNetworks.linkedin"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>LinkedIn</FormLabel>
+                            <FormLabel>{t('profilePage.professional.fields.linkedin.label')}</FormLabel>
                               <FormControl>
                                 <Input 
                                   {...field} 
                                   type="url"
                                   disabled={!isEditing || isLoading}
-                                  placeholder="https://linkedin.com/in/yourprofile"
+                                  placeholder={t('profilePage.professional.fields.linkedin.placeholder')}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -698,13 +707,13 @@ export const ProfilePage: React.FC = () => {
                           name="socialNetworks.website"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Website</FormLabel>
+                            <FormLabel>{t('profilePage.professional.fields.website.label')}</FormLabel>
                               <FormControl>
                                 <Input 
                                   {...field} 
                                   type="url"
                                   disabled={!isEditing || isLoading}
-                                  placeholder="https://yourwebsite.com"
+                                  placeholder={t('profilePage.professional.fields.website.placeholder')}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -723,11 +732,11 @@ export const ProfilePage: React.FC = () => {
                         onClick={() => setIsEditing(false)}
                         disabled={isLoading}
                       >
-                        Cancel
+                        {t('common.cancel')}
                       </Button>
                       <Button type="submit" disabled={isLoading}>
                         <Save className="w-4 h-4 mr-2" />
-                        {isLoading ? 'Saving...' : 'Save Changes'}
+                        {isLoading ? t('common.updating') : t('common.save')}
                       </Button>
                     </div>
                   )}
@@ -739,49 +748,49 @@ export const ProfilePage: React.FC = () => {
 
         <TabsContent value="account" className="space-y-6">
            <Card className="border-slate-300 shadow-md overflow-hidden pt-0">
-            <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 rounded-t-lg py-4 px-6">
+            <CardHeader className="bg-linear-to-r from-orange-50 to-red-50 rounded-t-lg py-4 px-6">
               <CardTitle className="flex items-center gap-2">
                 <User className="w-5 h-5 text-orange-600" />
-                Account Information
+                {t('profilePage.account.title')}
               </CardTitle>
               <CardDescription>
-                Your account details and verification status
+                {t('profilePage.account.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6 px-6">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {hasValue(user.user) && (
-                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-blue-50/50 to-purple-50/50 hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-linear-to-br from-blue-50/50 to-purple-50/50 hover:shadow-md transition-shadow">
                       <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                         <User className="w-5 h-5 text-blue-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">User Type</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('profilePage.account.userType')}</p>
                         <p className="text-sm font-semibold text-gray-900">{user.user}</p>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.verificationCode?.code) && (
-                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-green-50/50 to-blue-50/50 hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-linear-to-br from-green-50/50 to-blue-50/50 hover:shadow-md transition-shadow">
                       <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                         <Mail className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Verification Code</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('profilePage.account.verificationCode')}</p>
                         <p className="text-sm font-semibold text-gray-900 font-mono">{user.verificationCode?.code}</p>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.createdAt) && (
-                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-purple-50/50 to-pink-50/50 hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-linear-to-br from-purple-50/50 to-pink-50/50 hover:shadow-md transition-shadow">
                       <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
                         <Calendar className="w-5 h-5 text-purple-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Member Since</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('profilePage.account.memberSince')}</p>
                         <p className="text-sm font-semibold text-gray-900">
                           {formatDateForDisplay(user.createdAt)}
                         </p>
@@ -790,12 +799,12 @@ export const ProfilePage: React.FC = () => {
                   )}
 
                   {hasValue(user.updatedAt) && (
-                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-orange-50/50 to-yellow-50/50 hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-linear-to-br from-orange-50/50 to-yellow-50/50 hover:shadow-md transition-shadow">
                       <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
                         <Calendar className="w-5 h-5 text-orange-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Last Updated</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('profilePage.account.lastUpdated')}</p>
                         <p className="text-sm font-semibold text-gray-900">
                           {formatDateForDisplay(user.updatedAt)}
                         </p>
@@ -811,17 +820,17 @@ export const ProfilePage: React.FC = () => {
                     <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
                       <AlertCircle className="w-4 h-4 text-red-600" />
                     </div>
-                    Security
+                    {t('profilePage.security.title')}
                   </h4>
-                  <div className="flex items-center justify-between p-4 rounded-lg border border-slate-300 bg-gradient-to-r from-red-50/50 to-orange-50/50 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between p-4 rounded-lg border border-slate-300 bg-linear-to-r from-red-50/50 to-orange-50/50 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                         <AlertCircle className="w-5 h-5 text-red-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Password</p>
+                        <p className="text-sm font-medium">{t('profilePage.security.password')}</p>
                         <p className="text-sm text-muted-foreground">
-                          Last updated {formatDateForDisplay(user.updatedAt)}
+                          {t('profilePage.security.lastUpdated', { date: formatDateForDisplay(user.updatedAt) })}
                         </p>
                       </div>
                     </div>
@@ -832,7 +841,7 @@ export const ProfilePage: React.FC = () => {
                       disabled={isLoading}
                       className="border-red-200 hover:bg-red-50"
                     >
-                      {showPasswordChange ? 'Cancel' : 'Change Password'}
+                      {showPasswordChange ? t('common.cancel') : t('profilePage.security.changePassword')}
                     </Button>
                   </div>
 
@@ -841,10 +850,10 @@ export const ProfilePage: React.FC = () => {
                       <CardContent className="pt-6">
                         <div className="space-y-4">
                           <div>
-                            <label className="text-sm font-medium">New Password</label>
+                            <label className="text-sm font-medium">{t('profilePage.security.newPassword')}</label>
                             <Input
                               type="password"
-                              placeholder="Enter new password (min 8 characters)"
+                              placeholder={t('profilePage.security.newPasswordPlaceholder')}
                               value={newPassword}
                               onChange={(e) => setNewPassword(e.target.value)}
                               disabled={isLoading}
@@ -853,10 +862,10 @@ export const ProfilePage: React.FC = () => {
                           </div>
 
                           <div>
-                            <label className="text-sm font-medium">Confirm Password</label>
+                            <label className="text-sm font-medium">{t('profilePage.security.confirmPassword')}</label>
                             <Input
                               type="password"
-                              placeholder="Confirm new password"
+                              placeholder={t('profilePage.security.confirmPasswordPlaceholder')}
                               value={confirmPassword}
                               onChange={(e) => setConfirmPassword(e.target.value)}
                               disabled={isLoading}
@@ -883,14 +892,14 @@ export const ProfilePage: React.FC = () => {
                               }}
                               disabled={isLoading}
                             >
-                              Cancel
+                              {t('common.cancel')}
                             </Button>
                             <Button
                               size="sm"
                               onClick={handlePasswordChange}
                               disabled={isLoading}
                             >
-                              {isLoading ? 'Updating...' : 'Update Password'}
+                              {isLoading ? t('common.updating') : t('profilePage.security.updatePassword')}
                             </Button>
                           </div>
                         </div>
@@ -907,13 +916,13 @@ export const ProfilePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Role Information */}
             <Card className="border-slate-300 shadow-md overflow-hidden p-0">
-              <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-t-lg py-4 px-6">
+              <CardHeader className="bg-linear-to-r from-indigo-50 to-purple-50 rounded-t-lg py-4 px-6">
                 <CardTitle className="flex items-center gap-2">
                   <Briefcase className="w-5 h-5 text-indigo-600" />
-                  Role Information
+                  {t('profilePage.roles.roleInfo.title')}
                 </CardTitle>
                 <CardDescription>
-                  Current role and permissions
+                  {t('profilePage.roles.roleInfo.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="py-6 px-6">
@@ -925,30 +934,30 @@ export const ProfilePage: React.FC = () => {
                   </div>
                 ) : role ? (
                   <div className="space-y-4 ">
-                    <div className="flex items-center justify-between p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-indigo-50/50 to-purple-50/50">
+                    <div className="flex items-center justify-between p-4 rounded-lg border border-slate-300 bg-linear-to-br from-indigo-50/50 to-purple-50/50">
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Role Name</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('profilePage.roles.roleInfo.roleName')}</p>
                         <p className="text-lg font-semibold text-gray-900">
                           {typeof role === 'object' && role !== null ? role.name : role}
                         </p>
                       </div>
                       <Badge variant={role.systemRole ? "default" : "secondary"}>
-                        {role.systemRole ? 'System Role' : 'Custom Role'}
+                        {role.systemRole ? t('profilePage.roles.roleInfo.systemRole') : t('profilePage.roles.roleInfo.customRole')}
                       </Badge>
                     </div>
                     
                     {role.rights && Array.isArray(role.rights) && (
-                      <div className="p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-blue-50/50 to-cyan-50/50">
-                        <p className="text-sm font-medium text-muted-foreground mb-2">Total Rights</p>
+                      <div className="p-4 rounded-lg border border-slate-300 bg-linear-to-br from-blue-50/50 to-cyan-50/50">
+                        <p className="text-sm font-medium text-muted-foreground mb-2">{t('profilePage.roles.roleInfo.totalRights')}</p>
                         <p className="text-2xl font-bold text-gray-900">{role.rights.length}</p>
                       </div>
                     )}
 
                     {role.createdAt && (
-                      <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
+                      <div className="flex items-center space-x-3 p-4 rounded-lg border border-slate-300 bg-linear-to-br from-purple-50/50 to-pink-50/50">
                         <Calendar className="w-5 h-5 text-purple-600" />
                         <div>
-                          <p className="text-sm font-medium text-muted-foreground">Created</p>
+                          <p className="text-sm font-medium text-muted-foreground">{t('profilePage.roles.roleInfo.created')}</p>
                           <p className="text-sm font-semibold text-gray-900">
                             {formatDateForDisplay(role.createdAt)}
                           </p>
@@ -959,7 +968,7 @@ export const ProfilePage: React.FC = () => {
                 ) : (
                   <div className="text-center py-8">
                     <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-sm text-muted-foreground">No role information available</p>
+                    <p className="text-sm text-muted-foreground">{t('profilePage.roles.roleInfo.noRole')}</p>
                   </div>
                 )}
               </CardContent>
@@ -967,13 +976,13 @@ export const ProfilePage: React.FC = () => {
 
             {/* Rights List */}
             <Card className="border-slate-300 shadow-md overflow-hidden p-0">
-              <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-lg py-4 px-6">
+              <CardHeader className="bg-linear-to-r from-green-50 to-emerald-50 rounded-t-lg py-4 px-6">
                 <CardTitle className="flex items-center gap-2">
                   <Briefcase className="w-5 h-5 text-green-600" />
-                  Assigned Rights
+                  {t('profilePage.roles.rights.title')}
                 </CardTitle>
                 <CardDescription>
-                  Permissions granted to this role
+                  {t('profilePage.roles.rights.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6 px-6">
@@ -1004,7 +1013,7 @@ export const ProfilePage: React.FC = () => {
                         return (
                           <div className="text-center py-8">
                             <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                            <p className="text-sm text-muted-foreground">No rights assigned</p>
+                            <p className="text-sm text-muted-foreground">{t('profilePage.roles.rights.noRights')}</p>
                           </div>
                         );
                       }
@@ -1017,7 +1026,7 @@ export const ProfilePage: React.FC = () => {
                           {groupRights.map((right) => (
                             <div
                               key={right._id}
-                              className="flex items-center justify-between p-3 rounded-lg border border-slate-300 bg-gradient-to-r from-white to-gray-50/50 hover:shadow-md transition-shadow"
+                              className="flex items-center justify-between p-3 rounded-lg border border-slate-300 bg-linear-to-r from-white to-gray-50/50 hover:shadow-md transition-shadow"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
@@ -1041,15 +1050,12 @@ export const ProfilePage: React.FC = () => {
                 ) : (
                   <div className="text-center py-8">
                     <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-sm text-muted-foreground">No rights information available</p>
+                    <p className="text-sm text-muted-foreground">{t('profilePage.roles.rights.noInfo')}</p>
                   </div>
                 )}
               </CardContent>
               <CardFooter className="mb-4">
-                <Button variant="outline" size="sm">
-                  <Plus className="w-4 h-4" />
-                  Add Right
-                </Button>
+                
               </CardFooter>
             </Card>
           </div>

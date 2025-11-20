@@ -20,6 +20,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useTranslation } from "react-i18next"
+import type { Industry } from "@/types/usersType"
 
 interface AddAccountDialogProps {
   isOpen: boolean
@@ -35,7 +36,7 @@ interface AccountFormData {
   phoneNumber: string
   city: string
   country: string
-  gender: 'MALE' | 'FEMALE' | 'OTHER'
+  gender: 'MALE' | 'FEMALE'
   password: string
   user: 'Organizer' | 'Member'
   isActive: boolean
@@ -43,7 +44,7 @@ interface AccountFormData {
     name: string
     jobTitle: string
     size: string
-    industry: string
+    industry: Industry
   }
 }
 
@@ -77,7 +78,7 @@ const AddAccountDialog = ({
         name: '',
         jobTitle: '',
         size: '',
-        industry: '',
+        industry: 'IT',
       },
     },
   })
@@ -102,14 +103,14 @@ const AddAccountDialog = ({
           name: '',
           jobTitle: '',
           size: '',
-          industry: '',
+          industry: 'IT',
         },
       })
     }
   }, [isOpen, reset])
 
   const onSubmit = async (data: AccountFormData) => {
-    console.log();
+    console.log(data);
     
     try {
       const submitData: any = {
@@ -245,7 +246,7 @@ const AddAccountDialog = ({
                     </Label>
                     <Select
                       value={watch('gender')}
-                      onValueChange={(value) => setValue('gender', value as 'MALE' | 'FEMALE' | 'OTHER')}
+                      onValueChange={(value) => setValue('gender', value as 'MALE' | 'FEMALE')}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
@@ -253,7 +254,6 @@ const AddAccountDialog = ({
                       <SelectContent>
                         <SelectItem value="MALE">Male</SelectItem>
                         <SelectItem value="FEMALE">Female</SelectItem>
-                        <SelectItem value="OTHER">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

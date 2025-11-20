@@ -11,9 +11,10 @@ interface MembersPaginationProps {
     hasPreviousPage: boolean
   } | null
   onPageChange: (page: number) => void
+  entityLabel?: string
 }
 
-export function MembersPagination({ pagination, onPageChange }: MembersPaginationProps) {
+export function MembersPagination({ pagination, onPageChange, entityLabel = 'members' }: MembersPaginationProps) {
   if (!pagination || pagination.totalPages <= 1) return null
 
   const { currentPage, totalPages, totalItems } = pagination
@@ -63,7 +64,7 @@ export function MembersPagination({ pagination, onPageChange }: MembersPaginatio
     <div className="flex items-center justify-between border-t pt-4">
       <div className="text-sm text-muted-foreground">
         Showing {((currentPage - 1) * pagination.pageSize) + 1} to{' '}
-        {Math.min(currentPage * pagination.pageSize, totalItems)} of {totalItems} members
+        {Math.min(currentPage * pagination.pageSize, totalItems)} of {totalItems} {entityLabel}
       </div>
       <div className="flex items-center gap-2">
         <Button

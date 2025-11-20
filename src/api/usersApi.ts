@@ -1,8 +1,18 @@
 import { api } from "@/lib/apiClient"
 import { getAuthToken } from "@/services/localStorage"
 
-export const fetchUsers = async () => {
-  return api.get('/users', {
+export const fetchUsers = async (page = 1, limit = 10, role: 'all' | 'organizer' | 'member' = 'all') => {
+  const params: Record<string, any> = {
+    page,
+    limit,
+  }
+
+  if (role && role !== 'all') {
+    params.role = role
+  }
+
+  return api.get('/users/all', {
+    params,
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAuthToken()}`,

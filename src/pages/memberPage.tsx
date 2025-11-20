@@ -274,10 +274,10 @@ export const MembersPage: React.FC = () => {
           icon={Users} 
           description={t('members.description')} 
         />
-        <Button onClick={() => setAddDialogOpen(true)}>
+        {/* <Button onClick={() => setAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           {t('members.addMember')}
-        </Button>
+        </Button> */}
       </div>
 
       {/* Filters */}

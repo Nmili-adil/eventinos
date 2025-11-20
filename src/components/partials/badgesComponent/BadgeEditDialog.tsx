@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import {
   Dialog,
@@ -19,6 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useTranslation } from "react-i18next"
+import { FileUpload } from "@/components/partials/eventsComponents/FileUpload"
 
 interface Badge {
   _id: string
@@ -50,6 +52,7 @@ const BadgeEditDialog = ({
   onSave,
   isLoading = false,
 }: BadgeEditDialogProps) => {
+  const { t } = useTranslation()
   const {
     register,
     handleSubmit,
@@ -96,9 +99,9 @@ const BadgeEditDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Edit Badge</DialogTitle>
+          <DialogTitle className="text-2xl">{t('badges.editBadge')}</DialogTitle>
           <DialogDescription>
-            Update badge information. Changes will be saved immediately.
+            {t('badges.editDescription')}
           </DialogDescription>
         </DialogHeader>
 
@@ -107,11 +110,11 @@ const BadgeEditDialog = ({
             <div className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Badge Name *</Label>
+                  <Label htmlFor="name">{t('badges.fields.name')} *</Label>
                   <Input
                     id="name"
-                    {...register('name', { required: 'Badge name is required' })}
-                    placeholder="Enter badge name"
+                    {...register('name', { required: t('badges.validation.nameRequired') })}
+                    placeholder={t('badges.fields.namePlaceholder')}
                   />
                   {errors.name && (
                     <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -119,11 +122,11 @@ const BadgeEditDialog = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description">{t('badges.fields.description')} *</Label>
                   <Textarea
                     id="description"
-                    {...register('description', { required: 'Description is required' })}
-                    placeholder="Enter badge description"
+                    {...register('description', { required: t('badges.validation.descriptionRequired') })}
+                    placeholder={t('badges.fields.descriptionPlaceholder')}
                     className="min-h-[100px]"
                   />
                   {errors.description && (
@@ -132,20 +135,20 @@ const BadgeEditDialog = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="design">Design *</Label>
+                  <Label htmlFor="design">{t('badges.fields.design')} *</Label>
                   <Select
                     value={design}
                     onValueChange={(value) => setValue('design', value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select design" />
+                      <SelectValue placeholder={t('badges.fields.designPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gold">Gold</SelectItem>
-                      <SelectItem value="silver">Silver</SelectItem>
-                      <SelectItem value="bronze">Bronze</SelectItem>
-                      <SelectItem value="platinum">Platinum</SelectItem>
-                      <SelectItem value="diamond">Diamond</SelectItem>
+                      <SelectItem value="gold">{t('badges.designOptions.gold')}</SelectItem>
+                      <SelectItem value="silver">{t('badges.designOptions.silver')}</SelectItem>
+                      <SelectItem value="bronze">{t('badges.designOptions.bronze')}</SelectItem>
+                      <SelectItem value="platinum">{t('badges.designOptions.platinum')}</SelectItem>
+                      <SelectItem value="diamond">{t('badges.designOptions.diamond')}</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.design && (
@@ -154,18 +157,25 @@ const BadgeEditDialog = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="image">Image URL</Label>
+                  <Label htmlFor="image">{t('badges.fields.image')}</Label>
+                  <FileUpload
+                    onUploadComplete={(url) => setValue('image', url, { shouldDirty: true })}
+                    currentUrl={watch('image')}
+                    label={t('badges.fields.uploadLabel')}
+                    accept="image/*"
+                    disabled={isLoading}
+                  />
                   <Input
                     id="image"
                     type="url"
                     {...register('image')}
-                    placeholder="Enter image URL"
+                    placeholder={t('badges.fields.imagePlaceholder')}
                   />
                   {errors.image && (
                     <p className="text-sm text-destructive">{errors.image.message}</p>
                   )}
                   <p className="text-xs text-muted-foreground">
-                    Optional: URL to the badge image
+                    {t('badges.fields.imageHint')}
                   </p>
                 </div>
               </div>
@@ -174,16 +184,16 @@ const BadgeEditDialog = ({
 
           <div className="flex justify-end gap-2 pt-4 border-t mt-4">
             <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Saving...
+                  {t('badges.buttons.saving')}
                 </>
               ) : (
-                'Save Changes'
+                t('badges.buttons.save')
               )}
             </Button>
           </div>

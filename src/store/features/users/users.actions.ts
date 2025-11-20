@@ -1,26 +1,29 @@
 import { fetchUsers, getUserById } from "@/api/usersApi";
-import { FETCH_USERS_FAILURE, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, type FetchUserByIdFailureAction, type FetchUserByIdSuccessAction, type FetchUsersFailureAction, type FetchUsersRequestAction, type FetchUsersSuccessAction } from "./users.type"
+import { FETCH_USERS_FAILURE, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, type FetchUserByIdFailureAction, type FetchUserByIdSuccessAction, type FetchUsersFailureAction, type FetchUsersSuccessAction, type PaginationInfo } from "./users.type"
+import type { User } from "@/types/usersType";
 
-export const fetchUsersRequest = (): FetchUsersRequestAction => {
-    return async (dispatch: any) => {
-      dispatch({ type: FETCH_USERS_REQUEST })
-      try {
-        const response = await fetchUsers()
-        if(response.status ===200) {
-          dispatch(fetchUsersSuccess(response.data.data, response.data.count))
-        } else {
-          dispatch(fetchUsersFailure(response.data.message))
-        }
-      } catch (error: any) {
-        dispatch(fetchUsersFailure(error.response?.data?.message || error.message || 'Fetch users failed'))
+export const fetchUsersRequest = (page = 1, limit = 10, role: 'all' | 'organizer' | 'member' = 'all') => {
+  return async (dispatch: any) => {
+    dispatch({ type: FETCH_USERS_REQUEST })
+    try {
+      const response = await fetchUsers(page, limit, role)
+      if (response.status === 200) {
+        const { data, count, pagination } = response.data
+        dispatch(fetchUsersSuccess(data, count, pagination))
+      } else {
+        dispatch(fetchUsersFailure(response.data.message))
       }
-    };
+    } catch (error: any) {
+      dispatch(fetchUsersFailure(error.response?.data?.message || error.message || 'Fetch users failed'))
+    }
+  };
 }
 
-export const fetchUsersSuccess = (users: any[], count: number): FetchUsersSuccessAction => ({
+export const fetchUsersSuccess = (users: User[], count: number, pagination: PaginationInfo | null): FetchUsersSuccessAction => ({
   type: FETCH_USERS_SUCCESS,
   count: count,
   payload: users,
+  pagination,
 })
 
 export const fetchUsersFailure = (error: string): FetchUsersFailureAction => ({
