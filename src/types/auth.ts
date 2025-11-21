@@ -29,7 +29,7 @@ export interface ForgotPasswordRequest {
 }
 export interface verifiedOtpRequest {
   email: string
-  verification_code: string
+  verificationCode: string
 }
 
 export interface ResetPasswordRequest {

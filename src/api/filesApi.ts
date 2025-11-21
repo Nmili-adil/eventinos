@@ -6,7 +6,7 @@ import { getAuthToken } from "@/services/localStorage"
  * @param file - The file to upload
  * @returns Promise with the file ID
  */
-export const uploadFileApi = async (file: File): Promise<string> => {
+export const uploadFileApi = async (file: File): Promise<any> => {
   try {
     const formData = new FormData()
     formData.append('file', file)
@@ -19,7 +19,7 @@ export const uploadFileApi = async (file: File): Promise<string> => {
     })
 
     // Assuming the backend returns { id: string } or { _id: string }
-    return response.data.id || response.data._id || response.data.data?.id || response.data.data?._id
+    return response
   } catch (error: any) {
     console.error('Error uploading file:', error)
     throw new Error(error.response?.data?.message || error.message || 'Failed to upload file')

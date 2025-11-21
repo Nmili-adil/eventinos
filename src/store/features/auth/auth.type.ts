@@ -22,6 +22,7 @@ export interface LoginSuccessAction {
     user: object
     token: string
     message: string
+    role: string
   }
 }
 
@@ -43,12 +44,14 @@ export interface SetCredentialsAction {
   payload: {
     user: object
     token: string
+    role: string  
   }
 }
 
 export interface AuthState {
   user: null | object
   token: string | null
+  role: string | null
   isLoading: boolean
   error: string | null
   isAuthenticated: boolean

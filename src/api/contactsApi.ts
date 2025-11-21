@@ -62,7 +62,7 @@ export const deleteContactApi = async (contactId: string) => {
   }
 };
 
-export const replyToContactApi = async (contactId: string, payload: { message: string }) => {
+export const replyToContactApi = async (contactId: string, payload: { response: string }) => {
   try {
     const response = await api.post(`/contacts/${contactId}/reply`, payload, {
       headers: {

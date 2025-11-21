@@ -1,6 +1,7 @@
 export const storageKeys = {
   TOKEN: 'auth-token',
-  USER: 'auth-user'
+  USER: 'auth-user',
+  ROLE: 'auth-role'
 }
 
 export const setAuthToken = (token: string) => {
@@ -23,4 +24,17 @@ export const getUserData = () => {
 export const clearAuthData = () => {
   localStorage.removeItem(storageKeys.TOKEN)
   localStorage.removeItem(storageKeys.USER)
+  localStorage.removeItem(storageKeys.ROLE)
+}
+
+export const setRole = (role: string) => {
+  localStorage.setItem(storageKeys.ROLE, role)
+}
+
+export const getRole = (): string | null => {
+  return localStorage.getItem(storageKeys.ROLE)
+}
+
+export const clearRole = () => {
+  localStorage.removeItem(storageKeys.ROLE)
 }

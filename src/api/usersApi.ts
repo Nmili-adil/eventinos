@@ -47,7 +47,7 @@ export const updateUserApi = async (userId: string, data: any) => {
 
 export const updateUserPasswordApi = async (userId: string, newPassword: string) => {
   try {
-    const response = await api.patch(`/users/${userId}/password`, { password: newPassword }, {
+    const response = await api.put(`/users/${userId}`, { password: newPassword }, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getAuthToken()}`,

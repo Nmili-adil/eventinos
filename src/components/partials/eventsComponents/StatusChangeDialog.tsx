@@ -77,18 +77,16 @@ export const StatusChangeDialog: React.FC<StatusChangeDialogProps> = ({
               onValueChange={(value) => setSelectedStatus(value as EventStatus)}
               disabled={isLoading}
             >
-              <SelectTrigger id="status">
-                <SelectValue placeholder="Select status" />
+              <SelectTrigger className="w-full" id="status">
+                <SelectValue placeholder="Select status" className="w-full" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-full">
                 {statusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    <div className="flex flex-col">
-                      <span>{option.label}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {option.description}
-                      </span>
-                    </div>
+                  <SelectItem key={option.value} value={option.value} className="flex flex-row justify-between">
+                    <span>{option.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {option.description}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>

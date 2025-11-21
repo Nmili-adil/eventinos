@@ -21,6 +21,12 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useTranslation } from "react-i18next"
 import type { Industry } from "@/types/usersType"
+import { rolesApi } from "@/api/roleApi"
+
+interface Role {
+  _id: string
+  name: string
+}
 
 interface AddAccountDialogProps {
   isOpen: boolean
@@ -37,8 +43,7 @@ interface AccountFormData {
   city: string
   country: string
   gender: 'MALE' | 'FEMALE'
-  password: string
-  user: 'Organizer' | 'Member'
+  role: string
   isActive: boolean
   company?: {
     name: string
@@ -55,6 +60,9 @@ const AddAccountDialog = ({
   isLoading = false,
 }: AddAccountDialogProps) => {
   const { t } = useTranslation()
+  const [roles, setRoles] = useState<Role[]>([])
+  const [rolesLoading, setRolesLoading] = useState(true)
+  
   const {
     register,
     handleSubmit,
@@ -71,8 +79,7 @@ const AddAccountDialog = ({
       city: '',
       country: '',
       gender: 'MALE',
-      password: '',
-      user: 'Member',
+      role: '',
       isActive: true,
       company: {
         name: '',
@@ -83,11 +90,43 @@ const AddAccountDialog = ({
     },
   })
 
-  const userType = watch('user')
-  const isOrganizer = userType === 'Organizer'
+  // Fetch roles on component mount
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        setRolesLoading(true)
+        const response = await rolesApi()
+        console.log('Roles API response:', response) // Debug log
+        // Handle different response structures
+        const rolesData = Array.isArray(response?.data) 
+          ? response.data 
+          : Array.isArray(response?.data?.data) 
+            ? response.data.data 
+            : []
+        
+        setRoles(rolesData)
+        // Set default role to first available role (usually 'User')
+        if (rolesData.length > 0) {
+          const defaultRole = rolesData.find((r: Role) => r.name.toLowerCase() === 'user') || rolesData[0]
+          setValue('role', defaultRole._id)
+        }
+      } catch (error) {
+        console.error('Failed to fetch roles:', error)
+        setRoles([]) // Ensure roles is an empty array on error
+      } finally {
+        setRolesLoading(false)
+      }
+    }
+    fetchRoles()
+  }, [])
+
+  const selectedRoleId = watch('role')
+  const selectedRole = Array.isArray(roles) ? roles.find(r => r._id === selectedRoleId) : undefined
+  const isOrganizer = selectedRole?.name.toLowerCase() === 'organizer'
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && roles.length > 0) {
+      const defaultRole = roles.find((r: Role) => r.name.toLowerCase() === 'user') || roles[0]
       reset({
         firstName: '',
         lastName: '',
@@ -96,8 +135,7 @@ const AddAccountDialog = ({
         city: '',
         country: '',
         gender: 'MALE',
-        password: '',
-        user: 'Member',
+        role: defaultRole._id,
         isActive: true,
         company: {
           name: '',
@@ -107,7 +145,7 @@ const AddAccountDialog = ({
         },
       })
     }
-  }, [isOpen, reset])
+  }, [isOpen, reset, roles])
 
   const onSubmit = async (data: AccountFormData) => {
     console.log(data);
@@ -121,8 +159,7 @@ const AddAccountDialog = ({
         city: data.city || undefined,
         country: data.country || undefined,
         gender: data.gender,
-        password: data.password,
-        user: data.user,
+        role: data.role, // Send role ID
         isActive: data.isActive,
       }
 
@@ -152,7 +189,7 @@ const AddAccountDialog = ({
             Add New Account
           </DialogTitle>
           <DialogDescription>
-            Create a new user account. All required fields must be filled.
+            Create a new user account. All required fields must be filled. A default password will be set automatically.
           </DialogDescription>
         </DialogHeader>
 
@@ -170,15 +207,19 @@ const AddAccountDialog = ({
                       User Type *
                     </Label>
                     <Select
-                      value={userType}
-                      onValueChange={(value) => setValue('user', value as 'Organizer' | 'Member')}
+                      value={selectedRoleId}
+                      onValueChange={(value) => setValue('role', value)}
+                      disabled={rolesLoading}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select user type" />
+                        <SelectValue placeholder={rolesLoading ? "Loading roles..." : "Select user type"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Organizer">Organizer</SelectItem>
-                        <SelectItem value="Member">Member</SelectItem>
+                        {roles.map((role) => (
+                          <SelectItem key={role._id} value={role._id}>
+                            {role.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -397,36 +438,7 @@ const AddAccountDialog = ({
                 </>
               )}
 
-              <Separator />
 
-              {/* Account Information */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-lg">
-                  Account Information
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="password">
-                      Password *
-                    </Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      {...register('password', {
-                        required: 'This field is required',
-                        minLength: {
-                          value: 6,
-                          message: 'Password must be at least 6 characters',
-                        },
-                      })}
-                      placeholder="Enter password"
-                    />
-                    {errors.password && (
-                      <p className="text-sm text-destructive">{errors.password.message}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
             </div>
           </ScrollArea>
 

@@ -65,7 +65,7 @@ export const verifyOtp = (email: string, otp: string) => {
   return async (dispatch: Dispatch) => {
     dispatch({ type: VERIFY_OTP_REQUEST })
     try {
-      const payload: verifiedOtpRequest = { email, verification_code: otp }
+      const payload: verifiedOtpRequest = { email, verificationCode: otp }
       console.log('Verifying OTP with payload:', payload)
       const response = await verifyResetOtpApi(payload)
       console.log('OTP verification response:', response)

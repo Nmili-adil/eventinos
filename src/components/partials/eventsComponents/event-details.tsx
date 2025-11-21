@@ -26,7 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import LeafletMap from "@/components/shared/leaflet-map";
+import GoogleMap from "@/components/shared/googleMap";
 
 interface EventDetailsProps {
   event: any;
@@ -310,11 +310,11 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
                   {/* Location */}
 
-                  <LeafletMap
+                  <GoogleMap
                     location={safeEvent.location.location}
                     name={safeEvent.location.name}
                     address={`${safeEvent.location.name}, ${safeEvent.location.city}, ${safeEvent.location.country}`}
-                    height={300}
+                    height="300px"
                   />
                 </div>
 

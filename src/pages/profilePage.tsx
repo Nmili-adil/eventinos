@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -29,6 +29,7 @@ import PageHead from '@/components/shared/page-head';
 import { fetchRoleByIdRequest } from '@/store/features/roles/roles.actions';
 import { fetchRightsRequest } from '@/store/features/rights/rights.actions';
 import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
+import { uploadFileApi } from '@/api/filesApi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +38,7 @@ interface ProfileFormData {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
+  // phoneNumber: string;
   birthday: string;
   country: string;
   city: string;
@@ -48,7 +49,7 @@ const profileFormSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
-  phoneNumber: z.string().min(10, 'Please enter a valid phone number').optional().or(z.literal('')),
+  // phoneNumber: z.string().min(10, 'Please enter a valid phone number').optional().or(z.literal('')),
   birthday: z.string().optional().or(z.literal('')),
   country: z.string().optional().or(z.literal('')),
   city: z.string().optional().or(z.literal('')),
@@ -73,6 +74,10 @@ export const ProfilePage: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, isLoading: loadingData, error } = useSelector((state: RootState) => state.users);
   const { role } = useSelector((state: RootState) => state.roles);
   const { rights, loading: rightsLoading } = useSelector((state: RootState) => state.rights);
@@ -142,7 +147,7 @@ export const ProfilePage: React.FC = () => {
       firstName: '',
       lastName: '',
       email: '',
-      phoneNumber: '',
+      // phoneNumber: '',
       birthday: '',
       country: '',
       city: '',
@@ -167,7 +172,7 @@ export const ProfilePage: React.FC = () => {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
-        phoneNumber: user.phoneNumber || '',
+        // phoneNumber: user.phoneNumber || '',
         birthday: user.birthday ? formatDate(user.birthday) : '',
         country: user.country || '',
         city: user.city || '',
@@ -249,6 +254,73 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  const handlePhotoClick = () => {
+    if (isEditing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error(t('profilePage.messages.invalidFileType'));
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(t('profilePage.messages.fileTooLarge'));
+        return;
+      }
+
+      setSelectedPhoto(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePhotoUpload = async () => {
+    if (!selectedPhoto || !params.userId) return;
+
+    setIsUploadingPhoto(true);
+    
+    try {
+      // Step 1: Upload the file to get the file ID
+      const imagePath = await uploadFileApi(selectedPhoto);
+      
+      
+      // Step 2: Update user profile with the new picture ID
+     await updateUserApi(params.userId, { picture: imagePath.data?.data?.path });
+      
+      toast.success(t('profilePage.messages.photoUpdated'));
+      
+      // Clear selection and refresh user data
+      setSelectedPhoto(null);
+      setPhotoPreview(null);
+      dispatch(fetchUserByIdRequest(params.userId));
+    } catch (error: any) {
+      toast.error(error?.message || t('profilePage.messages.photoUploadFailed'));
+      console.error('Failed to upload photo:', error);
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
+  const handleCancelPhotoUpload = () => {
+    setSelectedPhoto(null);
+    setPhotoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   };
@@ -311,7 +383,10 @@ export const ProfilePage: React.FC = () => {
                 <div className="flex flex-col items-center space-y-4">
                   <div className="relative">
                     <Avatar className="w-32 h-32 border-4 border-white shadow-lg ring-2 ring-blue-200">
-                      <AvatarImage src={user.picture} alt={`${user.firstName} ${user.lastName}`} />
+                      <AvatarImage 
+                        src={photoPreview || user.picture} 
+                        alt={`${user.firstName} ${user.lastName}`} 
+                      />
                       <AvatarFallback className="text-3xl bg-linear-to-br from-blue-500 to-purple-500 text-white">
                         {getInitials(user.firstName, user.lastName)}
                       </AvatarFallback>
@@ -319,21 +394,78 @@ export const ProfilePage: React.FC = () => {
                     {isEditing && (
                       <div className="absolute bottom-0 right-0">
                         <Button 
+                          type="button"
                           variant="secondary" 
                           size="sm" 
-                          className="rounded-full w-10 h-10 p-0 shadow-md"
-                          disabled={!isEditing}
+                          className="rounded-full w-10 h-10 p-0 shadow-md hover:scale-110 transition-transform"
+                          onClick={handlePhotoClick}
+                          disabled={isUploadingPhoto}
                         >
                           <Camera className="w-4 h-4" />
                         </Button>
                       </div>
                     )}
                   </div>
-                  {isEditing && (
-                    <Button variant="outline" size="sm" disabled={!isEditing}>
+                  
+                  {/* Hidden file input */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
+                  
+                  {isEditing && !selectedPhoto && (
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handlePhotoClick}
+                      disabled={isUploadingPhoto}
+                    >
                       <Camera className="w-4 h-4 mr-2" />
                       {t('profilePage.buttons.changePhoto')}
                     </Button>
+                  )}
+                  
+                  {selectedPhoto && (
+                    <div className="w-full space-y-2">
+                      <p className="text-sm text-muted-foreground text-center">
+                        {selectedPhoto.name}
+                      </p>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleCancelPhotoUpload}
+                          disabled={isUploadingPhoto}
+                          className="flex-1"
+                        >
+                          {t('common.cancel')}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={handlePhotoUpload}
+                          disabled={isUploadingPhoto}
+                          className="flex-1"
+                        >
+                          {isUploadingPhoto ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                              {t('common.uploading')}
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-4 h-4 mr-2" />
+                              {t('common.upload')}
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </div>
                 
@@ -442,7 +574,7 @@ export const ProfilePage: React.FC = () => {
                       )}
                     />
 
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="phoneNumber"
                       render={({ field }) => (
@@ -458,7 +590,7 @@ export const ProfilePage: React.FC = () => {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {hasValue(user.birthday) && (

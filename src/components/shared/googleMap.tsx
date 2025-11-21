@@ -1,10 +1,10 @@
 // components/shared/google-map-enhanced.tsx
 import { useState, useCallback } from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { LoadScript, Marker, InfoWindow, GoogleMap } from '@react-google-maps/api';
 import { MapPin, Navigation, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface GoogleMapEnhancedProps {
+interface GoogleMapProps {
   location?: [number, number] | { lat: number; lng: number } | null;
   name?: string;
   address?: string;
@@ -14,7 +14,7 @@ interface GoogleMapEnhancedProps {
   showControls?: boolean;
 }
 
-const GoogleMap= ({
+const GoogleMapComponent = ({
   location,
   name = "Event Location",
   address = "",
@@ -22,9 +22,10 @@ const GoogleMap= ({
   zoom = 15,
   className = "",
   showControls = true,
-}: GoogleMapEnhancedProps) => {
+}: GoogleMapProps) => {
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const getCoordinates = () => {
     if (!location) return null;
@@ -49,6 +50,12 @@ const GoogleMap= ({
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
+    setIsLoaded(true);
+  }, []);
+
+  const onLoadError = useCallback((error: Error) => {
+    console.error('Error loading Google Maps:', error);
+    setIsLoaded(false);
   }, []);
 
   const getDirectionsUrl = () => {
@@ -59,6 +66,11 @@ const GoogleMap= ({
   const getMapsUrl = () => {
     if (!coordinates) return '#';
     return `https://www.google.com/maps/search/?api=1&query=${coordinates.lat},${coordinates.lng}&query_place_id=${name}`;
+  };
+
+  // Safe reference to google.maps.Animation
+  const getAnimation = () => {
+    return typeof google !== 'undefined' ? google.maps.Animation.DROP : undefined;
   };
 
   if (!import.meta.env.VITE_GOOGLE_MAPS_API_KEY) {
@@ -74,7 +86,11 @@ const GoogleMap= ({
 
   return (
     <div className={`rounded-lg overflow-hidden border bg-white ${className}`} style={{ height }}>
-      <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <LoadScript 
+        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+        onLoad={() => setIsLoaded(true)}
+        onError={onLoadError}
+      >
         <GoogleMap
           mapContainerStyle={{ width: '100%', height }}
           center={center}
@@ -87,16 +103,16 @@ const GoogleMap= ({
             zoomControl: showControls,
           }}
         >
-          {coordinates && (
+          {coordinates && isLoaded && (
             <Marker
               position={coordinates}
               title={name}
               onClick={() => setIsInfoWindowOpen(true)}
-              animation={google.maps.Animation.DROP}
+              animation={getAnimation()}
             />
           )}
 
-          {coordinates && isInfoWindowOpen && (
+          {coordinates && isInfoWindowOpen && isLoaded && (
             <InfoWindow
               position={coordinates}
               onCloseClick={() => setIsInfoWindowOpen(false)}
@@ -142,4 +158,4 @@ const GoogleMap= ({
   );
 };
 
-export default GoogleMap;
+export default GoogleMapComponent;

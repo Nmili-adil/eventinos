@@ -241,7 +241,7 @@ const ContactsPage: React.FC = () => {
     if (!selectedContact || !replyMessage.trim()) return;
     setSendingReply(true);
     try {
-      await replyToContactApi(selectedContact._id, { message: replyMessage.trim() });
+      await replyToContactApi(selectedContact._id, { response: replyMessage.trim() });
       const outgoing: ConversationMessage = {
         id: `out-${Date.now()}`,
         direction: 'outgoing',
@@ -562,6 +562,7 @@ const ContactsPage: React.FC = () => {
                     value={replyMessage}
                     onChange={(e) => setReplyMessage(e.target.value)}
                     rows={3}
+                    name='response'
                     className="resize-none"
                   />
                   <div className="flex justify-between items-center">

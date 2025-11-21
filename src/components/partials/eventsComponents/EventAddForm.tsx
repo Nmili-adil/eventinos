@@ -25,6 +25,7 @@ import { fetchCategoriesRequest } from "@/store/features/categories/categories.a
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
 import { EventPreview } from "./EventPreview";
+import { LocationSelector, type LocationValue } from "@/components/shared/location-selector";
 import { useTranslation } from "react-i18next";
 
 interface EventAddFormProps {
@@ -243,6 +244,28 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   };
 
   const formData = form.watch();
+
+  const handleLocationChange = (updated: LocationValue) => {
+    const current = form.getValues('location')
+    form.setValue(
+      'location',
+      {
+        ...current,
+        name: updated.name ?? current.name,
+        city: updated.city ?? current.city,
+        country: updated.country ?? current.country,
+        countryCode: updated.countryCode ?? current.countryCode,
+        place_id: updated.place_id ?? current.place_id,
+        location: updated.location
+          ? {
+              lat: Number((updated.location as any).lat) || 0,
+              lng: Number((updated.location as any).lng) || 0,
+            }
+          : current.location,
+      },
+      { shouldDirty: true }
+    )
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-7xl">
@@ -720,107 +743,18 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                       <h3 className="text-lg font-semibold">
                         {t('eventForm.sections.location')}
                       </h3>
-                      
-                      <FormField
-                        control={form.control}
-                        name="location.name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t('eventForm.fields.venueName')} *</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder={t('eventForm.placeholders.enterVenueName')} 
-                                {...field} 
-                                value={field.value || ''}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                      <LocationSelector
+                        value={{
+                          name: form.watch('location.name'),
+                          city: form.watch('location.city'),
+                          country: form.watch('location.country'),
+                          countryCode: form.watch('location.countryCode'),
+                          place_id: form.watch('location.place_id'),
+                          location: form.watch('location.location'),
+                        }}
+                        onChange={handleLocationChange}
+                        defaultMode={form.watch('location.place_id') ? 'map' : 'manual'}
                       />
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="location.city"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('eventForm.fields.city')} *</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  placeholder={t('eventForm.placeholders.enterCity')} 
-                                  {...field} 
-                                  value={field.value || ''}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="location.country"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('eventForm.fields.country')} *</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  placeholder={t('eventForm.placeholders.enterCountry')} 
-                                  {...field} 
-                                  value={field.value || ''}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="location.countryCode"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('eventForm.fields.countryCode')} *</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  placeholder={t('eventForm.placeholders.enterCountryCode')} 
-                                  {...field} 
-                                  value={field.value || ''}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="location.place_id"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t('eventForm.fields.placeId')} *</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  placeholder={t('eventForm.placeholders.enterPlaceId')} 
-                                  {...field} 
-                                  value={field.value || ''}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="text-xs text-gray-500 mt-4 p-2 bg-gray-50 rounded">
-                        <div>{t('eventForm.messages.debugLocation')}</div>
-                        <div>{t('eventForm.fields.name')}: {form.watch('location.name') || t('eventForm.messages.notSet')}</div>
-                        <div>{t('eventForm.fields.city')}: {form.watch('location.city') || t('eventForm.messages.notSet')}</div>
-                        <div>{t('eventForm.fields.country')}: {form.watch('location.country') || t('eventForm.messages.notSet')}</div>
-                      </div>
                     </div>
                   )}
 

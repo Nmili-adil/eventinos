@@ -19,8 +19,6 @@ export default function LoginPage() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.log("Auth state:", { isAuthenticated, user, message });
-
     if (isAuthenticated && user) {
       toast.success(message?.replace("_", " ") || t("auth.loginSuccess"));
       navigate(DASHBOARD_OVERVIEW);

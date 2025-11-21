@@ -6,13 +6,15 @@ import store from "@/store/app/store"
 import { LoadingProvider } from "@/contexts/LoadingContext"
 
 
-
 const AppContent = () => {
 
 
   return (
     <LoadingProvider>
-      <RouterProvider router={Router} />
+
+
+          <RouterProvider router={Router} />
+
     </LoadingProvider>
   )
 }
