@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -27,6 +26,7 @@ import { FileUpload } from "./FileUpload";
 import { EventPreview } from "./EventPreview";
 import { LocationSelector, type LocationValue } from "@/components/shared/location-selector";
 import { useTranslation } from "react-i18next";
+import { RichTextEditor } from "@/components/shared/rich-text-editor";
 
 interface EventAddFormProps {
   onSubmit: (data: EventFormData) => void;
@@ -388,10 +388,11 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           <FormItem>
                             <FormLabel>{t('eventForm.fields.description')} *</FormLabel>
                             <FormControl>
-                              <Textarea
+                              <RichTextEditor
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
                                 placeholder={t('eventForm.placeholders.enterDescription')}
-                                className="min-h-[100px]"
-                                {...field}
                               />
                             </FormControl>
                             <FormMessage />
@@ -873,11 +874,11 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           <FormItem>
                             <FormLabel>{t('eventForm.fields.program')}</FormLabel>
                             <FormControl>
-                              <Textarea
+                              <RichTextEditor
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
                                 placeholder={t('eventForm.placeholders.enterProgram')}
-                                className="min-h-[150px]"
-                                {...field}
-                                value={field.value || ''}
                               />
                             </FormControl>
                             <FormMessage />

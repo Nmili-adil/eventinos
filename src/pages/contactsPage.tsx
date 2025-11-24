@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 
-import PageHead from '@/components/shared/page-head';
 import { cn } from '@/lib/utils';
 
 import {
@@ -10,13 +9,10 @@ import {
   deleteContactApi,
   replyToContactApi,
   type Contact,
-  type ContactsPagination,
 } from '@/api/contactsApi';
 
-import { MembersPagination } from '@/components/partials/membersComponents/MembersPagination';
-
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,13 +46,16 @@ import {
   Trash2,
   Mail,
   Calendar as CalendarIcon,
-  Filter,
   X,
   MessageSquare,
   Send,
-  ArrowLeft,
   Search,
+  Reply,
+  ReplyAll,
+  Forward,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store/app/rootReducer';
 
 interface ConversationMessage {
   id: string;
@@ -73,12 +72,9 @@ const ContactsPage: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [sendingReply, setSendingReply] = useState(false);
-
+  const { user } = useSelector((state: RootState) => state.auth);
   const [searchTerm, setSearchTerm] = useState('');
   const [replyMessage, setReplyMessage] = useState('');
-  const [pagination, setPagination] = useState<ContactsPagination | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const PAGE_SIZE = 10;
   const [conversationMap, setConversationMap] = useState<Record<string, ConversationMessage[]>>({});
 
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -92,35 +88,36 @@ const ContactsPage: React.FC = () => {
       setError(null);
 
       try {
-        const response = await fetchContactsApi(currentPage, PAGE_SIZE);
-        const raw = response?.data;
-        const contactsData = Array.isArray(raw?.data)
-          ? raw?.data
-          : raw?.contacts || raw?.data?.data || [];
+        const response = await fetchContactsApi();
+        
+        // Simplify data extraction based on your API response structure
+        let contactsData: Contact[] = [];
+        
+        if (Array.isArray(response?.data)) {
+          contactsData = response.data;
+        } else if (Array.isArray(response?.data?.data)) {
+          contactsData = response.data.data;
+        } else if (Array.isArray(response?.data?.contacts)) {
+          contactsData = response.data.contacts;
+        } else if (Array.isArray(response)) {
+          contactsData = response;
+        }
 
         setContacts(contactsData);
-        setPagination(raw?.pagination ?? raw?.meta ?? null);
-
-        setConversationMap((prev) => {
-          const next = { ...prev };
-          contactsData.forEach((contact) => {
-            if (!next[contact._id]) {
-              next[contact._id] = [
-                {
-                  id: contact._id,
-                  direction: 'incoming',
-                  body: contact.message,
-                  timestamp: contact.createdAt,
-                },
-              ];
-            }
-          });
-          return next;
+        
+        // Initialize conversation map with initial messages
+        const initialConversations: Record<string, ConversationMessage[]> = {};
+        contactsData.forEach((contact: Contact) => {
+          initialConversations[contact._id] = [
+            {
+              id: contact._id,
+              direction: 'incoming',
+              body: contact.message,
+              timestamp: contact.createdAt,
+            },
+          ];
         });
-
-        if (!selectedContact && contactsData.length > 0) {
-          setSelectedContact(contactsData[0]);
-        }
+        setConversationMap(initialConversations);
       } catch (err: any) {
         console.error('Error fetching contacts:', err);
         setError(err?.response?.data?.message || 'Failed to fetch contacts');
@@ -131,7 +128,7 @@ const ContactsPage: React.FC = () => {
     };
 
     loadContacts();
-  }, [currentPage]);
+  }, []);
 
   const formatDate = (dateInput: any): Date | null => {
     try {
@@ -214,7 +211,12 @@ const ContactsPage: React.FC = () => {
       await deleteContactApi(contact._id);
       toast.success('Contact deleted successfully');
       setDeleteDialogOpen(false);
-      setSelectedContact((prev) => (prev?._id === contact._id ? null : prev));
+      
+      // Clear selection if deleting the currently selected contact
+      if (selectedContact?._id === contact._id) {
+        setSelectedContact(null);
+      }
+      
       setContacts((prev) => prev.filter((c) => c._id !== contact._id));
     } catch (error: any) {
       toast.error(error?.response?.data?.message || 'Failed to delete contact');
@@ -242,16 +244,20 @@ const ContactsPage: React.FC = () => {
     setSendingReply(true);
     try {
       await replyToContactApi(selectedContact._id, { response: replyMessage.trim() });
+      
+      // Add the reply to the conversation
       const outgoing: ConversationMessage = {
         id: `out-${Date.now()}`,
         direction: 'outgoing',
         body: replyMessage.trim(),
         timestamp: new Date().toISOString(),
       };
+      
       setConversationMap((prev) => ({
         ...prev,
         [selectedContact._id]: [...(prev[selectedContact._id] ?? []), outgoing],
       }));
+      
       setReplyMessage('');
       toast.success('Reply sent successfully');
     } catch (error: any) {
@@ -291,201 +297,281 @@ const ContactsPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto  space-y-4">
-      <PageHead
-        title="Inbox"
-        icon={Mail}
-        description="Manage and respond to user inquiries"
-      />
-
-      <Card className="py-2 gap-1">
-        <CardHeader className="">
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="w-5 h-5" />
-            Filters
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 ">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name, email, subject..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <div className="flex-1 ">
-                {/* <label className="text-sm font-medium text-muted-foreground">Start Date</label> */}
-                <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !startDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {startDate ? format(startDate, "PPP") : "Select start date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={startDate}
-                      onSelect={(date) => {
-                        setStartDate(date);
-                        setStartDateOpen(false);
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              <div className="flex-1">
-               
-                <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !endDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {endDate ? format(endDate, "PPP") : "Select end date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={endDate}
-                      onSelect={(date) => {
-                        setEndDate(date);
-                        setEndDateOpen(false);
-                      }}
-                      initialFocus
-                      disabled={(date) => (startDate ? date < startDate : false)}
-                    />
-                  </PopoverContent>
-                </Popover>
+    <div className="min-h-screen bg-muted/30 py-6">
+      <div className="mx-auto max-w-[1400px] bg-background border border-slate-300 rounded-2xl shadow-sm flex min-h-[700px] overflow-hidden">
+        {/* Sidebar with user info */}
+        <aside className="w-60 border-r border-slate-300 bg-white/70 dark:bg-background p-6 flex flex-col justify-between">
+          <div className="space-y-6">
+            <div>
+              <p className="text-xs uppercase text-muted-foreground">Account</p>
+              <div className="mt-3 rounded-2xl border border-slate-500 bg-background p-3 flex items-center justify-between gap-2">
+                <div>
+                  <p className="font-semibold leading-tight ">{user?.firstName} {user?.lastName}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                </div>
               </div>
             </div>
-
-            {(startDate || endDate) && (
+            <div className="space-y-2">
               <Button
-                variant="outline"
-                onClick={clearDateFilters}
-                className="gap-2"
+                variant="secondary"
+                className="w-full justify-start gap-3 font-semibold"
               >
-                <X className="w-4 h-4" />
-                Clear
+                <Mail className="h-4 w-4" />
+                Inbox
+                <Badge variant="default" className='ml-auto'>
+                  {filteredContacts.length}
+                </Badge>
               </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {error && (
-        <Card>
-          <CardContent className="pt-6 text-center">
-            <div className="text-destructive mb-2">{error}</div>
-            <Button onClick={() => window.location.reload()}>
-              Retry
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      <Card className="overflow-hidden p-0" >
-        <div className="flex flex-col lg:flex-row h-[calc(100vh-320px)]">
-          <div className="w-full lg:w-1/3 border-b lg:border-r lg:border-b-0 flex flex-col">
-            <div className="px-4 py-3 border-b flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-muted-foreground">
-                Messages ({filteredContacts.length})
-              </h3>
             </div>
-            <ScrollArea className="flex-1 max-h-[calc(100vh-200px)] overflow-y-auto pb-4">
-              <div>
+          </div>
+        </aside>
+
+        {/* Main content area */}
+        <section className="flex-1 flex divide-x divide-slate-300">
+          {/* Contacts list sidebar */}
+          <div className="flex-1 flex flex-col">
+            <div className="border-b border-slate-300 px-6 py-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                  All Inboxes
+                </h3>
+                <Badge variant="outline" className="uppercase text-[10px]">
+                  {filteredContacts.length} messages
+                </Badge>
+              </div>
+              
+              {/* Search and Filters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search messages, subjects, names, or emails..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+                
+                <div className="flex gap-2">
+                  <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "justify-start gap-2 text-xs",
+                          !startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="h-4 w-4" />
+                        {startDate ? format(startDate, "MMM dd") : "Start"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={startDate}
+                        onSelect={(date) => {
+                          setStartDate(date);
+                          setStartDateOpen(false);
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "justify-start gap-2 text-xs",
+                          !endDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="h-4 w-4" />
+                        {endDate ? format(endDate, "MMM dd") : "End"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={endDate}
+                        onSelect={(date) => {
+                          setEndDate(date);
+                          setEndDateOpen(false);
+                        }}
+                        initialFocus
+                        disabled={(date) => (startDate ? date < startDate : false)}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              
+              {/* Clear filters */}
+              {(startDate || endDate) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="justify-start gap-2 text-xs"
+                  onClick={clearDateFilters}
+                >
+                  <X className="h-3.5 w-3.5" />
+                  Clear date filters
+                </Button>
+              )}
+            </div>
+
+            {/* All Inboxes List */}
+            <ScrollArea className="flex-1 overflow-y-auto max-h-[calc(100vh-400px)] ">
+              <div className="divide-y divide-slate-300">
                 {filteredContacts.length === 0 && (
-                  <div className="p-6 text-center text-muted-foreground text-sm">
-                    No messages found.
+                  <div className="p-8 text-center text-muted-foreground">
+                    <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p className="font-semibold text-foreground mb-2">No messages found</p>
+                    <p className="text-sm">
+                      {contacts.length === 0 
+                        ? 'No contact messages have been received yet.' 
+                        : 'Try adjusting your search or filters.'}
+                    </p>
                   </div>
                 )}
+                
                 {filteredContacts.map((contact) => {
-                  const isActive = selectedContact?._id === contact._id;
+                  const isSelected = selectedContact?._id === contact._id;
+                  const contactDate = formatDate(contact.createdAt);
+                  
                   return (
-                    <button
+                    <div
                       key={contact._id}
-                      type="button"
-                      onClick={() => handleSelectContact(contact)}
                       className={cn(
-                        "w-full text-left px-4 py-3 flex gap-3 hover:bg-muted/60 transition border-b border-slate-300",
-                        isActive && "bg-muted bg-slate-500/30"
+                        "p-6 cursor-pointer transition-colors border-l-4 hover:bg-muted/50",
+                        isSelected 
+                          ? "bg-muted border-l-slate-500" 
+                          : "border-l-transparent hover:border-l-muted-foreground/30"
                       )}
+                      onClick={() => handleSelectContact(contact)}
                     >
-                      <div className="flex-shrink-0">
-                        <div className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center text-sm font-semibold overflow-hidden">
-                          {contact.user?.picture ? (
-                            <img
-                              src={contact.user.picture}
-                              alt={`${contact.user.firstName} ${contact.user.lastName}`}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            (contact.user?.firstName?.[0] ?? 'U')
-                          )}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center text-xs font-semibold overflow-hidden flex-shrink-0">
+                              {contact.user?.picture ? (
+                                <img
+                                  src={contact.user.picture}
+                                  alt={`${contact.user.firstName} ${contact.user.lastName}`}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                (contact.user?.firstName?.[0] ?? 'U')
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="font-semibold text-foreground truncate">
+                                  {contact.user?.firstName
+                                    ? `${contact.user.firstName} ${contact.user.lastName ?? ''}`.trim()
+                                    : 'Unknown User'}
+                                </p>
+                                <Badge variant="secondary" className="text-[10px]">
+                                  {contact.subject}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {contact.user?.email ?? 'No email provided'}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-foreground mb-3  truncate word-wrap-break-word break-all max-w-[200px]">
+                            <span className="truncate">
+                              {contact.message}
+                            </span>
+                          </p>
+                          
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>
+                              {contactDate ? format(contactDate, 'PPP') : 'Unknown date'}
+                            </span>
+                            <span>
+                              {contactDate ? formatDistanceToNow(contactDate, { addSuffix: true }) : ''}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openDeleteDialog(contact);
+                                }}
+                                className="text-destructive"
+                                disabled={actionLoading === contact._id}
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Delete message
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-semibold truncate">
-                            {contact.user?.firstName
-                              ? `${contact.user.firstName} ${contact.user.lastName ?? ''}`.trim()
-                              : contact.subject}
-                          </span>
-                          <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
-                            {formatDistanceToNow(new Date(contact.createdAt), { addSuffix: true })}
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{contact.message}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="outline" className="text-[10px]">
-                            {contact.subject}
-                          </Badge>
-                        </div>
-                      </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
             </ScrollArea>
-            {/* <div className="border-t p-2">
-              <MembersPagination
-                pagination={pagination}
-                onPageChange={setCurrentPage}
-                entityLabel="messages"
-              />
-            </div> */}
           </div>
 
-          <div className="flex-1 flex flex-col">
-            {selectedContact ? (
-              <>
-                <div className="px-4 py-3 border-b border-slate-300 flex items-center gap-3">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="lg:hidden"
-                    onClick={() => setSelectedContact(null)}
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
+          {/* Conversation view - Only show when a contact is selected */}
+          {selectedContact && (
+            <div className="hidden lg:flex lg:w-[600px] xl:w-[700px] shrink-0 flex-col border-l border-slate-300">
+              {/* Conversation header */}
+              <div className="border-b border-slate-300 px-6 py-4 flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                      Conversation
+                    </p>
+                    <h2 className="text-xl font-semibold text-foreground truncate">
+                      {selectedContact.subject}
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon">
+                      <Reply className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <ReplyAll className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Forward className="h-4 w-4" />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => openDeleteDialog(selectedContact)}
+                          className="text-destructive"
+                          disabled={actionLoading === selectedContact._id}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete conversation
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-muted-foreground">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white flex items-center justify-center text-sm font-semibold overflow-hidden">
                     {selectedContact.user?.picture ? (
                       <img
@@ -497,78 +583,67 @@ const ContactsPage: React.FC = () => {
                       (selectedContact.user?.firstName?.[0] ?? 'U')
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold truncate">
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground">
                       {selectedContact.user?.firstName
                         ? `${selectedContact.user.firstName} ${selectedContact.user.lastName ?? ''}`.trim()
                         : selectedContact.subject}
-                    </h4>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {selectedContact.user?.email ?? 'Guest user'}
+                    </p>
+                    <p className="text-xs">
+                      Reply-To: {selectedContact.user?.email ?? 'Guest user'}
                     </p>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => openDeleteDialog(selectedContact)}
-                        className="text-destructive"
-                        disabled={actionLoading === selectedContact._id}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete conversation
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <span className="text-xs text-muted-foreground">
+                    {format(new Date(selectedContact.createdAt), 'PPP p')}
+                  </span>
                 </div>
+              </div>
 
-                <ScrollArea className="flex-1 px-4 py-6 max-h-[calc(100vh-200px)] overflow-y-auto bg-slate-500/10">
-                  <div className="flex flex-col gap-4">
-                    {conversationMessages.map((message) => (
+              {/* Messages */}
+              <ScrollArea className="flex-1 px-6 py-6">
+                <div className="flex flex-col gap-4">
+                  {conversationMessages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={cn(
+                        "flex flex-col max-w-[80%]",
+                        message.direction === 'outgoing' ? 'ml-auto items-end' : 'mr-auto items-start'
+                      )}
+                    >
                       <div
-                        key={message.id}
                         className={cn(
-                          "flex flex-col max-w-[70%]",
-                          message.direction === 'outgoing' ? 'ml-auto items-end' : 'mr-auto items-start'
+                          "rounded-2xl px-5 py-3 text-sm shadow-sm",
+                          message.direction === 'outgoing'
+                            ? 'bg-primary text-primary-foreground rounded-br-sm'
+                            : 'bg-muted text-foreground rounded-bl-sm'
                         )}
                       >
-                        <div
-                          className={cn(
-                            "rounded-2xl px-4 py-2 shadow-sm",
-                            message.direction === 'outgoing'
-                              ? 'bg-primary text-primary-foreground rounded-br-sm'
-                              : 'bg-muted text-foreground rounded-bl-sm'
-                          )}
-                        >
-                          <p className="text-sm whitespace-pre-wrap break-words">
-                            {message.body}
-                          </p>
-                        </div>
-                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground mt-1">
-                          {format(new Date(message.timestamp), 'PPP p')}
-                        </span>
+                        {message.body}
                       </div>
-                    ))}
-                  </div>
-                </ScrollArea>
+                      <span className="mt-1 text-[10px] uppercase tracking-wide text-muted-foreground">
+                        {format(new Date(message.timestamp), 'PPP p')}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
 
-                <div className="border-t border-slate-300 p-4 space-y-3">
-                  <Textarea
-                    placeholder="Type your reply..."
-                    value={replyMessage}
-                    onChange={(e) => setReplyMessage(e.target.value)}
-                    rows={3}
-                    name='response'
-                    className="resize-none"
-                  />
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs text-muted-foreground">
-                      Subject: {selectedContact.subject}
-                    </p>
+              {/* Reply area */}
+              <div className="border-t border-slate-300 px-6 py-4 space-y-3">
+                <Textarea
+                  placeholder="Reply to this message"
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  rows={3}
+                  name="response"
+                  className="resize-none"
+                />
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
+                  <div>
+                    Subject: {selectedContact.subject}
+                  </div>
+                  <div className="flex items-center gap-3 justify-end">
+                    
                     <Button
                       onClick={handleSendReply}
                       disabled={!replyMessage.trim() || sendingReply}
@@ -581,32 +656,25 @@ const ContactsPage: React.FC = () => {
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Send Reply
+                          Send
                         </>
                       )}
                     </Button>
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground text-sm space-y-4">
-                <MessageSquare className="h-10 w-10" />
-                <div className="text-center">
-                  <p className="font-semibold text-foreground">Select a conversation</p>
-                  <p>Choose a message to start responding.</p>
-                </div>
               </div>
-            )}
-          </div>
-        </div>
-      </Card>
+            </div>
+          )}
+        </section>
+      </div>
 
+      {/* Delete confirmation dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Contact</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete the contact message "{selectedContact?.subject}"?
+            <AlertDialogDescription className="text-sm flex  flex-wrap">
+              Are you sure you want to delete the contact message <span className="font-semibold">{selectedContact?.subject}</span>?
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -645,4 +713,3 @@ const ContactsPage: React.FC = () => {
 };
 
 export default ContactsPage;
-

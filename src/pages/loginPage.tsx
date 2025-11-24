@@ -27,7 +27,7 @@ export default function LoginPage() {
     if (error) {
       toast.error(
         typeof error === "string"
-          ? error
+          ? error.replace("_", " ")
           : error?.message || t("auth.loginError")
       );
     }

@@ -19,6 +19,7 @@ export const RESET_FORGOT_PASSWORD_STATE = 'RESET_FORGOT_PASSWORD_STATE'
 export interface ForgotPasswordState {
   step: 'email' | 'otp' | 'new-password' | 'complete'
   email: string
+  verificationCode: string | null
   isLoading: boolean
   error: string | null
   message: string | null
@@ -50,6 +51,7 @@ export interface VerifyOtpSuccessAction {
   type: typeof VERIFY_OTP_SUCCESS
   payload: {
     message: string
+    verificationCode: string
   }
 }
 

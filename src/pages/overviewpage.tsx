@@ -11,11 +11,11 @@ import CityDistributionBarChart from "@/components/charts/CityDistributionChart"
 import GenderDistributionPieChart from "@/components/charts/GenderDistributionPieChart";
 import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart ";
 import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
-import { useLoading } from "@/contexts/LoadingContext";
 import PageHead from "@/components/shared/page-head";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type TimePeriod = 'all' | 'week' | 'month' | '3months' | '6months' | 'year';
 
@@ -23,13 +23,13 @@ const Overviewpage = () => {
   const { events, count } = useSelector((state: RootState) => state.events);
   const { usersCount } = useSelector((state: RootState) => state.users);
   const dispatch = useDispatch<AppDispatch>();
-  const { setLoading } = useLoading();
   const { t } = useTranslation();
   
   const [cityData, setCityData] = useState<any[]>([]);
   const [genderData, setGenderData] = useState<any[]>([]);
   const [datesData, setDatesData] = useState<any[]>([]);
   const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('all');
 
   // Helper function to get date range based on time period
@@ -117,9 +117,7 @@ const Overviewpage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Show global loading screen
-        setLoading(true, t('dashboard.loadingStats'));
-        
+        setIsLoadingStats(true);
         await dispatch(fetchEventsRequest());
         await dispatch(fetchUsersRequest());
         
@@ -167,18 +165,16 @@ const Overviewpage = () => {
         }
         
         setIsLoadingAnalytics(false);
-        // Hide global loading screen
-        setLoading(false);
+        setIsLoadingStats(false);
       } catch (error) {
         console.error('Error fetching data:', error);
         setIsLoadingAnalytics(false);
-        // Hide global loading screen even on error
-        setLoading(false);
+        setIsLoadingStats(false);
       }
     };
 
     fetchData();
-  }, [dispatch, setLoading]);
+  }, [dispatch, t]);
 
   useEffect(() => {
     console.log('📊 City Data Updated:', cityData)
@@ -191,6 +187,21 @@ const Overviewpage = () => {
   useEffect(() => {
     console.log('📊 Dates Data Updated:', datesData)
   }, [datesData])
+
+  const StatSkeleton = () => (
+    <Card className="p-4 space-y-3 border-slate-200">
+      <Skeleton className="h-4 w-24" />
+      <Skeleton className="h-8 w-32" />
+      <Skeleton className="h-3 w-20" />
+    </Card>
+  )
+
+  const ChartSkeleton = () => (
+    <Card className="p-4 border-slate-200 space-y-4">
+      <Skeleton className="h-5 w-40" />
+      <Skeleton className="h-64 w-full" />
+    </Card>
+  )
 
   return (
     <div className="space-y-6 ">
@@ -266,81 +277,81 @@ const Overviewpage = () => {
 
       {/* Statistics Cards Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {/* Total Events Card */}
-        <StatCard
-          title={t('dashboard.totalEvents')}
-          value={stats.totalEvents}
-          icon={Calendar}
-          description={t('dashboard.allEvents')}
-          variant="default"
-        />
-
-        {/* Accepted Events Card */}
-        <StatCard
-          title={t('dashboard.acceptedEvents')}
-          value={stats.acceptedEvents}
-          icon={CheckCircle}
-          description={
-            stats.totalEvents > 0
-              ? `${((stats.acceptedEvents / stats.totalEvents) * 100).toFixed(
-                  1
-                )}% ${t('dashboard.ofTotal')}`
-              : t('dashboard.noEvents')
-          }
-          variant="success"
-        />
-
-        {/* Refused Events Card */}
-        <StatCard
-          title={t('dashboard.refusedEvents')}
-          value={stats.refusedEvents}
-          icon={XCircle}
-          description={
-            stats.totalEvents > 0
-              ? `${((stats.refusedEvents / stats.totalEvents) * 100).toFixed(
-                  1
-                )}% ${t('dashboard.ofTotal')}`
-              : t('dashboard.noEvents')
-          }
-          variant="danger"
-        />
-
-        {/* Pending Events Card */}
-        <StatCard
-          title={t('dashboard.pendingEvents')}
-          value={stats.pendingEvents}
-          icon={Clock}
-          description={
-            stats.totalEvents > 0
-              ? `${((stats.pendingEvents / stats.totalEvents) * 100).toFixed(
-                  1
-                )}% ${t('dashboard.ofTotal')}`
-              : t('dashboard.noEvents')
-          }
-          variant="warning"
-        />
-
-        {/* Total Users Card */}
-        <StatCard
-          title={t('dashboard.users')}
-          value={stats.totalUsers}
-          icon={Users}
-          description={
-            stats.totalUsers > 0
-              ? `${stats.totalUsers} ${
-                  stats.totalUsers > 1 ? t('dashboard.eventCreatorsPlural') : t('dashboard.eventCreators')
-                }`
-              : t('dashboard.noUsers')
-          }
-          variant="info"
-        />
+        {isLoadingStats ? (
+          Array.from({ length: 5 }).map((_, index) => <StatSkeleton key={index} />)
+        ) : (
+          <>
+            <StatCard
+              title={t('dashboard.totalEvents')}
+              value={stats.totalEvents}
+              icon={Calendar}
+              description={t('dashboard.allEvents')}
+              variant="default"
+            />
+            <StatCard
+              title={t('dashboard.acceptedEvents')}
+              value={stats.acceptedEvents}
+              icon={CheckCircle}
+              description={
+                stats.totalEvents > 0
+                  ? `${((stats.acceptedEvents / stats.totalEvents) * 100).toFixed(1)}% ${t('dashboard.ofTotal')}`
+                  : t('dashboard.noEvents')
+              }
+              variant="success"
+            />
+            <StatCard
+              title={t('dashboard.refusedEvents')}
+              value={stats.refusedEvents}
+              icon={XCircle}
+              description={
+                stats.totalEvents > 0
+                  ? `${((stats.refusedEvents / stats.totalEvents) * 100).toFixed(1)}% ${t('dashboard.ofTotal')}`
+                  : t('dashboard.noEvents')
+              }
+              variant="danger"
+            />
+            <StatCard
+              title={t('dashboard.pendingEvents')}
+              value={stats.pendingEvents}
+              icon={Clock}
+              description={
+                stats.totalEvents > 0
+                  ? `${((stats.pendingEvents / stats.totalEvents) * 100).toFixed(1)}% ${t('dashboard.ofTotal')}`
+                  : t('dashboard.noEvents')
+              }
+              variant="warning"
+            />
+            <StatCard
+              title={t('dashboard.users')}
+              value={stats.totalUsers}
+              icon={Users}
+              description={
+                stats.totalUsers > 0
+                  ? `${stats.totalUsers} ${
+                      stats.totalUsers > 1 ? t('dashboard.eventCreatorsPlural') : t('dashboard.eventCreators')
+                    }`
+                  : t('dashboard.noUsers')
+              }
+              variant="info"
+            />
+          </>
+        )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CityDistributionBarChart data={cityData} isLoading={isLoadingAnalytics} />
-        <GenderDistributionPieChart data={genderData} isLoading={isLoadingAnalytics} />
+        {isLoadingAnalytics ? (
+          <>
+            <ChartSkeleton />
+            <ChartSkeleton />
+          </>
+        ) : (
+          <>
+            <CityDistributionBarChart data={cityData} isLoading={isLoadingAnalytics} />
+            <GenderDistributionPieChart data={genderData} isLoading={isLoadingAnalytics} />
+          </>
+        )}
       </div>
       <div>
-        <EventsByDayBarChart data={datesData} isLoading={isLoadingAnalytics} />
+        {isLoadingAnalytics ? <ChartSkeleton /> : <EventsByDayBarChart data={datesData} isLoading={isLoadingAnalytics} />}
       </div>
     </div>
   );

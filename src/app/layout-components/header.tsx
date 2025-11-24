@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { Input } from '@/components/ui/input'
-import { Bell, Search, Menu, Loader2, CheckCircle, Mail } from 'lucide-react'
+import { Bell, Search, Menu, Loader2, CheckCircle, Mail, X } from 'lucide-react'
 import ProfileDropDown from './profileDropDown'
 import NavBar from './navBar'
 import LanguageSwitcher from '@/components/shared/languageSwitcher'
@@ -9,17 +9,68 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { fetchNotificationsApi, markAllNotificationsReadApi, markNotificationReadApi, type NotificationItem } from '@/api/notificationsApi'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { formatDistanceToNow } from 'date-fns'
 
 const Header = () => {
     const { t } = useTranslation()
     const [notifications, setNotifications] = useState<NotificationItem[]>([])
     const [notificationsLoading, setNotificationsLoading] = useState(false)
     const [markingAll, setMarkingAll] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+    
+    const mobileMenuRef = useRef<HTMLDivElement>(null)
+    const mobileSearchRef = useRef<HTMLDivElement>(null)
 
     const unreadCount = useMemo(
         () => notifications.filter((notification) => !notification.read).length,
         [notifications]
     )
+
+    // Close mobile menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            // Close mobile menu if clicked outside
+            if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+                setMobileMenuOpen(false)
+            }
+            
+            // Close mobile search if clicked outside
+            if (mobileSearchOpen && mobileSearchRef.current && !mobileSearchRef.current.contains(event.target as Node)) {
+                setMobileSearchOpen(false)
+            }
+        }
+
+        // Add event listener when components are open
+        if (mobileMenuOpen || mobileSearchOpen) {
+            document.addEventListener('mousedown', handleClickOutside)
+        }
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [mobileMenuOpen, mobileSearchOpen])
+
+    // Close mobile menu when route changes (optional)
+    useEffect(() => {
+        const handleRouteChange = () => {
+            setMobileMenuOpen(false)
+            setMobileSearchOpen(false)
+        }
+
+        // Listen for custom event from NavBar
+        const handleCloseMobileMenu = () => {
+            setMobileMenuOpen(false)
+        }
+
+        window.addEventListener('closeMobileMenu', handleCloseMobileMenu)
+        
+        return () => {
+            window.removeEventListener('closeMobileMenu', handleCloseMobileMenu)
+        }
+    }, [])
 
     const loadNotifications = async () => {
         setNotificationsLoading(true)
@@ -64,33 +115,36 @@ const Header = () => {
             setMarkingAll(false)
         }
     }
-    
+
     return (
         <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-50 w-full">
             {/* Top Header Section */}
-            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-6">
-                {/* Left Section - Brand & Search */}
-                <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-4 sm:px-6">
+                {/* Left Section - Brand & Mobile Menu */}
+                <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}
-                    <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
-                        <Menu className="w-5 h-5 text-gray-600" />
+                    <button 
+                        className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                        {mobileMenuOpen ? (
+                            <X className="w-5 h-5 text-gray-600" />
+                        ) : (
+                            <Menu className="w-5 h-5 text-gray-600" />
+                        )}
                     </button>
 
                     {/* Brand */}
                     <div className="flex items-center gap-3">
-                        {/* <h1 className="text-2xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                            Eventify
-                        </h1> */}
                         <img
                             src="/Eventinas Logo.jpeg"
-                            className="w-20 h-20 object-cover"
+                            className="w-16 h-16 sm:w-20 sm:h-20 object-cover"
                             alt="Eventinas Logo"
                         />
-                        
                     </div>
 
-                    {/* Search Bar */}
-                    <div className="hidden md:block relative w-80">
+                    {/* Search Bar - Desktop */}
+                    <div className="hidden md:block relative w-60 lg:w-80">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                             className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
@@ -98,18 +152,29 @@ const Header = () => {
                         />
                     </div>
                 </div>
-                <div className="flex-1">
 
-                <NavBar />
+                {/* Navigation Bar - Desktop */}
+                <div className="hidden lg:flex flex-1 mx-8">
+                    <NavBar />
                 </div>
+
                 {/* Right Section - Notifications & Profile */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                     {/* Language Switcher */}
-                    <LanguageSwitcher />
+                    <div className="">
+                        <LanguageSwitcher />
+                    </div>
                     
                     {/* Search Button (Mobile) */}
-                    <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
-                        <Search className="w-5 h-5 text-gray-600" />
+                    <button 
+                        className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                        onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                    >
+                        {mobileSearchOpen ? (
+                            <X className="w-5 h-5 text-gray-600" />
+                        ) : (
+                            <Search className="w-5 h-5 text-gray-600" />
+                        )}
                     </button>
 
                     {/* Notifications */}
@@ -124,7 +189,7 @@ const Header = () => {
                                 {unreadCount > 0 && (
                                     <>
                                         <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-red-500 text-white text-xs font-semibold rounded-full border-2 border-white">
-                                            {unreadCount}
+                                            {unreadCount > 9 ? '9+' : unreadCount}
                                         </span>
                                         <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -133,7 +198,7 @@ const Header = () => {
                                 )}
                             </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-80 p-0" align="end">
+                        <PopoverContent className="w-80 sm:w-96 p-0" align="end">
                             <div className="flex items-center justify-between px-4 py-3 border-b">
                                 <div>
                                     <p className="text-sm font-semibold">Notifications</p>
@@ -215,19 +280,34 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Navigation Bar */}
-
-
-            {/* Mobile Search Bar (Collapsible) */}
-            <div className="md:hidden px-6 pb-3">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                        className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
-                        placeholder={t('header.searchPlaceholderMobile')}
-                    />
+            {/* Mobile Search Bar */}
+            {mobileSearchOpen && (
+                <div 
+                    ref={mobileSearchRef}
+                    className="lg:hidden px-4 sm:px-6 pb-3 bg-white border-t border-gray-200"
+                >
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <Input
+                            className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
+                            placeholder={t('header.searchPlaceholderMobile')}
+                            autoFocus
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {/* Mobile Navigation Menu */}
+            {mobileMenuOpen && (
+                <div 
+                    ref={mobileMenuRef}
+                    className="lg:hidden bg-transparent  relative"
+                >
+                    <div className="container mx-auto px-4 pt-2 backdrop-blur-2xl absolute ">
+                        <NavBar mobile />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

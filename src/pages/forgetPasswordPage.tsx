@@ -1,7 +1,5 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
-import { setForgotPasswordStep } from '@/store/features/forgotpassword/forgotpassword.actions'
 import ForgotPasswordEmailStep from '@/components/partials/authComponents/forgotPasswordEmailStep'
 import ForgotPasswordOtpStep from '@/components/partials/authComponents/forgotPasswordOtpStep'
 import NewPasswordStep from '@/components/partials/authComponents/newPasswordStep'
@@ -10,13 +8,11 @@ import { Calendar } from 'lucide-react'
 import { t } from 'i18next'
 
 export default function ForgotPasswordPage() {
-  const dispatch = useDispatch()
   const forgotPasswordStep = useSelector((state: RootState) => state.forgotPassword.step)
 
-  // Reset to first step when component mounts
-  useEffect(() => {
-    dispatch(setForgotPasswordStep('email'))
-  }, [dispatch])
+  // Note: We don't reset the step here because it would clear the state
+  // when the component re-renders during the password reset flow
+  // The step is managed by Redux actions throughout the flow
 
   const steps = [
     { key: 'email', title: 'Email', component: ForgotPasswordEmailStep },

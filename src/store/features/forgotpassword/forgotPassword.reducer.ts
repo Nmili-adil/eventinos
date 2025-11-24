@@ -18,6 +18,7 @@ import {
 const initialState: ForgotPasswordState = {
   step: "email",
   email: "",
+  verificationCode: null,
   isLoading: false,
   error: null,
   message: null,
@@ -51,6 +52,7 @@ const forgotPasswordReducer = (
       return {
         ...state,
         isLoading: false,
+        verificationCode: action.payload.verificationCode,
         message: action.payload.message,
         step: "new-password",
       }

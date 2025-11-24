@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -35,14 +34,21 @@ import { FileUpload } from "./FileUpload";
 import { useTranslation } from "react-i18next";
 import { EventPreview } from "./EventPreview";
 import { LocationSelector, type LocationValue } from "@/components/shared/location-selector";
+import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface EventEditFormProps {
-  event: any;
+  event?: any | null;
   onSubmit: (data: EventFormData) => void;
   isLoading?: boolean;
+  isFetching?: boolean;
 }
 
-const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProps) => {
+const EventEditForm = ({ event, onSubmit, isLoading = false, isFetching = false }: EventEditFormProps) => {
+  if (isFetching || !event) {
+    return <EventEditFormSkeleton />
+  }
+
   const [activeTab, setActiveTab] = useState("basic");
   const [newImageUrl, setNewImageUrl] = useState("");
   const [showPreview, setShowPreview] = useState(true); 
@@ -255,10 +261,11 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         <FormItem>
                           <FormLabel>{t('eventForm.fields.description')}</FormLabel>
                           <FormControl>
-                            <Textarea
+                            <RichTextEditor
+                              value={field.value || ""}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
                               placeholder={t('eventForm.placeholders.enterDescription')}
-                              className="min-h-[100px]"
-                              {...field}
                             />
                           </FormControl>
                           <FormMessage />
@@ -790,10 +797,11 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
                         <FormItem>
                           <FormLabel>{t('eventForm.fields.program')}</FormLabel>
                           <FormControl>
-                            <Textarea
+                            <RichTextEditor
+                              value={field.value || ""}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
                               placeholder={t('eventForm.placeholders.enterProgram')}
-                              className="min-h-[150px]"
-                              {...field}
                             />
                           </FormControl>
                           <FormMessage />
@@ -1461,3 +1469,60 @@ const EventEditForm = ({ event, onSubmit, isLoading = false }: EventEditFormProp
 };
 
 export default EventEditForm;
+
+const EventEditFormSkeleton = () => (
+  <div className="container mx-auto p-4 md:p-6 max-w-7xl">
+    <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex-1 space-y-6">
+        <Card className="border-slate-300">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div className="flex items-start gap-4 w-full">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="flex-1 space-y-3">
+                <Skeleton className="h-6 w-40" />
+                <Skeleton className="h-4 w-64" />
+              </div>
+            </div>
+            <Skeleton className="h-8 w-24" />
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-slate-300 p-6">
+          <div className="space-y-3">
+            <Skeleton className="h-5 w-48" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </Card>
+      </div>
+      <div className="w-full lg:w-1/3 space-y-4">
+        <Card className="border-slate-300">
+          <CardHeader className="m-0 space-y-2">
+            <Skeleton className="h-5 w-44" />
+            <Skeleton className="h-4 w-60" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} className="h-10 w-full" />
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  </div>
+)

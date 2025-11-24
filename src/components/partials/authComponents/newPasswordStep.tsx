@@ -17,7 +17,7 @@ export default function NewPasswordStep() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const dispatch = useDispatch()
-  const { isLoading, error, email } = useSelector((state: RootState) => state.forgotPassword)
+  const { isLoading, error, email, verificationCode } = useSelector((state: RootState) => state.forgotPassword)
 
   const {
     register,
@@ -26,12 +26,18 @@ export default function NewPasswordStep() {
     watch,
   } = useForm<ResetPasswordData>({
     resolver: zodResolver(resetPasswordSchema),
-  })
+  })  
 
   const onSubmit = async (data: ResetPasswordData) => {
-    console.log('New password submitted')
     dispatch(clearForgotPasswordError())
-    dispatch(resetPassword(email, data.newPassword, data.confirmPassword) as any)
+  
+    // Ensure we have a verification code from the previous OTP step
+    if (!verificationCode) {
+      console.error('No verification code found')
+      return
+    }
+  
+    dispatch(resetPassword(email, verificationCode, data.newPassword, data.confirmPassword) as any)
   }
 
   const handleBack = () => {
@@ -67,6 +73,15 @@ export default function NewPasswordStep() {
       </CardHeader>
       
       <CardContent>
+        {/* DEBUG INFO - Remove after fixing */}
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs font-mono">
+          <div className="font-bold mb-1">🔍 Debug Info:</div>
+          <div>Email: {email || 'NOT SET'}</div>
+          <div>Verification Code: {verificationCode || 'NOT SET'}</div>
+          <div>Loading: {isLoading ? 'YES' : 'NO'}</div>
+          <div>Error: {error || 'NONE'}</div>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* New Password Field */}
           <div className="space-y-2">

@@ -59,8 +59,8 @@ const LoginForm = () => {
                         {/* Error Alert - only show when there's an error and not loading */}
                         {error && !isLoading && (
                             <Alert variant="destructive" className="mb-4">
-                                <AlertDescription>
-                                    {typeof error === 'string' ? error : error || 'An error occurred'}
+                                <AlertDescription className="text-sm capitalize font-medium">
+                                    {typeof error === 'string' ? error.replace("_", " ") : error?.message.replace("_", " ") || 'An error occurred'}
                                 </AlertDescription>
                             </Alert>
                         )}
