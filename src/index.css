@@ -233,6 +233,7 @@ input {
   text-align: right;
 }
 
+
 [dir="rtl"] .flex {
   flex-direction: row-reverse;
 }

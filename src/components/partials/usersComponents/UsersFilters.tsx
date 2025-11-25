@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, Filter } from 'lucide-react'
 import type { UsersFilters } from '@/lib/users-utils'
+import { useTranslation } from 'react-i18next'
 
 interface UsersFiltersProps {
   filters: UsersFilters
@@ -10,6 +11,8 @@ interface UsersFiltersProps {
 }
 
 export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
+  const { t } = useTranslation()
+
   const handleSearchChange = (value: string) => {
     onFiltersChange({ ...filters, search: value })
   }
@@ -38,7 +41,7 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search users by name, email, phone, location, or company..."
+              placeholder={t('accounts.filters.searchPlaceholder', 'Search users by name, email, phone, location, or company...')}
               value={filters.search}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
@@ -51,12 +54,18 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
               <Select value={filters.status} onValueChange={handleStatusChange}>
                 <SelectTrigger>
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Status" />
+                  <SelectValue placeholder={t('accounts.filters.status.placeholder', 'Status')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="all">
+                    {t('accounts.filters.status.all', 'All Status')}
+                  </SelectItem>
+                  <SelectItem value="active">
+                    {t('accounts.filters.status.active', 'Active')}
+                  </SelectItem>
+                  <SelectItem value="inactive">
+                    {t('accounts.filters.status.inactive', 'Inactive')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -64,12 +73,18 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             <div className="flex-1">
               <Select value={filters.registrationStatus} onValueChange={handleRegistrationChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Registration" />
+                  <SelectValue placeholder={t('accounts.filters.registration.placeholder', 'Registration')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Registration</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="all">
+                    {t('accounts.filters.registration.all', 'All Registration')}
+                  </SelectItem>
+                  <SelectItem value="completed">
+                    {t('accounts.filters.registration.completed', 'Completed')}
+                  </SelectItem>
+                  <SelectItem value="pending">
+                    {t('accounts.filters.registration.pending', 'Pending')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -77,12 +92,18 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             <div className="flex-1">
               <Select value={filters.gender} onValueChange={handleGenderChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Gender" />  
+                  <SelectValue placeholder={t('accounts.filters.gender.placeholder', 'Gender')} />  
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Gender</SelectItem>
-                  <SelectItem value="MALE">Male</SelectItem>
-                  <SelectItem value="FEMALE">Female</SelectItem>
+                  <SelectItem value="all">
+                    {t('accounts.filters.gender.all', 'All Gender')}
+                  </SelectItem>
+                  <SelectItem value="MALE">
+                    {t('accounts.filters.gender.male', 'Male')}
+                  </SelectItem>
+                  <SelectItem value="FEMALE">
+                    {t('accounts.filters.gender.female', 'Female')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -90,12 +111,18 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             <div className="flex-1">
               <Select value={filters.userType} onValueChange={handleUserTypeChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="User Type" />
+                  <SelectValue placeholder={t('accounts.filters.userType.placeholder', 'User Type')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Organizer">Organizer</SelectItem>
-                  <SelectItem value="Member">Member</SelectItem>
+                  <SelectItem value="all">
+                    {t('accounts.filters.userType.all', 'All Types')}
+                  </SelectItem>
+                  <SelectItem value="Organizer">
+                    {t('accounts.filters.userType.organizer', 'Organizer')}
+                  </SelectItem>
+                  <SelectItem value="Member">
+                    {t('accounts.filters.userType.member', 'Member')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -105,4 +132,3 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
     </Card>
   )
 }
-

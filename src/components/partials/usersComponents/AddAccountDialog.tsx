@@ -183,27 +183,27 @@ const AddAccountDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl border-slate-300 max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden border-slate-300">
+        <DialogHeader className="px-1">
+          <DialogTitle className="text-xl font-semibold">
             Add New Account
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm">
             Create a new user account. All required fields must be filled. A default password will be set automatically.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ScrollArea className="max-h-[calc(90vh-200px)] pr-4 overflow-y-auto">
-            <div className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
+          <ScrollArea className="flex-1 pr-4 overflow-y-auto max-h-[100vh-200px]">
+            <div className="space-y-6 pb-4">
               {/* Account Type */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-lg">
+              <div className="space-y-3">
+                <h4 className="font-medium text-base">
                   Account Type
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="user">
+                    <Label htmlFor="role" className="text-sm">
                       User Type *
                     </Label>
                     <Select
@@ -211,7 +211,7 @@ const AddAccountDialog = ({
                       onValueChange={(value) => setValue('role', value)}
                       disabled={rolesLoading}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder={rolesLoading ? "Loading roles..." : "Select user type"} />
                       </SelectTrigger>
                       <SelectContent>
@@ -224,14 +224,14 @@ const AddAccountDialog = ({
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="isActive">
+                    <Label htmlFor="isActive" className="text-sm">
                       Account Status
                     </Label>
                     <Select
                       value={watch('isActive') ? 'active' : 'inactive'}
                       onValueChange={(value) => setValue('isActive', value === 'active')}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -246,13 +246,13 @@ const AddAccountDialog = ({
               <Separator />
 
               {/* Personal Information */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-lg">
+              <div className="space-y-3">
+                <h4 className="font-medium text-base">
                   Personal Information
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">
+                    <Label htmlFor="firstName" className="text-sm">
                       First Name *
                     </Label>
                     <Input
@@ -261,13 +261,14 @@ const AddAccountDialog = ({
                         required: 'This field is required' 
                       })}
                       placeholder="Enter first name"
+                      className="w-full"
                     />
                     {errors.firstName && (
-                      <p className="text-sm text-destructive">{errors.firstName.message}</p>
+                      <p className="text-xs text-destructive mt-1">{errors.firstName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">
+                    <Label htmlFor="lastName" className="text-sm">
                       Last Name *
                     </Label>
                     <Input
@@ -276,20 +277,21 @@ const AddAccountDialog = ({
                         required: 'This field is required' 
                       })}
                       placeholder="Enter last name"
+                      className="w-full"
                     />
                     {errors.lastName && (
-                      <p className="text-sm text-destructive">{errors.lastName.message}</p>
+                      <p className="text-xs text-destructive mt-1">{errors.lastName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="gender">
+                    <Label htmlFor="gender" className="text-sm">
                       Gender
                     </Label>
                     <Select
                       value={watch('gender')}
                       onValueChange={(value) => setValue('gender', value as 'MALE' | 'FEMALE')}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
                       <SelectContent>
@@ -304,13 +306,13 @@ const AddAccountDialog = ({
               <Separator />
 
               {/* Contact Information */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-lg">
+              <div className="space-y-3">
+                <h4 className="font-medium text-base">
                   Contact Information
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="email">
+                    <Label htmlFor="email" className="text-sm">
                       Email Address *
                     </Label>
                     <Input
@@ -324,19 +326,21 @@ const AddAccountDialog = ({
                         },
                       })}
                       placeholder="Enter email address"
+                      className="w-full"
                     />
                     {errors.email && (
-                      <p className="text-sm text-destructive">{errors.email.message}</p>
+                      <p className="text-xs text-destructive mt-1">{errors.email.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">
+                    <Label htmlFor="phoneNumber" className="text-sm">
                       Phone Number
                     </Label>
                     <Input
                       id="phoneNumber"
                       {...register('phoneNumber')}
                       placeholder="Enter phone number"
+                      className="w-full"
                     />
                   </div>
                 </div>
@@ -345,29 +349,31 @@ const AddAccountDialog = ({
               <Separator />
 
               {/* Location Information */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-lg">
+              <div className="space-y-3">
+                <h4 className="font-medium text-base">
                   Location Information
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="city">
+                    <Label htmlFor="city" className="text-sm">
                       City
                     </Label>
                     <Input
                       id="city"
                       {...register('city')}
                       placeholder="Enter city"
+                      className="w-full"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="country">
+                    <Label htmlFor="country" className="text-sm">
                       Country
                     </Label>
                     <Input
                       id="country"
                       {...register('country')}
                       placeholder="Enter country"
+                      className="w-full"
                     />
                   </div>
                 </div>
@@ -377,40 +383,42 @@ const AddAccountDialog = ({
               {isOrganizer && (
                 <>
                   <Separator />
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-lg">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-base">
                       Company Information
                     </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div className="space-y-2">
-                        <Label htmlFor="companyName">
+                        <Label htmlFor="companyName" className="text-sm">
                           Company Name
                         </Label>
                         <Input
                           id="companyName"
                           {...register('company.name')}
                           placeholder="Enter company name"
+                          className="w-full"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="jobTitle">
+                        <Label htmlFor="jobTitle" className="text-sm">
                           Job Title
                         </Label>
                         <Input
                           id="jobTitle"
                           {...register('company.jobTitle')}
                           placeholder="Enter job title"
+                          className="w-full"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="companySize">
+                        <Label htmlFor="companySize" className="text-sm">
                           Company Size
                         </Label>
                         <Select
                           value={watch('company.size')}
                           onValueChange={(value) => setValue('company.size', value)}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select company size" />
                           </SelectTrigger>
                           <SelectContent>
@@ -424,30 +432,39 @@ const AddAccountDialog = ({
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="industry">
+                        <Label htmlFor="industry" className="text-sm">
                           Industry
                         </Label>
                         <Input
                           id="industry"
                           {...register('company.industry')}
                           placeholder="Enter industry"
+                          className="w-full"
                         />
                       </div>
                     </div>
                   </div>
                 </>
               )}
-
-
             </div>
           </ScrollArea>
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-4 border-t mt-4">
-            <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
+          <div className="flex justify-end gap-3 pt-4 border-t mt-4 px-1">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose} 
+              disabled={isLoading}
+              className="min-w-20"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="min-w-32"
+            >
               {isLoading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
@@ -465,4 +482,3 @@ const AddAccountDialog = ({
 }
 
 export default AddAccountDialog
-

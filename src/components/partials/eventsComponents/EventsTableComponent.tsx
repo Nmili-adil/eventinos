@@ -33,10 +33,8 @@ const PAGE_SIZE = 10
 type ViewMode = 'table' | 'calendar' | 'maps'
 
 export function EventsTable() {
-  const [eventsData, setEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>('table')
-  const { events, isLoading} = useSelector((state: RootState) => state.events)
+  const { events, isLoading } = useSelector((state: RootState) => state.events)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
@@ -82,25 +80,21 @@ export function EventsTable() {
   })
 
   const [statusLoading, setStatusLoading] = useState(false)
-  // Fetch events on component mount
-  useEffect(() => {
-    const loadEvents = async () => {
-      setLoading(true)
-      setEvents(events)
-      setLoading(false)
-    }
-    
-    loadEvents()
-  }, [events])
+
+  // Use events directly from Redux store instead of local state
+  let eventsData = events || []
 
   // Filter and sort events
   const processedEvents = useMemo(() => {
     const filtered = filterEvents(eventsData, filters)
     const sorted = sortEvents(filtered, sort.field, sort.direction)
     
-    
     // Update total items for pagination
-    setPagination(prev => ({ ...prev, totalItems: sorted.length }))
+    setPagination(prev => ({ 
+      ...prev, 
+      totalItems: sorted.length,
+      currentPage: prev.currentPage > Math.ceil(sorted.length / prev.pageSize) ? 1 : prev.currentPage
+    }))
     
     return sorted
   }, [eventsData, filters, sort.field, sort.direction])
@@ -128,7 +122,7 @@ export function EventsTable() {
   }
 
   const handleEdit = (eventId: string) => {
-      navigate(EVENT_EDIT_PAGE(eventId))
+    navigate(EVENT_EDIT_PAGE(eventId))
   }
 
   const handleChangeStatus = (eventId: string) => {
@@ -145,9 +139,16 @@ export function EventsTable() {
 
   const handleConfirmStatusChange = async (newStatus: EventStatus) => {
     if (!statusDialog.eventId) return
+
+    const eventId = statusDialog.eventId
     setStatusLoading(true)
+
+
+    
+    
     try {
-      await dispatch(updateEventStatusRequest(statusDialog.eventId, newStatus))
+      await dispatch(updateEventStatusRequest(eventId, newStatus))
+      eventsData = eventsData.map(event => event._id === eventId ? {...event, status: newStatus} : event)
       toast.success('Event status updated successfully')
       setStatusDialog({ open: false, eventId: null, currentStatus: null })
     } catch (error: any) {
@@ -167,38 +168,41 @@ export function EventsTable() {
 
   const handleConfirmDelete = async () => {
     if (!deleteDialog.eventId) return
+    
     setDeleteLoading(true)
     try {
-      setEvents(prev => prev.filter(event => event._id !== deleteDialog.eventId))
-      setDeleteDialog({ open: false, eventId: null })
-      toast.promise(
-        dispatch(deleteEventRequest(deleteDialog.eventId)),
-        {
-          loading: 'Suppression en cours',
-          success: 'Événement supprimé avec successe',
-          error: "Une erreur est survenue lors de la suppression de l'événement"
-        }
-      )
-      // Simulate API call
-      // await dispatch(deleteEventRequest(deleteDialog.eventId))
+      await dispatch(deleteEventRequest(deleteDialog.eventId))
+      setDeleteDialog({ open: false, eventId: null, eventTitle: '' })
+      // The toast is handled by the promise in the dispatch
     } catch (error) {
       console.error('Failed to delete event:', error)
+      toast.error(t('events.deleteError'))
+    } finally {
+      setDeleteLoading(false)
     }
-    setDeleteLoading(false)
   }
+
   if (isLoading) {
     return (
-      <div className='h-screen w-screen m-0 '>
+      <div className='h-screen w-full flex items-center justify-center'>
         <LoadingComponent />
       </div>
     )
   }
 
+
+
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHead title={t('events.title')} icon={List} description={t('events.eventDescription')}/>
+        <PageHead 
+          title={t('events.title')} 
+          icon={List} 
+          description={t('events.eventDescription')}
+          total={0}
+        />
         <div className="flex items-center gap-2">
           {/* View Toggle */}
           <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
@@ -232,7 +236,8 @@ export function EventsTable() {
           </div>
           <Button 
             onClick={() => navigate(EVENT_ADD_PAGE)}
-            className="flex items-center gap-2">
+            className="flex items-center gap-2"
+          >
             <Plus className="h-4 w-4" />
             {t('events.addEvent')}
           </Button>
@@ -241,14 +246,17 @@ export function EventsTable() {
 
       {/* Filters - Only show for table view */}
       {viewMode === 'table' && (
-        <Filters filters={filters} onFiltersChange={setFilters} />
+        <Filters 
+          filters={filters} 
+          onFiltersChange={setFilters} 
+        />
       )}
 
       {/* Table View */}
       {viewMode === 'table' && (
         <>
-          <div className="border border-slate-400 shadow-md rounded-lg overflow-hidden">
-            <Table className=''>
+          <div className="border border-slate-300 shadow-md rounded-lg overflow-hidden">
+            <Table>
               <TableHeader 
                 sortField={sort.field}
                 sortDirection={sort.direction}
@@ -262,23 +270,25 @@ export function EventsTable() {
                     onEdit={handleEdit}
                     onChangeStatus={handleChangeStatus}
                     onPreview={handlePreview}
-                    onDelete={() => handleDelete(event._id, event.title)}
+                    onDelete={() => handleDelete(event._id, event.title || event.name || '')}
                   />
                 ))}
               </TableBody>
             </Table>
 
             {/* Empty State */}
-            {paginatedEvents.length === 0 && !loading && (
+            {paginatedEvents.length === 0 && !isLoading && (
               <EmptyState onResetFilters={handleResetFilters} />
             )}
           </div>
 
           {/* Pagination */}
-          <EventsPagination 
-            pagination={pagination}
-            onPageChange={handlePageChange}
-          />
+          {processedEvents.length > 0 && (
+            <EventsPagination 
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
+          )}
         </>
       )}
 
@@ -304,13 +314,14 @@ export function EventsTable() {
         />
       )}
 
+      {/* Dialogs - Render at root level */}
       <DeleteDialog
-      open={deleteDialog.open}
-      onOpenChange={(open) => setDeleteDialog(prev => ({ ...prev, open }))}
-      onConfirm={handleConfirmDelete}
-      eventTitle={deleteDialog.eventTitle}
-      isLoading={deleteLoading}
-    />
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog(prev => ({ ...prev, open }))}
+        onConfirm={handleConfirmDelete}
+        eventTitle={deleteDialog.eventTitle}
+        isLoading={deleteLoading}
+      />
 
       <StatusChangeDialog
         open={statusDialog.open}

@@ -175,7 +175,39 @@
       "calendar": "Calendar View",
       "table": "Table View",
       "maps": "Maps View"
-    }
+    },
+    "statusChangeDialog": {
+        "title": "Change Event Status",
+        "description": "Select the new status for this event.",
+        "eventLabel": "Event:",
+        "statusLabel": "Status",
+        "selectStatus": "Select status",
+        "currentStatus": "Current status",
+        "newStatus": "New status",
+        "buttons": {
+          "cancel": "Cancel",
+          "update": "Update Status",
+          "updating": "Updating..."
+        },
+        "statusOptions": {
+          "pending": {
+            "label": "Pending",
+            "description": "Event is awaiting approval"
+          },
+          "accepted": {
+            "label": "Accepted",
+            "description": "Event has been approved"
+          },
+          "refused": {
+            "label": "Rejected",
+            "description": "Event has been rejected"
+          },
+          "closed": {
+            "label": "Closed",
+            "description": "Event has been closed"
+          }
+        }
+      }
   },
   "eventForm": {
     "title": "Create New Event",
@@ -822,5 +854,159 @@
     "selectNewStatus": "Select new status",
     "confirm": "Are you sure you want to change the status of",
     "to": "to"
+  },
+  "accounts": {
+      "title": "Accounts",
+      "description": "Manage all users",
+      "addAccount": "Add Account",
+      "totalUsers": "{count} total users",
+      "sort": {
+        "by": "Sort by:",
+        "name": "Name",
+        "email": "Email",
+        "type": "Type",
+        "joinDate": "Join Date",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "all": "All Status"
+      },
+      "userTypes": {
+        "organizer": "Organizer",
+        "member": "Member",
+        "all": "All Types"
+      },
+      "registration": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "all": "All Registrations"
+      },
+      "actions": {
+        "viewProfile": "View Profile",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "delete": "Delete",
+        "retry": "Retry",
+        "clearFilters": "Clear Filters"
+      },
+      "fields": {
+        "email": "Email",
+        "phone": "Phone",
+        "location": "Location",
+        "company": "Company",
+        "joined": "Joined",
+        "registration": "Registration",
+        "gender": "Gender"
+      },
+      "emptyState": {
+        "title": "No Users Found",
+        "noResults": "No users match your search criteria.",
+        "noUsers": "No users have been added yet."
+      },
+      "deleteDialog": {
+        "title": "Delete User",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleting": "Deleting..."
+      },
+      "messages": {
+        "activateSuccess": "User activated successfully",
+        "deactivateSuccess": "User deactivated successfully",
+        "deleteSuccess": "User deleted successfully",
+        "activateError": "Failed to activate user",
+        "deactivateError": "Failed to deactivate user",
+        "deleteError": "Failed to delete user",
+        "createSuccess": "Account created successfully",
+        "createError": "Failed to create account"
+      },
+
+      "notAvailable": "N/A",
+      "filters": {
+        "searchPlaceholder": "Search users by name, email, phone, location, or company...",
+        "status": {
+          "placeholder": "Status",
+          "all": "All Status",
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "registration": {
+          "placeholder": "Registration",
+          "all": "All Registration",
+          "completed": "Completed",
+          "pending": "Pending"
+        },
+        "gender": {
+          "placeholder": "Gender",
+          "all": "All Gender",
+          "male": "Male",
+          "female": "Female"
+        },
+        "userType": {
+          "placeholder": "User Type",
+          "all": "All Types",
+          "organizer": "Organizer",
+          "member": "Member"
+        }
+      }
+    },
+    "contacts": {
+    "title": "Contacts",
+    "description": "Manage your inbox.",
+    "sidebar": {
+      "account": "Account",
+      "inbox": "Inbox",
+      "allInboxes": "All Inboxes"
+    },
+    "search": {
+      "placeholder": "Search messages, subjects, names, or emails..."
+    },
+    "filters": {
+      "start": "Start",
+      "end": "End",
+      "clear": "Clear date filters"
+    },
+    "messagesCount": "{{count}} messages",
+    "emptyState": {
+      "title": "No messages found",
+      "noMessages": "No contact messages have been received yet.",
+      "noResults": "Try adjusting your search or filters."
+    },
+    "unknownUser": "Unknown User",
+    "noEmail": "No email provided",
+    "unknownDate": "Unknown date",
+    "guestUser": "Guest user",
+    "conversation": {
+      "title": "Conversation",
+      "replyTo": "Reply-To"
+    },
+    "reply": {
+      "placeholder": "Reply to this message",
+      "subject": "Subject",
+      "sending": "Sending...",
+      "send": "Send"
+    },
+    "actions": {
+      "deleteMessage": "Delete message",
+      "deleteConversation": "Delete conversation",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "delete": "Delete"
+    },
+    "messages": {
+      "deleteSuccess": "Contact deleted successfully",
+      "replySuccess": "Reply sent successfully"
+    },
+    "errors": {
+      "fetchFailed": "Failed to fetch contacts",
+      "deleteFailed": "Failed to delete contact",
+      "replyFailed": "Failed to send reply"
+    },
+    "deleteDialog": {
+      "title": "Delete Contact",
+      "description": "Are you sure you want to delete the contact message {{subject}}? This action cannot be undone."
+    }
   }
 }

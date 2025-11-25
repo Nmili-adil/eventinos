@@ -151,7 +151,39 @@
         "calendar": "عرض التقويم",
         "table": "عرض الجدول",
         "maps": "عرض الخرائط"
-       }
+       },
+       "statusChangeDialog": {
+        "title": "تغيير حالة الفعالية",
+        "description": "اختر الحالة الجديدة لهذه الفعالية.",
+        "eventLabel": "الفعالية:",
+        "statusLabel": "الحالة",
+        "selectStatus": "اختر الحالة",
+        "currentStatus": "الحالة الحالية",
+        "newStatus": "الحالة الجديدة",
+        "buttons": {
+          "cancel": "إلغاء",
+          "update": "تحديث الحالة",
+          "updating": "جاري التحديث..."
+        },
+        "statusOptions": {
+          "pending": {
+            "label": "قيد الانتظار",
+            "description": "الفعالية في انتظار الموافقة"
+          },
+          "accepted": {
+            "label": "مقبول",
+            "description": "تمت الموافقة على الفعالية"
+          },
+          "refused": {
+            "label": "مرفوض",
+            "description": "تم رفض الفعالية"
+          },
+          "closed": {
+            "label": "مغلق",
+            "description": "تم إغلاق الفعالية"
+          }
+        }
+      }
     },
   
   "eventForm": {
@@ -757,6 +789,159 @@
     },
     "common": {
       "notAvailable": "غير متوفر"
+    }
+  },
+  "accounts": {
+    "title": "الحسابات",
+    "description": "إدارة جميع المستخدمين",
+    "addAccount": "إضافة حساب",
+    "totalUsers": "{count} مستخدم إجمالاً",
+    "sort": {
+      "by": "فرز حسب:",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "type": "النوع",
+      "joinDate": "تاريخ الانضمام",
+      "status": "الحالة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "all": "كل الحالات"
+    },
+    "userTypes": {
+      "organizer": "منظم",
+      "member": "عضو",
+      "all": "جميع الأنواع"
+    },
+    "registration": {
+      "completed": "مكتمل",
+      "pending": "قيد الانتظار",
+      "all": "جميع التسجيلات"
+    },
+    "actions": {
+      "viewProfile": "عرض الملف الشخصي",
+      "activate": "تفعيل",
+      "deactivate": "إلغاء التفعيل",
+      "delete": "حذف",
+      "retry": "إعادة المحاولة",
+      "clearFilters": "مسح الفلاتر"
+    },
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "location": "الموقع",
+      "company": "الشركة",
+      "joined": "انضم في",
+      "registration": "التسجيل",
+      "gender": "الجنس"
+    },
+    "emptyState": {
+      "title": "لم يتم العثور على مستخدمين",
+      "noResults": "لا توجد مستخدمين تطابق معايير البحث الخاصة بك.",
+      "noUsers": "لم تتم إضافة أي مستخدمين بعد."
+    },
+    "deleteDialog": {
+      "title": "حذف المستخدم",
+      "description": "هل أنت متأكد من رغبتك في حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "deleting": "جاري الحذف..."
+    },
+    "messages": {
+      "activateSuccess": "تم تفعيل المستخدم بنجاح",
+      "deactivateSuccess": "تم إلغاء تفعيل المستخدم بنجاح",
+      "deleteSuccess": "تم حذف المستخدم بنجاح",
+      "activateError": "فشل في تفعيل المستخدم",
+      "deactivateError": "فشل في إلغاء تفعيل المستخدم",
+      "deleteError": "فشل في حذف المستخدم",
+      "createSuccess": "تم إنشاء الحساب بنجاح",
+      "createError": "فشل في إنشاء الحساب"
+    },
+    "notAvailable": "غير متوفر",
+    "filters": {
+        "searchPlaceholder": "ابحث عن المستخدمين حسب الاسم، البريد الإلكتروني، الهاتف، الموقع، أو الشركة...",
+        "status": {
+          "placeholder": "الحالة",
+          "all": "كل الحالات",
+          "active": "نشط",
+          "inactive": "غير نشط"
+        },
+        "registration": {
+          "placeholder": "التسجيل",
+          "all": "كل التسجيلات",
+          "completed": "مكتمل",
+          "pending": "قيد الانتظار"
+        },
+        "gender": {
+          "placeholder": "الجنس",
+          "all": "كل الأجناس",
+          "male": "ذكر",
+          "female": "أنثى"
+        },
+        "userType": {
+          "placeholder": "نوع المستخدم",
+          "all": "جميع الأنواع",
+          "organizer": "منظم",
+          "member": "عضو"
+        }
+      }
+  },
+  "contacts": {
+    "title": "جهات الاتصال",
+    "description": "إدارة صندوق الوارد الخاص بك.",
+    "sidebar": {
+      "account": "الحساب",
+      "inbox": "صندوق الوارد",
+      "allInboxes": "جميع صناديق الوارد"
+    },
+    "search": {
+      "placeholder": "البحث في الرسائل، المواضيع، الأسماء أو البريد الإلكتروني..."
+    },
+    "filters": {
+      "start": "بداية",
+      "end": "نهاية",
+      "clear": "مسح عوامل تصفية التاريخ"
+    },
+    "messagesCount": "{{count}} رسالة",
+    "emptyState": {
+      "title": "لم يتم العثور على رسائل",
+      "noMessages": "لم يتم استلام أي رسائل اتصال حتى الآن.",
+      "noResults": "حاول تعديل البحث أو عوامل التصفية."
+    },
+    "unknownUser": "مستخدم غير معروف",
+    "noEmail": "لم يتم تقديم بريد إلكتروني",
+    "unknownDate": "تاريخ غير معروف",
+    "guestUser": "مستخدم ضيف",
+    "conversation": {
+      "title": "محادثة",
+      "replyTo": "الرد على"
+    },
+    "reply": {
+      "placeholder": "الرد على هذه الرسالة",
+      "subject": "الموضوع",
+      "sending": "جاري الإرسال...",
+      "send": "إرسال"
+    },
+    "actions": {
+      "deleteMessage": "حذف الرسالة",
+      "deleteConversation": "حذف المحادثة",
+      "cancel": "إلغاء",
+      "deleting": "جاري الحذف...",
+      "delete": "حذف"
+    },
+    "messages": {
+      "deleteSuccess": "تم حذف جهة الاتصال بنجاح",
+      "replySuccess": "تم إرسال الرد بنجاح"
+    },
+    "errors": {
+      "fetchFailed": "فشل في جلب جهات الاتصال",
+      "deleteFailed": "فشل في حذف جهة الاتصال",
+      "replyFailed": "فشل في إرسال الرد"
+    },
+    "deleteDialog": {
+      "title": "حذف جهة الاتصال",
+      "description": "هل أنت متأكد أنك تريد حذف رسالة جهة الاتصال {{subject}}؟ لا يمكن التراجع عن هذا الإجراء."
     }
   }
 }

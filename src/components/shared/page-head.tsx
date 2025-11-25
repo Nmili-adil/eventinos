@@ -4,9 +4,10 @@ interface PropsType {
   title: string;
   icon: LucideIcon;
   description: string;
+  total: number
 }
 
-const PageHead = ({ title, icon: Icon, description = "" }: PropsType) => {
+const PageHead = ({ title, icon: Icon, description = "", total=0 }: PropsType) => {
  
 
   return (
@@ -15,7 +16,13 @@ const PageHead = ({ title, icon: Icon, description = "" }: PropsType) => {
         <Icon className="w-6 h-6 text-gray-600" />
         <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
-      <p className="text-sm text-gray-500 italic underline">{description}</p>
+      <p className="text-sm text-gray-500 italic underline">{description} 
+        {/* {
+          total > 0 && (
+            <span className="font-semibold mx-2">{total + " " + title}</span>
+          )
+        } */}
+      </p>
     </div>
   );
 };

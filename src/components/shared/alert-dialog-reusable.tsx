@@ -1,4 +1,3 @@
-'use client'
 
 import {
   AlertDialog,
@@ -31,7 +30,7 @@ export function DeleteDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer cet événement ?</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className='flex flex-wrap max-w-full'>
             Cette action ne peut pas être annulée. L'événement{" "}
             {eventTitle && (
               <span className="font-semibold">"{eventTitle}"</span>
@@ -44,6 +43,7 @@ export function DeleteDialog({
             Annuler
           </AlertDialogCancel>
           <AlertDialogAction
+          className='bg-red-600 hover:bg-red-700'
             onClick={onConfirm}
             disabled={isLoading}
           >

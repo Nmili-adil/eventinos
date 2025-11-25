@@ -70,6 +70,8 @@ export const deleteEventApi = async (id: string) => {
 }
 
 export const updateEventStatusApi = async (id: string, status: string) => {
+  console.log(id);
+  
   try {
     const response = await api.put(`/events/${id}/status`, { status }, {
       headers: {

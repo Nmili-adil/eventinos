@@ -101,7 +101,7 @@ const MemberEditDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-2xl max-h-[90vh] border-slate-300">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {t('members.editDialog.title', 'Edit Member')}

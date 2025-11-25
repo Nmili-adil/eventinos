@@ -151,6 +151,38 @@
         "calendar": "Vue calendrier",
         "table": "Vue tableau",
         "maps": "Vue maps"
+      },
+      "statusChangeDialog": {
+        "title": "Changer le statut de l'événement",
+        "description": "Sélectionnez le nouveau statut pour cet événement.",
+        "eventLabel": "Événement :",
+        "statusLabel": "Statut",
+        "selectStatus": "Sélectionner le statut",
+        "currentStatus": "Statut actuel",
+        "newStatus": "Nouveau statut",
+        "buttons": {
+          "cancel": "Annuler",
+          "update": "Mettre à jour le statut",
+          "updating": "Mise à jour..."
+        },
+        "statusOptions": {
+          "pending": {
+            "label": "En attente",
+            "description": "L'événement est en attente d'approbation"
+          },
+          "accepted": {
+            "label": "Accepté",
+            "description": "L'événement a été approuvé"
+          },
+          "refused": {
+            "label": "Rejeté",
+            "description": "L'événement a été rejeté"
+          },
+          "closed": {
+            "label": "Fermé",
+            "description": "L'événement a été fermé"
+          }
+        }
       }
     },
   "eventForm": {
@@ -756,6 +788,159 @@
     },
     "common": {
       "notAvailable": "N/D"
+    }
+  },
+  "accounts": {
+      "title": "Comptes",
+      "description": "Gérer tous les utilisateurs",
+      "addAccount": "Ajouter un compte",
+      "totalUsers": "{count} utilisateurs au total",
+      "sort": {
+        "by": "Trier par :",
+        "name": "Nom",
+        "email": "Email",
+        "type": "Type",
+        "joinDate": "Date d'adhésion",
+        "status": "Statut"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif",
+        "all": "Tous les statuts"
+      },
+      "userTypes": {
+        "organizer": "Organisateur",
+        "member": "Membre",
+        "all": "Tous les types"
+      },
+      "registration": {
+        "completed": "Complété",
+        "pending": "En attente",
+        "all": "Toutes les inscriptions"
+      },
+      "actions": {
+        "viewProfile": "Voir le profil",
+        "activate": "Activer",
+        "deactivate": "Désactiver",
+        "delete": "Supprimer",
+        "retry": "Réessayer",
+        "clearFilters": "Effacer les filtres"
+      },
+      "fields": {
+        "email": "Email",
+        "phone": "Téléphone",
+        "location": "Localisation",
+        "company": "Entreprise",
+        "joined": "Rejoint",
+        "registration": "Inscription",
+        "gender": "Genre"
+      },
+      "emptyState": {
+        "title": "Aucun utilisateur trouvé",
+        "noResults": "Aucun utilisateur ne correspond à vos critères de recherche.",
+        "noUsers": "Aucun utilisateur n'a été ajouté pour le moment."
+      },
+      "deleteDialog": {
+        "title": "Supprimer l'utilisateur",
+        "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action ne peut pas être annulée.",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "deleting": "Suppression..."
+      },
+      "messages": {
+        "activateSuccess": "Utilisateur activé avec succès",
+        "deactivateSuccess": "Utilisateur désactivé avec succès",
+        "deleteSuccess": "Utilisateur supprimé avec succès",
+        "activateError": "Échec de l'activation de l'utilisateur",
+        "deactivateError": "Échec de la désactivation de l'utilisateur",
+        "deleteError": "Échec de la suppression de l'utilisateur",
+        "createSuccess": "Compte créé avec succès",
+        "createError": "Échec de la création du compte"
+      },
+      "notAvailable": "N/D",
+      "filters": {
+        "searchPlaceholder": "Rechercher des utilisateurs par nom, email, téléphone, localisation ou entreprise...",
+        "status": {
+          "placeholder": "Statut",
+          "all": "Tous les statuts",
+          "active": "Actif",
+          "inactive": "Inactif"
+        },
+        "registration": {
+          "placeholder": "Inscription",
+          "all": "Toutes les inscriptions",
+          "completed": "Complété",
+          "pending": "En attente"
+        },
+        "gender": {
+          "placeholder": "Genre",
+          "all": "Tous les genres",
+          "male": "Homme",
+          "female": "Femme"
+        },
+        "userType": {
+          "placeholder": "Type d'utilisateur",
+          "all": "Tous les types",
+          "organizer": "Organisateur",
+          "member": "Membre"
+        }
+      }
+    },
+    "contacts": {
+    "title": "Contacts",
+    "description": "Gérez votre boîte de réception.",
+    "sidebar": {
+      "account": "Compte",
+      "inbox": "Boîte de réception",
+      "allInboxes": "Toutes les boîtes"
+    },
+    "search": {
+      "placeholder": "Rechercher des messages, sujets, noms ou emails..."
+    },
+    "filters": {
+      "start": "Début",
+      "end": "Fin",
+      "clear": "Effacer les filtres de date"
+    },
+    "messagesCount": "{{count}} messages",
+    "emptyState": {
+      "title": "Aucun message trouvé",
+      "noMessages": "Aucun message de contact n'a été reçu pour le moment.",
+      "noResults": "Essayez d'ajuster votre recherche ou vos filtres."
+    },
+    "unknownUser": "Utilisateur inconnu",
+    "noEmail": "Aucun email fourni",
+    "unknownDate": "Date inconnue",
+    "guestUser": "Utilisateur invité",
+    "conversation": {
+      "title": "Conversation",
+      "replyTo": "Répondre à"
+    },
+    "reply": {
+      "placeholder": "Répondre à ce message",
+      "subject": "Sujet",
+      "sending": "Envoi en cours...",
+      "send": "Envoyer"
+    },
+    "actions": {
+      "deleteMessage": "Supprimer le message",
+      "deleteConversation": "Supprimer la conversation",
+      "cancel": "Annuler",
+      "deleting": "Suppression...",
+      "delete": "Supprimer"
+    },
+    "messages": {
+      "deleteSuccess": "Contact supprimé avec succès",
+      "replySuccess": "Réponse envoyée avec succès"
+    },
+    "errors": {
+      "fetchFailed": "Échec de la récupération des contacts",
+      "deleteFailed": "Échec de la suppression du contact",
+      "replyFailed": "Échec de l'envoi de la réponse"
+    },
+    "deleteDialog": {
+      "title": "Supprimer le contact",
+      "description": "Êtes-vous sûr de vouloir supprimer le message de contact {{subject}} ? Cette action ne peut pas être annulée."
     }
   }
 }

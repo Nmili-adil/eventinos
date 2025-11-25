@@ -53,18 +53,16 @@ import {
   Reply,
   ReplyAll,
   Forward,
+  ArrowLeft,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
-
-interface ConversationMessage {
-  id: string;
-  direction: 'incoming' | 'outgoing';
-  body: string;
-  timestamp: string;
-}
+import { useNavigate } from 'react-router-dom';
+import PageHead from '@/components/shared/page-head';
+import { useTranslation } from 'react-i18next';
 
 const ContactsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,11 +74,11 @@ const ContactsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [replyMessage, setReplyMessage] = useState('');
   const [conversationMap, setConversationMap] = useState<Record<string, ConversationMessage[]>>({});
-
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadContacts = async () => {
@@ -120,15 +118,15 @@ const ContactsPage: React.FC = () => {
         setConversationMap(initialConversations);
       } catch (err: any) {
         console.error('Error fetching contacts:', err);
-        setError(err?.response?.data?.message || 'Failed to fetch contacts');
-        toast.error('Failed to load contacts');
+        setError(err?.response?.data?.message || t('contacts.errors.fetchFailed', 'Failed to fetch contacts'));
+        toast.error(t('contacts.errors.fetchFailed', 'Failed to load contacts'));
       } finally {
         setLoading(false);
       }
     };
 
     loadContacts();
-  }, []);
+  }, [t]);
 
   const formatDate = (dateInput: any): Date | null => {
     try {
@@ -209,7 +207,7 @@ const ContactsPage: React.FC = () => {
     setActionLoading(contact._id);
     try {
       await deleteContactApi(contact._id);
-      toast.success('Contact deleted successfully');
+      toast.success(t('contacts.messages.deleteSuccess', 'Contact deleted successfully'));
       setDeleteDialogOpen(false);
       
       // Clear selection if deleting the currently selected contact
@@ -219,7 +217,7 @@ const ContactsPage: React.FC = () => {
       
       setContacts((prev) => prev.filter((c) => c._id !== contact._id));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to delete contact');
+      toast.error(error?.response?.data?.message || t('contacts.errors.deleteFailed', 'Failed to delete contact'));
     } finally {
       setActionLoading(null);
     }
@@ -237,6 +235,8 @@ const ContactsPage: React.FC = () => {
 
   const handleSelectContact = (contact: Contact) => {
     setSelectedContact(contact);
+    // Clear reply message when selecting a different contact
+    setReplyMessage('');
   };
 
   const handleSendReply = async () => {
@@ -259,9 +259,9 @@ const ContactsPage: React.FC = () => {
       }));
       
       setReplyMessage('');
-      toast.success('Reply sent successfully');
+      toast.success(t('contacts.messages.replySuccess', 'Reply sent successfully'));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to send reply');
+      toast.error(error?.response?.data?.message || t('contacts.errors.replyFailed', 'Failed to send reply'));
     } finally {
       setSendingReply(false);
     }
@@ -298,12 +298,29 @@ const ContactsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-muted/30 py-6">
-      <div className="mx-auto max-w-[1400px] bg-background border border-slate-300 rounded-2xl shadow-sm flex min-h-[700px] overflow-hidden">
+      <div className='flex items-start gap-4'>
+        <Button
+          variant={'outline'}
+          size={'icon'}
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className='w-4 h-4'/>
+        </Button>
+        <PageHead  
+          title={t('contacts.title', 'Contacts')}
+          description={t('contacts.description', 'Manage your inbox.')}
+          icon={MessageSquare}
+          total={0}
+        />
+      </div>
+      <div className="mx-auto max-w-full bg-background border border-slate-300 rounded-2xl shadow-sm flex min-h-[700px] overflow-hidden">
         {/* Sidebar with user info */}
         <aside className="w-60 border-r border-slate-300 bg-white/70 dark:bg-background p-6 flex flex-col justify-between">
           <div className="space-y-6">
             <div>
-              <p className="text-xs uppercase text-muted-foreground">Account</p>
+              <p className="text-xs uppercase text-muted-foreground">
+                {t('contacts.sidebar.account', 'Account')}
+              </p>
               <div className="mt-3 rounded-2xl border border-slate-500 bg-background p-3 flex items-center justify-between gap-2">
                 <div>
                   <p className="font-semibold leading-tight ">{user?.firstName} {user?.lastName}</p>
@@ -317,7 +334,7 @@ const ContactsPage: React.FC = () => {
                 className="w-full justify-start gap-3 font-semibold"
               >
                 <Mail className="h-4 w-4" />
-                Inbox
+                {t('contacts.sidebar.inbox', 'Inbox')}
                 <Badge variant="default" className='ml-auto'>
                   {filteredContacts.length}
                 </Badge>
@@ -333,10 +350,10 @@ const ContactsPage: React.FC = () => {
             <div className="border-b border-slate-300 px-6 py-5 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                  All Inboxes
+                  {t('contacts.sidebar.allInboxes', 'All Inboxes')}
                 </h3>
                 <Badge variant="outline" className="uppercase text-[10px]">
-                  {filteredContacts.length} messages
+                  {t('contacts.messagesCount', '{count} messages', { count: filteredContacts.length })}
                 </Badge>
               </div>
               
@@ -345,7 +362,7 @@ const ContactsPage: React.FC = () => {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search messages, subjects, names, or emails..."
+                    placeholder={t('contacts.search.placeholder', 'Search messages, subjects, names, or emails...')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9"
@@ -363,7 +380,7 @@ const ContactsPage: React.FC = () => {
                         )}
                       >
                         <CalendarIcon className="h-4 w-4" />
-                        {startDate ? format(startDate, "MMM dd") : "Start"}
+                        {startDate ? format(startDate, "MMM dd") : t('contacts.filters.start', 'Start')}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -388,7 +405,7 @@ const ContactsPage: React.FC = () => {
                         )}
                       >
                         <CalendarIcon className="h-4 w-4" />
-                        {endDate ? format(endDate, "MMM dd") : "End"}
+                        {endDate ? format(endDate, "MMM dd") : t('contacts.filters.end', 'End')}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -416,7 +433,7 @@ const ContactsPage: React.FC = () => {
                   onClick={clearDateFilters}
                 >
                   <X className="h-3.5 w-3.5" />
-                  Clear date filters
+                  {t('contacts.filters.clear', 'Clear date filters')}
                 </Button>
               )}
             </div>
@@ -427,11 +444,13 @@ const ContactsPage: React.FC = () => {
                 {filteredContacts.length === 0 && (
                   <div className="p-8 text-center text-muted-foreground">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="font-semibold text-foreground mb-2">No messages found</p>
+                    <p className="font-semibold text-foreground mb-2">
+                      {t('contacts.emptyState.title', 'No messages found')}
+                    </p>
                     <p className="text-sm">
                       {contacts.length === 0 
-                        ? 'No contact messages have been received yet.' 
-                        : 'Try adjusting your search or filters.'}
+                        ? t('contacts.emptyState.noMessages', 'No contact messages have been received yet.') 
+                        : t('contacts.emptyState.noResults', 'Try adjusting your search or filters.')}
                     </p>
                   </div>
                 )}
@@ -470,27 +489,25 @@ const ContactsPage: React.FC = () => {
                                 <p className="font-semibold text-foreground truncate">
                                   {contact.user?.firstName
                                     ? `${contact.user.firstName} ${contact.user.lastName ?? ''}`.trim()
-                                    : 'Unknown User'}
+                                    : t('contacts.unknownUser', 'Unknown User')}
                                 </p>
                                 <Badge variant="secondary" className="text-[10px]">
                                   {contact.subject}
                                 </Badge>
                               </div>
                               <p className="text-xs text-muted-foreground truncate">
-                                {contact.user?.email ?? 'No email provided'}
+                                {contact.user?.email ?? t('contacts.noEmail', 'No email provided')}
                               </p>
                             </div>
                           </div>
                           
-                          <p className="text-sm text-foreground mb-3  truncate word-wrap-break-word break-all max-w-[200px]">
-                            <span className="truncate">
-                              {contact.message}
-                            </span>
+                          <p className="text-sm text-foreground mb-3 line-clamp-2 break-words">
+                            {contact.message}
                           </p>
                           
                           <div className="flex items-center justify-between text-xs text-muted-foreground">
                             <span>
-                              {contactDate ? format(contactDate, 'PPP') : 'Unknown date'}
+                              {contactDate ? format(contactDate, 'PPP') : t('contacts.unknownDate', 'Unknown date')}
                             </span>
                             <span>
                               {contactDate ? formatDistanceToNow(contactDate, { addSuffix: true }) : ''}
@@ -515,7 +532,7 @@ const ContactsPage: React.FC = () => {
                                 disabled={actionLoading === contact._id}
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                Delete message
+                                {t('contacts.actions.deleteMessage', 'Delete message')}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -536,14 +553,14 @@ const ContactsPage: React.FC = () => {
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                      Conversation
+                      {t('contacts.conversation.title', 'Conversation')}
                     </p>
                     <h2 className="text-xl font-semibold text-foreground truncate">
                       {selectedContact.subject}
                     </h2>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="icon">
+                    {/* <Button variant="ghost" size="icon">
                       <Reply className="h-4 w-4" />
                     </Button>
                     <Button variant="ghost" size="icon">
@@ -551,7 +568,7 @@ const ContactsPage: React.FC = () => {
                     </Button>
                     <Button variant="ghost" size="icon">
                       <Forward className="h-4 w-4" />
-                    </Button>
+                    </Button> */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -565,7 +582,7 @@ const ContactsPage: React.FC = () => {
                           disabled={actionLoading === selectedContact._id}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
-                          Delete conversation
+                          {t('contacts.actions.deleteConversation', 'Delete conversation')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -590,7 +607,7 @@ const ContactsPage: React.FC = () => {
                         : selectedContact.subject}
                     </p>
                     <p className="text-xs">
-                      Reply-To: {selectedContact.user?.email ?? 'Guest user'}
+                      {t('contacts.conversation.replyTo', 'Reply-To')}: {selectedContact.user?.email ?? t('contacts.guestUser', 'Guest user')}
                     </p>
                   </div>
                   <span className="text-xs text-muted-foreground">
@@ -612,7 +629,7 @@ const ContactsPage: React.FC = () => {
                     >
                       <div
                         className={cn(
-                          "rounded-2xl px-5 py-3 text-sm shadow-sm",
+                          "rounded-2xl px-5 py-3 text-sm shadow-sm whitespace-pre-wrap break-words",
                           message.direction === 'outgoing'
                             ? 'bg-primary text-primary-foreground rounded-br-sm'
                             : 'bg-muted text-foreground rounded-bl-sm'
@@ -631,19 +648,18 @@ const ContactsPage: React.FC = () => {
               {/* Reply area */}
               <div className="border-t border-slate-300 px-6 py-4 space-y-3">
                 <Textarea
-                  placeholder="Reply to this message"
+                  placeholder={t('contacts.reply.placeholder', 'Reply to this message')}
                   value={replyMessage}
                   onChange={(e) => setReplyMessage(e.target.value)}
                   rows={3}
                   name="response"
-                  className="resize-none"
+                  className="resize-none w-full whitespace-pre-wrap break-words min-h-[80px]"
                 />
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
                   <div>
-                    Subject: {selectedContact.subject}
+                    {t('contacts.reply.subject', 'Subject')}: {selectedContact.subject}
                   </div>
                   <div className="flex items-center gap-3 justify-end">
-                    
                     <Button
                       onClick={handleSendReply}
                       disabled={!replyMessage.trim() || sendingReply}
@@ -651,12 +667,12 @@ const ContactsPage: React.FC = () => {
                       {sendingReply ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                          Sending...
+                          {t('contacts.reply.sending', 'Sending...')}
                         </>
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Send
+                          {t('contacts.reply.send', 'Send')}
                         </>
                       )}
                     </Button>
@@ -672,10 +688,13 @@ const ContactsPage: React.FC = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Contact</AlertDialogTitle>
-            <AlertDialogDescription className="text-sm flex  flex-wrap">
-              Are you sure you want to delete the contact message <span className="font-semibold">{selectedContact?.subject}</span>?
-              This action cannot be undone.
+            <AlertDialogTitle>
+              {t('contacts.deleteDialog.title', 'Delete Contact')}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm flex flex-wrap">
+              {t('contacts.deleteDialog.description', 'Are you sure you want to delete the contact message {subject}? This action cannot be undone.', {
+                subject: <span className="font-semibold">{selectedContact?.subject}</span>
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -686,7 +705,7 @@ const ContactsPage: React.FC = () => {
               }}
               disabled={actionLoading === selectedContact?._id}
             >
-              Cancel
+              {t('contacts.actions.cancel', 'Cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedContact && handleDelete(selectedContact)}
@@ -696,12 +715,12 @@ const ContactsPage: React.FC = () => {
               {actionLoading === selectedContact?._id ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Deleting...
+                  {t('contacts.actions.deleting', 'Deleting...')}
                 </>
               ) : (
                 <>
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
+                  {t('contacts.actions.delete', 'Delete')}
                 </>
               )}
             </AlertDialogAction>
@@ -711,5 +730,12 @@ const ContactsPage: React.FC = () => {
     </div>
   );
 };
+
+interface ConversationMessage {
+  id: string;
+  direction: 'incoming' | 'outgoing';
+  body: string;
+  timestamp: string;
+}
 
 export default ContactsPage;

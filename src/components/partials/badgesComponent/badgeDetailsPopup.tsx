@@ -61,7 +61,7 @@ const BadgeDetailsPopup = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-2xl max-h-[90vh] border-slate-300">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Award className="h-5 w-5 text-blue-500" />
@@ -131,7 +131,7 @@ const BadgeDetailsPopup = ({
                 </h4>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Image URL</label>
-                  <p className="text-gray-900 text-sm break-all">
+                  <p className="text-gray-900 text-sm break-all flex flex-wrap wrap-break-word truncate">
                     {badge.image || 'No image URL provided'}
                   </p>
                 </div>

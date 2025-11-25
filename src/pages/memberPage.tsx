@@ -224,6 +224,12 @@ export const MembersPage: React.FC = () => {
     );
   };
 
+  // Handle dropdown actions with event propagation stopped
+  const handleDropdownAction = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation();
+    action();
+  };
+
   // Loading state
   if (loading && (!members || members.length === 0)) {
     return (
@@ -337,7 +343,7 @@ export const MembersPage: React.FC = () => {
       {processedMembers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {processedMembers.map((member) => (
-            <Card key={member._id.$oid} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card key={member._id.$oid} className="overflow-hidden hover:shadow-lg cursor-pointer transition-shadow" onClick={() => handleViewDetails(member)}>
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-3 flex-1">
@@ -361,22 +367,31 @@ export const MembersPage: React.FC = () => {
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleViewDetails(member)}>
+                    <DropdownMenuContent align="end" className="z-50">
+                      <DropdownMenuItem 
+                        onClick={(e) => handleDropdownAction(e, () => handleViewDetails(member))}
+                      >
                         <Eye className="w-4 h-4 mr-2" />
                         {t('members.preview')}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleEdit(member)}>
+                      <DropdownMenuItem 
+                        onClick={(e) => handleDropdownAction(e, () => handleEdit(member))}
+                      >
                         <Edit className="w-4 h-4 mr-2" />
                         {t('members.edit')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
-                        onClick={() => handleToggleStatus(member)}
+                        onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
                         disabled={actionLoading === member._id.$oid}
                       >
                         {member.isActive ? (
@@ -393,7 +408,7 @@ export const MembersPage: React.FC = () => {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
-                        onClick={() => openDeleteDialog(member)}
+                        onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
                         className="text-destructive"
                         disabled={actionLoading === member._id.$oid}
                       >

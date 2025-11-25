@@ -345,6 +345,7 @@ const SettingsPage = () => {
           title={t('settings.title')}
           icon={SlidersHorizontal}
           description={t('settings.description')}
+          total={0}
         />
       </div>
 
@@ -356,7 +357,7 @@ const SettingsPage = () => {
               <CardTitle className="text-lg">{t('settings.navigation')}</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <nav className="space-y-1 p-2">
+              <nav className="space-y-1 p-2 flex flex-col">
                 <Button
                   variant={activeView === 'categories' ? 'default' : 'ghost'}
                   className="w-full justify-start"

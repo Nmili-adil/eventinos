@@ -74,3 +74,18 @@ export const createUserApi = async (data: any) => {
     throw error;
   }
 }
+
+export const updateAccoutStatusApi = async (memberId: string, isActive: boolean) => {
+  try {
+      const response = await api.put(`/users/${memberId}/status`, { isActive }, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getAuthToken()}`,
+          },
+      });
+      return response;
+  } catch (error) {
+      console.log(error)
+      throw error
+  }
+}

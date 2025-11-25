@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Calendar,
@@ -13,6 +13,9 @@ import {
   Twitter,
   Linkedin,
   ExternalLink,
+  Trash,
+  Edit,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +30,24 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import GoogleMap from "@/components/shared/googleMap";
+import { EVENT_EDIT_PAGE } from "@/constants/routerConstants";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface EventDetailsProps {
   event: any;
@@ -35,7 +56,23 @@ interface EventDetailsProps {
 const EventDetails = ({ event }: EventDetailsProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  // const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    eventId: string | null;
+    eventTitle?: string;
+  }>({
+    open: false,
+    eventId: null,
+    eventTitle: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // New states for modals
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
 
   // Safe data extraction functions
   const getOrganizerName = () => {
@@ -119,23 +156,6 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     }
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event.name,
-          text: event.description,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log("Error sharing:", error);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      // Add toast notification here
-    }
-  };
-
   // Safe data access with fallbacks
   const safeEvent = {
     name: event.name || "Untitled Event",
@@ -159,6 +179,45 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     program: event.program || "No program details available.",
     isUpComingEvent: event.isUpComingEvent || false,
   };
+
+  const handleEdit = () => {
+    navigate(EVENT_EDIT_PAGE(event._id));
+  };
+
+  const handleDeleteClick = () => {
+    setOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setIsLoading(true);
+    // Add your delete logic here
+    console.log("Deleting event:", event._id);
+    // After deletion, you might want to navigate away or show a message
+    setIsLoading(false);
+    setOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setOpen(false);
+  };
+
+  // Image click handler
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
+  };
+
+  // Speaker click handler
+  const handleSpeakerClick = (speaker: any) => {
+    setSelectedSpeaker(speaker);
+  };
+
+  // Close modal handlers
+  const closeImageModal = () => setSelectedImage(null);
+  const closeSpeakerModal = () => setSelectedSpeaker(null);
+
+  useEffect(() => {
+    console.log("Delete dialog open:", open);
+  }, [open]);
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -197,18 +256,12 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setIsBookmarked(!isBookmarked)}
-                >
-                  <Bookmark
-                    className={`h-4 w-4 ${isBookmarked ? "fill-current" : ""}`}
-                  />
+                <Button variant="outline" size="icon" onClick={handleEdit}>
+                  <Edit className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{isBookmarked ? "Remove bookmark" : "Bookmark event"}</p>
+                <p>Edit event</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -216,17 +269,19 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" onClick={handleShare}>
-                  <Share2 className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleDeleteClick}
+                >
+                  <Trash className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Share event</p>
+                <p>Delete this Event</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          <Button>Register Now</Button>
         </div>
       </div>
 
@@ -252,7 +307,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 <Badge className={getTypeColor(safeEvent.type)}>
                   {safeEvent.type.replace("FACETOFACE", "In-Person")}
                 </Badge>
-                <Badge variant="default" >{safeEvent.visibility}</Badge>
+                <Badge variant="default">{safeEvent.visibility}</Badge>
               </div>
             </div>
           </Card>
@@ -309,7 +364,6 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   </div>
 
                   {/* Location */}
-
                   <GoogleMap
                     location={safeEvent.location.location}
                     name={safeEvent.location.name}
@@ -330,7 +384,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                           <Globe className="h-4 w-4 mr-2" />
                           Social Links
                         </h4>
-                        <div className="flex space-x-4">
+                        <div className="flex flex-wrap gap-2">
                           {safeEvent.socialNetworks.website && (
                             <Button variant="outline" size="sm" asChild>
                               <a
@@ -388,9 +442,13 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               {/* Speakers Tab */}
               <TabsContent value="speakers" className="p-6">
                 {safeEvent.speakers.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {safeEvent.speakers.map((speaker: any) => (
-                      <Card key={speaker._id} className="text-center">
+                      <Card 
+                        key={speaker._id} 
+                        className="text-center cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105"
+                        onClick={() => handleSpeakerClick(speaker)}
+                      >
                         <CardContent className="pt-6">
                           <Avatar className="h-20 w-20 mx-auto mb-4">
                             <AvatarImage
@@ -407,9 +465,24 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                           <h4 className="font-semibold">
                             {speaker.fullName || "Speaker"}
                           </h4>
+                          {speaker.position && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {speaker.position}
+                            </p>
+                          )}
+                          {speaker.company && (
+                            <p className="text-sm text-muted-foreground">
+                              {speaker.company}
+                            </p>
+                          )}
                           <div className="flex justify-center space-x-2 mt-3">
                             {speaker.socialNetworks?.linkedin && (
-                              <Button variant="ghost" size="icon" asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                asChild
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <a
                                   href={speaker.socialNetworks.linkedin}
                                   target="_blank"
@@ -420,7 +493,12 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                               </Button>
                             )}
                             {speaker.socialNetworks?.twitter && (
-                              <Button variant="ghost" size="icon" asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                asChild
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <a
                                   href={speaker.socialNetworks.twitter}
                                   target="_blank"
@@ -431,7 +509,12 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                               </Button>
                             )}
                             {speaker.socialNetworks?.website && (
-                              <Button variant="ghost" size="icon" asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                asChild
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <a
                                   href={speaker.socialNetworks.website}
                                   target="_blank"
@@ -455,26 +538,30 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
               {/* Program Tab */}
               <TabsContent value="program" className="p-6">
-                <div className="prose max-w-none">
-                  <div
-                    dangerouslySetInnerHTML={{ __html: safeEvent.program }}
-                  />
+                <div className="bg-muted/50 rounded-lg p-6">
+                  <div className="w-full">
+                    <p className="text-sm flex w-full h-[100px] wrap-break-word flex-wrap line-clamp-3">
+                    {safeEvent.program || "No program details available."}
+                    </p>
+                   
+                  </div>
                 </div>
               </TabsContent>
 
               {/* Gallery Tab */}
               <TabsContent value="gallery" className="p-6">
                 {safeEvent.gallery.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {safeEvent.gallery.map((image: string, index: number) => (
                       <div
                         key={index}
-                        className="aspect-square overflow-hidden rounded-lg"
+                        className="aspect-square overflow-hidden rounded-lg cursor-pointer group"
+                        onClick={() => handleImageClick(image)}
                       >
                         <img
                           src={image}
                           alt={`Event gallery ${index + 1}`}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           onError={(e) => {
                             e.currentTarget.src =
                               "https://via.placeholder.com/300x300?text=Image+Not+Found";
@@ -495,26 +582,6 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Event Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Event Registration</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button className="w-full bg-linear-to-r from-purple-600 to-blue-600" size="lg">
-                Register Now
-              </Button>
-              <Button variant="outline" className="w-full">
-                Add to Calendar
-              </Button>
-              <div className="text-sm text-muted-foreground text-center">
-                {safeEvent.isUpComingEvent
-                  ? "Registration open"
-                  : "Registration closed"}
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Event Info */}
           <Card>
             <CardHeader>
@@ -636,6 +703,148 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete this event?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="flex flex-wrap max-w-full">
+              This action cannot be undone. The event{" "}
+              <span className="font-semibold">"{safeEvent.name}"</span> will be
+              permanently deleted from your organization.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelDelete}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              onClick={handleConfirmDelete}
+              disabled={isLoading}
+            >
+              {isLoading ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Image Preview Modal */}
+      <Dialog open={!!selectedImage} onOpenChange={closeImageModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-3 bg-transparent border-none backdrop-blur-xl">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute -top-2 -right-2 z-10 h-8 w-8 rounded-full bg-background/80 backdrop-blur-md"
+              onClick={closeImageModal}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Event gallery preview"
+                className="w-full h-auto max-h-[80vh] object-cover rounded-lg"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    "https://via.placeholder.com/800x600?text=Image+Not+Found";
+                }}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Speaker Detail Modal */}
+      <Dialog open={!!selectedSpeaker} onOpenChange={closeSpeakerModal}>
+        <DialogContent className="max-w-2xl border-slate-300">
+          <DialogHeader>
+            <DialogTitle>Speaker Details</DialogTitle>
+          </DialogHeader>
+          {selectedSpeaker && (
+            <div className="flex flex-col sm:flex-row gap-6 items-start">
+              <Avatar className="h-24 w-24 sm:h-32 sm:w-32">
+                <AvatarImage
+                  src={selectedSpeaker.picture}
+                  alt={selectedSpeaker.fullName}
+                />
+                <AvatarFallback className="text-lg">
+                  {selectedSpeaker.fullName
+                    ?.split(" ")
+                    .map((n: string) => n[0])
+                    .join("") || "SP"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h3 className="text-xl font-semibold">
+                    {selectedSpeaker.fullName || "Speaker"}
+                  </h3>
+                  {selectedSpeaker.position && (
+                    <p className="text-muted-foreground font-medium">
+                      {selectedSpeaker.position}
+                    </p>
+                  )}
+                  {selectedSpeaker.company && (
+                    <p className="text-muted-foreground">
+                      {selectedSpeaker.company}
+                    </p>
+                  )}
+                </div>
+                
+                {selectedSpeaker.bio && (
+                  <div>
+                    <h4 className="font-semibold mb-2">About</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {selectedSpeaker.bio}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex space-x-3 pt-2">
+                  {selectedSpeaker.socialNetworks?.linkedin && (
+                    <Button variant="outline" size="icon" asChild>
+                      <a
+                        href={selectedSpeaker.socialNetworks.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Linkedin className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                  {selectedSpeaker.socialNetworks?.twitter && (
+                    <Button variant="outline" size="icon" asChild>
+                      <a
+                        href={selectedSpeaker.socialNetworks.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Twitter className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                  {selectedSpeaker.socialNetworks?.website && (
+                    <Button variant="outline" size="icon" asChild>
+                      <a
+                        href={selectedSpeaker.socialNetworks.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

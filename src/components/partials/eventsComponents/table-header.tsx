@@ -31,7 +31,7 @@ export function TableHeader({ sortField, sortDirection, onSort }: TableHeaderPro
 
   return (
     <UITableHeader>
-      <TableRow>
+      <TableRow className='border-slate-500 bg-slate-200 '>
         {headers.map((header) => (
           <TableHead 
             key={header.key}

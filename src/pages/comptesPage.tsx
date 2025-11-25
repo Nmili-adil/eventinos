@@ -1,12 +1,17 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '@/store/app/rootReducer';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store/app/rootReducer";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 // Shadcn Components
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,18 +21,18 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+} from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 // Icons
 import {
@@ -47,40 +52,52 @@ import {
   Briefcase,
   UserCog,
   Plus,
-} from 'lucide-react';
-import { 
-  fetchUsersRequest
-} from '@/store/features/users/users.actions';
-import type { AppDispatch } from '@/store/app/store';
-import type { User } from '@/types/usersType';
-import PageHead from '@/components/shared/page-head';
-import { UsersFilters } from '@/components/partials/usersComponents/UsersFilters';
-import { filterUsers, sortUsers, type UsersFilters as UsersFiltersType, type UserSortField, type UserSortDirection } from '@/lib/users-utils';
-import { PROFILE_PAGE } from '@/constants/routerConstants';
-import { formatDate } from '@/lib/helperFunctions';
-import AddAccountDialog from '@/components/partials/usersComponents/AddAccountDialog';
-import { MembersPagination } from '@/components/partials/membersComponents/MembersPagination';
-import { createUserApi } from '@/api/usersApi';
+} from "lucide-react";
+import { fetchUsersRequest } from "@/store/features/users/users.actions";
+import type { AppDispatch } from "@/store/app/store";
+import type { User } from "@/types/usersType";
+import PageHead from "@/components/shared/page-head";
+import { UsersFilters } from "@/components/partials/usersComponents/UsersFilters";
+import {
+  filterUsers,
+  sortUsers,
+  type UsersFilters as UsersFiltersType,
+  type UserSortField,
+  type UserSortDirection,
+} from "@/lib/users-utils";
+import { PROFILE_PAGE } from "@/constants/routerConstants";
+import { formatDate } from "@/lib/helperFunctions";
+import AddAccountDialog from "@/components/partials/usersComponents/AddAccountDialog";
+import { MembersPagination } from "@/components/partials/membersComponents/MembersPagination";
+import { createUserApi, updateAccoutStatusApi } from "@/api/usersApi";
+import { useTranslation } from "react-i18next";
 
 export const ComptesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { users, isLoading: loading, error, usersCount, pagination } = useSelector((state: RootState) => state.users) || {};
-  
+  const { t } = useTranslation();
+  const {
+    users,
+    isLoading: loading,
+    error,
+    usersCount,
+    pagination,
+  } = useSelector((state: RootState) => state.users) || {};
+
   const [filters, setFilters] = useState<UsersFiltersType>({
-    search: '',
-    status: 'all',
-    registrationStatus: 'all',
-    gender: 'all',
-    userType: 'all',
+    search: "",
+    status: "all",
+    registrationStatus: "all",
+    gender: "all",
+    userType: "all",
   });
-  
+
   const [sort, setSort] = useState<{
     field: UserSortField;
     direction: UserSortDirection;
   }>({
-    field: 'createdAt',
-    direction: 'desc',
+    field: "createdAt",
+    direction: "desc",
   });
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -90,15 +107,16 @@ export const ComptesPage: React.FC = () => {
   const [createLoading, setCreateLoading] = useState(false);
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [role, setRole] = useState<'all' | 'organizer' | 'member'>('all');
+  const [role, setRole] = useState<"all" | "organizer" | "member">("all");
+
   // Sync role filter with userType select
   useEffect(() => {
-    const mappedRole: 'all' | 'organizer' | 'member' =
-      filters.userType === 'Organizer'
-        ? 'organizer'
-        : filters.userType === 'Member'
-          ? 'member'
-          : 'all';
+    const mappedRole: "all" | "organizer" | "member" =
+      filters.userType === "Organizer"
+        ? "organizer"
+        : filters.userType === "Member"
+        ? "member"
+        : "all";
 
     setRole((prev) => {
       if (prev !== mappedRole) {
@@ -115,7 +133,11 @@ export const ComptesPage: React.FC = () => {
   }, [dispatch, currentPage, role]);
 
   useEffect(() => {
-    if (pagination && pagination.totalPages > 0 && currentPage > pagination.totalPages) {
+    if (
+      pagination &&
+      pagination.totalPages > 0 &&
+      currentPage > pagination.totalPages
+    ) {
       setCurrentPage(pagination.totalPages);
     }
   }, [pagination, currentPage]);
@@ -127,10 +149,10 @@ export const ComptesPage: React.FC = () => {
     return sorted;
   }, [users, filters, sort.field, sort.direction]);
 
-  
-
   const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
+    return `${firstName?.charAt(0) || ""}${
+      lastName?.charAt(0) || ""
+    }`.toUpperCase();
   };
 
   const handleViewProfile = (user: User) => {
@@ -138,13 +160,40 @@ export const ComptesPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (user: User) => {
+    const accountId = user._id.toString();
+    const accountStatus = user.isActive
+ 
+    
     setActionLoading(user._id?.toString());
     try {
-      // TODO: Implement toggle status API call
-      toast.success(`User ${!user.isActive ? 'activated' : 'deactivated'} successfully`);
+     const response = await updateAccoutStatusApi(accountId,!accountStatus)
+     if (response.status === 200) {
+      toast.success(
+        t(
+          `accounts.messages.${
+            !user.isActive ? "activateSuccess" : "deactivateSuccess"
+          }`,
+          `User ${!user.isActive ? "activated" : "deactivated"} successfully`
+        )
+      );
       dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
+     } else {
+      toast.error(
+        t(
+          `accounts.messages.${
+            !user.isActive ? "activateError" : "deactivateError"
+          }`,
+          `User ${!user.isActive ? "activated" : "deactivated"} faild`
+        )
+      )
+     }
+     
+      
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to update user status');
+      toast.error(
+        error?.message ||
+          t("accounts.messages.activateError", "Failed to update user status")
+      );
     } finally {
       setActionLoading(null);
     }
@@ -154,12 +203,17 @@ export const ComptesPage: React.FC = () => {
     setActionLoading(user._id?.toString());
     try {
       // TODO: Implement delete API call
-      toast.success('User deleted successfully');
+      toast.success(
+        t("accounts.messages.deleteSuccess", "User deleted successfully")
+      );
       setDeleteDialogOpen(false);
       setSelectedUser(null);
       dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to delete user');
+      toast.error(
+        error?.message ||
+          t("accounts.messages.deleteError", "Failed to delete user")
+      );
     } finally {
       setActionLoading(null);
     }
@@ -171,9 +225,10 @@ export const ComptesPage: React.FC = () => {
   };
 
   const handleSort = (field: UserSortField) => {
-    setSort(prev => ({
+    setSort((prev) => ({
       field,
-      direction: prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc',
+      direction:
+        prev.field === field && prev.direction === "asc" ? "desc" : "asc",
     }));
   };
 
@@ -181,7 +236,7 @@ export const ComptesPage: React.FC = () => {
     if (sort.field !== field) {
       return <ArrowUpDown className="w-4 h-4" />;
     }
-    return sort.direction === 'asc' ? (
+    return sort.direction === "asc" ? (
       <ArrowUp className="w-4 h-4" />
     ) : (
       <ArrowDown className="w-4 h-4" />
@@ -193,21 +248,35 @@ export const ComptesPage: React.FC = () => {
     try {
       const response = await createUserApi(data);
       if (response?.status === 200 || response?.status === 201) {
-        toast.success('Account created successfully');
+        toast.success(
+          t("accounts.messages.createSuccess", "Account created successfully")
+        );
         setAddAccountDialogOpen(false);
         setCurrentPage(1);
         dispatch(fetchUsersRequest(1, PAGE_SIZE, role));
       } else {
-        toast.error(response?.data?.message || 'Failed to create account');
+        toast.error(
+          response?.data?.message ||
+            t("accounts.messages.createError", "Failed to create account")
+        );
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || error?.message || 'Failed to create account');
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          t("accounts.messages.createError", "Failed to create account")
+      );
       throw error;
     } finally {
       setCreateLoading(false);
     }
   };
 
+  // Handle dropdown actions with event propagation stopped
+  const handleDropdownAction = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation();
+    action();
+  };
 
   // Loading state
   if (loading && (!users || users.length === 0)) {
@@ -219,7 +288,7 @@ export const ComptesPage: React.FC = () => {
             <Skeleton className="h-4 w-64" />
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, index) => (
             <Card key={index} className="overflow-hidden">
@@ -261,14 +330,15 @@ export const ComptesPage: React.FC = () => {
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHead 
-          title='Comptes' 
-          icon={UserCog} 
-          description={`Manage all users (${totalUsers} total users)`}
+        <PageHead
+          title={t("accounts.title", "Accounts")}
+          icon={UserCog}
+          description={t("accounts.description")}
+          total={totalUsers}
         />
         <Button onClick={() => setAddAccountDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          Add Account
+          {t("accounts.addAccount", "Add Account")}
         </Button>
       </div>
 
@@ -279,47 +349,50 @@ export const ComptesPage: React.FC = () => {
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <span className="text-sm font-medium text-muted-foreground">Sort by:</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              {t("accounts.sort.by", "Sort by:")}
+            </span>
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleSort('firstName')}
+                onClick={() => handleSort("firstName")}
                 className="gap-2"
               >
-                Name {getSortIcon('firstName')}
+                {t("accounts.sort.name", "Name")} {getSortIcon("firstName")}
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleSort('email')}
+                onClick={() => handleSort("email")}
                 className="gap-2"
               >
-                Email {getSortIcon('email')}
+                {t("accounts.sort.email", "Email")} {getSortIcon("email")}
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleSort('user')}
+                onClick={() => handleSort("user")}
                 className="gap-2"
               >
-                Type {getSortIcon('user')}
+                {t("accounts.sort.type", "Type")} {getSortIcon("user")}
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleSort('createdAt')}
+                onClick={() => handleSort("createdAt")}
                 className="gap-2"
               >
-                Join Date {getSortIcon('createdAt')}
+                {t("accounts.sort.joinDate", "Join Date")}{" "}
+                {getSortIcon("createdAt")}
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleSort('isActive')}
+                onClick={() => handleSort("isActive")}
                 className="gap-2"
               >
-                Status {getSortIcon('isActive')}
+                {t("accounts.sort.status", "Status")} {getSortIcon("isActive")}
               </Button>
             </div>
           </div>
@@ -331,8 +404,12 @@ export const ComptesPage: React.FC = () => {
         <Card>
           <CardContent className="pt-6 text-center">
             <div className="text-destructive mb-2">{error}</div>
-            <Button onClick={() => dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role))}>
-              Retry
+            <Button
+              onClick={() =>
+                dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role))
+              }
+            >
+              {t("accounts.actions.retry", "Retry")}
             </Button>
           </CardContent>
         </Card>
@@ -342,12 +419,19 @@ export const ComptesPage: React.FC = () => {
       {processedUsers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {processedUsers.map((user) => (
-            <Card key={user._id.$oid} className="overflow-hidden hover:shadow-lg transition-shadow">
+            <Card
+              key={user._id.$oid}
+              onClick={() => handleViewProfile(user)}
+              className="overflow-hidden hover:shadow-lg transition-shadow justify-between cursor-pointer"
+            >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-3 flex-1">
                     <Avatar className="w-12 h-12">
-                      <AvatarImage src={user.picture} alt={`${user.firstName} ${user.lastName}`} />
+                      <AvatarImage
+                        src={user.picture}
+                        alt={`${user.firstName} ${user.lastName}`}
+                      />
                       <AvatarFallback className="text-sm">
                         {getInitials(user.firstName, user.lastName)}
                       </AvatarFallback>
@@ -357,14 +441,19 @@ export const ComptesPage: React.FC = () => {
                         {user.firstName} {user.lastName}
                       </h3>
                       <div className="flex gap-1 mt-1 flex-wrap">
-                        <Badge 
+                        <Badge
                           variant={user.isActive ? "default" : "secondary"}
                           className="text-xs"
                         >
-                          {user.isActive ? 'Active' : 'Inactive'}
+                          {user.isActive
+                            ? t("accounts.status.active", "Active")
+                            : t("accounts.status.inactive", "Inactive")}
                         </Badge>
-                        <Badge 
-                          variant={user.user === 'Organizer' ? "default" : "outline"}
+                        <Badge
+                          variant={
+                            user.user === "Organizer" ? "default" :
+                            user.user === "Member" ? 'outline' : 'secondary'
+                          }
                           className="text-xs"
                         >
                           {user.user}
@@ -372,60 +461,71 @@ export const ComptesPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleViewProfile(user)}>
+                    <DropdownMenuContent align="end" className="z-50">
+                      <DropdownMenuItem 
+                        onClick={(e) => handleDropdownAction(e, () => handleViewProfile(user))}
+                      >
                         <Eye className="w-4 h-4 mr-2" />
-                        View Profile
+                        {t("accounts.actions.viewProfile", "View Profile")}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={() => handleToggleStatus(user)}
+                      <DropdownMenuItem
+                        onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(user))}
                         disabled={actionLoading === user._id?.toString()}
                       >
                         {user.isActive ? (
                           <>
                             <UserX className="w-4 h-4 mr-2" />
-                            Deactivate
+                            {t("accounts.actions.deactivate", "Deactivate")}
                           </>
                         ) : (
                           <>
                             <UserCheck className="w-4 h-4 mr-2" />
-                            Activate
+                            {t("accounts.actions.activate", "Activate")}
                           </>
                         )}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={() => openDeleteDialog(user)}
+                      <DropdownMenuItem
+                        onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(user))}
                         className="text-destructive"
                         disabled={actionLoading === user._id?.toString()}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
+                        {t("accounts.actions.delete", "Delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
               </CardHeader>
 
-              <CardContent className="pb-3">
+              <CardContent className="pb-3 flex-1">
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm">
                     <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground truncate">{user.email || 'N/A'}</span>
+                    <span className="text-muted-foreground truncate">
+                      {user.email || t("accounts.notAvailable", "N/A")}
+                    </span>
                   </div>
-                  
+
                   {user.phoneNumber && (
                     <div className="flex items-center space-x-2 text-sm">
                       <Phone className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{user.phoneNumber}</span>
+                      <span className="text-muted-foreground">
+                        {user.phoneNumber}
+                      </span>
                     </div>
                   )}
 
@@ -433,7 +533,7 @@ export const ComptesPage: React.FC = () => {
                     <div className="flex items-center space-x-2 text-sm">
                       <MapPin className="w-4 h-4 text-muted-foreground" />
                       <span className="text-muted-foreground">
-                        {[user.city, user.country].filter(Boolean).join(', ')}
+                        {[user.city, user.country].filter(Boolean).join(", ")}
                       </span>
                     </div>
                   )}
@@ -441,27 +541,32 @@ export const ComptesPage: React.FC = () => {
                   {user.company?.name && (
                     <div className="flex items-center space-x-2 text-sm">
                       <Briefcase className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground truncate">{user.company.name}</span>
+                      <span className="text-muted-foreground truncate">
+                        {user.company.name}
+                      </span>
                     </div>
                   )}
 
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
-                      Joined {formatDate(user.createdAt)}
+                      {t("accounts.fields.joined", "Joined")}{" "}
+                      {formatDate(user.createdAt)}
                     </span>
                   </div>
                 </div>
-
-                <Separator className="my-3" />
-
-                <div className="flex justify-between items-center text-xs text-muted-foreground">
-                  <span>Registration {user.registrationCompleted ? 'Completed' : 'Pending'}</span>
-                  {user.gender && (
-                    <span>{user.gender}</span>
-                  )}
-                </div>
               </CardContent>
+              <CardFooter>
+                <div className="flex w-full justify-between items-center text-xs text-muted-foreground">
+                  <span>
+                    {t("accounts.fields.registration", "Registration")}{" "}
+                    {user.registrationCompleted
+                      ? t("accounts.registration.completed", "Completed")
+                      : t("accounts.registration.pending", "Pending")}
+                  </span>
+                  {user.gender && <span>{user.gender}</span>}
+                </div>
+              </CardFooter>
             </Card>
           ))}
         </div>
@@ -470,24 +575,42 @@ export const ComptesPage: React.FC = () => {
         <Card>
           <CardContent className="pt-6 text-center">
             <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="font-semibold">No Users Found</h3>
+            <h3 className="font-semibold">
+              {t("accounts.emptyState.title", "No Users Found")}
+            </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all' || filters.userType !== 'all'
-                ? 'No users match your search criteria.' 
-                : 'No users have been added yet.'}
+              {filters.search ||
+              filters.status !== "all" ||
+              filters.registrationStatus !== "all" ||
+              filters.gender !== "all" ||
+              filters.userType !== "all"
+                ? t(
+                    "accounts.emptyState.noResults",
+                    "No users match your search criteria."
+                  )
+                : t(
+                    "accounts.emptyState.noUsers",
+                    "No users have been added yet."
+                  )}
             </p>
-            {(filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all' || filters.userType !== 'all') && (
-              <Button 
-                variant="outline" 
-                onClick={() => setFilters({
-                  search: '',
-                  status: 'all',
-                  registrationStatus: 'all',
-                  gender: 'all',
-                  userType: 'all',
-                })}
+            {(filters.search ||
+              filters.status !== "all" ||
+              filters.registrationStatus !== "all" ||
+              filters.gender !== "all" ||
+              filters.userType !== "all") && (
+              <Button
+                variant="outline"
+                onClick={() =>
+                  setFilters({
+                    search: "",
+                    status: "all",
+                    registrationStatus: "all",
+                    gender: "all",
+                    userType: "all",
+                  })
+                }
               >
-                Clear Filters
+                {t("accounts.actions.clearFilters", "Clear Filters")}
               </Button>
             )}
           </CardContent>
@@ -504,21 +627,26 @@ export const ComptesPage: React.FC = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("accounts.deleteDialog.title", "Delete User")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete {selectedUser?.firstName} {selectedUser?.lastName}? 
-              This action cannot be undone.
+              {t(
+                "accounts.deleteDialog.description",
+                "Are you sure you want to delete {name}? This action cannot be undone.",
+                { name: `${selectedUser?.firstName} ${selectedUser?.lastName}` }
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={() => {
                 setDeleteDialogOpen(false);
                 setSelectedUser(null);
               }}
               disabled={actionLoading === selectedUser?._id?.toString()}
             >
-              Cancel
+              {t("accounts.deleteDialog.cancel", "Cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedUser && handleDelete(selectedUser)}
@@ -528,12 +656,12 @@ export const ComptesPage: React.FC = () => {
               {actionLoading === selectedUser?._id?.toString() ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Deleting...
+                  {t("accounts.deleteDialog.deleting", "Deleting...")}
                 </>
               ) : (
                 <>
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
+                  {t("accounts.deleteDialog.delete", "Delete")}
                 </>
               )}
             </AlertDialogAction>
@@ -548,10 +676,8 @@ export const ComptesPage: React.FC = () => {
         onSave={handleCreateAccount}
         isLoading={createLoading}
       />
-
     </div>
   );
 };
 
 export default ComptesPage;
-

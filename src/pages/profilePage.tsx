@@ -16,10 +16,10 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Icons
-import { User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, Link as LinkIcon, Plus } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, Link as LinkIcon, Plus, ArrowLeft } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchUserByIdRequest } from '@/store/features/users/users.actions';
 import type { AppDispatch } from '@/store/app/store';
 import LoadingProfileInfo from '@/components/profileComponents/loadingProfile-info';
@@ -83,6 +83,7 @@ export const ProfilePage: React.FC = () => {
   const { rights, loading: rightsLoading } = useSelector((state: RootState) => state.rights);
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
 
   // Safe date formatting function
   const formatDate = (dateInput: any): string => {
@@ -345,7 +346,16 @@ export const ProfilePage: React.FC = () => {
           title={t('profilePage.title')}
           description={t('profilePage.description')}
           icon={User}
+          total={0}
         />
+        <div className='flex items-center gap-3'>
+    <Button
+      variant={"outline"}
+      size={'icon'}
+      onClick={() => navigate(-1)}
+    >
+      <ArrowLeft className='w-4 h-4'/>
+    </Button>
         <Button
           variant={isEditing ? "outline" : "default"}
           onClick={() => setIsEditing(!isEditing)}
@@ -354,6 +364,7 @@ export const ProfilePage: React.FC = () => {
           <Edit className="w-4 h-4 mr-2" />
           {isEditing ? t('profilePage.buttons.cancelEdit') : t('profilePage.buttons.editProfile')}
         </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="personal" className="space-y-6">
