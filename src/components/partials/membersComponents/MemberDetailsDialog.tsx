@@ -1,15 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
+import React, { useEffect, useState } from "react"
 import {
   User,
   Mail,
@@ -21,11 +10,17 @@ import {
   Edit,
   Trash2,
   Cake,
-  Globe,
   Shield,
+  Users,
+  X,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
+  Clock
 } from "lucide-react"
 import type { Member } from "@/types/membersType"
 import { useTranslation } from "react-i18next"
+import { fetchMemberParticipationsApi } from "@/api/guestsApi"
 
 interface MemberDetailsDialogProps {
   member: Member | null
@@ -33,6 +28,25 @@ interface MemberDetailsDialogProps {
   onClose: () => void
   onEdit?: (member: Member) => void
   onDelete?: (member: Member) => void
+}
+
+// Enhanced safe render helper
+const safeRender = (value: any, fallback: string = 'Not available'): string => {
+  if (value === null || value === undefined) return fallback
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return String(value)
+  }
+  if (typeof value === 'object') {
+    if (React.isValidElement(value)) return fallback
+    if (typeof value.toString === 'function' && value.toString() !== '[object Object]') {
+      return value.toString()
+    }
+    if (value.city || value.country || value.name) {
+      return [value.city, value.country, value.name].filter(Boolean).join(', ')
+    }
+    return fallback
+  }
+  return fallback
 }
 
 const MemberDetailsDialog = ({
@@ -43,25 +57,46 @@ const MemberDetailsDialog = ({
   onDelete,
 }: MemberDetailsDialogProps) => {
   const { t } = useTranslation()
+  const [memberEvents, setMemberEvents] = useState<any[]>([])
+  const [eventsLoading, setEventsLoading] = useState(false)
+  const [eventsError, setEventsError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'activity'>('overview')
 
-  if (!member) return null
+  // Close dialog on Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen, onClose])
 
   const formatDate = (dateInput: any): string => {
     try {
-      if (!dateInput) return t('members.detailsDialog.notAvailable', 'N/A')
+      if (!dateInput) return t('members.detailsDialog.notAvailable', 'Not available')
       
       let timestamp: number
       
       if (typeof dateInput === 'string') {
-        timestamp = parseInt(dateInput)
+        if (/^\d+$/.test(dateInput)) {
+          timestamp = parseInt(dateInput, 10)
+        } else {
+          const parsed = Date.parse(dateInput)
+          if (Number.isNaN(parsed)) return t('members.detailsDialog.notAvailable', 'Not available')
+          timestamp = parsed
+        }
       } else if (dateInput.$date && dateInput.$date.$numberLong) {
         timestamp = parseInt(dateInput.$date.$numberLong)
       } else if (dateInput.$numberLong) {
         timestamp = parseInt(dateInput.$numberLong)
+      } else if (dateInput instanceof Date) {
+        timestamp = dateInput.getTime()
       } else if (typeof dateInput === 'number') {
         timestamp = dateInput
       } else {
-        return t('members.detailsDialog.notAvailable', 'N/A')
+        return t('members.detailsDialog.notAvailable', 'Not available')
       }
       
       return new Date(timestamp).toLocaleDateString('en-US', {
@@ -71,7 +106,7 @@ const MemberDetailsDialog = ({
       })
     } catch (error) {
       console.error('Error formatting date:', error)
-      return t('members.detailsDialog.notAvailable', 'N/A')
+      return t('members.detailsDialog.notAvailable', 'Not available')
     }
   }
 
@@ -79,284 +114,413 @@ const MemberDetailsDialog = ({
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase()
   }
 
+  const getMemberId = (member: Member): string => {
+    if (!member?._id) return 'N/A'
+    if (typeof member._id === 'string') return member._id.slice(-8)
+    if (member._id.$oid) return member._id.$oid.slice(-8)
+    return 'N/A'
+  }
+
+  const getStatusColor = (isActive: boolean) => {
+    return isActive 
+      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+      : 'bg-gray-100 text-gray-800 border-gray-200'
+  }
+
+  const getRegistrationColor = (isCompleted: boolean) => {
+    return isCompleted
+      ? 'bg-blue-100 text-blue-800 border-blue-200'
+      : 'bg-amber-100 text-amber-800 border-amber-200'
+  }
+
   const handleEdit = () => {
-    onEdit?.(member)
+    if (member) onEdit?.(member)
     onClose()
   }
 
   const handleDelete = () => {
-    onDelete?.(member)
+    if (member) onDelete?.(member)
   }
 
+  useEffect(() => {
+    const loadMemberEvents = async () => {
+      if (!member?._id) return
+      
+      const memberId = typeof member._id === 'string' ? member._id : member._id.$oid
+      if (!memberId) return
+      
+      setEventsLoading(true)
+      setEventsError(null)
+      try {
+        const response = await fetchMemberParticipationsApi(memberId)
+        const data = Array.isArray(response?.data?.data)
+          ? response.data.data
+          : Array.isArray(response?.data)
+            ? response.data
+            : []
+        setMemberEvents(data)
+      } catch (error: any) {
+        console.error('Failed to load member events', error)
+        setMemberEvents([])
+        setEventsError(error?.response?.data?.message || error?.message || 'Unable to load member events.')
+      } finally {
+        setEventsLoading(false)
+      }
+    }
+
+    if (member && isOpen) {
+      loadMemberEvents()
+      setActiveTab('overview')
+    }
+  }, [member, isOpen, t])
+
+  if (!member || !isOpen) return null
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] border-slate-300">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-2xl">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-              <User className="h-5 w-5 text-white" />
-            </div>
-            {t('members.detailsDialog.title', 'Member Details')}
-          </DialogTitle>
-          <DialogDescription>
-            {t('members.detailsDialog.description', 'Complete information about the member')}
-          </DialogDescription>
-        </DialogHeader>
-
-        <ScrollArea className="max-h-[calc(90vh-200px)] pr-4">
-          <div className="space-y-6">
-            {/* Header Section */}
-            <div className="flex items-start gap-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-slate-400">
-              <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
-                <AvatarImage src={member.picture} alt={`${member.firstName} ${member.lastName}`} />
-                <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-500 text-white">
-                  {getInitials(member.firstName, member.lastName)}
-                </AvatarFallback>
-              </Avatar>
-              
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {member.firstName} {member.lastName}
-                </h3>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <Badge 
-                    variant={member.isActive ? "default" : "secondary"}
-                    className="text-sm px-3 py-1"
-                  >
-                    {member.isActive ? (
-                      <>
-                        <UserCheck className="w-3 h-3 mr-1" />
-                        {t('members.detailsDialog.status.active', 'Active')}
-                      </>
-                    ) : (
-                      <>
-                        <UserX className="w-3 h-3 mr-1" />
-                        {t('members.detailsDialog.status.inactive', 'Inactive')}
-                      </>
-                    )}
-                  </Badge>
-                  <Badge 
-                    variant={member.registrationCompleted ? "default" : "outline"}
-                    className="text-sm px-3 py-1"
-                  >
-                    {member.registrationCompleted ? 
-                      t('members.detailsDialog.status.registrationComplete', 'Registration Complete') : 
-                      t('members.detailsDialog.status.registrationPending', 'Registration Pending')
-                    }
-                  </Badge>
-                  {member.gender && (
-                    <Badge variant="outline" className="text-sm px-3 py-1">
-                      {member.gender}
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-sm text-gray-600 font-mono">
-                  {t('members.detailsDialog.fields.memberId', 'ID')}: {member._id.toString().slice(-12)}
-                </p>
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg flex items-center gap-2 text-gray-900">
-                <Mail className="h-5 w-5 text-blue-500" />
-                {t('members.detailsDialog.sections.contactInfo', 'Contact Information')}
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.email', 'Email Address')}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <p className="text-gray-900">{member.email || t('members.detailsDialog.notAvailable', 'N/A')}</p>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.phone', 'Phone Number')}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    <p className="text-gray-900">{member.phoneNumber || t('members.detailsDialog.notAvailable', 'N/A')}</p>
-                  </div>
-                </div>
-                {(member.city || member.country) && (
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="text-sm font-medium text-gray-500">
-                      {t('members.detailsDialog.fields.location', 'Location')}
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-muted-foreground" />
-                      <p className="text-gray-900">
-                        {[member.city, member.country].filter(Boolean).join(', ') || t('members.detailsDialog.notAvailable', 'N/A')}
-                      </p>
-                    </div>
-                  </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all duration-300">
+      <div 
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] mx-4 overflow-hidden transform transition-transform duration-300 scale-100 border border-slate-300"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                {member.picture ? (
+                  <img 
+                    src={member.picture} 
+                    alt={`${member.firstName} ${member.lastName}`}
+                    className="w-14 h-14 rounded-2xl object-cover"
+                  />
+                ) : (
+                  <span className="text-white font-semibold text-lg">
+                    {getInitials(member.firstName, member.lastName)}
+                  </span>
                 )}
               </div>
+              <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
+                member.isActive ? 'bg-emerald-500' : 'bg-gray-400'
+              }`} />
             </div>
-
-            <Separator />
-
-            {/* Personal Information */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg flex items-center gap-2 text-gray-900">
-                <User className="h-5 w-5 text-purple-500" />
-                {t('members.detailsDialog.sections.personalInfo', 'Personal Information')}
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.firstName', 'First Name')}
-                  </label>
-                  <p className="text-gray-900">{member.firstName || t('members.detailsDialog.notAvailable', 'N/A')}</p>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.lastName', 'Last Name')}
-                  </label>
-                  <p className="text-gray-900">{member.lastName || t('members.detailsDialog.notAvailable', 'N/A')}</p>
-                </div>
-                {member.gender && (
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-500">
-                      {t('members.detailsDialog.fields.gender', 'Gender')}
-                    </label>
-                    <p className="text-gray-900">{member.gender}</p>
-                  </div>
-                )}
-                {member.birthday && (
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-500">
-                      {t('members.detailsDialog.fields.birthday', 'Birthday')}
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <Cake className="w-4 h-4 text-muted-foreground" />
-                      <p className="text-gray-900">{formatDate(member.birthday)}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Account Information */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg flex items-center gap-2 text-gray-900">
-                <Shield className="h-5 w-5 text-green-500" />
-                {t('members.detailsDialog.sections.accountInfo', 'Account Information')}
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.accountStatus', 'Account Status')}
-                  </label>
-                  <p className="text-gray-900">
-                    {member.isActive ? (
-                      <span className="flex items-center gap-1 text-green-600">
-                        <UserCheck className="w-4 h-4" />
-                        {t('members.detailsDialog.status.active', 'Active')}
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-gray-600">
-                        <UserX className="w-4 h-4" />
-                        {t('members.detailsDialog.status.inactive', 'Inactive')}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.registrationStatus', 'Registration Status')}
-                  </label>
-                  <p className="text-gray-900">
-                    {member.registrationCompleted ? (
-                      <span className="text-green-600">
-                        {t('members.detailsDialog.status.completed', 'Completed')}
-                      </span>
-                    ) : (
-                      <span className="text-yellow-600">
-                        {t('members.detailsDialog.status.pending', 'Pending')}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.userId', 'User ID')}
-                  </label>
-                  <p className="text-gray-900 font-mono text-sm">{member.user || t('members.detailsDialog.notAvailable', 'N/A')}</p>
-                </div>
-                {member.role && (
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-500">
-                      {t('members.detailsDialog.fields.roleId', 'Role ID')}
-                    </label>
-                    <p className="text-gray-900 font-mono text-sm">{member.role.$oid || t('members.detailsDialog.notAvailable', 'N/A')}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Timestamps */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg flex items-center gap-2 text-gray-900">
-                <Calendar className="h-5 w-5 text-orange-500" />
-                {t('members.detailsDialog.sections.timestamps', 'Timestamps')}
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-500">
-                    {t('members.detailsDialog.fields.joinedDate', 'Joined Date')}
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <p className="text-gray-900">{formatDate(member.createdAt)}</p>
-                  </div>
-                </div>
-                {member.updatedAt && (
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-500">
-                      {t('members.detailsDialog.fields.lastUpdated', 'Last Updated')}
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <p className="text-gray-900">{formatDate(member.updatedAt)}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {safeRender(member.firstName)} {safeRender(member.lastName)}
+              </h2>
+              <p className="text-gray-600 flex items-center space-x-2 mt-1">
+                <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                  ID: {getMemberId(member)}
+                </span>
+                <span className="text-sm">{safeRender(member.email)}</span>
+              </p>
             </div>
           </div>
-        </ScrollArea>
-
-        {/* Actions */}
-        <div className="flex justify-between items-center pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
-            {t('members.detailsDialog.buttons.close', 'Close')}
-          </Button>
           
-          <div className="flex gap-2">
-            {onEdit && (
-              <Button onClick={handleEdit} className="gap-2">
-                <Edit className="w-4 h-4" />
-                {t('members.detailsDialog.buttons.editMember', 'Edit Member')}
-              </Button>
-            )}
-            {onDelete && (
-              <Button variant="destructive" onClick={handleDelete} className="gap-2 text-gray-100">
-                <Trash2 className="w-4 h-4" />
-                {t('members.detailsDialog.buttons.deleteMember', 'Delete Member')}
-              </Button>
-            )}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-red-700  rounded-xl transition-colors duration-200 group border-red-600 border cursor-pointer"
+            >
+              <X className="w-5 h-5 text-red-600 group-hover:text-gray-100" />
+            </button>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+
+        {/* Navigation Tabs */}
+        <div className="border-b border-gray-200 bg-white">
+          <div className="flex space-x-1 px-6">
+            {[
+              { id: 'overview', label: 'Overview', icon: User },
+              { id: 'events', label: 'Events', icon: Users, count: memberEvents.length },
+              { id: 'activity', label: 'Activity', icon: Calendar }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+                {tab.count !== undefined && (
+                  <span className={`px-1.5 py-0.5 text-xs rounded-full ${
+                    activeTab === tab.id 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="overflow-y-auto max-h-[calc(90vh-300px)]">
+          {activeTab === 'overview' && (
+            <div className="p-6 space-y-6">
+              {/* Status Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className={`border-2 rounded-xl p-4 ${getStatusColor(member.isActive)}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Account Status</p>
+                      <p className="text-lg font-semibold mt-1">
+                        {member.isActive ? 'Active' : 'Inactive'}
+                      </p>
+                    </div>
+                    {member.isActive ? (
+                      <CheckCircle className="w-8 h-8 text-emerald-600" />
+                    ) : (
+                      <UserX className="w-8 h-8 text-gray-600" />
+                    )}
+                  </div>
+                </div>
+                
+                <div className={`border-2 rounded-xl p-4 ${getRegistrationColor(member.registrationCompleted)}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Registration</p>
+                      <p className="text-lg font-semibold mt-1">
+                        {member.registrationCompleted ? 'Complete' : 'Pending'}
+                      </p>
+                    </div>
+                    {member.registrationCompleted ? (
+                      <CheckCircle className="w-8 h-8 text-blue-600" />
+                    ) : (
+                      <Clock className="w-8 h-8 text-amber-600" />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Mail className="w-5 h-5 mr-2 text-blue-600" />
+                  Contact Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-600 font-medium">Email Address</label>
+                    <div className="flex items-center mt-1 space-x-2">
+                      <Mail className="w-4 h-4 text-gray-400" />
+                      <p className="text-gray-900">{safeRender(member.email, 'Not provided')}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600 font-medium">Phone Number</label>
+                    <div className="flex items-center mt-1 space-x-2">
+                      <Phone className="w-4 h-4 text-gray-400" />
+                      <p className="text-gray-900">{safeRender(member.phoneNumber, 'Not provided')}</p>
+                    </div>
+                  </div>
+                  {(member.city || member.country) && (
+                    <div className="md:col-span-2">
+                      <label className="text-sm text-gray-600 font-medium">Location</label>
+                      <div className="flex items-center mt-1 space-x-2">
+                        <MapPin className="w-4 h-4 text-gray-400" />
+                        <p className="text-gray-900">
+                          {[safeRender(member.city), safeRender(member.country)].filter(Boolean).join(', ') || 'Not provided'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Personal Details */}
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <User className="w-5 h-5 mr-2 text-purple-600" />
+                  Personal Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-600 font-medium">First Name</label>
+                    <p className="text-gray-900 mt-1">{safeRender(member.firstName)}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600 font-medium">Last Name</label>
+                    <p className="text-gray-900 mt-1">{safeRender(member.lastName)}</p>
+                  </div>
+                  {member.gender && (
+                    <div>
+                      <label className="text-sm text-gray-600 font-medium">Gender</label>
+                      <p className="text-gray-900 mt-1 capitalize">{safeRender(member.gender)}</p>
+                    </div>
+                  )}
+                  {member.birthday && (
+                    <div>
+                      <label className="text-sm text-gray-600 font-medium">Birthday</label>
+                      <div className="flex items-center mt-1 space-x-2">
+                        <Cake className="w-4 h-4 text-gray-400" />
+                        <p className="text-gray-900">{formatDate(member.birthday)}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Account Timeline */}
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Calendar className="w-5 h-5 mr-2 text-orange-600" />
+                  Account Timeline
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-gray-600">Member since</span>
+                    <span className="font-medium text-gray-900">{formatDate(member.createdAt)}</span>
+                  </div>
+                  {member.updatedAt && (
+                    <div className="flex justify-between items-center py-2 border-t border-gray-200">
+                      <span className="text-gray-600">Last updated</span>
+                      <span className="font-medium text-gray-900">{formatDate(member.updatedAt)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'events' && (
+            <div className="p-6">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Users className="w-5 h-5 mr-2 text-blue-600" />
+                  Event Participation
+                </h3>
+                
+                {eventsLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-2" />
+                    <span className="text-gray-600">Loading events...</span>
+                  </div>
+                ) : eventsError ? (
+                  <div className="flex items-center justify-center py-8 text-red-600 bg-red-50 rounded-lg">
+                    <AlertCircle className="w-5 h-5 mr-2" />
+                    <span>{eventsError}</span>
+                  </div>
+                ) : memberEvents.length > 0 ? (
+                  <div className="space-y-3">
+                    {memberEvents.map((eventRecord: any, index: number) => (
+                      <div
+                        key={eventRecord?._id || eventRecord?.eventId || index}
+                        className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-900">
+                              {safeRender(eventRecord?.eventName || eventRecord?.name, 'Untitled Event')}
+                            </h4>
+                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                              <span className="flex items-center space-x-1">
+                                <Calendar className="w-4 h-4" />
+                                <span>{eventRecord?.date ? formatDate(eventRecord.date) : 'Date not set'}</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <MapPin className="w-4 h-4" />
+                                <span>{safeRender(eventRecord?.city || eventRecord?.location, 'Location not set')}</span>
+                              </span>
+                            </div>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            eventRecord?.status === 'confirmed' 
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : eventRecord?.status === 'pending'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {safeRender(eventRecord?.status, 'registered')}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>No event participations found</p>
+                    <p className="text-sm mt-1">This member hasn't registered for any events yet.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'activity' && (
+            <div className="p-6">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Shield className="w-5 h-5 mr-2 text-green-600" />
+                  Account Activity
+                </h3>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Account Created</span>
+                      <span className="font-medium text-gray-900">{formatDate(member.createdAt)}</span>
+                    </div>
+                  </div>
+                  {member.updatedAt && (
+                    <div className="bg-white rounded-lg border border-gray-200 p-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Last Profile Update</span>
+                        <span className="font-medium text-gray-900">{formatDate(member.updatedAt)}</span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Event Participations</span>
+                      <span className="font-medium text-gray-900">{memberEvents.length} events</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer Actions */}
+        <div className="border-t border-gray-200 bg-gray-50 px-6  h-[80px] overflow-hidden">
+          <div className="flex justify-between items-center h-full mb-5 overflow-hidden">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 hover:text-gray-100 font-medium transition-colors duration-200 border border-slate-400 rounded-md shadow-sm hover:bg-gray-700 cursor-pointer overflow-hidden"
+            >
+              Close
+            </button>
+            
+            <div className="flex space-x-3 overflow-hidden">
+              {/* {onEdit && (
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium cursor-pointer"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Edit Member</span>
+                </button>
+              )} */}
+              {/* {onDelete && (
+                <button
+                  onClick={handleDelete}
+                  className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete Member</span>
+                </button>
+              )} */}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 

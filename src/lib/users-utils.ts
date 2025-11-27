@@ -8,7 +8,7 @@ export interface UsersFilters {
   status: 'all' | 'active' | 'inactive'
   registrationStatus: 'all' | 'completed' | 'pending'
   gender: 'all' | 'MALE' | 'FEMALE' | 'OTHER'
-  userType: 'all' | 'Organizer' | 'Member'
+  userType: 'all' | 'organizer' | 'admin'
 }
 
 export const filterUsers = (
@@ -41,7 +41,7 @@ export const filterUsers = (
     const matchesGender = filters.gender === 'all' || user.gender === filters.gender
 
     // User type filter
-    const matchesUserType = filters.userType === 'all' || user.user === filters.userType
+    const matchesUserType = filters.userType === 'all' || user.role.name.toLowerCase() === filters.userType.toLowerCase()
 
     return matchesSearch && matchesStatus && matchesRegistration && matchesGender && matchesUserType
   })

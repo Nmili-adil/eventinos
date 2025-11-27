@@ -136,21 +136,18 @@ const BadgeEditDialog = ({
 
                 <div className="space-y-2">
                   <Label htmlFor="design">{t('badges.fields.design')} *</Label>
-                  <Select
-                    value={design}
-                    onValueChange={(value) => setValue('design', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('badges.fields.designPlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="gold">{t('badges.designOptions.gold')}</SelectItem>
-                      <SelectItem value="silver">{t('badges.designOptions.silver')}</SelectItem>
-                      <SelectItem value="bronze">{t('badges.designOptions.bronze')}</SelectItem>
-                      <SelectItem value="platinum">{t('badges.designOptions.platinum')}</SelectItem>
-                      <SelectItem value="diamond">{t('badges.designOptions.diamond')}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Select value={watch('design')} onValueChange={(value) => setValue("design", value)}>
+  <SelectTrigger className="w-full">
+    <SelectValue placeholder={t("badges.fields.designPlaceholder")} />
+  </SelectTrigger>
+  <SelectContent className="w-full shadow-md border border-slate-300">
+    <SelectItem value="gold">{t("badges.designOptions.gold")}</SelectItem>
+    <SelectItem value="silver">{t("badges.designOptions.silver")}</SelectItem>
+    <SelectItem value="bronze">{t("badges.designOptions.bronze")}</SelectItem>
+    <SelectItem value="platinum">{t("badges.designOptions.platinum")}</SelectItem>
+    <SelectItem value="diamond">{t("badges.designOptions.diamond")}</SelectItem>
+  </SelectContent>
+</Select>
                   {errors.design && (
                     <p className="text-sm text-destructive">{errors.design.message}</p>
                   )}

@@ -1,10 +1,11 @@
 import { api } from "@/lib/apiClient"
 import { getAuthToken } from "@/services/localStorage"
 
-export const fetchUsers = async (page = 1, limit = 10, role: 'all' | 'organizer' | 'member' = 'all') => {
+export const fetchUsers = async (page = 1, limit = 10, role: 'all' | 'organizer' | 'member' | 'admin' = 'all') => {
   const params: Record<string, any> = {
     page,
     limit,
+    // role
   }
 
   if (role && role !== 'all') {

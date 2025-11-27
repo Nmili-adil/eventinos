@@ -32,6 +32,7 @@ import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
 import { uploadFileApi } from '@/api/filesApi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { getRole } from '@/services/localStorage';
 
 interface ProfileFormData {
 
@@ -321,6 +322,10 @@ export const ProfilePage: React.FC = () => {
       fileInputRef.current.value = '';
     }
   };
+
+  const handleRoleChange = () => {
+    
+  }
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
@@ -1119,14 +1124,21 @@ export const ProfilePage: React.FC = () => {
 
             {/* Rights List */}
             <Card className="border-slate-300 shadow-md overflow-hidden p-0">
-              <CardHeader className="bg-linear-to-r from-green-50 to-emerald-50 rounded-t-lg py-4 px-6">
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="bg-linear-to-r from-green-50 to-emerald-50 rounded-t-lg py-4 px-6 flex items-center justify-between">
+               <div>
+               <CardTitle className="flex items-center gap-2">
                   <Briefcase className="w-5 h-5 text-green-600" />
                   {t('profilePage.roles.rights.title')}
                 </CardTitle>
                 <CardDescription>
                   {t('profilePage.roles.rights.description')}
                 </CardDescription>
+               </div> 
+               {
+                getRole() === 'admin' ? 
+                  <Button onClick={handleRoleChange}>change role</Button> 
+                  : ''
+                }
               </CardHeader>
               <CardContent className="pt-6 px-6">
                 {rightsLoading ? (

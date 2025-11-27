@@ -2,7 +2,7 @@ import { fetchUsers, getUserById } from "@/api/usersApi";
 import { FETCH_USERS_FAILURE, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, type FetchUserByIdFailureAction, type FetchUserByIdSuccessAction, type FetchUsersFailureAction, type FetchUsersSuccessAction, type PaginationInfo } from "./users.type"
 import type { User } from "@/types/usersType";
 
-export const fetchUsersRequest = (page = 1, limit = 10, role: 'all' | 'organizer' | 'member' = 'all') => {
+export const fetchUsersRequest = (page = 1, limit = 10, role: 'all' | 'organizer' | 'member' | 'admin' = 'all') => {
   return async (dispatch: any) => {
     dispatch({ type: FETCH_USERS_REQUEST })
     try {

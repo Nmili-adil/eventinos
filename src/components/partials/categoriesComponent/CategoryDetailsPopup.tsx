@@ -1,14 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Folder, Calendar, FileText, Hash } from "lucide-react"
+import { Folder, Calendar, FileText, Hash, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface Category {
   _id: string
@@ -34,7 +25,9 @@ const CategoryDetailsPopup = ({
   onEdit, 
   onDelete 
 }: CategoryDetailsPopupProps) => {
-  if (!category) return null
+  const { t } = useTranslation()
+  
+  if (!category || !isOpen) return null
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A'
@@ -54,23 +47,29 @@ const CategoryDetailsPopup = ({
 
   const handleDelete = () => {
     onDelete?.(category)
-    // Don't close the popup immediately, let the user confirm in the dialog
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-slate-400">
+          <div className="flex items-center gap-2">
             <Folder className="h-5 w-5 text-green-500" />
-            Category Details
-          </DialogTitle>
-          <DialogDescription>
-            Detailed information about the category
-          </DialogDescription>
-        </DialogHeader>
+            <h2 className="text-lg font-semibold">
+              {t('categories.categoryDetails.title', 'Category Details')}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
-        <ScrollArea className="max-h-[calc(90vh-200px)] pr-4">
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-6">
             {/* Header Section */}
             <div className="flex items-start gap-4">
@@ -84,8 +83,12 @@ const CategoryDetailsPopup = ({
                 <h3 className="text-xl font-semibold text-gray-900">{category.name}</h3>
                 <p className="text-gray-600 mt-1">{category.description}</p>
                 <div className="flex gap-2 mt-2">
-                  <Badge variant="secondary">Category</Badge>
-                  <Badge variant="outline">ID: {category._id.slice(-8)}</Badge>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    {t('categories.categoryDetails.badges.category', 'Category')}
+                  </span>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white text-gray-800 border border-gray-300">
+                    {t('categories.categoryDetails.badges.id', 'ID: {{id}}', { id: category._id.slice(-8) })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -96,20 +99,26 @@ const CategoryDetailsPopup = ({
               <div className="space-y-3">
                 <h4 className="font-medium text-gray-900 flex items-center gap-2">
                   <FileText className="h-4 w-4 text-gray-500" />
-                  Basic Information
+                  {t('categories.categoryDetails.sections.basicInfo', 'Basic Information')}
                 </h4>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Category Name</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      {t('categories.categoryDetails.header.name', 'Category Name')}
+                    </label>
                     <p className="text-gray-900">{category.name}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Icon</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      {t('categories.categoryDetails.header.icon', 'Icon')}
+                    </label>
                     <p className="text-gray-900 text-2xl">{category.icon}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Category ID</label>
-                    <p className="text-gray-900 font-mono text-sm">{category._id}</p>
+                    <label className="text-sm font-medium text-gray-500">
+                      {t('categories.categoryDetails.header.categoryId', 'Category ID')}
+                    </label>
+                    <p className="text-gray-900 font-mono text-sm break-all">{category._id}</p>
                   </div>
                 </div>
               </div>
@@ -118,11 +127,13 @@ const CategoryDetailsPopup = ({
               <div className="space-y-3">
                 <h4 className="font-medium text-gray-900 flex items-center gap-2">
                   <Hash className="h-4 w-4 text-gray-500" />
-                  Description
+                  {t('categories.categoryDetails.sections.description', 'Description')}
                 </h4>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Full Description</label>
-                  <p className="text-gray-900 text-sm mt-1 bg-gray-50 p-3 rounded-md">
+                  <label className="text-sm font-medium text-gray-500">
+                    {t('categories.categoryDetails.labels.fullDescription', 'Full Description')}
+                  </label>
+                  <p className="text-gray-900 text-sm mt-1 bg-gray-50 p-3 rounded-md whitespace-normal break-words">
                     {category.description}
                   </p>
                 </div>
@@ -133,18 +144,22 @@ const CategoryDetailsPopup = ({
                 <div className="space-y-3">
                   <h4 className="font-medium text-gray-900 flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-gray-500" />
-                    Timestamps
+                    {t('categories.categoryDetails.sections.timestamps', 'Timestamps')}
                   </h4>
                   <div className="space-y-2">
                     {category.createdAt && (
                       <div>
-                        <label className="text-sm font-medium text-gray-500">Created</label>
+                        <label className="text-sm font-medium text-gray-500">
+                          {t('categories.categoryDetails.labels.created', 'Created')}
+                        </label>
                         <p className="text-gray-900 text-sm">{formatDate(category.createdAt)}</p>
                       </div>
                     )}
                     {category.updatedAt && (
                       <div>
-                        <label className="text-sm font-medium text-gray-500">Last Updated</label>
+                        <label className="text-sm font-medium text-gray-500">
+                          {t('categories.categoryDetails.labels.lastUpdated', 'Last Updated')}
+                        </label>
                         <p className="text-gray-900 text-sm">{formatDate(category.updatedAt)}</p>
                       </div>
                     )}
@@ -154,37 +169,47 @@ const CategoryDetailsPopup = ({
             </div>
 
             {/* Additional Information */}
-            <div className="border-t pt-4">
-              <h4 className="font-medium text-gray-900 mb-2">Category Usage</h4>
-              <p className="text-gray-600 text-sm">
-                This category is used to organize and classify events within the platform.
-                Events assigned to this category will be grouped together for better organization.
-              </p>
+            <div className="border-t border-slate-400 pt-4">
+              <h4 className="font-medium text-gray-900 mb-2">
+                {t('categories.categoryDetails.sections.usage', 'Category Usage')}
+              </h4>
+              <div className="text-gray-600 text-sm whitespace-normal break-words leading-relaxed max-w-full overflow-auto flex flex-wrap word-break-words w-full h-[120px]">
+                {t('categories.categoryDetails.usageDescription')}
+              </div>
             </div>
           </div>
-        </ScrollArea>
+        </div>
 
         {/* Actions */}
-        <div className="flex justify-between items-center pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
+        <div className="flex justify-between items-center p-6 border-t border-slate-400">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            {t('categories.categoryDetails.actions.close', 'Close')}
+          </button>
           
           <div className="flex gap-2">
             {onEdit && (
-              <Button variant="outline" onClick={handleEdit}>
-                Edit Category
-              </Button>
+              <button
+                onClick={handleEdit}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              >
+                {t('categories.categoryDetails.actions.editCategory', 'Edit Category')}
+              </button>
             )}
             {onDelete && (
-              <Button variant="destructive" onClick={handleDelete}>
-                Delete Category
-              </Button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+              >
+                {t('categories.categoryDetails.actions.deleteCategory', 'Delete Category')}
+              </button>
             )}
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }
 

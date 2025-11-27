@@ -203,7 +203,8 @@
         "program": "برنامج الحدث",
         "badges": "الشارات",
         "gallery": "معرض الصور",
-        "exhibitorsSponsors": "العارضون والرعاة"
+        "exhibitorsSponsors": "العارضون والرعاة",
+        "members": "الأعضاء"
       },
       "fields": {
         "name": "اسم الحدث",
@@ -571,7 +572,38 @@
     "deletedSuccessfully": "تم حذف الفئة بنجاح",
     "createFailed": "فشل إنشاء الفئة",
     "updateFailed": "فشل تحديث الفئة",
-    "deleteFailed": "فشل حذف الفئة"
+    "deleteFailed": "فشل حذف الفئة",
+    "categoryDetails": {
+      "title": "تفاصيل الفئة",
+      "description": "معلومات مفصلة عن الفئة",
+      "header": {
+        "name": "اسم الفئة",
+        "description": "الوصف",
+        "icon": "الأيقونة",
+        "categoryId": "معرف الفئة"
+      },
+      "sections": {
+        "basicInfo": "المعلومات الأساسية",
+        "description": "الوصف",
+        "timestamps": "الطوابع الزمنية",
+        "usage": "استخدام الفئة"
+      },
+      "labels": {
+        "created": "تم الإنشاء",
+        "lastUpdated": "آخر تحديث",
+        "fullDescription": "الوصف الكامل"
+      },
+      "badges": {
+        "category": "فئة",
+        "id": "المعرف: {{id}}"
+      },
+      "usageDescription": "تُستخدم هذه الفئة لتنظيم وتصنيف الأحداث ضمن المنصة. سيتم تجميع الأحداث المخصصة لهذه الفئة معًا لتحسين التنظيم.",
+      "actions": {
+        "close": "إغلاق",
+        "editCategory": "تعديل الفئة",
+        "deleteCategory": "حذف الفئة"
+      }
+    }
   },
   "badges": {
     "title": "الشارات",

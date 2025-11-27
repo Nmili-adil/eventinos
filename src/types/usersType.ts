@@ -27,7 +27,7 @@ export interface User {
     code: string | null;
     createdAt: string | null;
   };
-  role: { $oid: string };
+  role: { $oid: string, name:string, systemRole:boolean,rights:any };
   isActive: boolean;
   registrationCompleted: boolean;
   favorites: any[];

@@ -104,14 +104,17 @@ export const updateMemberStatusRequest = (memberId: string, isActive: boolean) =
         dispatch({ type: 'UPDATE_MEMBER_STATUS_REQUEST' });
         try {
             const response = await updateMemberStatusApi(memberId, isActive);
-            if (response?.status === 200) {
+            if (response?.data) {
                 dispatch({
                     type: 'UPDATE_MEMBER_STATUS_SUCCESS',
                     payload: response.data,
                 });
                 // Refresh members list with current pagination
                 dispatch(fetchMembersRequest(1, 10));
+                return {success: true, data: response.data};
             }
+
+             return {success: false, message: response?.message || 'Failed to update member status'};
         } catch (error) {
             dispatch({
                 type: 'UPDATE_MEMBER_STATUS_FAILURE',

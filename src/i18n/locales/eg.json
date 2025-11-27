@@ -194,7 +194,8 @@
       "program": "Event Program",
       "badges": "Badges",
       "gallery": "Event Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors"
+      "exhibitorsSponsors": "Exhibitors & Sponsors",
+      "members": "Members"
     },
     "fields": {
       "name": "Event Name",

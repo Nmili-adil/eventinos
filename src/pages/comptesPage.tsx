@@ -52,6 +52,8 @@ import {
   Briefcase,
   UserCog,
   Plus,
+  Shield,
+  Crown,
 } from "lucide-react";
 import { fetchUsersRequest } from "@/store/features/users/users.actions";
 import type { AppDispatch } from "@/store/app/store";
@@ -107,15 +109,32 @@ export const ComptesPage: React.FC = () => {
   const [createLoading, setCreateLoading] = useState(false);
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [role, setRole] = useState<"all" | "organizer" | "member">("all");
+  const [role, setRole] = useState<"all" | "organizer" | "admin">("all");
+
+// Filter users based on selected role
+const filteredUsers = useMemo(() => {
+  const allUsers = users || [];
+  
+  if (role === "admin") {
+    return allUsers.filter(user => user.role.name.toLowerCase() === "admin");
+  } else if (role === "organizer") {
+    return allUsers.filter(user => user.role.name.toLowerCase() === "organizer");
+  } else {
+    // "all" - return both admins and organizers
+    return allUsers.filter(user => 
+      user.role.name.toLowerCase() === "admin" || 
+      user.role.name.toLowerCase() === "organizer"
+    );
+  }
+}, [users, role]);
 
   // Sync role filter with userType select
   useEffect(() => {
-    const mappedRole: "all" | "organizer" | "member" =
-      filters.userType === "Organizer"
+    const mappedRole: "all" | "organizer" | "admin" =
+        filters.userType === "organizer"
         ? "organizer"
-        : filters.userType === "Member"
-        ? "member"
+        : filters.userType === "admin"
+        ? "admin"
         : "all";
 
     setRole((prev) => {
@@ -144,15 +163,37 @@ export const ComptesPage: React.FC = () => {
 
   // Filter and sort users
   const processedUsers = useMemo(() => {
-    const filtered = filterUsers(users || [], filters);
+    const filtered = filterUsers(filteredUsers, filters);
     const sorted = sortUsers(filtered, sort.field, sort.direction);
     return sorted;
-  }, [users, filters, sort.field, sort.direction]);
+  }, [filteredUsers, filters, sort.field, sort.direction]);
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName?.charAt(0) || ""}${
       lastName?.charAt(0) || ""
     }`.toUpperCase();
+  };
+
+  const getUserRoleIcon = (userType: string) => {
+    switch (userType.toLowerCase()) {
+      case "admin":
+        return <Shield className="w-3 h-3" />;
+      case "organizer":
+        return <Crown className="w-3 h-3" />;
+      default:
+        return <UserCog className="w-3 h-3" />;
+    }
+  };
+
+  const getUserRoleColor = (userType: string) => {
+    switch (userType.toLowerCase()) {
+      case "admin":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "organizer":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
   };
 
   const handleViewProfile = (user: User) => {
@@ -162,8 +203,7 @@ export const ComptesPage: React.FC = () => {
   const handleToggleStatus = async (user: User) => {
     const accountId = user._id.toString();
     const accountStatus = user.isActive
- 
-    
+
     setActionLoading(user._id?.toString());
     try {
      const response = await updateAccoutStatusApi(accountId,!accountStatus)
@@ -187,8 +227,7 @@ export const ComptesPage: React.FC = () => {
         )
       )
      }
-     
-      
+
     } catch (error: any) {
       toast.error(
         error?.message ||
@@ -318,7 +357,7 @@ export const ComptesPage: React.FC = () => {
     );
   }
 
-  const totalUsers = pagination?.totalItems ?? usersCount ?? 0;
+  const totalUsers = processedUsers.length;
 
   const handlePageChange = (page: number) => {
     if (!pagination) return;
@@ -331,9 +370,9 @@ export const ComptesPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHead
-          title={t("accounts.title", "Accounts")}
+          title={t("accounts.title", "Admin & Organizer Accounts")}
           icon={UserCog}
-          description={t("accounts.description")}
+          description={t("accounts.description", "Manage administrators and event organizers")}
           total={totalUsers}
         />
         <Button onClick={() => setAddAccountDialogOpen(true)}>
@@ -344,6 +383,44 @@ export const ComptesPage: React.FC = () => {
 
       {/* Filters */}
       <UsersFilters filters={filters} onFiltersChange={setFilters} />
+
+      {/* Role Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <Shield className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Admins</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {filteredUsers.filter(user => user.role.name.toLocaleLowerCase() === "admin".toLowerCase()).length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Crown className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Organizers</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {filteredUsers.filter(user => user.role.name.toLocaleLowerCase() === "organizer".toLocaleLowerCase()).length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Sort Options */}
       <Card>
@@ -422,17 +499,17 @@ export const ComptesPage: React.FC = () => {
             <Card
               key={user._id.$oid}
               onClick={() => handleViewProfile(user)}
-              className="overflow-hidden hover:shadow-lg transition-shadow justify-between cursor-pointer"
+              className="overflow-hidden hover:shadow-lg transition-shadow justify-between cursor-pointer border-l-4 border-l-transparent hover:border-l-blue-500"
             >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-3 flex-1">
-                    <Avatar className="w-12 h-12">
+                    <Avatar className="w-12 h-12 border-2 border-gray-200">
                       <AvatarImage
                         src={user.picture}
                         alt={`${user.firstName} ${user.lastName}`}
                       />
-                      <AvatarFallback className="text-sm">
+                      <AvatarFallback className="text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white">
                         {getInitials(user.firstName, user.lastName)}
                       </AvatarFallback>
                     </Avatar>
@@ -450,13 +527,11 @@ export const ComptesPage: React.FC = () => {
                             : t("accounts.status.inactive", "Inactive")}
                         </Badge>
                         <Badge
-                          variant={
-                            user.user === "Organizer" ? "default" :
-                            user.user === "Member" ? 'outline' : 'secondary'
-                          }
-                          className="text-xs"
+                          variant="outline"
+                          className={`text-xs flex items-center gap-1 capitalize ${getUserRoleColor(user.role.name)}`}
                         >
-                          {user.user}
+                          {getUserRoleIcon(user.role.name)}
+                          {user.role.name}
                         </Badge>
                       </div>
                     </div>
@@ -564,7 +639,7 @@ export const ComptesPage: React.FC = () => {
                       ? t("accounts.registration.completed", "Completed")
                       : t("accounts.registration.pending", "Pending")}
                   </span>
-                  {user.gender && <span>{user.gender}</span>}
+                  {user.gender && <span className="capitalize">{user.gender}</span>}
                 </div>
               </CardFooter>
             </Card>
@@ -574,9 +649,14 @@ export const ComptesPage: React.FC = () => {
         /* Empty State */
         <Card>
           <CardContent className="pt-6 text-center">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <div className="flex justify-center mb-4">
+              <div className="relative">
+                <Shield className="h-12 w-12 text-muted-foreground" />
+                <Crown className="h-8 w-8 text-muted-foreground absolute -top-2 -right-2" />
+              </div>
+            </div>
             <h3 className="font-semibold">
-              {t("accounts.emptyState.title", "No Users Found")}
+              {t("accounts.emptyState.title", "No Admins or Organizers Found")}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               {filters.search ||
@@ -586,11 +666,11 @@ export const ComptesPage: React.FC = () => {
               filters.userType !== "all"
                 ? t(
                     "accounts.emptyState.noResults",
-                    "No users match your search criteria."
+                    "No admins or organizers match your search criteria."
                   )
                 : t(
                     "accounts.emptyState.noUsers",
-                    "No users have been added yet."
+                    "No admin or organizer accounts have been created yet."
                   )}
             </p>
             {(filters.search ||

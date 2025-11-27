@@ -5,13 +5,13 @@
 }
 
 * {
-  white-space: nowrap;
-  /* overflow: hidden;
+  white-space: wrap;
+  overflow: auto;
   text-overflow: ellipsis;
   word-break: break-all;
   word-wrap: break-word;
   word-break: break-word;
-  word-wrap: break-word; */
+  word-wrap: break-word;
 }
 .rich-text-editor .rsw-toolbar {
   background-color: hsl(var(--muted));

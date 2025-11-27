@@ -50,83 +50,88 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
 
           {/* Filter Options */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <Select value={filters.status} onValueChange={handleStatusChange}>
-                <SelectTrigger>
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder={t('accounts.filters.status.placeholder', 'Status')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t('accounts.filters.status.all', 'All Status')}
-                  </SelectItem>
-                  <SelectItem value="active">
-                    {t('accounts.filters.status.active', 'Active')}
-                  </SelectItem>
-                  <SelectItem value="inactive">
-                    {t('accounts.filters.status.inactive', 'Inactive')}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
-            <div className="flex-1">
-              <Select value={filters.registrationStatus} onValueChange={handleRegistrationChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t('accounts.filters.registration.placeholder', 'Registration')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t('accounts.filters.registration.all', 'All Registration')}
-                  </SelectItem>
-                  <SelectItem value="completed">
-                    {t('accounts.filters.registration.completed', 'Completed')}
-                  </SelectItem>
-                  <SelectItem value="pending">
-                    {t('accounts.filters.registration.pending', 'Pending')}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+  {/* STATUS FILTER */}
+  <div className="flex-1">
+    <div className="relative">
+      <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+      <select
+        value={filters.status}
+        onChange={(e) => handleStatusChange(e.target.value)}
+          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-slate-500"
+      >
+        <option value="all">
+          {t('accounts.filters.status.all', 'All Status')}
+        </option>
+        <option value="active">
+          {t('accounts.filters.status.active', 'Active')}
+        </option>
+        <option value="inactive">
+          {t('accounts.filters.status.inactive', 'Inactive')}
+        </option>
+      </select>
+    </div>
+  </div>
 
-            <div className="flex-1">
-              <Select value={filters.gender} onValueChange={handleGenderChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t('accounts.filters.gender.placeholder', 'Gender')} />  
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t('accounts.filters.gender.all', 'All Gender')}
-                  </SelectItem>
-                  <SelectItem value="MALE">
-                    {t('accounts.filters.gender.male', 'Male')}
-                  </SelectItem>
-                  <SelectItem value="FEMALE">
-                    {t('accounts.filters.gender.female', 'Female')}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+  {/* REGISTRATION STATUS FILTER */}
+  <div className="flex-1">
+    <select
+      value={filters.registrationStatus}
+      onChange={(e) => handleRegistrationChange(e.target.value)}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-slate-500"
+    >
+      <option value="all">
+        {t('accounts.filters.registration.all', 'All Registration')}
+      </option>
+      <option value="completed">
+        {t('accounts.filters.registration.completed', 'Completed')}
+      </option>
+      <option value="pending">
+        {t('accounts.filters.registration.pending', 'Pending')}
+      </option>
+    </select>
+  </div>
 
-            <div className="flex-1">
-              <Select value={filters.userType} onValueChange={handleUserTypeChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t('accounts.filters.userType.placeholder', 'User Type')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {t('accounts.filters.userType.all', 'All Types')}
-                  </SelectItem>
-                  <SelectItem value="Organizer">
-                    {t('accounts.filters.userType.organizer', 'Organizer')}
-                  </SelectItem>
-                  <SelectItem value="Member">
-                    {t('accounts.filters.userType.member', 'Member')}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+  {/* GENDER FILTER */}
+  <div className="flex-1">
+    <select
+      value={filters.gender}
+      onChange={(e) => handleGenderChange(e.target.value)}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-slate-500"
+    >
+      <option value="all">
+        {t('accounts.filters.gender.all', 'All Gender')}
+      </option>
+      <option value="MALE">
+        {t('accounts.filters.gender.male', 'Male')}
+      </option>
+      <option value="FEMALE">
+        {t('accounts.filters.gender.female', 'Female')}
+      </option>
+    </select>
+  </div>
+
+  {/* USER TYPE FILTER */}
+  <div className="flex-1">
+    <select
+      value={filters.userType}
+      onChange={(e) => handleUserTypeChange(e.target.value)}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-slate-500"
+    >
+      <option value="all">
+        {t('accounts.filters.userType.all', 'All Types')}
+      </option>
+      <option value="Organizer">
+        {t('accounts.filters.userType.organizer', 'Organizer')}
+      </option>
+      <option value="Admin">
+        {t('accounts.filters.userType.admin', 'Admin')}
+      </option>
+    </select>
+  </div>
+
+</div>
+
         </div>
       </CardContent>
     </Card>

@@ -202,7 +202,8 @@
         "program": "Programme de l'événement",
         "badges": "Badges",
         "gallery": "Galerie de l'événement",
-        "exhibitorsSponsors": "Exposants et Sponsors"
+        "exhibitorsSponsors": "Exposants et Sponsors",
+        "members":"Membres"
       },
       "fields": {
         "name": "Nom de l'événement",
@@ -570,7 +571,38 @@
     "deletedSuccessfully": "Catégorie supprimée avec succès",
     "createFailed": "Échec de la création de la catégorie",
     "updateFailed": "Échec de la mise à jour de la catégorie",
-    "deleteFailed": "Échec de la suppression de la catégorie"
+    "deleteFailed": "Échec de la suppression de la catégorie",
+    "categoryDetails": {
+    "title": "Détails de la Catégorie",
+    "description": "Informations détaillées sur la catégorie",
+    "header": {
+      "name": "Nom de la Catégorie",
+      "description": "Description",
+      "icon": "Icône",
+      "categoryId": "ID de la Catégorie"
+    },
+    "sections": {
+      "basicInfo": "Informations de Base",
+      "description": "Description",
+      "timestamps": "Horodatages",
+      "usage": "Utilisation de la Catégorie"
+    },
+    "labels": {
+      "created": "Créé",
+      "lastUpdated": "Dernière Mise à Jour",
+      "fullDescription": "Description Complète"
+    },
+    "badges": {
+      "category": "Catégorie",
+      "id": "ID : {{id}}"
+    },
+    "usageDescription": "Cette catégorie est utilisée pour organiser et classer les événements sur la plateforme. Les événements attribués à cette catégorie seront regroupés pour une meilleure organisation.",
+    "actions": {
+      "close": "Fermer",
+      "editCategory": "Modifier la Catégorie",
+      "deleteCategory": "Supprimer la Catégorie"
+    }
+  }
   },
   "badges": {
     "title": "Badges",

@@ -1,6 +1,6 @@
 import StatCard from "@/components/partials/dashboardComponents/StatCard";
 import { fetchEventsRequest } from "@/store/features/events/events.actions";
-import { Calendar, CheckCircle, XCircle, Clock, Users, LayoutDashboard, Filter } from "lucide-react";
+import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Users, LayoutDashboard, Filter, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -16,6 +16,10 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 type TimePeriod = 'all' | 'week' | 'month' | '3months' | '6months' | 'year';
 
@@ -31,6 +35,8 @@ const Overviewpage = () => {
   const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('all');
+  const [customStartDate, setCustomStartDate] = useState<Date | undefined>(undefined);
+  const [customEndDate, setCustomEndDate] = useState<Date | undefined>(undefined);
 
   // Helper function to get date range based on time period
   const getDateRange = (period: TimePeriod): { start: Date | null; end: Date | null } => {
@@ -69,29 +75,58 @@ const Overviewpage = () => {
     }
   };
 
+  const startOfDay = (date: Date) => {
+    const result = new Date(date)
+    result.setHours(0, 0, 0, 0)
+    return result
+  }
+
+  const endOfDay = (date: Date) => {
+    const result = new Date(date)
+    result.setHours(23, 59, 59, 999)
+    return result
+  }
+
+  const serializeDateParam = (date?: Date, type: "start" | "end" = "start") => {
+    if (!date) return undefined
+    return (type === "start" ? startOfDay(date) : endOfDay(date)).toISOString()
+  }
+
+  const parseEventDate = (eventItem: Event): Date | null => {
+    try {
+      return eventItem.startDate?.date ? new Date(eventItem.startDate.date) : null
+    } catch {
+      return null
+    }
+  }
+
   // Filter events based on selected time period
   const filteredEvents = useMemo(() => {
-    if (timePeriod === 'all') {
-      return events;
-    }
+    let dataset = events
 
-    const { start, end } = getDateRange(timePeriod);
-    if (!start || !end) {
-      return events;
-    }
-
-    return events.filter((event: Event) => {
-      if (!event.startDate?.date) return false;
-      
-      try {
-        const eventDate = new Date(event.startDate.date);
-        return eventDate >= start && eventDate <= end;
-      } catch (error) {
-        console.error('Error parsing event date:', error);
-        return false;
+    if (timePeriod !== 'all') {
+      const { start, end } = getDateRange(timePeriod);
+      if (start && end) {
+        dataset = dataset.filter((event: Event) => {
+          const eventDate = parseEventDate(event);
+          if (!eventDate) return false;
+          return eventDate >= start && eventDate <= end;
+        });
       }
-    });
-  }, [events, timePeriod]);
+    }
+
+    if (customStartDate || customEndDate) {
+      dataset = dataset.filter((event: Event) => {
+        const eventDate = parseEventDate(event);
+        if (!eventDate) return false;
+        if (customStartDate && eventDate < startOfDay(customStartDate)) return false;
+        if (customEndDate && eventDate > endOfDay(customEndDate)) return false;
+        return true;
+      });
+    }
+
+    return dataset;
+  }, [events, timePeriod, customStartDate, customEndDate]);
 
   // Calculate real statistics from filtered events data
   const stats = useMemo(() => {
@@ -125,17 +160,22 @@ const Overviewpage = () => {
         setIsLoadingAnalytics(true);
         
         // Fetch each endpoint separately to avoid Promise.all failing all requests
-        const cityPromise = fetchAnalyticsByCity().catch(err => {
+        const analyticsParams = {
+          startDate: serializeDateParam(customStartDate, "start"),
+          endDate: serializeDateParam(customEndDate, "end"),
+        }
+
+        const cityPromise = fetchAnalyticsByCity(analyticsParams).catch(err => {
           console.error('City API failed:', err);
           return null;
         });
         
-        const genderPromise = fetchAnalyticsByGender().catch(err => {
+        const genderPromise = fetchAnalyticsByGender(analyticsParams).catch(err => {
           console.error('Gender API failed:', err);
           return null;
         });
         
-        const datesPromise = fetchAnalyticsByDates().catch(err => {
+        const datesPromise = fetchAnalyticsByDates(analyticsParams).catch(err => {
           console.error('Dates API failed (likely CORS issue):', err);
           console.warn('⚠️ The /analytics/events-per-dates endpoint has a CORS error. Please enable CORS on your backend for this endpoint.');
           return null;
@@ -174,7 +214,7 @@ const Overviewpage = () => {
     };
 
     fetchData();
-  }, [dispatch, t]);
+  }, [dispatch, t, customStartDate, customEndDate]);
 
   useEffect(() => {
     console.log('📊 City Data Updated:', cityData)
@@ -272,6 +312,80 @@ const Overviewpage = () => {
           <div className="mt-3 text-xs text-gray-500">
             {t('dashboard.showingEventsFor')} {t(`dashboard.timePeriods.${timePeriod}`)}
           </div>
+        )}
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <span className="text-sm font-medium text-muted-foreground">
+              {t('dashboard.filters.startDateLabel', 'Start date')}
+            </span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !customStartDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {customStartDate ? format(customStartDate, "PPP") : t('dashboard.filters.startDatePlaceholder', 'Select start date')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={customStartDate}
+                  onSelect={setCustomStartDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-sm font-medium text-muted-foreground">
+              {t('dashboard.filters.endDateLabel', 'End date')}
+            </span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !customEndDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {customEndDate ? format(customEndDate, "PPP") : t('dashboard.filters.endDatePlaceholder', 'Select end date')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={customEndDate}
+                  onSelect={setCustomEndDate}
+                  disabled={(date) => (customStartDate ? date < customStartDate : false)}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+
+        {(customStartDate || customEndDate) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-3 w-fit gap-2"
+            onClick={() => {
+              setCustomStartDate(undefined)
+              setCustomEndDate(undefined)
+            }}
+          >
+            <X className="h-3.5 w-3.5" />
+            {t('dashboard.filters.clearDates', 'Clear date range')}
+          </Button>
         )}
       </Card>
 

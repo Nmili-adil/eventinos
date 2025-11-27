@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Calendar,
@@ -30,7 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import GoogleMap from "@/components/shared/googleMap";
-import { EVENT_EDIT_PAGE } from "@/constants/routerConstants";
+import { EVENT_EDIT_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,12 +48,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import EventParticipantsSection from "./EventParticipantsSection";
+import { useTranslation } from "react-i18next";
 
 interface EventDetailsProps {
   event: any;
 }
 
 const EventDetails = ({ event }: EventDetailsProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
   // const [isBookmarked, setIsBookmarked] = useState(false);
@@ -73,6 +76,15 @@ const EventDetails = ({ event }: EventDetailsProps) => {
   // New states for modals
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
+  const [participantStats, setParticipantStats] = useState<{
+    count: number
+    isLoading: boolean
+    error: string | null
+  }>({
+    count: 0,
+    isLoading: false,
+    error: null,
+  })
 
   // Safe data extraction functions
   const getOrganizerName = () => {
@@ -200,6 +212,29 @@ const EventDetails = ({ event }: EventDetailsProps) => {
   const handleCancelDelete = () => {
     setOpen(false);
   };
+
+  const eventIdentifier =
+    typeof event._id === "string" ? event._id : event._id?.$oid || "";
+
+  const handleParticipantsStats = useCallback((stats: { count: number; isLoading: boolean; error?: string | null }) => {
+    setParticipantStats({
+      count: stats.count,
+      isLoading: stats.isLoading,
+      error: stats.error ?? null,
+    })
+  }, [])
+
+  const handleNavigateToMembers = () => {
+    if (!eventIdentifier) return
+    navigate(MEMBERS_PAGE, {
+      state: {
+        eventFilter: {
+          id: eventIdentifier,
+          name: safeEvent.name,
+        },
+      },
+    })
+  }
 
   // Image click handler
   const handleImageClick = (image: string) => {
@@ -538,13 +573,17 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
               {/* Program Tab */}
               <TabsContent value="program" className="p-6">
-                <div className="bg-muted/50 rounded-lg p-6">
-                  <div className="w-full">
-                    <p className="text-sm flex w-full h-[100px] wrap-break-word flex-wrap line-clamp-3">
-                    {safeEvent.program || "No program details available."}
+                <div className="rounded-lg border bg-muted/30 p-6">
+                  {safeEvent.program ? (
+                    <div
+                      className="prose max-w-none whitespace-pre-wrap break-words text-sm text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: safeEvent.program }}
+                    />
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No program details available.
                     </p>
-                   
-                  </div>
+                  )}
                 </div>
               </TabsContent>
 
@@ -578,6 +617,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               </TabsContent>
             </Tabs>
           </Card>
+          <EventParticipantsSection eventId={eventIdentifier} onStatsChange={handleParticipantsStats} />
         </div>
 
         {/* Sidebar */}
@@ -701,6 +741,37 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               </CardContent>
             </Card>
           )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("events.membersCard.title", "Registered members")}</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {t("events.membersCard.subtitle", "View everyone participating in this event.")}
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {t("events.membersCard.totalLabel", "Total participants")}
+                </p>
+                <p className="text-4xl font-bold">
+                  {participantStats.isLoading ? "—" : participantStats.count}
+                </p>
+              </div>
+              {participantStats.error && (
+                <p className="text-sm text-destructive">
+                  {participantStats.error}
+                </p>
+              )}
+              <Button
+                className="w-full"
+                onClick={handleNavigateToMembers}
+                disabled={!eventIdentifier || participantStats.isLoading}
+              >
+                {t("events.membersCard.viewMembers", "Manage members")}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
 

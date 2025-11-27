@@ -186,7 +186,8 @@ const CategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: C
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className='divide-slate-300'>
+            <TableBody className='divide-slate-300  max-h-[calc(70vh-300px)] overflow-y-auto'>
+              
               {categories.map((category) => (
                 <TableRow key={category._id}>
                   <TableCell>
@@ -197,7 +198,7 @@ const CategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: C
                   </TableCell>
                   <TableCell className="font-medium">{category.name}</TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className="font-normal">
+                    <Badge variant="secondary" className="font-normal max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
                       {category.description}
                     </Badge>
                   </TableCell>

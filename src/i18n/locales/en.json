@@ -226,7 +226,8 @@
       "program": "Event Program",
       "badges": "Badges",
       "gallery": "Event Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors"
+      "exhibitorsSponsors": "Exhibitors & Sponsors",
+      "members" :"Members"
     },
     "fields": {
       "name": "Event Name",
@@ -581,7 +582,38 @@
     "deletedSuccessfully": "Category deleted successfully",
     "createFailed": "Failed to create category",
     "updateFailed": "Failed to update category",
-    "deleteFailed": "Failed to delete category"
+    "deleteFailed": "Failed to delete category",
+    "categoryDetails": {
+    "title": "Category Details",
+    "description": "Detailed information about the category",
+    "header": {
+      "name": "Category Name",
+      "description": "Description",
+      "icon": "Icon",
+      "categoryId": "Category ID"
+    },
+    "sections": {
+      "basicInfo": "Basic Information",
+      "description": "Description",
+      "timestamps": "Timestamps",
+      "usage": "Category Usage"
+    },
+    "labels": {
+      "created": "Created",
+      "lastUpdated": "Last Updated",
+      "fullDescription": "Full Description"
+    },
+    "badges": {
+      "category": "Category",
+      "id": "ID: {{id}}"
+    },
+    "usageDescription": "This category is used to organize and classify events within the platform. Events assigned to this category will be grouped together for better organization.",
+    "actions": {
+      "close": "Close",
+      "editCategory": "Edit Category",
+      "deleteCategory": "Delete Category"
+    }
+  }
   },
   "badges": {
     "title": "Badges",
@@ -948,7 +980,7 @@
           "placeholder": "User Type",
           "all": "All Types",
           "organizer": "Organizer",
-          "member": "Member"
+          "admin": "Admin"
         }
       }
     },
