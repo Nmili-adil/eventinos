@@ -18,8 +18,8 @@ export const uploadFileApi = async (file: File): Promise<any> => {
       },
     })
 
-    // Assuming the backend returns { id: string } or { _id: string }
-    return response
+    // Return the file ID from the response data
+    return response.data.data._id
   } catch (error: any) {
     console.error('Error uploading file:', error)
     throw new Error(error.response?.data?.message || error.message || 'Failed to upload file')
@@ -40,8 +40,8 @@ export const getFileUrlApi = async (fileId: string): Promise<string> => {
       },
     })
 
-    // Assuming the backend returns { url: string } or similar
-    return response.data.url || response.data.data?.url || response.data
+    // Return the file path from the response data
+    return response.data.data.path
   } catch (error: any) {
     console.error('Error fetching file URL:', error)
     throw new Error(error.response?.data?.message || error.message || 'Failed to fetch file URL')

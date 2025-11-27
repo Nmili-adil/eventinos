@@ -250,10 +250,6 @@ const EventDetails = ({ event }: EventDetailsProps) => {
   const closeImageModal = () => setSelectedImage(null);
   const closeSpeakerModal = () => setSelectedSpeaker(null);
 
-  useEffect(() => {
-    console.log("Delete dialog open:", open);
-  }, [open]);
-
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       {/* Header */}
@@ -399,12 +395,12 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   </div>
 
                   {/* Location */}
-                  <GoogleMap
+                  {/* <GoogleMap
                     location={safeEvent.location.location}
                     name={safeEvent.location.name}
                     address={`${safeEvent.location.name}, ${safeEvent.location.city}, ${safeEvent.location.country}`}
                     height="300px"
-                  />
+                  /> */}
                 </div>
 
                 {/* Social Links */}

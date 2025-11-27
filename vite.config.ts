@@ -12,6 +12,9 @@ export default defineConfig({
     },
   },
   server:{
-    host:true
+    host:true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   }
 })

@@ -5,13 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
@@ -27,6 +20,7 @@ import { EventPreview } from "./EventPreview";
 import { LocationSelector, type LocationValue } from "@/components/shared/location-selector";
 import { useTranslation } from "react-i18next";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { CustomSelect } from "@/components/shared/custom-select";
 
 interface EventAddFormProps {
   onSubmit: (data: EventFormData) => void;
@@ -407,21 +401,18 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>{t('eventForm.fields.visibility')}</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder={t('eventForm.placeholders.selectVisibility')} />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="PUBLIC">
-                                    {t('eventForm.options.visibility.public')}
-                                  </SelectItem>
-                                  <SelectItem value="PRIVATE">
-                                    {t('eventForm.options.visibility.private')}
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <FormControl>
+                                <CustomSelect
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  options={[
+                                    { value: "PUBLIC", label: t('eventForm.options.visibility.public') },
+                                    { value: "PRIVATE", label: t('eventForm.options.visibility.private') },
+                                  ]}
+                                  placeholder={t('eventForm.placeholders.selectVisibility')}
+                                  disabled={isLoading}
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -432,20 +423,20 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>{t('eventForm.fields.categories')}</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder={t('eventForm.placeholders.selectCategory')} />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {categories && categories.map((category: any) => (
-                                    <SelectItem key={category._id} value={category._id}>
-                                      {category.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <FormControl>
+                                <CustomSelect
+                                  value={field.value || ""}
+                                  onChange={field.onChange}
+                                  options={
+                                    categories?.map((category: any) => ({
+                                      value: category._id,
+                                      label: category.name,
+                                    })) || []
+                                  }
+                                  placeholder={t('eventForm.placeholders.selectCategory')}
+                                  disabled={isLoading}
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -457,21 +448,18 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>{t('eventForm.fields.type')}</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder={t('eventForm.placeholders.selectType')} />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="FACETOFACE">
-                                    {t('eventForm.options.type.faceToFace')}
-                                  </SelectItem>
-                                  <SelectItem value="VIRTUEL">
-                                    {t('eventForm.options.type.virtual')}
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <FormControl>
+                                <CustomSelect
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  options={[
+                                    { value: "FACETOFACE", label: t('eventForm.options.type.faceToFace') },
+                                    { value: "VIRTUEL", label: t('eventForm.options.type.virtual') },
+                                  ]}
+                                  placeholder={t('eventForm.placeholders.selectType')}
+                                  disabled={isLoading}
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -483,27 +471,20 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>{t('eventForm.fields.status')}</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder={t('eventForm.placeholders.selectStatus')} />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="PENDING">
-                                    {t('eventForm.options.status.pending')}
-                                  </SelectItem>
-                                  <SelectItem value="ACCEPTED">
-                                    {t('eventForm.options.status.accepted')}
-                                  </SelectItem>
-                                  <SelectItem value="REFUSED">
-                                    {t('eventForm.options.status.refused')}
-                                  </SelectItem>
-                                  <SelectItem value="CLOSED">
-                                    {t('eventForm.options.status.closed')}
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <FormControl>
+                                <CustomSelect
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  options={[
+                                    { value: "PENDING", label: t('eventForm.options.status.pending') },
+                                    { value: "ACCEPTED", label: t('eventForm.options.status.accepted') },
+                                    { value: "REFUSED", label: t('eventForm.options.status.refused') },
+                                    { value: "CLOSED", label: t('eventForm.options.status.closed') },
+                                  ]}
+                                  placeholder={t('eventForm.placeholders.selectStatus')}
+                                  disabled={isLoading}
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}

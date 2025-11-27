@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { useTranslation } from 'react-i18next'
 
 interface EventByDayData {
   date: string
@@ -13,16 +14,17 @@ interface EventsByDayBarChartProps {
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
+  const { t } = useTranslation()
   if (active && payload && payload.length) {
     const data = payload[0].payload
     const dayMap: { [key: string]: string } = {
-      'lu': 'Lundi',
-      'ma': 'Mardi', 
-      'me': 'Mercredi',
-      'je': 'Jeudi',
-      've': 'Vendredi',
-      'sa': 'Samedi',
-      'di': 'Dimanche'
+      'lu': t('dashboard.eventsByDayChart.days.lu'),
+      'ma': t('dashboard.eventsByDayChart.days.ma'), 
+      'me': t('dashboard.eventsByDayChart.days.me'),
+      'je': t('dashboard.eventsByDayChart.days.je'),
+      've': t('dashboard.eventsByDayChart.days.ve'),
+      'sa': t('dashboard.eventsByDayChart.days.sa'),
+      'di': t('dashboard.eventsByDayChart.days.di')
     }
     const dayAbbreviation = data.date.split('.')[0]
     const fullDayName = dayMap[dayAbbreviation] || data.date
@@ -31,7 +33,7 @@ const CustomTooltip = ({ active, payload }: any) => {
       <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-sm">
         <p className="font-semibold text-gray-900">{fullDayName}</p>
         <p className="text-sm text-gray-600">
-          {data.count} événements
+          {data.count} {t('dashboard.eventsByDayChart.events')}
         </p>
       </div>
     )
@@ -40,6 +42,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 
 export default function EventsByDayBarChart({ data, isLoading }: EventsByDayBarChartProps) {
+  const { t } = useTranslation()
   const [eventsData, setEventsData] = useState<EventByDayData[]>([])
   
   useEffect(() => {
@@ -58,7 +61,7 @@ export default function EventsByDayBarChart({ data, isLoading }: EventsByDayBarC
         <CardContent className="h-64 flex items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-            <p className="text-gray-600 text-sm">Chargement...</p>
+            <p className="text-gray-600 text-sm">{t('dashboard.eventsByDayChart.loading')}</p>
           </div>
         </CardContent>
       </Card>
@@ -70,9 +73,9 @@ export default function EventsByDayBarChart({ data, isLoading }: EventsByDayBarC
   return (
     <Card className="w-full border-slate-200">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold">Nombre d'événements</CardTitle>
+        <CardTitle className="text-lg font-semibold">{t('dashboard.eventsByDayChart.title')}</CardTitle>
         <CardDescription>
-          Semaine
+          {t('dashboard.eventsByDayChart.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -110,7 +113,7 @@ export default function EventsByDayBarChart({ data, isLoading }: EventsByDayBarC
           <p className="text-2xl font-bold text-blue-600">
             {totalEvents.toLocaleString()}
           </p>
-          <p className="text-sm text-gray-600">Événements cette semaine</p>
+          <p className="text-sm text-gray-600">{t('dashboard.eventsByDayChart.eventsThisWeek')}</p>
         </div>
       </CardContent>
     </Card>

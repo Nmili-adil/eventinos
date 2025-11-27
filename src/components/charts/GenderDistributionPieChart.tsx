@@ -1,12 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { useTranslation } from 'react-i18next'
 
 interface GenderData {
   name: string
   value: number
   percentage: number
   color: string
+  translatedName: string
 }
 
 interface GenderDistributionPieChartProps {
@@ -14,32 +16,37 @@ interface GenderDistributionPieChartProps {
   isLoading: boolean
 }
 
-// Gender colors - you can customize these
+// Gender colors - consistent across languages
 const GENDER_COLORS: { [key: string]: string } = {
-  'Homme': '#0088FE', // Blue
-  'Femme': '#FF69B4', // Pink
+  'male': '#0088FE', // Blue
+  'female': '#FF69B4', // Pink
   'homme': '#0088FE',
   'femme': '#FF69B4',
-  'Male': '#0088FE',
-  'Female': '#FF69B4',
-  'Autre': '#FFBB28', // Yellow for other genders
+  'other': '#FFBB28', // Yellow for other genders
   'autre': '#FFBB28',
-  'Other': '#FFBB28'
 }
 
 const DEFAULT_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
 
-const CustomTooltip = ({ active, payload }: any) => {
+interface TooltipProps {
+  active?: boolean
+  payload?: any[]
+}
+
+// Custom Tooltip Component with i18n
+const CustomTooltip = ({ active, payload }: TooltipProps) => {
+  const { t } = useTranslation()
+  
   if (active && payload && payload.length) {
     const data = payload[0].payload
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-sm">
-        <p className="font-semibold text-gray-900">{data.name}</p>
+      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-sm z-50">
+        <p className="font-semibold text-gray-900">{data.translatedName}</p>
         <p className="text-sm text-gray-600">
-          {data.value.toLocaleString()} utilisateurs
+          {data.value.toLocaleString()} {t('dashboard.genderChart.users')}
         </p>
         <p className="text-sm text-gray-600">
-          {data.percentage}% du total
+          {data.percentage}% {t('dashboard.genderChart.ofTotal')}
         </p>
       </div>
     )
@@ -47,8 +54,16 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null
 }
 
-const renderLegend = (props: any) => {
+interface LegendProps {
+  payload?: readonly any[]
+}
+
+// Legend component with i18n
+const RenderLegend = (props: LegendProps) => {
+  const { t } = useTranslation()
   const { payload } = props
+
+  if (!payload) return null
 
   return (
     <div className="flex flex-wrap justify-center gap-4 mt-4">
@@ -58,7 +73,7 @@ const renderLegend = (props: any) => {
             className="w-3 h-3 rounded-full" 
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-sm text-gray-600">{entry.value}</span>
+          <span className="text-sm text-gray-600">{entry.payload.translatedName}</span>
           <span className="text-sm font-medium text-gray-900">
             {entry.payload.percentage}%
           </span>
@@ -68,23 +83,35 @@ const renderLegend = (props: any) => {
   )
 }
 
-export default function GenderDistributionPieChart({ data, isLoading }: GenderDistributionPieChartProps) {
+export default function GenderDistributionPieChart({ 
+  data, 
+  isLoading 
+}: GenderDistributionPieChartProps) {
   const [genderData, setGenderData] = useState<GenderData[]>([])
+  const { t, i18n } = useTranslation()
   
+  // Function to translate gender names
+  const translateGender = (genderKey: string): string => {
+    return t(`genders.${genderKey.toLowerCase()}`, { defaultValue: genderKey })
+  }
+
   useEffect(() => {
-    console.log('Gender Chart - Received data:', data)
+    // console.log('Gender Chart - Received data:', data)
     if (data && Array.isArray(data)) {
       const totalCount = data.reduce((sum: number, item: any) => sum + item.count, 0)
       
       const formattedData = data.map((item: any, index: number) => {
         const genderName = item.gender
         const percentage = totalCount > 0 ? Math.round((item.count / totalCount) * 100) : 0
+        const translatedName = translateGender(genderName)
+        const normalizedGender = genderName.toLowerCase()
         
         return {
           name: genderName,
           value: item.count,
           percentage: percentage,
-          color: GENDER_COLORS[genderName] || DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+          color: GENDER_COLORS[normalizedGender] || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+          translatedName: translatedName
         }
       })
       
@@ -93,7 +120,7 @@ export default function GenderDistributionPieChart({ data, isLoading }: GenderDi
     } else {
       console.log('Gender Chart - No valid data')
     }
-  }, [data])
+  }, [data, i18n.language]) // Re-run when language changes
 
   if (isLoading) {
     return (
@@ -101,7 +128,7 @@ export default function GenderDistributionPieChart({ data, isLoading }: GenderDi
         <CardContent className="h-80 flex items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="text-gray-600">Chargement des données...</p>
+            <p className="text-gray-600">{t('dashboard.genderChart.loading')}</p>
           </div>
         </CardContent>
       </Card>
@@ -113,9 +140,11 @@ export default function GenderDistributionPieChart({ data, isLoading }: GenderDi
   return (
     <Card className="w-full border-slate-200">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold">Répartition par genre</CardTitle>
+        <CardTitle className="text-lg font-semibold">
+          {t('dashboard.genderChart.title')}
+        </CardTitle>
         <CardDescription>
-          Distribution des utilisateurs par genre
+          {t('dashboard.genderChart.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -128,12 +157,10 @@ export default function GenderDistributionPieChart({ data, isLoading }: GenderDi
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                //   label={({ percentage }) => `${percentage}%`}
                   outerRadius={120}
                   innerRadius={60}
                   fill="#8884d8"
                   dataKey="value"
-          
                 >
                   {genderData.map((entry, index) => (
                     <Cell 
@@ -145,12 +172,12 @@ export default function GenderDistributionPieChart({ data, isLoading }: GenderDi
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend content={renderLegend} />
+                <Legend content={RenderLegend} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-full flex items-center justify-center">
-              <p className="text-gray-500">Aucune donnée disponible</p>
+              <p className="text-gray-500">{t('dashboard.genderChart.noData')}</p>
             </div>
           )}
         </div>
@@ -161,43 +188,15 @@ export default function GenderDistributionPieChart({ data, isLoading }: GenderDi
             <p className="text-2xl font-bold text-blue-600">
               {totalUsers.toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">Total utilisateurs</p>
+            <p className="text-sm text-gray-600">{t('dashboard.genderChart.totalUsers')}</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-green-600">
               {genderData.length}
             </p>
-            <p className="text-sm text-gray-600">Genres</p>
+            <p className="text-sm text-gray-600">{t('dashboard.genderChart.genders')}</p>
           </div>
         </div>
-
-        {/* Detailed breakdown */}
-        {/* <div className="mt-6 space-y-3">
-          <h4 className="font-semibold text-gray-900 text-center mb-4">Détail par genre</h4>
-          <div className="space-y-2">
-            {genderData.map((gender) => (
-              <div 
-                key={gender.name}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-              >
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-4 h-4 rounded-full" 
-                    style={{ backgroundColor: gender.color }}
-                  />
-                  <span className="text-sm font-medium text-gray-900">
-                    {gender.name}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {gender.value.toLocaleString()} <span className="text-gray-500">({gender.percentage}%)</span>
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div> */}
       </CardContent>
     </Card>
   )

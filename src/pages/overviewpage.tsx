@@ -1,6 +1,6 @@
 import StatCard from "@/components/partials/dashboardComponents/StatCard";
 import { fetchEventsRequest } from "@/store/features/events/events.actions";
-import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Users, LayoutDashboard, Filter, X } from "lucide-react";
+import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Users, LayoutDashboard, Filter, X, Calendar1Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -9,7 +9,7 @@ import type { Event } from "@/types/eventsTypes";
 import { fetchUsersRequest } from "@/store/features/users/users.actions";
 import CityDistributionBarChart from "@/components/charts/CityDistributionChart";
 import GenderDistributionPieChart from "@/components/charts/GenderDistributionPieChart";
-import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart ";
+import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart";
 import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
 import PageHead from "@/components/shared/page-head";
 import { useTranslation } from "react-i18next";
@@ -247,7 +247,7 @@ const Overviewpage = () => {
     <div className="space-y-6 ">
       {/* Page Header */}
       <div className="mb-8">
-        <PageHead title={t('dashboard.title')} icon={LayoutDashboard} description={t('dashboard.description')}/>
+        <PageHead title={t('dashboard.title')} icon={LayoutDashboard} description={t('dashboard.description')} total={0}/>
       </div>
 
       {/* Time Period Filter */}
@@ -398,7 +398,7 @@ const Overviewpage = () => {
             <StatCard
               title={t('dashboard.totalEvents')}
               value={stats.totalEvents}
-              icon={Calendar}
+              icon={Calendar1Icon}
               description={t('dashboard.allEvents')}
               variant="default"
             />

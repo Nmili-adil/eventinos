@@ -134,7 +134,6 @@ export const ProfilePage: React.FC = () => {
     } catch (error) {
       console.error('Error formatting date for display:', error);
         return t('profilePage.common.notAvailable');
-      return t('profilePage.common.notAvailable');
     }
   };
 

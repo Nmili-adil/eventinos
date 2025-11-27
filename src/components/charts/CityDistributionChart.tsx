@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { useTranslation } from 'react-i18next'
 
 interface CityData {
   name: string
@@ -15,16 +16,17 @@ interface CityDistributionBarChartProps {
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
+  const { t } = useTranslation()
   if (active && payload && payload.length) {
     const data = payload[0].payload
     return (
       <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-sm">
         <p className="font-semibold text-gray-900">{data.name}</p>
         <p className="text-sm text-gray-600">
-          {data.users.toLocaleString()} utilisateurs
+          {data.users.toLocaleString()} {t('dashboard.cityChart.users')}
         </p>
         <p className="text-sm text-gray-600">
-          {data.percentage}% du total
+          {data.percentage}{t('dashboard.cityChart.ofTotal')}
         </p>
       </div>
     )
@@ -33,6 +35,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 
 export default function CityDistributionBarChart({ data, isLoading }: CityDistributionBarChartProps) {
+  const { t } = useTranslation()
   const [cityData, setCityData] = useState<CityData[]>([])
   
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function CityDistributionBarChart({ data, isLoading }: CityDistri
       <Card className="w-full border-slate-200">
         <CardContent className="h-80 flex items-center justify-center">
              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p>Chargement des données...</p>
+          <p>{t('dashboard.cityChart.loading')}</p>
         </CardContent>
       </Card>
     )
@@ -69,9 +72,9 @@ export default function CityDistributionBarChart({ data, isLoading }: CityDistri
   return (
     <Card className="w-full border-slate-200">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold">Répartition par ville</CardTitle>
+        <CardTitle className="text-lg font-semibold">{t('dashboard.cityChart.title')}</CardTitle>
         <CardDescription>
-          Nombre d'utilisateurs par ville
+          {t('dashboard.cityChart.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -93,7 +96,7 @@ export default function CityDistributionBarChart({ data, isLoading }: CityDistri
                 <YAxis 
                   tick={{ fontSize: 12 }}
                   label={{ 
-                    value: 'Utilisateurs', 
+                    value: t('dashboard.cityChart.users'), 
                     angle: -90, 
                     position: 'insideLeft',
                     offset: -10,
@@ -113,7 +116,7 @@ export default function CityDistributionBarChart({ data, isLoading }: CityDistri
             </ResponsiveContainer>
           ) : (
             <div className="h-full flex items-center justify-center">
-              <p className="text-gray-500">Aucune donnée disponible</p>
+              <p className="text-gray-500">{t('dashboard.cityChart.noData')}</p>
             </div>
           )}
         </div>
@@ -124,19 +127,19 @@ export default function CityDistributionBarChart({ data, isLoading }: CityDistri
             <p className="text-2xl font-bold text-blue-600">
               {totalUsers.toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">Total utilisateurs</p>
+            <p className="text-sm text-gray-600">{t('dashboard.cityChart.totalUsers')}</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-green-600">
               {cityData.length}
             </p>
-            <p className="text-sm text-gray-600">Villes actives</p>
+            <p className="text-sm text-gray-600">{t('dashboard.cityChart.activeCities')}</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-purple-600">
               {averageUsers.toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">Moyenne par ville</p>
+            <p className="text-sm text-gray-600">{t('dashboard.cityChart.averagePerCity')}</p>
           </div>
         </div>
       </CardContent>

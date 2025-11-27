@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
 import { toast } from 'sonner';
@@ -175,6 +175,10 @@ export const MembersPage: React.FC = () => {
   const [eventsLoading, setEventsLoading] = useState(false);
   const [eventsError, setEventsError] = useState<string | null>(null);
   const [eventSearchTerm, setEventSearchTerm] = useState('');
+  const [exitConfirmOpen, setExitConfirmOpen] = useState<boolean>(false);
+  const navigate = useNavigate()
+
+
   const filteredEvents = useMemo(() => {
     if (!eventSearchTerm.trim()) {
       return availableEvents;
@@ -188,12 +192,15 @@ export const MembersPage: React.FC = () => {
   const handleEventDialogOpenChange = (open: boolean) => {
     // Prevent closing the dialog when no event is selected
     if (!open && !selectedEvent) {
-      return(
-        toast.warning('ddddddddddd')
-      )
-      // return;
+     setExitConfirmOpen(true)
+      return;
     }
     setEventSelectorOpen(open);
+  };
+  const handleReturnToPrevious = () => {
+    setExitConfirmOpen(false);
+    setEventSelectorOpen(false);
+    navigate(-1)
   };
 
   // Fetch members when page changes
@@ -790,86 +797,104 @@ export const MembersPage: React.FC = () => {
         isLoading={actionLoading === 'create'}
       />
 
-      <Dialog open={eventSelectorOpen} onOpenChange={handleEventDialogOpenChange}>
-        <DialogContent className="max-w-3xl border-slate-300">
-          <DialogHeader className='relative'>
-            <DialogTitle>{t('members.events.dialog.title', 'Select an event')}</DialogTitle>
-            <DialogDescription>
-              {t('members.events.dialog.description', 'Choose an event to display its registered members.')}
-            </DialogDescription>
-            
-         
-          </DialogHeader>
-          {eventsLoading ? (
-            <div className="space-y-3 pt-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton key={index} className="h-16 w-full" />
-              ))}
-            </div>
-          ) : eventsError ? (
-            <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
-              {eventsError}
-            </div>
-          ) : availableEvents.length === 0 ? (
-            <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
-              {t('members.events.dialog.empty', 'No events available at the moment.')}
-            </div>
-          ) : (
-            <div className="space-y-4 pt-4 overflow-y-auto">
-              <Input
-                value={eventSearchTerm}
-                onChange={(e) => setEventSearchTerm(e.target.value)}
-                placeholder={t('members.events.dialog.searchPlaceholder', 'Search events by name')}
-              />
-              <ScrollArea className="max-h-[420px] pr-4">
-                <div className="space-y-3">
-                  {filteredEvents.length > 0 ? (
-                    filteredEvents.map((eventOption) => (
-                      <Card
-                      key={eventOption._id}
-                      className="cursor-pointer border-slate-300 transition hover:border-slate-500 object-cover"
-                      onClick={() => handleEventSelection({ id: eventOption._id, name: eventOption.name })}
-                      style={{
-                        backgroundImage: `url(${eventOption.image})`,
-                        backgroundPosition:"center",
-                        backgroundSize:'cover',
-                        backgroundRepeat: 'no-repeat'
-                      }}
-                    >
-                      <CardContent className="flex flex-col gap-1 py-4 backdrop-blur-2xl bg-white/20 mx-4 rounded-md shadow-md text-gray-100" >
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold truncate">{eventOption.name}</span>
-                          <Badge variant="default">{eventOption.status}</Badge>
-                        </div>
-                        <span className="text-sm text-gray-200">
-                          {formatDate(eventOption.startDate?.date)}
-                        </span>
-                        <span className="text-xs text-gray-200">
-                          {/* Fix: Safely access location properties */}
-                          {[
-                            typeof eventOption.location === 'object' && eventOption.location !== null 
-                              ? eventOption.location.city 
-                              : null,
-                            typeof eventOption.location === 'object' && eventOption.location !== null 
-                              ? eventOption.location.country 
-                              : eventOption.location // fallback if it's a string
-                          ].filter(Boolean).join(', ')}
-                        </span>
-                      </CardContent>
-                    </Card>
-                    ))
-                  ) : (
-                    <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
-                      {t('members.events.dialog.noResults', 'No events match your search.')}
+<Dialog open={eventSelectorOpen} onOpenChange={handleEventDialogOpenChange}>
+  <DialogContent className="max-w-3xl border-slate-300">
+    <DialogHeader className='relative'>
+      <DialogTitle>{t('members.events.dialog.title', 'Select an event')}</DialogTitle>
+      <DialogDescription>
+        {t('members.events.dialog.description', 'Choose an event to display its registered members.')}
+      </DialogDescription>
+    </DialogHeader>
+    {eventsLoading ? (
+      <div className="space-y-3 pt-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-16 w-full" />
+        ))}
+      </div>
+    ) : eventsError ? (
+      <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
+        {eventsError}
+      </div>
+    ) : availableEvents.length === 0 ? (
+      <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
+        {t('members.events.dialog.empty', 'No events available at the moment.')}
+      </div>
+    ) : (
+      <div className="space-y-4 pt-4 overflow-y-auto">
+        <Input
+          value={eventSearchTerm}
+          onChange={(e) => setEventSearchTerm(e.target.value)}
+          placeholder={t('members.events.dialog.searchPlaceholder', 'Search events by name')}
+        />
+        <ScrollArea className="max-h-[420px] pr-4">
+          <div className="space-y-3">
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((eventOption) => (
+                <Card
+                  key={eventOption._id}
+                  className="cursor-pointer border-slate-300 transition hover:border-slate-500 object-cover"
+                  onClick={() => handleEventSelection({ id: eventOption._id, name: eventOption.name })}
+                  style={{
+                    backgroundImage: `url(${eventOption.image})`,
+                    backgroundPosition: "center",
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat'
+                  }}
+                >
+                  <CardContent className="flex flex-col gap-1 py-4 backdrop-blur-2xl bg-white/20 mx-4 rounded-md shadow-md text-gray-100" >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold truncate">{eventOption.name}</span>
+                      <Badge variant="default">{eventOption.status}</Badge>
                     </div>
-                  )}
-                </div>
-              </ScrollArea>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+                    <span className="text-sm text-gray-200">
+                      {formatDate(eventOption.startDate?.date)}
+                    </span>
+                    <span className="text-xs text-gray-200">
+                      {[
+                        typeof eventOption.location === 'object' && eventOption.location !== null 
+                          ? eventOption.location.city 
+                          : null,
+                        typeof eventOption.location === 'object' && eventOption.location !== null 
+                          ? eventOption.location.country 
+                          : eventOption.location
+                      ].filter(Boolean).join(', ')}
+                    </span>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
+                {t('members.events.dialog.noResults', 'No events match your search.')}
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
+    )}
+  </DialogContent>
+</Dialog>
 
+{/* Exit Confirmation Dialog */}
+<AlertDialog open={exitConfirmOpen} onOpenChange={setExitConfirmOpen}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>
+        {t('members.events.exitConfirm.title', 'Event Selection Required')}
+      </AlertDialogTitle>
+      <AlertDialogDescription>
+        {t('members.events.exitConfirm.description', 'You must select an event to view its participants. Would you like to return to the previous page?')}
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel onClick={() => setExitConfirmOpen(false)}>
+        {t('members.events.exitConfirm.stay', 'Stay Here')}
+      </AlertDialogCancel>
+      <AlertDialogAction onClick={handleReturnToPrevious}>
+        {t('members.events.exitConfirm.return', 'Return to Previous Page')}
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
       {/* Pagination */}
       {!selectedEvent && pagination && (
         <MembersPagination

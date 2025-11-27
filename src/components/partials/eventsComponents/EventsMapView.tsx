@@ -288,10 +288,10 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
                   lng: event.location.location.lng,
                 }}
                 onClick={() => handleMarkerClick(event)}
-                  icon={{
-                    url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                    scaledSize: typeof google !== 'undefined' && google.maps ? new google.maps.Size(32, 32) : undefined,
-                  }}
+                icon={{
+                  url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                  scaledSize: typeof google !== 'undefined' && google.maps ? new google.maps.Size(32, 32) : undefined,
+                }}
               >
                 {selectedEvent?._id === event._id && (
                   <InfoWindow
