@@ -63,6 +63,8 @@ export interface EventsFilters {
   search: string
   status: string
   type: string
+  startDate?: string | null
+  endDate?: string | null
 }
 
 export interface EventsSort {
@@ -82,6 +84,8 @@ export interface EventsFilters {
   search: string
   status: string
   type: string
+  startDate?: string | null
+  endDate?: string | null
 }
 
 

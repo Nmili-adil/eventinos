@@ -17,7 +17,7 @@ export const fetchAnalyticsByCity = async (params: AnalyticsParams = {}) => {
 }
 
 export const fetchAnalyticsByDates = async (params: AnalyticsParams = {}) => {
-  return api.get('/analytics/events-per-dates', {
+  return api.get('/analytics/event-per-date', {
     params,
     headers: {
       'Content-Type': 'application/json',

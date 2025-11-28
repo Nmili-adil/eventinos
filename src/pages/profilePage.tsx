@@ -14,9 +14,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 // Icons
-import { User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, Link as LinkIcon, Plus, ArrowLeft } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, Link as LinkIcon, Plus, ArrowLeft, Loader2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -78,6 +87,9 @@ export const ProfilePage: React.FC = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [roleChangeLoading, setRoleChangeLoading] = useState(false);
+  const [roleChangeTarget, setRoleChangeTarget] = useState<'Admin' | 'Organizer' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, isLoading: loadingData, error } = useSelector((state: RootState) => state.users);
   const { role } = useSelector((state: RootState) => state.roles);
@@ -85,6 +97,7 @@ export const ProfilePage: React.FC = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate()
+  const viewerRole = getRole();
 
   // Safe date formatting function
   const formatDate = (dateInput: any): string => {
@@ -322,8 +335,25 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleRoleChange = () => {
-    
+  const handleRoleUpdate = async (targetRole: 'Admin' | 'Organizer') => {
+    if (!params.userId) return
+    setRoleChangeLoading(true)
+    setRoleChangeTarget(targetRole)
+    try {
+      await updateUserApi(params.userId, { user: targetRole })
+      toast.success(
+        t('profilePage.roles.roleActions.success', {
+          role: targetRole === 'Admin' ? t('profilePage.roles.roleActions.adminLabel', 'Admin') : t('profilePage.roles.roleActions.organizerLabel', 'Organizer'),
+        })
+      )
+      setRoleDialogOpen(false)
+      dispatch(fetchUserByIdRequest(params.userId))
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || t('profilePage.roles.roleActions.error', 'Unable to update role.'))
+    } finally {
+      setRoleChangeLoading(false)
+      setRoleChangeTarget(null)
+    }
   }
 
   const getInitials = (firstName: string, lastName: string) => {
@@ -341,6 +371,9 @@ export const ProfilePage: React.FC = () => {
   if (!user) {
     return <ProfileNotFound userId={params.userId} />;
   }
+
+  const normalizedViewedRole = user.user?.toLowerCase()
+  const canManageRole = viewerRole === 'admin' && (normalizedViewedRole === 'organizer' || normalizedViewedRole === 'admin')
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -360,6 +393,15 @@ export const ProfilePage: React.FC = () => {
     >
       <ArrowLeft className='w-4 h-4'/>
     </Button>
+        {canManageRole && (
+          <Button
+            variant="secondary"
+            onClick={() => setRoleDialogOpen(true)}
+            disabled={roleChangeLoading}
+          >
+            {t('profilePage.roles.roleActions.changeRoleButton')}
+          </Button>
+        )}
         <Button
           variant={isEditing ? "outline" : "default"}
           onClick={() => setIsEditing(!isEditing)}
@@ -1135,7 +1177,7 @@ export const ProfilePage: React.FC = () => {
                </div> 
                {
                 getRole() === 'admin' ? 
-                  <Button onClick={handleRoleChange}>change role</Button> 
+                  <Button >{t('profilePage.roles.roleActions.changeRoleButton')}</Button> 
                   : ''
                 }
               </CardHeader>
@@ -1215,6 +1257,50 @@ export const ProfilePage: React.FC = () => {
           </div>
         </TabsContent>
       </Tabs>
+      <AlertDialog
+        open={roleDialogOpen}
+        onOpenChange={(open) => {
+          if (roleChangeLoading) return
+          setRoleDialogOpen(open)
+          if (!open) {
+            setRoleChangeTarget(null)
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('profilePage.roles.roleActions.changeRoleTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('profilePage.roles.roleActions.description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-3">
+            <Button
+              variant="default"
+              className="w-full justify-between"
+              disabled={roleChangeLoading || normalizedViewedRole === 'admin'}
+              onClick={() => handleRoleUpdate('Admin')}
+            >
+              <span>{t('profilePage.roles.roleActions.upgradeAdmin')}</span>
+              {roleChangeLoading && roleChangeTarget === 'Admin' && <Loader2 className="h-4 w-4 animate-spin" />}
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-between"
+              disabled={roleChangeLoading || normalizedViewedRole === 'organizer'}
+              onClick={() => handleRoleUpdate('Organizer')}
+            >
+              <span>{t('profilePage.roles.roleActions.downgradeOrganizer')}</span>
+              {roleChangeLoading && roleChangeTarget === 'Organizer' && <Loader2 className="h-4 w-4 animate-spin" />}
+            </Button>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={roleChangeLoading}>
+              {t('common.cancel')}
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

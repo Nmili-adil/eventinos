@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { useEffect, useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +14,7 @@ interface CityData {
 interface CityDistributionBarChartProps {
   data: any[]
   isLoading: boolean
+  dateRangeLabel?: string
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -34,7 +36,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null
 }
 
-export default function CityDistributionBarChart({ data, isLoading }: CityDistributionBarChartProps) {
+export default function CityDistributionBarChart({ data, isLoading, dateRangeLabel }: CityDistributionBarChartProps) {
   const { t } = useTranslation()
   const [cityData, setCityData] = useState<CityData[]>([])
   
@@ -71,11 +73,16 @@ export default function CityDistributionBarChart({ data, isLoading }: CityDistri
 
   return (
     <Card className="w-full border-slate-200">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-4 space-y-2">
         <CardTitle className="text-lg font-semibold">{t('dashboard.cityChart.title')}</CardTitle>
         <CardDescription>
           {t('dashboard.cityChart.description')}
         </CardDescription>
+        {dateRangeLabel && (
+          <Badge variant="outline" className="w-fit">
+            {dateRangeLabel}
+          </Badge>
+        )}
       </CardHeader>
       <CardContent>
         <div className="h-80">

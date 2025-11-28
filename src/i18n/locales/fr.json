@@ -85,6 +85,16 @@
       "6months": "6 derniers mois",
       "year": "Année dernière"
     },
+    "filters": {
+      "startDateLabel": "Date de début",
+      "endDateLabel": "Date de fin",
+      "startDatePlaceholder": "Choisir la date de début",
+      "endDatePlaceholder": "Choisir la date de fin",
+      "clearDates": "Effacer la plage de dates",
+      "startAny": "Début",
+      "endAny": "Présent",
+      "currentRangeLabel": "Affichage des données pour {{range}}"
+    },
     "genderChart": {
       "title": "Répartition par genre",
       "description": "Distribution des utilisateurs par genre",
@@ -199,6 +209,11 @@
       "calendar": "Vue calendrier",
       "table": "Vue tableau",
       "maps": "Vue maps"
+    },
+    "filters": {
+      "startDatePlaceholder": "Choisir la date de début",
+      "endDatePlaceholder": "Choisir la date de fin",
+      "clearDates": "Effacer les dates"
     },
     "statusChangeDialog": {
       "title": "Changer le statut de l'événement",
@@ -847,6 +862,17 @@
         "description": "Permissions accordées à ce rôle",
         "noRights": "Aucun droit attribué",
         "noInfo": "Aucune information sur les droits disponible"
+      },
+      "roleActions": {
+        "changeRoleTitle": "Modifier le rôle de l'utilisateur",
+        "changeRoleButton": "Modifier le rôle",
+        "description": "Choisissez comment mettre à jour le rôle de cet organisateur.",
+        "upgradeAdmin": "Accorder l'accès administrateur",
+        "downgradeOrganizer": "Définir comme organisateur",
+        "adminLabel": "Admin",
+        "organizerLabel": "Organisateur",
+        "success": "Rôle mis à jour en {{role}}",
+        "error": "Impossible de mettre à jour le rôle."
       }
     },
     "status": {
@@ -994,7 +1020,10 @@
     "guestUser": "Utilisateur invité",
     "conversation": {
       "title": "Conversation",
-      "replyTo": "Répondre à"
+      "replyTo": "Répondre à",
+      "loading": "Chargement de l'historique de conversation...",
+      "errorTitle": "Conversation indisponible",
+      "errorMessage": "Impossible de charger l'historique complet de la conversation."
     },
     "reply": {
       "placeholder": "Répondre à ce message",
@@ -1021,6 +1050,17 @@
     "deleteDialog": {
       "title": "Supprimer le contact",
       "description": "Êtes-vous sûr de vouloir supprimer le message de contact {{subject}} ? Cette action ne peut pas être annulée."
+    }
+  },
+  "globalSearch": {
+    "error": "Impossible d'effectuer la recherche pour le moment.",
+    "noResults": "Aucun résultat",
+    "loading": "Recherche...",
+    "sections": {
+      "event": "Événements",
+      "member": "Membres",
+      "organizer": "Organisateurs",
+      "admin": "Admins"
     }
   }
 }

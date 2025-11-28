@@ -43,7 +43,9 @@ export function EventsTable() {
   const [filters, setFilters] = useState<EventsFilters>({
     search: '',
     status: 'all',
-    type: 'all'
+    type: 'all',
+    startDate: null,
+    endDate: null,
   })
   
   const [sort, setSort] = useState<EventsSort>({
@@ -117,7 +119,7 @@ export function EventsTable() {
   }
 
   const handleResetFilters = () => {
-    setFilters({ search: '', status: 'all', type: 'all' })
+    setFilters({ search: '', status: 'all', type: 'all', startDate: null, endDate: null })
     setPagination(prev => ({ ...prev, currentPage: 1 }))
   }
 

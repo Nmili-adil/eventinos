@@ -85,6 +85,16 @@
       "6months": "آخر 6 أشهر",
       "year": "السنة الماضية"
     },
+    "filters": {
+      "startDateLabel": "تاريخ البدء",
+      "endDateLabel": "تاريخ الانتهاء",
+      "startDatePlaceholder": "اختر تاريخ البدء",
+      "endDatePlaceholder": "اختر تاريخ الانتهاء",
+      "clearDates": "مسح نطاق التاريخ",
+      "startAny": "البداية",
+      "endAny": "الحاضر",
+      "currentRangeLabel": "عرض البيانات للفترة {{range}}"
+    },
     "genderChart": {
       "title": "توزيع المستخدمين حسب الجنس",
       "description": "توزيع المستخدمين حسب الجنس",
@@ -193,6 +203,11 @@
       "calendar": "عرض التقويم",
       "table": "عرض الجدول",
       "maps": "عرض الخرائط"
+    },
+    "filters": {
+      "startDatePlaceholder": "اختر تاريخ البدء",
+      "endDatePlaceholder": "اختر تاريخ الانتهاء",
+      "clearDates": "مسح التواريخ"
     },
     "statusChangeDialog": {
       "title": "تغيير حالة الفعالية",
@@ -841,6 +856,17 @@
         "description": "الصلاحيات الممنوحة لهذا الدور",
         "noRights": "لا توجد صلاحيات معينة",
         "noInfo": "لا تتوفر معلومات عن الصلاحيات"
+      },
+      "roleActions": {
+        "changeRoleTitle": "تغيير دور المستخدم",
+        "changeRoleButton": "تغيير الدور",
+        "description": "اختر كيفية تحديث دور هذا المنظم.",
+        "upgradeAdmin": "منح صلاحية مدير",
+        "downgradeOrganizer": "تعيين كمنظم",
+        "adminLabel": "مدير",
+        "organizerLabel": "منظم",
+        "success": "تم تحديث الدور إلى {{role}}",
+        "error": "تعذر تحديث الدور."
       }
     },
     "status": {
@@ -988,7 +1014,10 @@
     "guestUser": "مستخدم ضيف",
     "conversation": {
       "title": "محادثة",
-      "replyTo": "الرد على"
+      "replyTo": "الرد على",
+      "loading": "جاري تحميل سجل المحادثة...",
+      "errorTitle": "المحادثة غير متاحة",
+      "errorMessage": "تعذر تحميل سجل المحادثة بالكامل."
     },
     "reply": {
       "placeholder": "الرد على هذه الرسالة",
@@ -1015,6 +1044,17 @@
     "deleteDialog": {
       "title": "حذف جهة الاتصال",
       "description": "هل أنت متأكد أنك تريد حذف رسالة جهة الاتصال {{subject}}؟ لا يمكن التراجع عن هذا الإجراء."
+    }
+  },
+  "globalSearch": {
+    "error": "يتعذر تنفيذ البحث الآن.",
+    "noResults": "لا توجد نتائج",
+    "loading": "جاري البحث...",
+    "sections": {
+      "event": "الفعاليات",
+      "member": "الأعضاء",
+      "organizer": "المنظمون",
+      "admin": "المديرون"
     }
   }
 }

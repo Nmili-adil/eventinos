@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +15,7 @@ interface GenderData {
 interface GenderDistributionPieChartProps {
   data: any[]
   isLoading: boolean
+  dateRangeLabel?: string
 }
 
 // Gender colors - consistent across languages
@@ -85,7 +87,8 @@ const RenderLegend = (props: LegendProps) => {
 
 export default function GenderDistributionPieChart({ 
   data, 
-  isLoading 
+  isLoading,
+  dateRangeLabel,
 }: GenderDistributionPieChartProps) {
   const [genderData, setGenderData] = useState<GenderData[]>([])
   const { t, i18n } = useTranslation()
@@ -139,13 +142,18 @@ export default function GenderDistributionPieChart({
 
   return (
     <Card className="w-full border-slate-200">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-4 space-y-2">
         <CardTitle className="text-lg font-semibold">
           {t('dashboard.genderChart.title')}
         </CardTitle>
         <CardDescription>
           {t('dashboard.genderChart.description')}
         </CardDescription>
+        {dateRangeLabel && (
+          <Badge variant="outline" className="w-fit">
+            {dateRangeLabel}
+          </Badge>
+        )}
       </CardHeader>
       <CardContent>
         <div className="h-72">

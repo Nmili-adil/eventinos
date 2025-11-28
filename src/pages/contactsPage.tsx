@@ -8,6 +8,7 @@ import {
   fetchContactsApi,
   deleteContactApi,
   replyToContactApi,
+  fetchContactUserConversationApi,
   type Contact,
 } from '@/api/contactsApi';
 
@@ -54,6 +55,7 @@ import {
   ReplyAll,
   Forward,
   ArrowLeft,
+  Loader2,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
@@ -79,6 +81,66 @@ const ContactsPage: React.FC = () => {
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   const navigate = useNavigate();
+  const [userConversationsLoading, setUserConversationsLoading] = useState(false);
+  const [userConversationsError, setUserConversationsError] = useState<string | null>(null);
+
+  const extractContactsFromResponse = (response: any): Contact[] => {
+    if (Array.isArray(response?.data?.data)) {
+      return response.data.data
+    }
+    if (Array.isArray(response?.data?.contacts)) {
+      return response.data.contacts
+    }
+    if (Array.isArray(response?.data)) {
+      return response.data
+    }
+    if (Array.isArray(response)) {
+      return response
+    }
+    return []
+  }
+
+  const buildConversationMessages = (items: Contact[]): ConversationMessage[] => {
+    return items
+      .map((item) => ({
+        id: `${item._id}-incoming`,
+        direction: 'incoming' as const,
+        body: item.message,
+        timestamp: item.createdAt,
+      }))
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+  }
+
+  const loadUserConversation = async (contact: Contact) => {
+    setUserConversationsLoading(true)
+    setUserConversationsError(null)
+    try {
+      const response = await fetchContactUserConversationApi(contact._id)
+      const conversationContacts = extractContactsFromResponse(response)
+      const incomingMessages = buildConversationMessages(conversationContacts.length ? conversationContacts : [contact])
+
+      setConversationMap(prev => {
+        const existing = prev[contact._id] || []
+        const outgoingMessages = existing.filter(message => message.direction === 'outgoing')
+        const merged = [...incomingMessages, ...outgoingMessages].sort(
+          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        )
+        return {
+          ...prev,
+          [contact._id]: merged,
+        }
+      })
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        t('contacts.conversation.errorMessage', 'Unable to load full conversation history.')
+      setUserConversationsError(message)
+      toast.error(message)
+    } finally {
+      setUserConversationsLoading(false)
+    }
+  }
 
   useEffect(() => {
     const loadContacts = async () => {
@@ -87,19 +149,7 @@ const ContactsPage: React.FC = () => {
 
       try {
         const response = await fetchContactsApi();
-        
-        // Simplify data extraction based on your API response structure
-        let contactsData: Contact[] = [];
-        
-        if (Array.isArray(response?.data)) {
-          contactsData = response.data;
-        } else if (Array.isArray(response?.data?.data)) {
-          contactsData = response.data.data;
-        } else if (Array.isArray(response?.data?.contacts)) {
-          contactsData = response.data.contacts;
-        } else if (Array.isArray(response)) {
-          contactsData = response;
-        }
+        const contactsData = extractContactsFromResponse(response);
 
         setContacts(contactsData);
         
@@ -237,6 +287,7 @@ const ContactsPage: React.FC = () => {
     setSelectedContact(contact);
     // Clear reply message when selecting a different contact
     setReplyMessage('');
+    loadUserConversation(contact);
   };
 
   const handleSendReply = async () => {
@@ -614,6 +665,18 @@ const ContactsPage: React.FC = () => {
                     {format(new Date(selectedContact.createdAt), 'PPP p')}
                   </span>
                 </div>
+                {userConversationsLoading && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t('contacts.conversation.loading', 'Loading conversation history...')}
+                  </div>
+                )}
+                {userConversationsError && (
+                  <Alert variant="destructive">
+                    <AlertTitle>{t('contacts.conversation.errorTitle', 'Conversation unavailable')}</AlertTitle>
+                    <p className="text-sm">{userConversationsError}</p>
+                  </Alert>
+                )}
               </div>
 
               {/* Messages */}

@@ -63,7 +63,7 @@ export const formatDate = (dateString: string): string => {
 
 export const filterEvents = (
   events: Event[],
-  filters: { search: string; status: string; type: string }
+  filters: { search: string; status: string; type: string; startDate?: string | null; endDate?: string | null }
 ): Event[] => {
   return events.filter(event => {
     const matchesSearch = event.name.toLowerCase().includes(filters.search.toLowerCase()) ||
@@ -71,8 +71,11 @@ export const filterEvents = (
                          event.location.country.toLowerCase().includes(filters.search.toLowerCase())
     const matchesStatus = filters.status === 'all' || event.status === filters.status
     const matchesType = filters.type === 'all' || event.type === filters.type
+    const eventStartDate = new Date(event.startDate.date)
+    const matchesStartDate = !filters.startDate || eventStartDate >= new Date(filters.startDate)
+    const matchesEndDate = !filters.endDate || eventStartDate <= new Date(filters.endDate)
     
-    return matchesSearch && matchesStatus && matchesType
+    return matchesSearch && matchesStatus && matchesType && matchesStartDate && matchesEndDate
   })
 }
 

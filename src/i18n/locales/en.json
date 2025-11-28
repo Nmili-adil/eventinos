@@ -108,6 +108,16 @@
       "6months": "Last 6 Months",
       "year": "Last Year"
     },
+    "filters": {
+      "startDateLabel": "Start date",
+      "endDateLabel": "End date",
+      "startDatePlaceholder": "Select start date",
+      "endDatePlaceholder": "Select end date",
+      "clearDates": "Clear date range",
+      "startAny": "Beginning",
+      "endAny": "Present",
+      "currentRangeLabel": "Showing data for {{range}}"
+    },
     "genderChart": {
       "title": "Gender Distribution",
       "description": "Distribution of users by gender",
@@ -216,6 +226,11 @@
       "calendar": "Calendar View",
       "table": "Table View",
       "maps": "Maps View"
+    },
+    "filters": {
+      "startDatePlaceholder": "Select start date",
+      "endDatePlaceholder": "Select end date",
+      "clearDates": "Clear dates"
     },
     "statusChangeDialog": {
       "title": "Change Event Status",
@@ -855,6 +870,17 @@
         "description": "Permissions granted to this role",
         "noRights": "No rights assigned",
         "noInfo": "No rights information available"
+      },
+      "roleActions": {
+        "changeRoleTitle": "Change user role",
+        "changeRoleButton": "Change role",
+        "description": "Choose how you want to update this organizer's role.",
+        "upgradeAdmin": "Grant admin access",
+        "downgradeOrganizer": "Set as organizer",
+        "adminLabel": "Admin",
+        "organizerLabel": "Organizer",
+        "success": "Role updated to {{role}}",
+        "error": "Unable to update role."
       }
     },
     "status": {
@@ -1053,7 +1079,10 @@
     "guestUser": "Guest user",
     "conversation": {
       "title": "Conversation",
-      "replyTo": "Reply-To"
+      "replyTo": "Reply-To",
+      "loading": "Loading conversation history...",
+      "errorTitle": "Conversation unavailable",
+      "errorMessage": "Unable to load full conversation history."
     },
     "reply": {
       "placeholder": "Reply to this message",
@@ -1080,6 +1109,17 @@
     "deleteDialog": {
       "title": "Delete Contact",
       "description": "Are you sure you want to delete the contact message {{subject}}? This action cannot be undone."
+    }
+  },
+  "globalSearch": {
+    "error": "Unable to search right now.",
+    "noResults": "No matches found",
+    "loading": "Searching...",
+    "sections": {
+      "event": "Events",
+      "member": "Members",
+      "organizer": "Organizers",
+      "admin": "Admins"
     }
   }
 }

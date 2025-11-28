@@ -77,3 +77,18 @@ export const replyToContactApi = async (contactId: string, payload: { response: 
   }
 };
 
+export const fetchContactUserConversationApi = async (contactId: string) => {
+  try {
+    const response = await api.get(`/contacts/${contactId}/user`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
