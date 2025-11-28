@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback } from 'react'
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -13,10 +12,12 @@ import {
   Calendar,
   X,
   Search,
-  Filter as FilterIcon
+  Filter as FilterIcon,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { Event, EventCardProps, EventStatus } from '@/types/eventsTypes'
+import type { Event, EventCardProps } from '@/types/eventsTypes'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,20 +35,7 @@ import {
 import { getStatusColor } from '@/lib/events-utils'
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-}
-
-const defaultCenter = {
-  lat: 31.792306, // Casablanca default
-  lng: -7.080168,
-}
-
-const defaultZoom = 7
+import { GoogleMapWrapper, MultiMarkerMap, type MapMarker } from '@/components/shared/GoogleMap'
 
 interface EventsMapViewProps {
   events: Event[]
@@ -67,9 +55,14 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
   const { t } = useTranslation()
   const [selectedCity, setSelectedCity] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
-  const [map, setMap] = useState<google.maps.Map | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null)
+  const DEFAULT_MAP_ZOOM = 7
+  const pinIcon = useMemo(() => {
+    const svg = `<svg width="40" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z" fill="%232563EB"/></svg>`
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
+  }, [])
 
   // Get unique cities from events
   const cities = useMemo(() => {
@@ -92,61 +85,70 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
     })
   }, [events, selectedCity, searchQuery])
 
-  // Calculate map bounds based on filtered events
-  const mapBounds = useMemo(() => {
-    if (filteredEvents.length === 0 || typeof google === 'undefined' || !google.maps) return null
+  // Convert events to map markers
+  const markers: MapMarker[] = useMemo(() => {
+    return filteredEvents.map(event => ({
+      id: event._id,
+      position: {
+        lat: event.location!.location!.lat,
+        lng: event.location!.location!.lng,
+      },
+      title: event.name || event.title,
+      icon: pinIcon,
+      info: (
+        <div className="p-2 max-w-[280px]">
+          {event.image && (
+            <img 
+              src={event.image} 
+              alt={event.name || event.title}
+              className="w-full h-32 object-cover rounded mb-2"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+              }}
+            />
+          )}
+          <h3 className="font-semibold text-sm mb-2">{event.name || event.title}</h3>
+          <div className="flex items-center gap-1 flex-wrap mb-2">
+            <Badge variant="secondary" className="text-xs">{event.location?.city}</Badge>
+            <Badge className={cn('text-xs', getStatusColor(event.status))}>
+              {event.status}
+            </Badge>
+            <Badge variant="outline" className="text-xs">{event.visibility}</Badge>
+            <Badge variant="outline" className="text-xs">{event.type}</Badge>
+          </div>
+        </div>
+      ),
+    }))
+  }, [filteredEvents, pinIcon])
 
-    const bounds = new google.maps.LatLngBounds()
-    filteredEvents.forEach(event => {
-      if (event.location?.location?.lat && event.location?.location?.lng) {
-        bounds.extend({
-          lat: event.location.location.lat,
-          lng: event.location.location.lng,
-        })
-      }
-    })
-    return bounds
-  }, [filteredEvents])
+  const handleMarkerClick = (marker: MapMarker) => {
+    setSelectedEventId(marker.id)
+  }
 
-  // Center map on selected city or fit bounds to all events
-  const onMapLoad = useCallback((mapInstance: google.maps.Map) => {
-    setMap(mapInstance)
-    if (mapBounds) {
-      mapInstance.fitBounds(mapBounds)
-    }
-  }, [mapBounds])
-
-  // Update map bounds when filtered events change
-  React.useEffect(() => {
-    if (map && mapBounds) {
-      map.fitBounds(mapBounds)
-    }
-  }, [map, mapBounds])
-
-  const handleMarkerClick = (event: Event) => {
-    setSelectedEvent(event)
-    if (map && event.location?.location?.lat && event.location?.location?.lng) {
-      map.setCenter({
-        lat: event.location.location.lat,
-        lng: event.location.location.lng,
-      })
-      map.setZoom(12)
-    }
+  const handleEventCardClick = (event: Event) => {
+    setSelectedEventId(event._id)
   }
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city)
-    setSelectedEvent(null)
+    setSelectedEventId(null)
   }
 
   const handleClearFilters = () => {
     setSelectedCity('all')
     setSearchQuery('')
-    setSelectedEvent(null)
+    setSelectedEventId(null)
   }
 
+  const handleZoom = useCallback((delta: number) => {
+    if (!mapInstance) return
+    const currentZoom = mapInstance.getZoom() ?? DEFAULT_MAP_ZOOM
+    mapInstance.setZoom(Math.max(2, Math.min(20, currentZoom + delta)))
+  }, [mapInstance, DEFAULT_MAP_ZOOM])
+
   return (
-    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+    <GoogleMapWrapper>
       <div className="relative w-full h-[calc(100vh-250px)] min-h-[600px] rounded-lg overflow-hidden border border-gray-200 shadow-lg">
         {/* Sidebar */}
         <div
@@ -158,7 +160,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
           )}
         >
           {/* Sidebar Header */}
-          <div className="p-4 border-b bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+          <div className="p-4 border-b bg-linear-to-r from-blue-600 to-purple-600 text-white">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
@@ -231,8 +233,8 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
                 <EventCard
                   key={event._id}
                   event={event}
-                  isSelected={selectedEvent?._id === event._id}
-                  onClick={() => handleMarkerClick(event)}
+                  isSelected={selectedEventId === event._id}
+                  onClick={() => handleEventCardClick(event)}
                   onPreview={() => onEventClick?.(event)}
                   onEdit={() => onEdit?.(event._id)}
                   onChangeStatus={() => onChangeStatus?.(event._id)}
@@ -257,74 +259,40 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
         )}
 
         {/* Map */}
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={defaultCenter}
-          zoom={defaultZoom}
-          onLoad={onMapLoad}
-          options={{
-            disableDefaultUI: false,
-            zoomControl: true,
-            streetViewControl: false,
-            mapTypeControl: true,
-            fullscreenControl: true,
-            styles: [
-              {
-                featureType: 'poi',
-                elementType: 'labels',
-                stylers: [{ visibility: 'off' }],
-              },
-            ],
-          }}
-        >
-          {filteredEvents.map(event => {
-            if (!event.location?.location?.lat || !event.location?.location?.lng) return null
-            
-            return (
-              <Marker
-                key={event._id}
-                position={{
-                  lat: event.location.location.lat,
-                  lng: event.location.location.lng,
-                }}
-                onClick={() => handleMarkerClick(event)}
-                icon={{
-                  url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                  scaledSize: typeof google !== 'undefined' && google.maps ? new google.maps.Size(32, 32) : undefined,
-                }}
+        <div className="h-full">
+          <MultiMarkerMap
+            markers={markers}
+            selectedMarkerId={selectedEventId}
+            onMarkerClick={handleMarkerClick}
+            height="100%"
+            fitBounds={true}
+            onMapReady={setMapInstance}
+          />
+          {mapInstance && (
+            <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                onClick={() => handleZoom(1)}
+                className="h-10 w-10 shadow-lg"
               >
-                {selectedEvent?._id === event._id && (
-                  <InfoWindow
-                    onCloseClick={() => setSelectedEvent(null)}
-                    options={{
-                      maxWidth: 300,
-                    }}
-                  >
-                    <div className="p-2 bg-cover bg-center h-48 w-full" style={{ backgroundImage: `url(${event.image})` }}>
-                      <div className="flex flex-col">
-                        <h3 className="font-semibold text-sm mb-1">{event.name || event.title}</h3>
-                        <div className="flex items-center gap-2 flex-wrap">
-                        <Badge variant="default" className="text-xs">{event.location?.city}</Badge>
-                        <Badge variant="default" className={cn('text-xs', getStatusColor(event.status))}>
-                          {event.status}
-                        </Badge>
-                        <Badge variant="default" className="text-xs">
-                          {event.visibility}
-                        </Badge>
-                        <Badge variant="default" className="text-xs">
-                          {event.type}
-                        </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  </InfoWindow>
-                )}
-              </Marker>
-            )
-          })}
-        </GoogleMap>
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                onClick={() => handleZoom(-1)}
+                className="h-10 w-10 shadow-lg"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-    </LoadScript>
+    </GoogleMapWrapper>
   )
 }
 

@@ -1,0 +1,148 @@
+import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { useMemo } from 'react'
+import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom'
+import { AlertTriangle, RefreshCw, Home, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
+interface ErrorBoundaryProps {
+  children: ReactNode
+  fallback?: ReactNode
+  onReset?: () => void
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+  error?: Error
+}
+
+const ErrorStateCard = ({
+  title = 'Something went wrong',
+  message = 'An unexpected error occurred. Please try again.',
+  details,
+  primaryAction,
+  secondaryAction,
+}: {
+  title?: string
+  message?: string
+  details?: string
+  primaryAction?: ReactNode
+  secondaryAction?: ReactNode
+}) => (
+  <div className="flex min-h-[320px] flex-col items-center justify-center gap-4 rounded-xl border bg-white/80 p-10 text-center shadow-lg dark:border-gray-800 dark:bg-gray-900/80">
+    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-500 dark:bg-red-500/10">
+      <AlertTriangle className="h-8 w-8" />
+    </div>
+    <div>
+      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{title}</h1>
+      <p className="mt-2 max-w-md text-sm text-muted-foreground">{message}</p>
+      {details && (
+        <p className="mt-3 rounded-md bg-muted/60 p-3 text-xs font-mono text-muted-foreground">
+          {details}
+        </p>
+      )}
+    </div>
+    <div className="flex flex-col gap-2 sm:flex-row">{primaryAction}{secondaryAction}</div>
+  </div>
+)
+
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = {
+    hasError: false,
+    error: undefined,
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('UI ErrorBoundary caught an error', error, errorInfo)
+  }
+
+  private handleReset = () => {
+    this.setState({ hasError: false, error: undefined })
+    this.props.onReset?.()
+  }
+
+  render() {
+    const { hasError, error } = this.state
+    const { fallback, children } = this.props
+
+    if (hasError) {
+      if (fallback) return fallback
+
+      return (
+        <ErrorStateCard
+          message="The view failed to render. You can try again or refresh the page."
+          details={error?.message}
+          primaryAction={
+            <Button onClick={this.handleReset} className="gap-2">
+              <RefreshCw className="h-4 w-4" />
+              Try again
+            </Button>
+          }
+          secondaryAction={
+            <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
+              <RefreshCw className="h-4 w-4" />
+              Reload page
+            </Button>
+          }
+        />
+      )
+    }
+
+    return children
+  }
+}
+
+export const RouteErrorElement = () => {
+  const navigate = useNavigate()
+  const error = useRouteError()
+
+  const { title, message, detail } = useMemo(() => {
+    if (isRouteErrorResponse(error)) {
+      return {
+        title: `Oops! ${error.status}`,
+        message: error.statusText || 'An unexpected routing error occurred.',
+        detail: typeof error.data === 'string' ? error.data : undefined,
+      }
+    }
+
+    if (error instanceof Error) {
+      return {
+        title: 'Something went wrong',
+        message: 'We ran into a problem while loading this page.',
+        detail: error.message,
+      }
+    }
+
+    return {
+      title: 'Unexpected error',
+      message: 'We could not determine what happened, but the page failed to load.',
+      detail: undefined,
+    }
+  }, [error])
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <ErrorStateCard
+        title={title}
+        message={message}
+        details={detail}
+        primaryAction={
+          <Button onClick={() => navigate(-1)} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Go back
+          </Button>
+        }
+        secondaryAction={
+          <Button variant="outline" onClick={() => navigate('/')} className="gap-2">
+            <Home className="h-4 w-4" />
+            Go home
+          </Button>
+        }
+      />
+    </div>
+  )
+}
+

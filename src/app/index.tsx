@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import {  Provider } from 'react-redux'
 import store from "@/store/app/store"
 import { LoadingProvider } from "@/contexts/LoadingContext"
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary"
 
 
 const AppContent = () => {
@@ -23,7 +24,9 @@ const App = () => {
   return (
     <Provider store={store}>
         <Toaster position="bottom-right" />
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
     </Provider>
   )
 }

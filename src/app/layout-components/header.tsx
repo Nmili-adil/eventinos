@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
-import { Input } from '@/components/ui/input'
 import { Bell, Search, Menu, Loader2, CheckCircle, Mail, X } from 'lucide-react'
 import ProfileDropDown from './profileDropDown'
 import NavBar from './navBar'
@@ -11,6 +10,7 @@ import { fetchNotificationsApi, markAllNotificationsReadApi, markNotificationRea
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
+import { GlobalSearchInput } from '@/components/shared/GlobalSearchInput'
 
 const Header = () => {
     const { t } = useTranslation()
@@ -55,12 +55,6 @@ const Header = () => {
 
     // Close mobile menu when route changes (optional)
     useEffect(() => {
-        const handleRouteChange = () => {
-            setMobileMenuOpen(false)
-            setMobileSearchOpen(false)
-        }
-
-        // Listen for custom event from NavBar
         const handleCloseMobileMenu = () => {
             setMobileMenuOpen(false)
         }
@@ -145,11 +139,7 @@ const Header = () => {
 
                     {/* Search Bar - Desktop */}
                     <div className="hidden md:block relative w-60 lg:w-80">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                            className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
-                            placeholder={t('header.searchPlaceholder')}
-                        />
+                        <GlobalSearchInput placeholder={t('header.searchPlaceholder')} />
                     </div>
                 </div>
 
@@ -247,7 +237,7 @@ const Header = () => {
                                             )}
                                             onClick={() => handleNotificationClick(notification)}
                                         >
-                                            <div className="flex-shrink-0 mt-1">
+                                            <div className="mt-1">
                                                 {notification.read ? (
                                                     <CheckCircle className="w-4 h-4 text-muted-foreground" />
                                                 ) : (
@@ -286,14 +276,11 @@ const Header = () => {
                     ref={mobileSearchRef}
                     className="lg:hidden px-4 sm:px-6 pb-3 bg-white border-t border-gray-200"
                 >
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                            className="pl-10 pr-4 py-2 bg-gray-50/80 border-gray-200 rounded-xl focus:bg-white focus:border-purple-300 transition-all duration-200 placeholder:text-gray-400"
-                            placeholder={t('header.searchPlaceholderMobile')}
-                            autoFocus
-                        />
-                    </div>
+                    <GlobalSearchInput
+                        placeholder={t('header.searchPlaceholderMobile')}
+                        autoFocus
+                        onNavigate={() => setMobileSearchOpen(false)}
+                    />
                 </div>
             )}
 

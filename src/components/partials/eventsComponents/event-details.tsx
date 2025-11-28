@@ -29,7 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import GoogleMap from "@/components/shared/googleMap";
+import { GoogleMapWrapper, SingleMarkerMap } from "@/components/shared/GoogleMap";
 import { EVENT_EDIT_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants";
 import {
   AlertDialog,
@@ -395,12 +395,14 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   </div>
 
                   {/* Location */}
-                  {/* <GoogleMap
-                    location={safeEvent.location.location}
-                    name={safeEvent.location.name}
-                    address={`${safeEvent.location.name}, ${safeEvent.location.city}, ${safeEvent.location.country}`}
-                    height="300px"
-                  /> */}
+                  <GoogleMapWrapper>
+                    <SingleMarkerMap
+                      location={safeEvent.location.location}
+                      name={safeEvent.location.name}
+                      address={`${safeEvent.location.name}, ${safeEvent.location.city}, ${safeEvent.location.country}`}
+                      height="300px"
+                    />
+                  </GoogleMapWrapper>
                 </div>
 
                 {/* Social Links */}

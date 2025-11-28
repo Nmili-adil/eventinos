@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Calendar, MapPin, Clock, Users, Globe, Lock } from 'lucide-react'
 import type { EventFormData } from '@/schema/eventSchema'
 import { format } from 'date-fns'
+import { GoogleMapWrapper, SingleMarkerMap } from '@/components/shared/GoogleMap'
 
 interface EventPreviewProps {
   formData: EventFormData
@@ -150,6 +151,24 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                   </div>
                 )}
               </div>
+
+              {/* Map Preview */}
+              {formData.location?.location?.lat && formData.location?.location?.lng && (
+                <div className="rounded-lg border">
+                  <GoogleMapWrapper>
+                    <SingleMarkerMap
+                      location={{
+                        lat: Number(formData.location.location.lat),
+                        lng: Number(formData.location.location.lng),
+                      }}
+                      name={formData.location.name}
+                      address={[formData.location.city, formData.location.country].filter(Boolean).join(', ')}
+                      height="180px"
+                      showControls={false}
+                    />
+                  </GoogleMapWrapper>
+                </div>
+              )}
 
               {/* Gallery Preview */}
               {formData.gallery && formData.gallery.length > 0 && (

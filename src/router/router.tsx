@@ -15,16 +15,19 @@ import SettingsPage from '@/pages/settingsPage'
 import ProfilePage from '@/pages/profilePage'
 import ContactsPage from '@/pages/contactsPage'
 import ComptesPage from '@/pages/comptesPage'
+import { RouteErrorElement } from '@/components/shared/ErrorBoundary'
 
 
 export const Router = createBrowserRouter([
     {
         path: LOGIN_PAGE,
-        element: <LoginPage />
+        element: <LoginPage />,
+        errorElement: <RouteErrorElement />
     },
     {
         path:FORGOTPASSWORD_PAGE,
-        element: <ForgotPasswordPage />
+        element: <ForgotPasswordPage />,
+        errorElement: <RouteErrorElement />
     },
     {
         element:
@@ -33,6 +36,7 @@ export const Router = createBrowserRouter([
                 <Layout />
             </ProtectedRoute>
          ),
+        errorElement: <RouteErrorElement />,
          
         children: [
             {
@@ -83,6 +87,7 @@ export const Router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <NotFoundPage />
+        element: <NotFoundPage />,
+        errorElement: <RouteErrorElement />
     }
 ])

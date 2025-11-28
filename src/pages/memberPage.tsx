@@ -101,6 +101,8 @@ interface MembersLocationState {
     id: string
     name: string
   }
+  focusMemberId?: string
+  focusMemberData?: Member
 }
 
 const normalizeParticipantToMember = (record: any): Member => {
@@ -202,6 +204,40 @@ export const MembersPage: React.FC = () => {
     setEventSelectorOpen(false);
     navigate(-1)
   };
+
+  const memberIdFromState = routeState?.focusMemberId
+  const memberDataFromState = routeState?.focusMemberData
+
+  useEffect(() => {
+    if (!memberIdFromState && !memberDataFromState) return
+
+    const clearFocusState = () => {
+      if (!routeState?.eventFilter) {
+        navigate(location.pathname, { replace: true, state: null })
+      } else {
+        navigate(location.pathname, { replace: true, state: { eventFilter: routeState.eventFilter } })
+      }
+    }
+
+    if (memberDataFromState) {
+      setSelectedMember(memberDataFromState)
+      setDetailsDialogOpen(true)
+      clearFocusState()
+      return
+    }
+
+    if (memberIdFromState && members?.length) {
+      const foundMember = members.find(member => {
+        const id = typeof member._id === 'string' ? member._id : member._id?.$oid
+        return id === memberIdFromState
+      })
+      if (foundMember) {
+        setSelectedMember(foundMember)
+        setDetailsDialogOpen(true)
+        clearFocusState()
+      }
+    }
+  }, [memberIdFromState, memberDataFromState, members, routeState, navigate, location.pathname])
 
   // Fetch members when page changes
   useEffect(() => {
