@@ -10,7 +10,7 @@ import { fetchUsersRequest } from "@/store/features/users/users.actions";
 import CityDistributionBarChart from "@/components/charts/CityDistributionChart";
 import GenderDistributionPieChart from "@/components/charts/GenderDistributionPieChart";
 import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart";
-import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender } from "@/api/analyticsApi";
+import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender, fetchCountApi } from "@/api/analyticsApi";
 import PageHead from "@/components/shared/page-head";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ const Overviewpage = () => {
   const [cityData, setCityData] = useState<any[]>([]);
   const [genderData, setGenderData] = useState<any[]>([]);
   const [datesData, setDatesData] = useState<any[]>([]);
+  const [countsData, setCountsData] = useState<any>(null);
   const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('all');
@@ -89,7 +90,12 @@ const Overviewpage = () => {
 
   const serializeDateParam = (date?: Date, type: "start" | "end" = "start") => {
     if (!date) return undefined
-    return (type === "start" ? startOfDay(date) : endOfDay(date)).toISOString()
+    const adjustedDate = type === "start" ? startOfDay(date) : endOfDay(date)
+    // Format as YYYY-MM-DD for backend
+    const year = adjustedDate.getFullYear()
+    const month = String(adjustedDate.getMonth() + 1).padStart(2, '0')
+    const day = String(adjustedDate.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   }
 
   const parseEventDate = (eventItem: Event): Date | null => {
@@ -130,6 +136,17 @@ const Overviewpage = () => {
 
   // Calculate real statistics from filtered events data
   const stats = useMemo(() => {
+    if (countsData) {
+      return {
+        totalEvents: countsData.events || 0,
+        acceptedEvents: countsData.accepted || 0,
+        refusedEvents: countsData.canceled || 0,
+        pendingEvents: countsData.pending || 0,
+        totalUsers: countsData.users || usersCount,
+      };
+    }
+
+    // Fallback to client-side calculation if no backend data
     const acceptedEvents = filteredEvents.filter(
       (event: Event) => event.status === "ACCEPTED"
     ).length;
@@ -147,7 +164,7 @@ const Overviewpage = () => {
       pendingEvents,
       totalUsers: usersCount,
     };
-  }, [filteredEvents, usersCount]);
+  }, [filteredEvents, usersCount, countsData]);
 
   const dateRangeLabel = useMemo(() => {
     if (customStartDate || customEndDate) {
@@ -172,9 +189,19 @@ const Overviewpage = () => {
         setIsLoadingAnalytics(true);
         
         // Fetch each endpoint separately to avoid Promise.all failing all requests
+        // Get date range based on time period or custom dates
+        let startDateToUse = customStartDate;
+        let endDateToUse = customEndDate;
+        
+        if (timePeriod !== 'all' && !customStartDate && !customEndDate) {
+          const { start, end } = getDateRange(timePeriod);
+          startDateToUse = start || undefined;
+          endDateToUse = end || undefined;
+        }
+        
         const analyticsParams = {
-          startDate: serializeDateParam(customStartDate, "start"),
-          endDate: serializeDateParam(customEndDate, "end"),
+          startDate: serializeDateParam(startDateToUse, "start"),
+          endDate: serializeDateParam(endDateToUse, "end"),
         }
 
         const cityPromise = fetchAnalyticsByCity(analyticsParams).catch(err => {
@@ -193,27 +220,30 @@ const Overviewpage = () => {
           return null;
         });
         
-        const [cityResponse, genderResponse, datesResponse] = await Promise.all([
+        const countsPromise = fetchCountApi(analyticsParams).catch(err => {
+          console.error('Counts API failed:', err);
+          return null;
+        });
+        
+        const [cityResponse, genderResponse, datesResponse, countsResponse] = await Promise.all([
           cityPromise,
           genderPromise,
-          datesPromise
+          datesPromise,
+          countsPromise
         ]);
-        
-        console.log('City Response:', cityResponse);
-        console.log('Gender Response:', genderResponse);
-        console.log('Dates Response:', datesResponse);
+
         
         if (cityResponse && cityResponse.status === 200) {
-          console.log('Setting city data:', cityResponse.data.data);
           setCityData(cityResponse.data.data || []);
         }
         if (genderResponse && genderResponse.status === 200) {
-          console.log('Setting gender data:', genderResponse.data.data);
           setGenderData(genderResponse.data.data || []);
         }
         if (datesResponse && datesResponse.status === 200) {
-          console.log('Setting dates data:', datesResponse.data.data);
           setDatesData(datesResponse.data.data || []);
+        }
+        if (countsResponse && countsResponse.status === 200) {
+          setCountsData(countsResponse.data.data || null);
         }
         
         setIsLoadingAnalytics(false);
@@ -226,19 +256,8 @@ const Overviewpage = () => {
     };
 
     fetchData();
-  }, [dispatch, t, customStartDate, customEndDate]);
+  }, [dispatch, t, customStartDate, customEndDate, timePeriod]);
 
-  useEffect(() => {
-    console.log('📊 City Data Updated:', cityData)
-  }, [cityData])
-  
-  useEffect(() => {
-    console.log('📊 Gender Data Updated:', genderData)
-  }, [genderData])
-  
-  useEffect(() => {
-    console.log('📊 Dates Data Updated:', datesData)
-  }, [datesData])
 
   const StatSkeleton = () => (
     <Card className="p-4 space-y-3 border-slate-200">
@@ -270,7 +289,8 @@ const Overviewpage = () => {
               <Filter className="w-5 h-5 text-gray-600" />
               <span className="text-sm font-medium text-gray-700">{t('dashboard.timePeriod')}:</span>
             </div>
-            <div className="flex flex-wrap gap-2">
+          <div className="flex  justify-between gap-4">
+              <div className="flex flex-wrap gap-2">
               <Button
                 variant={timePeriod === 'all' ? 'default' : 'outline'}
                 size="sm"
@@ -320,10 +340,8 @@ const Overviewpage = () => {
                 {t('dashboard.timePeriods.year')}
               </Button>
             </div>
-          </div>
 
-          <div className="flex flex-1 flex-col gap-3">
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex-1 grid grid-cols-2 gap-2">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -385,8 +403,16 @@ const Overviewpage = () => {
                   {t('dashboard.filters.clearDates', 'Clear date range')}
                 </Button>
               )}
-            </div>
           </div>
+          </div>
+   
+            
+
+
+
+          </div>
+
+          
         </div>
 
         <div className="text-xs text-gray-500">

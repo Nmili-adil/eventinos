@@ -569,11 +569,35 @@
     "detailsDialog": {
       "title": "Member Details",
       "description": "Complete information about the member",
+      "tabs": {
+        "overview": "Overview",
+        "events": "Events",
+        "activity": "Activity"
+      },
       "sections": {
         "contactInfo": "Contact Information",
-        "personalInfo": "Personal Information",
-        "accountInfo": "Account Information",
+        "personalInfo": "Personal Details",
+        "accountInfo": "Account Timeline",
         "timestamps": "Timestamps"
+      },
+      "labels": {
+        "accountStatus": "Account Status",
+        "registration": "Registration",
+        "emailAddress": "Email Address",
+        "phoneNumber": "Phone Number",
+        "location": "Location",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "birthday": "Birthday",
+        "memberSince": "Member since",
+        "lastUpdated": "Last updated",
+        "eventParticipation": "Event Participation",
+        "accountActivity": "Account Activity",
+        "accountCreated": "Account Created",
+        "lastProfileUpdate": "Last Profile Update",
+        "eventParticipations": "Event Participations",
+        "notProvided": "Not provided"
       },
       "fields": {
         "email": "Email Address",
@@ -594,17 +618,50 @@
       "status": {
         "active": "Active",
         "inactive": "Inactive",
-        "registrationComplete": "Registration Complete",
-        "registrationPending": "Registration Pending",
+        "registrationComplete": "Complete",
+        "registrationPending": "Pending",
         "completed": "Completed",
         "pending": "Pending"
+      },
+      "events": {
+        "loadingEvents": "Loading events...",
+        "noEvents": "No event participations found",
+        "noEventsDescription": "This member hasn't registered for any events yet.",
+        "unableToLoad": "Unable to load member events.",
+        "untitledEvent": "Untitled Event",
+        "dateNotSet": "Date not set",
+        "locationNotSet": "Location not set",
+        "registered": "registered",
+        "eventsCount": "{{count}} events"
       },
       "buttons": {
         "close": "Close",
         "editMember": "Edit Member",
         "deleteMember": "Delete Member"
       },
-      "notAvailable": "N/A"
+      "notAvailable": "Not available"
+    },
+    "events": {
+      "selectorLabel": "Current event selection",
+      "loadingParticipants": "Loading participants...",
+      "participantsCount": "{{count}} participants",
+      "noSelection": "Select an event to focus on its participants",
+      "changeEvent": "Change event",
+      "selectEvent": "Select event",
+      "clearSelection": "Clear",
+      "dialog": {
+        "title": "Select an event",
+        "description": "Choose an event to display its registered members",
+        "empty": "No events available at the moment",
+        "searchPlaceholder": "Search events by name",
+        "noResults": "No events match your search"
+      },
+      "exitConfirm": {
+        "title": "Event Selection Required",
+        "description": "You must select an event to view its participants. Would you like to return to the previous page?",
+        "stay": "Stay Here",
+        "return": "Return to Previous Page"
+      }
     }
   },
   "categories": {

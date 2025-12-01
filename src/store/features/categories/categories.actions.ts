@@ -37,7 +37,6 @@ export const fetchCategoriesRequest = () => {
     dispatch({ type: FETCH_CATEGORIES_REQUEST })
     try {
       const response = await fetchCategories()
-      console.log(response)
       if (response.status === 200) {
         dispatch(fetchCategoriesSuccess(response.data.data))
       } else {

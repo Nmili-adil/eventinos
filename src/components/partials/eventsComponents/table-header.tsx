@@ -30,7 +30,7 @@ export function TableHeader({ sortField, sortDirection, onSort }: TableHeaderPro
   }
 
   return (
-    <UITableHeader>
+    <UITableHeader className="hidden md:table-header-group">
       <TableRow className='border-slate-500 bg-slate-200 '>
         {headers.map((header) => (
           <TableHead 

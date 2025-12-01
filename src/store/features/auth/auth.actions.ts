@@ -14,6 +14,7 @@ import {
   type SetCredentialsAction,
 } from "./auth.type";
 import { clearAuthData, setAuthToken, setRole, setUserData } from "@/services/localStorage";
+import type { User } from "@/types/usersType";
 
 export const authLoginRequest = (payload: LoginPayload) => {
   return async (dispatch: any) => {
@@ -36,7 +37,7 @@ export const authLoginRequest = (payload: LoginPayload) => {
 };
 
 export const authLoginSuccess = (
-  user: object,
+  user: User,
   token: string,
   message: string,
   role: string
@@ -62,7 +63,7 @@ export const authClearError = (): ClearErrorAction => ({
 });
 
 export const authSetCredentials = (
-  user: object,
+  user: User,
   token: string,
   role: string
 ): SetCredentialsAction => ({

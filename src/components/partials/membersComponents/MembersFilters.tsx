@@ -1,7 +1,4 @@
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent } from '@/components/ui/card'
-import { Search, Filter } from 'lucide-react'
+import { Search } from 'lucide-react'
 import type { MembersFilters } from '@/lib/members-utils'
 import { t } from 'i18next'
 
@@ -28,65 +25,53 @@ export function MembersFilters({ filters, onFiltersChange }: MembersFiltersProps
   }
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex flex-col gap-4">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={t('members.memberSearchPlaceholder')}
-              value={filters.search}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
-          {/* Filter Options */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <Select value={filters.status} onValueChange={handleStatusChange}>
-                <SelectTrigger>
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('members.status.all')}</SelectItem>
-                  <SelectItem value="active">{t('members.status.active')}</SelectItem>
-                  <SelectItem value="inactive">{t('members.status.inactive')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1">
-              <Select value={filters.registrationStatus} onValueChange={handleRegistrationChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Registration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('members.registration.all')}</SelectItem>
-                  <SelectItem value="completed">{t('members.registration.completed')}</SelectItem>
-                  <SelectItem value="pending">{t('members.registration.pending')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1">
-              <Select value={filters.gender} onValueChange={handleGenderChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('members.gender.all')}</SelectItem>
-                  <SelectItem value="MALE">{t('members.gender.male')}</SelectItem>
-                  <SelectItem value="FEMALE">{t('members.gender.female')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+    <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4">
+      <div className="flex flex-wrap gap-3 items-center">
+        {/* Search Input */}
+        <div className="relative flex-1 min-w-[200px] p-1 overflow-hidden">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder={t('members.memberSearchPlaceholder')}
+            value={filters.search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-500 focus:border-transparent focus:border focus:border-slate-500"
+          />
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Status Select */}
+        <select
+          value={filters.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          className="px-4 h-10 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white cursor-pointer min-w-[140px]"
+        >
+          <option value="all">{t('members.status.all')}</option>
+          <option value="active">{t('members.status.active')}</option>
+          <option value="inactive">{t('members.status.inactive')}</option>
+        </select>
+
+        {/* Registration Select */}
+        <select
+          value={filters.registrationStatus}
+          onChange={(e) => handleRegistrationChange(e.target.value)}
+          className="px-4 h-10 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white cursor-pointer min-w-[140px]"
+        >
+          <option value="all">{t('members.registration.all')}</option>
+          <option value="completed">{t('members.registration.completed')}</option>
+          <option value="pending">{t('members.registration.pending')}</option>
+        </select>
+
+        {/* Gender Select */}
+        <select
+          value={filters.gender}
+          onChange={(e) => handleGenderChange(e.target.value)}
+          className="px-4 h-10 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white cursor-pointer min-w-[140px]"
+        >
+          <option value="all">{t('members.gender.all')}</option>
+          <option value="MALE">{t('members.gender.male')}</option>
+          <option value="FEMALE">{t('members.gender.female')}</option>
+        </select>
+      </div>
+    </div>
   )
 }
-

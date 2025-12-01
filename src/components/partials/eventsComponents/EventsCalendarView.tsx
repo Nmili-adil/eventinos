@@ -98,10 +98,7 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
     }
   }
 
-  // Get total events in current month
-  const monthEventsCount = useMemo(() => {
-    return Object.values(eventsByDate).reduce((sum, events) => sum + events.length, 0)
-  }, [eventsByDate])
+
 
   return (
     <div className="space-y-6">
@@ -123,10 +120,11 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-[240px] justify-start text-left font-normal"
+                    className="w-[180px] sm:w-[240px] justify-start text-left font-normal text-sm"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {format(currentDate, 'MMMM yyyy')}
+                    <span className="hidden sm:inline">{format(currentDate, 'MMMM yyyy')}</span>
+                    <span className="sm:hidden">{format(currentDate, 'MMM yy')}</span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -167,21 +165,30 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
 
       {/* Calendar Grid */}
       <Card className="border-slate-300 shadow-md">
-        <CardContent className="p-6">
+        <CardContent className="p-2 sm:p-4 md:p-6">
           {/* Weekday Headers */}
-          <div className="grid grid-cols-7 gap-2 mb-4">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+          <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
+            {[
+              { full: 'Sunday', short: 'Sun', mobile: 'S' },
+              { full: 'Monday', short: 'Mon', mobile: 'M' },
+              { full: 'Tuesday', short: 'Tue', mobile: 'T' },
+              { full: 'Wednesday', short: 'Wed', mobile: 'W' },
+              { full: 'Thursday', short: 'Thu', mobile: 'T' },
+              { full: 'Friday', short: 'Fri', mobile: 'F' },
+              { full: 'Saturday', short: 'Sat', mobile: 'S' },
+            ].map((day) => (
               <div
-                key={day}
-                className="text-center text-sm font-semibold text-muted-foreground py-2"
+                key={day.full}
+                className="text-center text-xs sm:text-sm font-semibold text-muted-foreground py-1 sm:py-2"
               >
-                {day}
+                <span className="hidden md:inline">{day.short}</span>
+                <span className="md:hidden">{day.mobile}</span>
               </div>
             ))}
           </div>
 
           {/* Calendar Days */}
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1 sm:gap-2">
             {calendarDays.map((day, dayIdx) => {
               const dayEvents = getEventsForDate(day)
               const isCurrentMonth = isSameMonth(day, currentDate)
@@ -192,7 +199,7 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
                 <div
                   key={dayIdx}
                   className={cn(
-                    'min-h-[100px] md:min-h-[120px] border rounded-lg p-1.5 md:p-2 transition-all cursor-pointer',
+                    'min-h-[100px] sm:min-h-[110px] md:min-h-[120px] border rounded-md sm:rounded-lg p-1 sm:p-1.5 md:p-2 transition-all cursor-pointer',
                     isCurrentMonth
                       ? 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-md hover:scale-[1.02]'
                       : 'bg-slate-50 border-slate-100 opacity-60',
@@ -217,7 +224,7 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
                       {format(day, 'd')}
                     </div>
                     {dayEvents.length > 0 && (
-                      <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                      <Badge variant="secondary" className="h-4 sm:h-5 px-1 sm:px-1.5 text-[9px] sm:text-[10px]">
                         {dayEvents.length}
                       </Badge>
                     )}
@@ -237,13 +244,14 @@ export const EventsCalendarView: React.FC<EventsCalendarViewProps> = ({
                     ))}
                     {dayEvents.length > 3 && (
                       <button
-                        className="text-[10px] text-blue-600 font-medium px-1 py-0.5 bg-blue-50 hover:bg-blue-100 rounded w-full transition-colors"
+                        className="text-[9px] sm:text-[10px] text-blue-600 font-medium px-0.5 sm:px-1 py-0.5 bg-blue-50 hover:bg-blue-100 rounded w-full transition-colors"
                         onClick={(e) => {
                           e.stopPropagation()
                           setSelectedDate(day)
                         }}
                       >
-                        +{dayEvents.length - 3} more
+                        <span className="hidden sm:inline">+{dayEvents.length - 3} more</span>
+                        <span className="sm:hidden">+{dayEvents.length - 3}</span>
                       </button>
                     )}
                   </div>
@@ -312,23 +320,31 @@ const EventTicket: React.FC<EventTicketProps> = ({
       <div className="px-1 md:px-1.5 py-0.5 md:py-1">
         <div className="flex items-start justify-between gap-1">
           <div className="flex-1 min-w-0">
-            <div className="font-semibold truncate leading-tight">{event.name || event.title}</div>
-            {event.startDate?.date && (
-              <div className="flex items-center gap-0.5 md:gap-1 mt-0.5 text-[9px] md:text-[10px] opacity-80">
-                <Clock className="w-2 h-2 md:w-2.5 md:h-2.5 flex-shrink-0" />
-                {formatTime(event.startDate.date)}
-              </div>
-            )}
-            {event.location?.name && (
-              <div className="flex items-center gap-0.5 md:gap-1 mt-0.5 text-[9px] md:text-[10px] opacity-80 truncate">
-                <MapPin className="w-2 h-2 md:w-2.5 md:h-2.5 flex-shrink-0" />
-                <span className="truncate">{event.location.name}</span>
-              </div>
-            )}
+            {/* Mobile: Show only first letter */}
+            <div className="md:hidden font-bold text-center text-xs leading-tight">
+              {(event.name || event.title)?.charAt(0).toUpperCase()}
+            </div>
+            
+            {/* Desktop: Show full details */}
+            <div className="hidden md:block">
+              <div className="font-semibold truncate leading-tight">{event.name || event.title}</div>
+              {event.startDate?.date && (
+                <div className="flex items-center gap-1 mt-0.5 text-[10px] opacity-80">
+                  <Clock className="w-2.5 h-2.5 flex-shrink-0" />
+                  {formatTime(event.startDate.date)}
+                </div>
+              )}
+              {event.location?.name && (
+                <div className="flex items-center gap-1 mt-0.5 text-[10px] opacity-80 truncate">
+                  <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
+                  <span className="truncate">{event.location.name}</span>
+                </div>
+              )}
+            </div>
           </div>
           
           <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()} className='hidden md:block'>
               <button
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-black/10 rounded flex-shrink-0"
                 onClick={(e) => e.stopPropagation()}

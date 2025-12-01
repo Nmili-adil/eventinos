@@ -113,7 +113,7 @@ const Header = () => {
     return (
         <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-50 w-full">
             {/* Top Header Section */}
-            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-4 sm:px-6 overflow-y-hidden">
                 {/* Left Section - Brand & Mobile Menu */}
                 <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}
@@ -149,7 +149,7 @@ const Header = () => {
                 </div>
 
                 {/* Right Section - Notifications & Profile */}
-                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
                     {/* Language Switcher */}
                     <div className="">
                         <LanguageSwitcher />
@@ -288,9 +288,9 @@ const Header = () => {
             {mobileMenuOpen && (
                 <div 
                     ref={mobileMenuRef}
-                    className="lg:hidden bg-transparent  relative"
+                    className="lg:hidden bg-white border-t border-gray-200 shadow-lg z-40 w-full"
                 >
-                    <div className="container mx-auto px-4 pt-2 backdrop-blur-2xl absolute ">
+                    <div className="container mx-auto px-4 py-3">
                         <NavBar mobile />
                     </div>
                 </div>

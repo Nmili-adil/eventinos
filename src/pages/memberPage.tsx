@@ -79,22 +79,23 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '@/lib/helperFunctions';
 import { fetchEventParticipantsApi } from '@/api/guestsApi';
 import { fetchEvents } from '@/api/eventsApi';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { Alert, AlertTitle } from '@/components/ui/alert';
-
 
 const createPlaceholderDate = (): { $date: { $numberLong: string } } => ({
   $date: { $numberLong: `${Date.now()}` },
 })
 
-const ensureObjectId = (value?: any): { $oid: string } => {
-  if (typeof value === 'string') return { $oid: value }
+const ensureObjectId = (value?: any): { $oid: string } | string => {
+  if (typeof value === 'string') return value
   if (value?.$oid) return value
   if (value?.$id) return { $oid: value.$id }
-  return { $oid: Math.random().toString(36).slice(2, 12) }
+  return Math.random().toString(36).slice(2, 12)
 }
 
-const allowedGenders: Member["gender"][] = ["MALE", "FEMALE", "OTHER"]
+const getMemberId = (id: { $oid: string } | string): string => {
+  return typeof id === 'string' ? id : id.$oid
+}
+
+const allowedGenders: Member["gender"][] = ["MALE", "FEMALE", "Unspecified"]
 
 interface MembersLocationState {
   eventFilter?: {
@@ -106,18 +107,29 @@ interface MembersLocationState {
 }
 
 const normalizeParticipantToMember = (record: any): Member => {
-  const source = record?.memberDetails || record;
+  const source = record?.member || record;
 
   const normalizedGender = (source?.gender || 'OTHER').toString().toUpperCase();
   const genderValue: Member["gender"] = allowedGenders.includes(normalizedGender as Member["gender"])
     ? (normalizedGender as Member["gender"])
-    : "OTHER";
+    : "Unspecified";
 
+  // Handle different status formats from backend
+  const normalizeStatus = (status: any): Member["status"] => {
+    if (!status) return 'Unspecified';
+    const statusStr = status.toString().toUpperCase();
+    if (['PENDING', 'CONFIRMED', 'EXPIRED'].includes(statusStr)) {
+      return statusStr as Member["status"];
+    }
+    if (statusStr === 'ACTIVE') return 'Active';
+    if (statusStr === 'INACTIVE') return 'Inactive';
+    return 'Unspecified';
+  };
 
   return {
     _id: ensureObjectId(source?._id || record?.member || record?.memberId),
     phoneNumber: source?.phoneNumber || '',
-    birthday: source?.birthday || createPlaceholderDate(),
+    birthday: source?.birthday || (source?.createdAt ? source.createdAt : createPlaceholderDate()),
     country: source?.country || source?.location?.country || '',
     city: source?.city || source?.location?.city || '',
     firstName: source?.firstName || source?.name?.split(' ')?.[0] || '',
@@ -125,16 +137,23 @@ const normalizeParticipantToMember = (record: any): Member => {
     email: source?.email || record?.email || '',
     gender: genderValue,
     picture: source?.picture || '',
+    status: normalizeStatus(record?.status || source?.status),
     password: source?.password || '',
     verificationCode: source?.verificationCode || { code: '', createdAt: { $numberDouble: '0' } },
     role: ensureObjectId(source?.role?._id || source?.role || record?.roleId),
-    isActive: source?.isActive ?? true,
-    registrationCompleted: source?.registrationCompleted ?? true,
+    isActive: source?.isActive ?? (record?.verified ?? true),
+    registrationCompleted: source?.registrationCompleted ?? (record?.verified ?? true),
     favorites: source?.favorites || [],
-    user: source?.user || '', // This should be "Member" string from your data
+    user: source?.user || '',
     createdAt: source?.createdAt || createPlaceholderDate(),
     updatedAt: source?.updatedAt || createPlaceholderDate(),
     __v: source?.__v || { $numberInt: '0' },
+    // New fields from backend response
+    qrCode: record?.qrCode,
+    isOrganizator: record?.isOrganizator ?? false,
+    verified: record?.verified ?? source?.verified,
+    event: record?.event,
+    invitedBy: source?.invitedBy,
   };
 };
 
@@ -416,7 +435,7 @@ export const MembersPage: React.FC = () => {
     setActionLoading(member._id.toString());
 
     try {
-      const response: any = await dispatch(updateMemberStatusRequest(member._id.$oid.toString(), !member.isActive));
+      const response: any = await dispatch(updateMemberStatusRequest(getMemberId(member._id), !member.isActive));
       if (response?.success) {
       toast.success(
         t(
@@ -511,7 +530,7 @@ export const MembersPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto  space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHead 
@@ -529,8 +548,8 @@ export const MembersPage: React.FC = () => {
       {/* Filters */}
       <MembersFilters filters={filters} onFiltersChange={setFilters} />
 
-      <Card className="border-slate-300">
-        <CardContent className="flex flex-col gap-4 pt-6">
+      <Card className="border-slate-300 py-0">
+        <CardContent className="flex flex-col gap-4 p-2 px-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">
@@ -538,7 +557,7 @@ export const MembersPage: React.FC = () => {
               </p>
               {selectedEvent ? (
                 <div className="flex flex-wrap items-center gap-3">
-                  <Badge variant="default" className="text-base">
+                  <Badge variant="default" className="text-xs my-2">
                     {selectedEvent.name}
                   </Badge>
                   {eventMembersLoading && (
@@ -579,8 +598,8 @@ export const MembersPage: React.FC = () => {
       </Card>
 
       {/* Sort Options */}
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="py-0">
+        <CardContent className="py-2">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <span className="text-sm font-medium text-muted-foreground">
               {t('members.sort.by')}
@@ -590,7 +609,7 @@ export const MembersPage: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleSort('firstName')}
-                className="gap-2"
+                className="gap-2 text-xs"
               >
                 {t('members.sort.name')} {getSortIcon('firstName')}
               </Button>
@@ -598,7 +617,7 @@ export const MembersPage: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleSort('email')}
-                className="gap-2"
+                className="gap-2 text-xs"
               >
                 {t('members.sort.email')} {getSortIcon('email')}
               </Button>
@@ -606,7 +625,7 @@ export const MembersPage: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleSort('createdAt')}
-                className="gap-2"
+                className="gap-2 text-xs "
               >
                 {t('members.sort.dateJoing')} {getSortIcon('createdAt')}
               </Button>
@@ -614,7 +633,7 @@ export const MembersPage: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleSort('isActive')}
-                className="gap-2"
+                className="gap-2 text-xs"
               >
                 {t('members.sort.status')} {getSortIcon('isActive')}
               </Button>
@@ -632,7 +651,7 @@ export const MembersPage: React.FC = () => {
       {processedMembers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {processedMembers.map((member) => (
-            <Card key={member._id.$oid} className="overflow-hidden hover:shadow-lg cursor-pointer transition-shadow" onClick={() => handleViewDetails(member)}>
+            <Card key={getMemberId(member._id)} className="overflow-hidden hover:shadow-lg cursor-pointer transition-shadow" onClick={() => handleViewDetails(member)}>
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-3 flex-1">
@@ -681,7 +700,7 @@ export const MembersPage: React.FC = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
                         onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
-                        disabled={actionLoading === member._id.$oid}
+                        disabled={actionLoading === getMemberId(member._id)}
                       >
                         {member.isActive ? (
                           <>
@@ -699,7 +718,7 @@ export const MembersPage: React.FC = () => {
                       <DropdownMenuItem 
                         onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
                         className="text-destructive"
-                        disabled={actionLoading === member._id.$oid}
+                        disabled={actionLoading === getMemberId(member._id)}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
                         {t('members.delete')}
@@ -718,12 +737,14 @@ export const MembersPage: React.FC = () => {
                     </span>
                   </div>
                   
+                  {member.phoneNumber && (
                   <div className="flex items-center space-x-2 text-sm">
                     <Phone className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
-                      {member.phoneNumber || t('members.notAvailable', 'N/A')}
+                      {member.phoneNumber}
                     </span>
                   </div>
+                  )}
 
                   {(member.city || member.country) && (
   <div className="flex items-center space-x-2 text-sm">
@@ -746,6 +767,37 @@ export const MembersPage: React.FC = () => {
                 </div>
 
                 <Separator className="my-3" />
+
+                {/* New fields from backend */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {member.verified !== undefined && (
+                    <Badge variant={member.verified ? "default" : "secondary"} className="text-xs">
+                      {member.verified ? '✓ Verified' : 'Unverified'}
+                    </Badge>
+                  )}
+                  {member.isOrganizator && (
+                    <Badge variant="outline" className="text-xs border-purple-500 text-purple-700">
+                      👑 Organizer
+                    </Badge>
+                  )}
+                  {member.status && ['PENDING', 'CONFIRMED', 'EXPIRED'].includes(member.status) && (
+                    <Badge 
+                      variant={
+                        member.status === 'CONFIRMED' ? 'default' : 
+                        member.status === 'PENDING' ? 'secondary' : 
+                        'destructive'
+                      }
+                      className="text-xs"
+                    >
+                      {member.status}
+                    </Badge>
+                  )}
+                  {member.qrCode && (
+                    <Badge variant="outline" className="text-xs">
+                      📱 QR Code
+                    </Badge>
+                  )}
+                </div>
 
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
                   <span>
@@ -960,16 +1012,16 @@ export const MembersPage: React.FC = () => {
                 setDeleteDialogOpen(false);
                 setSelectedMember(null);
               }}
-              disabled={actionLoading === selectedMember?._id.$oid}
+              disabled={!!(selectedMember && actionLoading === getMemberId(selectedMember._id))}
             >
               {t('members.cancel', 'Cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedMember && handleDelete(selectedMember)}
-              disabled={actionLoading === selectedMember?._id.$oid}
+              disabled={!!(selectedMember && actionLoading === getMemberId(selectedMember._id))}
               className="bg-destructive text-gray-100 hover:bg-destructive/90"
             >
-              {actionLoading === selectedMember?._id.$oid ? (
+              {selectedMember && actionLoading === getMemberId(selectedMember._id) ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                   {t('members.deleting', 'Deleting...')}

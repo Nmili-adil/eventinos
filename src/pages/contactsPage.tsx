@@ -62,6 +62,7 @@ import type { RootState } from '@/store/app/rootReducer';
 import { useNavigate } from 'react-router-dom';
 import PageHead from '@/components/shared/page-head';
 import { useTranslation } from 'react-i18next';
+import { Alert, AlertTitle } from '@/components/ui/alert';
 
 const ContactsPage: React.FC = () => {
   const { t } = useTranslation();

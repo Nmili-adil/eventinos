@@ -30,24 +30,7 @@ interface MemberDetailsDialogProps {
   onDelete?: (member: Member) => void
 }
 
-// Enhanced safe render helper
-const safeRender = (value: any, fallback: string = 'Not available'): string => {
-  if (value === null || value === undefined) return fallback
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-    return String(value)
-  }
-  if (typeof value === 'object') {
-    if (React.isValidElement(value)) return fallback
-    if (typeof value.toString === 'function' && value.toString() !== '[object Object]') {
-      return value.toString()
-    }
-    if (value.city || value.country || value.name) {
-      return [value.city, value.country, value.name].filter(Boolean).join(', ')
-    }
-    return fallback
-  }
-  return fallback
-}
+
 
 const MemberDetailsDialog = ({
   member,
@@ -57,6 +40,26 @@ const MemberDetailsDialog = ({
   onDelete,
 }: MemberDetailsDialogProps) => {
   const { t } = useTranslation()
+
+  // Enhanced safe render helper
+  const safeRender = (value: any, fallback: string = t('members.detailsDialog.notAvailable')): string => {
+    if (value === null || value === undefined) return fallback
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return String(value)
+    }
+    if (typeof value === 'object') {
+      if (React.isValidElement(value)) return fallback
+      if (typeof value.toString === 'function' && value.toString() !== '[object Object]') {
+        return value.toString()
+      }
+      if (value.city || value.country || value.name) {
+        return [value.city, value.country, value.name].filter(Boolean).join(', ')
+      }
+      return fallback
+    }
+    return fallback
+  }
+
   const [memberEvents, setMemberEvents] = useState<any[]>([])
   const [eventsLoading, setEventsLoading] = useState(false)
   const [eventsError, setEventsError] = useState<string | null>(null)
@@ -162,7 +165,7 @@ const MemberDetailsDialog = ({
       } catch (error: any) {
         console.error('Failed to load member events', error)
         setMemberEvents([])
-        setEventsError(error?.response?.data?.message || error?.message || 'Unable to load member events.')
+        setEventsError(error?.response?.data?.message || error?.message || t('members.detailsDialog.events.unableToLoad'))
       } finally {
         setEventsLoading(false)
       }
@@ -230,9 +233,9 @@ const MemberDetailsDialog = ({
         <div className="border-b border-gray-200 bg-white">
           <div className="flex space-x-1 px-6">
             {[
-              { id: 'overview', label: 'Overview', icon: User },
-              { id: 'events', label: 'Events', icon: Users, count: memberEvents.length },
-              { id: 'activity', label: 'Activity', icon: Calendar }
+              { id: 'overview', label: t('members.detailsDialog.tabs.overview'), icon: User },
+              { id: 'events', label: t('members.detailsDialog.tabs.events'), icon: Users, count: memberEvents.length },
+              { id: 'activity', label: t('members.detailsDialog.tabs.activity'), icon: Calendar }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -265,34 +268,34 @@ const MemberDetailsDialog = ({
             <div className="p-6 space-y-6">
               {/* Status Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className={`border-2 rounded-xl p-4 ${getStatusColor(member.isActive)}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">Account Status</p>
-                      <p className="text-lg font-semibold mt-1">
-                        {member.isActive ? 'Active' : 'Inactive'}
+                <div className={`border-2 rounded-xl px-4 py-2 ${getStatusColor(member.isActive ?? false)}`}>
+                  <div className="flex items-center justify-between py-0">
+                    <div className="py-0">
+                      <p className="text-xs font-medium">{t('members.detailsDialog.labels.accountStatus')}</p>
+                      <p className="text-sm font-semibold mt-1">
+                        {member.isActive ? t('members.detailsDialog.status.active') : t('members.detailsDialog.status.inactive')}
                       </p>
                     </div>
                     {member.isActive ? (
-                      <CheckCircle className="w-8 h-8 text-emerald-600" />
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
                     ) : (
-                      <UserX className="w-8 h-8 text-gray-600" />
+                      <UserX className="w-4 h-4 text-gray-600" />
                     )}
                   </div>
                 </div>
                 
-                <div className={`border-2 rounded-xl p-4 ${getRegistrationColor(member.registrationCompleted)}`}>
+                <div className={`border-2 rounded-xl px-4 py-2 ${getRegistrationColor(member.registrationCompleted ?? false)}`}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium">Registration</p>
-                      <p className="text-lg font-semibold mt-1">
-                        {member.registrationCompleted ? 'Complete' : 'Pending'}
+                      <p className="text-xs font-medium">{t('members.detailsDialog.labels.registration')}</p>
+                      <p className="text-sm font-semibold mt-1">
+                        {member.registrationCompleted ? t('members.detailsDialog.status.registrationComplete') : t('members.detailsDialog.status.registrationPending')}
                       </p>
                     </div>
                     {member.registrationCompleted ? (
-                      <CheckCircle className="w-8 h-8 text-blue-600" />
+                      <CheckCircle className="w-4 h-4 text-blue-600" />
                     ) : (
-                      <Clock className="w-8 h-8 text-amber-600" />
+                      <Clock className="w-4 h-4 text-amber-600" />
                     )}
                   </div>
                 </div>
@@ -302,30 +305,30 @@ const MemberDetailsDialog = ({
               <div className="bg-gray-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Mail className="w-5 h-5 mr-2 text-blue-600" />
-                  Contact Information
+                  {t('members.detailsDialog.sections.contactInfo')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm text-gray-600 font-medium">Email Address</label>
+                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.emailAddress')}</label>
                     <div className="flex items-center mt-1 space-x-2">
                       <Mail className="w-4 h-4 text-gray-400" />
-                      <p className="text-gray-900">{safeRender(member.email, 'Not provided')}</p>
+                      <p className="text-gray-900">{safeRender(member.email, t('members.detailsDialog.labels.notProvided'))}</p>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600 font-medium">Phone Number</label>
+                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.phoneNumber')}</label>
                     <div className="flex items-center mt-1 space-x-2">
                       <Phone className="w-4 h-4 text-gray-400" />
-                      <p className="text-gray-900">{safeRender(member.phoneNumber, 'Not provided')}</p>
+                      <p className="text-gray-900">{safeRender(member.phoneNumber, t('members.detailsDialog.labels.notProvided'))}</p>
                     </div>
                   </div>
                   {(member.city || member.country) && (
                     <div className="md:col-span-2">
-                      <label className="text-sm text-gray-600 font-medium">Location</label>
+                      <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.location')}</label>
                       <div className="flex items-center mt-1 space-x-2">
                         <MapPin className="w-4 h-4 text-gray-400" />
                         <p className="text-gray-900">
-                          {[safeRender(member.city), safeRender(member.country)].filter(Boolean).join(', ') || 'Not provided'}
+                          {[safeRender(member.city), safeRender(member.country)].filter(Boolean).join(', ') || t('members.detailsDialog.labels.notProvided')}
                         </p>
                       </div>
                     </div>
@@ -337,26 +340,26 @@ const MemberDetailsDialog = ({
               <div className="bg-gray-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <User className="w-5 h-5 mr-2 text-purple-600" />
-                  Personal Details
+                  {t('members.detailsDialog.sections.personalInfo')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm text-gray-600 font-medium">First Name</label>
+                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.firstName')}</label>
                     <p className="text-gray-900 mt-1">{safeRender(member.firstName)}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-600 font-medium">Last Name</label>
+                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.lastName')}</label>
                     <p className="text-gray-900 mt-1">{safeRender(member.lastName)}</p>
                   </div>
                   {member.gender && (
                     <div>
-                      <label className="text-sm text-gray-600 font-medium">Gender</label>
+                      <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.gender')}</label>
                       <p className="text-gray-900 mt-1 capitalize">{safeRender(member.gender)}</p>
                     </div>
                   )}
                   {member.birthday && (
                     <div>
-                      <label className="text-sm text-gray-600 font-medium">Birthday</label>
+                      <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.birthday')}</label>
                       <div className="flex items-center mt-1 space-x-2">
                         <Cake className="w-4 h-4 text-gray-400" />
                         <p className="text-gray-900">{formatDate(member.birthday)}</p>
@@ -370,16 +373,16 @@ const MemberDetailsDialog = ({
               <div className="bg-gray-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Calendar className="w-5 h-5 mr-2 text-orange-600" />
-                  Account Timeline
+                  {t('members.detailsDialog.sections.accountInfo')}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-600">Member since</span>
+                    <span className="text-gray-600">{t('members.detailsDialog.labels.memberSince')}</span>
                     <span className="font-medium text-gray-900">{formatDate(member.createdAt)}</span>
                   </div>
                   {member.updatedAt && (
                     <div className="flex justify-between items-center py-2 border-t border-gray-200">
-                      <span className="text-gray-600">Last updated</span>
+                      <span className="text-gray-600">{t('members.detailsDialog.labels.lastUpdated')}</span>
                       <span className="font-medium text-gray-900">{formatDate(member.updatedAt)}</span>
                     </div>
                   )}
@@ -393,13 +396,13 @@ const MemberDetailsDialog = ({
               <div className="bg-gray-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Users className="w-5 h-5 mr-2 text-blue-600" />
-                  Event Participation
+                  {t('members.detailsDialog.labels.eventParticipation')}
                 </h3>
                 
                 {eventsLoading ? (
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-2" />
-                    <span className="text-gray-600">Loading events...</span>
+                    <span className="text-gray-600">{t('members.detailsDialog.events.loadingEvents')}</span>
                   </div>
                 ) : eventsError ? (
                   <div className="flex items-center justify-center py-8 text-red-600 bg-red-50 rounded-lg">
@@ -416,16 +419,16 @@ const MemberDetailsDialog = ({
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <h4 className="font-semibold text-gray-900">
-                              {safeRender(eventRecord?.eventName || eventRecord?.name, 'Untitled Event')}
+                              {safeRender(eventRecord?.eventName || eventRecord?.name, t('members.detailsDialog.events.untitledEvent'))}
                             </h4>
                             <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
                               <span className="flex items-center space-x-1">
                                 <Calendar className="w-4 h-4" />
-                                <span>{eventRecord?.date ? formatDate(eventRecord.date) : 'Date not set'}</span>
+                                <span>{eventRecord?.date ? formatDate(eventRecord.date) : t('members.detailsDialog.events.dateNotSet')}</span>
                               </span>
                               <span className="flex items-center space-x-1">
                                 <MapPin className="w-4 h-4" />
-                                <span>{safeRender(eventRecord?.city || eventRecord?.location, 'Location not set')}</span>
+                                <span>{safeRender(eventRecord?.city || eventRecord?.location, t('members.detailsDialog.events.locationNotSet'))}</span>
                               </span>
                             </div>
                           </div>
@@ -436,7 +439,7 @@ const MemberDetailsDialog = ({
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-gray-100 text-gray-800'
                           }`}>
-                            {safeRender(eventRecord?.status, 'registered')}
+                            {safeRender(eventRecord?.status, t('members.detailsDialog.events.registered'))}
                           </span>
                         </div>
                       </div>
@@ -445,8 +448,8 @@ const MemberDetailsDialog = ({
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                    <p>No event participations found</p>
-                    <p className="text-sm mt-1">This member hasn't registered for any events yet.</p>
+                    <p>{t('members.detailsDialog.events.noEvents')}</p>
+                    <p className="text-sm mt-1">{t('members.detailsDialog.events.noEventsDescription')}</p>
                   </div>
                 )}
               </div>
@@ -458,27 +461,27 @@ const MemberDetailsDialog = ({
               <div className="bg-gray-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Shield className="w-5 h-5 mr-2 text-green-600" />
-                  Account Activity
+                  {t('members.detailsDialog.labels.accountActivity')}
                 </h3>
                 <div className="space-y-4">
                   <div className="bg-white rounded-lg border border-gray-200 p-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Account Created</span>
+                      <span className="text-gray-600">{t('members.detailsDialog.labels.accountCreated')}</span>
                       <span className="font-medium text-gray-900">{formatDate(member.createdAt)}</span>
                     </div>
                   </div>
                   {member.updatedAt && (
                     <div className="bg-white rounded-lg border border-gray-200 p-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Last Profile Update</span>
+                        <span className="text-gray-600">{t('members.detailsDialog.labels.lastProfileUpdate')}</span>
                         <span className="font-medium text-gray-900">{formatDate(member.updatedAt)}</span>
                       </div>
                     </div>
                   )}
                   <div className="bg-white rounded-lg border border-gray-200 p-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Event Participations</span>
-                      <span className="font-medium text-gray-900">{memberEvents.length} events</span>
+                      <span className="text-gray-600">{t('members.detailsDialog.labels.eventParticipations')}</span>
+                      <span className="font-medium text-gray-900">{t('members.detailsDialog.events.eventsCount', { count: memberEvents.length })}</span>
                     </div>
                   </div>
                 </div>
@@ -494,7 +497,7 @@ const MemberDetailsDialog = ({
               onClick={onClose}
               className="px-4 py-2 text-gray-600 hover:text-gray-100 font-medium transition-colors duration-200 border border-slate-400 rounded-md shadow-sm hover:bg-gray-700 cursor-pointer overflow-hidden"
             >
-              Close
+              {t('members.detailsDialog.buttons.close')}
             </button>
             
             <div className="flex space-x-3 overflow-hidden">

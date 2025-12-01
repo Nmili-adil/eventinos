@@ -552,11 +552,35 @@
     "detailsDialog": {
       "title": "Détails du membre",
       "description": "Informations complètes sur le membre",
+      "tabs": {
+        "overview": "Aperçu",
+        "events": "Événements",
+        "activity": "Activité"
+      },
       "sections": {
         "contactInfo": "Informations de contact",
         "personalInfo": "Informations personnelles",
-        "accountInfo": "Informations du compte",
+        "accountInfo": "Chronologie du compte",
         "timestamps": "Horodatages"
+      },
+      "labels": {
+        "accountStatus": "Statut du compte",
+        "registration": "Inscription",
+        "emailAddress": "Adresse email",
+        "phoneNumber": "Numéro de téléphone",
+        "location": "Localisation",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "gender": "Genre",
+        "birthday": "Date de naissance",
+        "memberSince": "Membre depuis",
+        "lastUpdated": "Dernière mise à jour",
+        "eventParticipation": "Participation aux événements",
+        "accountActivity": "Activité du compte",
+        "accountCreated": "Compte créé",
+        "lastProfileUpdate": "Dernière mise à jour du profil",
+        "eventParticipations": "Participations aux événements",
+        "notProvided": "Non fourni"
       },
       "fields": {
         "email": "Adresse email",
@@ -577,17 +601,50 @@
       "status": {
         "active": "Actif",
         "inactive": "Inactif",
-        "registrationComplete": "Inscription complétée",
-        "registrationPending": "Inscription en attente",
+        "registrationComplete": "Complété",
+        "registrationPending": "En attente",
         "completed": "Complété",
         "pending": "En attente"
+      },
+      "events": {
+        "loadingEvents": "Chargement des événements...",
+        "noEvents": "Aucune participation aux événements trouvée",
+        "noEventsDescription": "Ce membre ne s'est inscrit à aucun événement pour le moment.",
+        "unableToLoad": "Impossible de charger les événements du membre.",
+        "untitledEvent": "Événement sans titre",
+        "dateNotSet": "Date non définie",
+        "locationNotSet": "Lieu non défini",
+        "registered": "inscrit",
+        "eventsCount": "{{count}} événements"
       },
       "buttons": {
         "close": "Fermer",
         "editMember": "Modifier le membre",
         "deleteMember": "Supprimer le membre"
       },
-      "notAvailable": "N/D"
+      "notAvailable": "Non disponible"
+    },
+    "events": {
+      "selectorLabel": "Sélection d'événement actuelle",
+      "loadingParticipants": "Chargement des participants...",
+      "participantsCount": "{{count}} participants",
+      "noSelection": "Sélectionnez un événement pour afficher ses participants",
+      "changeEvent": "Changer d'événement",
+      "selectEvent": "Sélectionner un événement",
+      "clearSelection": "Effacer",
+      "dialog": {
+        "title": "Sélectionner un événement",
+        "description": "Choisissez un événement pour afficher ses membres inscrits",
+        "empty": "Aucun événement disponible pour le moment",
+        "searchPlaceholder": "Rechercher des événements par nom",
+        "noResults": "Aucun événement ne correspond à votre recherche"
+      },
+      "exitConfirm": {
+        "title": "Sélection d'événement requise",
+        "description": "Vous devez sélectionner un événement pour voir ses participants. Souhaitez-vous retourner à la page précédente ?",
+        "stay": "Rester ici",
+        "return": "Retourner à la page précédente"
+      }
     }
   },
   "notFound": {

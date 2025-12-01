@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
 import { useNavigate } from 'react-router-dom'
 import { EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE } from '@/constants/routerConstants'
-import LoadingComponent from '@/components/shared/loadingComponent'
 import type { AppDispatch } from '@/store/app/store'
 import { deleteEventRequest, updateEventStatusRequest } from '@/store/features/events/events.actions'
 import { DeleteDialog } from '@/components/shared/alert-dialog-reusable'
@@ -27,6 +26,7 @@ import { EventsCalendarView } from './EventsCalendarView'
  import { EventsMapView } from './EventsMapView'
 import type { EventStatus } from '@/types/eventsTypes'
 import { useTranslation } from 'react-i18next'
+import EventsTableSkeleton from './EventsTableSkeleton'
 
 const PAGE_SIZE = 10
 
@@ -187,7 +187,7 @@ export function EventsTable() {
   if (isLoading) {
     return (
       <div className='h-screen w-full flex items-center justify-center'>
-        <LoadingComponent />
+        <EventsTableSkeleton />
       </div>
     )
   }
@@ -198,14 +198,14 @@ export function EventsTable() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-start md:justify-between lg:justify-between items-start ">
         <PageHead 
           title={t('events.title')} 
           icon={List} 
           description={t('events.eventDescription')}
           total={0}
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-evenly ">
           {/* View Toggle */}
           <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
             <Button
@@ -258,25 +258,27 @@ export function EventsTable() {
       {viewMode === 'table' && (
         <>
           <div className="border border-slate-300 shadow-md rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader 
-                sortField={sort.field}
-                sortDirection={sort.direction}
-                onSort={handleSort}
-              />
-              <TableBody>
-                {paginatedEvents.map((event) => (
-                  <EventTableRow
-                    key={event._id}
-                    event={event}
-                    onEdit={handleEdit}
-                    onChangeStatus={handleChangeStatus}
-                    onPreview={handlePreview}
-                    onDelete={() => handleDelete(event._id, event.title || event.name || '')}
-                  />
-                ))}
-              </TableBody>
-            </Table>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader 
+                  sortField={sort.field}
+                  sortDirection={sort.direction}
+                  onSort={handleSort}
+                />
+                <TableBody>
+                  {paginatedEvents.map((event) => (
+                    <EventTableRow
+                      key={event._id}
+                      event={event}
+                      onEdit={handleEdit}
+                      onChangeStatus={handleChangeStatus}
+                      onPreview={handlePreview}
+                      onDelete={() => handleDelete(event._id, event.title || event.name || '')}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
 
             {/* Empty State */}
             {paginatedEvents.length === 0 && !isLoading && (

@@ -33,7 +33,6 @@ export const fetchBadgesRequest = () => {
         dispatch({ type: FETCH_BADGES_REQUEST })
         try {
             const response = await fetchBadgesApi()
-            console.log(response)
             if (response.status === 200) {
                 dispatch(fetchBadgesSuccess(response.data.data))
             } else {

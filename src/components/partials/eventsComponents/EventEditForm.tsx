@@ -27,7 +27,21 @@ import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import type { date } from "zod";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  Plus,
+  Trash2,
+  LayoutDashboard,
+  Calendar,
+  MapPin,
+  Share2,
+  FileText,
+  Award,
+  Image,
+  Users,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
 import type { RootState } from "@/store/app/rootReducer";
@@ -173,6 +187,72 @@ const EventEditForm = ({
     );
   };
 
+  const tabsConfig = [
+    {
+      value: "basic",
+      label: t("eventForm.sections.basicInfo"),
+      icon: LayoutDashboard,
+      color: "text-blue-500",
+      bgColor: "bg-blue-500",
+    },
+    {
+      value: "datetime",
+      label: t("eventForm.sections.dateTime"),
+      icon: Calendar,
+      color: "text-green-500",
+      bgColor: "bg-green-500",
+    },
+    {
+      value: "location",
+      label: t("eventForm.sections.location"),
+      icon: MapPin,
+      color: "text-purple-500",
+      bgColor: "bg-purple-500",
+    },
+    {
+      value: "social",
+      label: t("eventForm.sections.socialNetworks"),
+      icon: Share2,
+      color: "text-orange-500",
+      bgColor: "bg-orange-500",
+    },
+    {
+      value: "program",
+      label: t("eventForm.sections.program"),
+      icon: FileText,
+      color: "text-red-500",
+      bgColor: "bg-red-500",
+    },
+    {
+      value: "badges",
+      label: t("eventForm.sections.badges"),
+      icon: Award,
+      color: "text-yellow-500",
+      bgColor: "bg-yellow-500",
+    },
+    {
+      value: "gallery",
+      label: t("eventForm.sections.gallery"),
+      icon: Image,
+      color: "text-pink-500",
+      bgColor: "bg-pink-500",
+    },
+    {
+      value: "exhibitors",
+      label: t("eventForm.sections.exhibitorsSponsors"),
+      icon: Users,
+      color: "text-indigo-500",
+      bgColor: "bg-indigo-500",
+    },
+    {
+      value: "members",
+      label: t("eventForm.sections.members"),
+      icon: Users,
+      color: "text-indigo-500",
+      bgColor: "bg-indigo-500",
+    },
+  ];
+
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-full">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -233,91 +313,30 @@ const EventEditForm = ({
                   <Tabs
                     value={activeTab}
                     onValueChange={setActiveTab}
-                    className="w-full"
+                    className="flex flex-col md:flex-row gap-6 w-full"
                   >
-                    <TabsList className="flex w-full justify-evenly mb-8 overflow-x-auto">
-                      <TabsTrigger
-                        value="basic"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.basicInfo")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="datetime"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.dateTime")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="location"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.location")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="social"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-orange-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.socialNetworks")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="program"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-red-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.program")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="badges"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.badges")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="gallery"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-pink-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.gallery")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="exhibitors"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-indigo-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.exhibitorsSponsors")}
-                        </span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="members"
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <div className="w-2 h-2 bg-indigo-500 rounded-full" />
-                        <span className="truncate">
-                          {t("eventForm.sections.members")}
-                        </span>
-                      </TabsTrigger>
-                    </TabsList>
+                    <aside className="flex-none w-full h-12 md:h-fit md:w-64">
+                      <TabsList className="flex h-fit flex-row md:flex-col justify-start h-auto bg-transparent p-0 gap-2 overflow-x-auto md:overflow-visible w-full">
+                        {tabsConfig.map((tab) => (
+                          <TabsTrigger
+                            key={tab.value}
+                            value={tab.value}
+                            className="flex items-center h-12 justify-start gap-3 px-4 py-3 w-full whitespace-nowrap rounded-lg transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted text-muted-foreground overflow-hidden"
+                          >
+                            <tab.icon
+                              className={`w-4 h-4 ${
+                                activeTab === tab.value
+                                  ? "text-current"
+                                  : tab.color
+                              }`}
+                            />
+                            <span className="font-medium">{tab.label}</span>
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+                    </aside>
+
+                    <div className="flex-1 min-w-0">
 
                     {/* Basic Information Tab */}
                     <TabsContent value="basic" className="space-y-6">
@@ -1260,7 +1279,7 @@ const EventEditForm = ({
                                             }}
                                           />
                                           {/* Delete button overlay */}
-                                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
+                                          <div className="absolute inset-0 bg-black/20  group-hover:bg-opacity-40 transition-all flex items-center justify-center">
                                             <Button
                                               type="button"
                                               variant="destructive"
@@ -1763,6 +1782,7 @@ const EventEditForm = ({
                         </Button>
                         </div>
                     </TabsContent>
+                    </div>
                   </Tabs>
 
                   <div className="flex justify-end space-x-4 pt-6 border-t">

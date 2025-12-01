@@ -40,7 +40,7 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-evenly gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -50,38 +50,10 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
             onChange={(e) => handleSearchChange(e.target.value)}
           />
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-          <Select value={filters.status} onValueChange={handleStatusChange}>
-            <SelectTrigger className="w-full sm:w-[140px]">
-              <SelectValue placeholder={t('common.status')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('events.allStatuses')}</SelectItem>
-              <SelectItem value="ACCEPTED">{t('events.statusAccepted')}</SelectItem>
-              <SelectItem value="PENDING">{t('events.statusPending')}</SelectItem>
-              <SelectItem value="REJECTED">{t('events.statusRejected')}</SelectItem>
-              <SelectItem value="CANCELLED">{t('events.statusCancelled')}</SelectItem>
-              <SelectItem value="CLOSED">{t('events.statusClosed')}</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={filters.type} onValueChange={handleTypeChange}>
-            <SelectTrigger className="w-full sm:w-[140px]">
-              <SelectValue placeholder={t('common.type')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('events.allTypes')}</SelectItem>
-              <SelectItem value="FACETOFACE">{t('events.faceToFace')}</SelectItem>
-              <SelectItem value="VIRTUEL">{t('events.virtual')}</SelectItem>
-              <SelectItem value="HYBRID">{t('events.hybrid')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
+        
+         <div className="flex flex-wrap gap-2 justify-evenly ">
         <Popover>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild className="flex-1">
             <Button
               variant="outline"
               className={cn(
@@ -106,7 +78,7 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
         </Popover>
 
         <Popover>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild className="flex-1">
             <Button
               variant="outline"
               className={cn(
@@ -138,6 +110,35 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
           </Button>
         )}
       </div>
+      <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+          <Select value={filters.status} onValueChange={handleStatusChange}>
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder={t('common.status')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('events.allStatuses')}</SelectItem>
+              <SelectItem value="ACCEPTED">{t('events.statusAccepted')}</SelectItem>
+              <SelectItem value="PENDING">{t('events.statusPending')}</SelectItem>
+              <SelectItem value="REJECTED">{t('events.statusRejected')}</SelectItem>
+              <SelectItem value="CANCELLED">{t('events.statusCancelled')}</SelectItem>
+              <SelectItem value="CLOSED">{t('events.statusClosed')}</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={filters.type} onValueChange={handleTypeChange}>
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder={t('common.type')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('events.allTypes')}</SelectItem>
+              <SelectItem value="FACETOFACE">{t('events.faceToFace')}</SelectItem>
+              <SelectItem value="VIRTUEL">{t('events.virtual')}</SelectItem>
+              <SelectItem value="HYBRID">{t('events.hybrid')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+     
     </div>
   )
 }

@@ -558,11 +558,35 @@
     "detailsDialog": {
       "title": "تفاصيل العضو",
       "description": "معلومات كاملة عن العضو",
+      "tabs": {
+        "overview": "نظرة عامة",
+        "events": "الفعاليات",
+        "activity": "النشاط"
+      },
       "sections": {
         "contactInfo": "معلومات الاتصال",
         "personalInfo": "المعلومات الشخصية",
-        "accountInfo": "معلومات الحساب",
+        "accountInfo": "الجدول الزمني للحساب",
         "timestamps": "الطوابع الزمنية"
+      },
+      "labels": {
+        "accountStatus": "حالة الحساب",
+        "registration": "التسجيل",
+        "emailAddress": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "location": "الموقع",
+        "firstName": "الاسم الأول",
+        "lastName": "الاسم الأخير",
+        "gender": "الجنس",
+        "birthday": "تاريخ الميلاد",
+        "memberSince": "عضو منذ",
+        "lastUpdated": "آخر تحديث",
+        "eventParticipation": "المشاركة في الفعاليات",
+        "accountActivity": "نشاط الحساب",
+        "accountCreated": "تم إنشاء الحساب",
+        "lastProfileUpdate": "آخر تحديث للملف الشخصي",
+        "eventParticipations": "المشاركات في الفعاليات",
+        "notProvided": "غير متوفر"
       },
       "fields": {
         "email": "البريد الإلكتروني",
@@ -583,10 +607,21 @@
       "status": {
         "active": "نشط",
         "inactive": "غير نشط",
-        "registrationComplete": "اكتمل التسجيل",
-        "registrationPending": "التسجيل معلق",
+        "registrationComplete": "مكتمل",
+        "registrationPending": "قيد الانتظار",
         "completed": "مكتمل",
         "pending": "قيد الانتظار"
+      },
+      "events": {
+        "loadingEvents": "جاري تحميل الفعاليات...",
+        "noEvents": "لم يتم العثور على مشاركات في الفعاليات",
+        "noEventsDescription": "لم يسجل هذا العضو في أي فعاليات بعد.",
+        "unableToLoad": "تعذر تحميل فعاليات العضو.",
+        "untitledEvent": "فعالية بدون عنوان",
+        "dateNotSet": "التاريخ غير محدد",
+        "locationNotSet": "الموقع غير محدد",
+        "registered": "مسجل",
+        "eventsCount": "{{count}} فعاليات"
       },
       "buttons": {
         "close": "إغلاق",
@@ -594,6 +629,27 @@
         "deleteMember": "حذف العضو"
       },
       "notAvailable": "غير متوفر"
+    },
+    "events": {
+      "selectorLabel": "الحدث المختار حالياً",
+      "loadingParticipants": "جاري تحميل المشاركين...",
+      "participantsCount": "{{count}} مشارك",
+      "noSelection": "اختر فعالية لعرض المشاركين فيها",
+      "changeEvent": "تغيير الفعالية",
+      "selectEvent": "اختر فعالية",
+      "clearSelection": "مسح",
+      "dialog": {
+        "title": "اختر الفعالية",
+        "description": "اختر الفعالية لعرض عضوين مسجلين",
+        "empty": "لا يوجد فعاليات",
+        "searchPlaceholder": "ابحث عن الفعالية حسب الاسم أو الموقع أو الشركة أو الحالة أو التاريخ"
+      },
+      "exitConfirm": {
+        "title": "مطلوب اختيار فعالية",
+        "description": "يجب عليك اختيار فعالية لعرض المشاركين فيها. هل ترغب في العودة إلى الصفحة السابقة؟",
+        "stay": "البقاء هنا",
+        "return": "العودة إلى الصفحة السابقة"
+      }
     }
   },
   "categories": {

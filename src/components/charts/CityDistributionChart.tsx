@@ -41,19 +41,14 @@ export default function CityDistributionBarChart({ data, isLoading, dateRangeLab
   const [cityData, setCityData] = useState<CityData[]>([])
   
   useEffect(() => {
-    console.log('City Chart - Received data:', data)
     if (data && Array.isArray(data)) {
-      // Ensure the data has the correct structure
       const formattedData = data.map((city: any) => ({
         name: city.name || city.city,
         users: city.users || city.count,
         percentage: city.percentage || 0,
         color: city.color || '#0088FE'
       }))
-      console.log('City Chart - Formatted data:', formattedData)
       setCityData(formattedData)
-    } else {
-      console.log('City Chart - No valid data')
     }
   }, [data])
 
@@ -85,9 +80,9 @@ export default function CityDistributionBarChart({ data, isLoading, dateRangeLab
         )}
       </CardHeader>
       <CardContent>
-        <div className="h-80">
+        <div className="h-80 min-h-[320px]">
           {cityData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minHeight={320}>
               <BarChart
                 data={cityData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

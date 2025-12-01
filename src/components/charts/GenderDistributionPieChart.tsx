@@ -99,7 +99,6 @@ export default function GenderDistributionPieChart({
   }
 
   useEffect(() => {
-    // console.log('Gender Chart - Received data:', data)
     if (data && Array.isArray(data)) {
       const totalCount = data.reduce((sum: number, item: any) => sum + item.count, 0)
       
@@ -118,10 +117,7 @@ export default function GenderDistributionPieChart({
         }
       })
       
-      console.log('Gender Chart - Formatted data:', formattedData)
       setGenderData(formattedData)
-    } else {
-      console.log('Gender Chart - No valid data')
     }
   }, [data, i18n.language]) // Re-run when language changes
 
@@ -156,9 +152,9 @@ export default function GenderDistributionPieChart({
         )}
       </CardHeader>
       <CardContent>
-        <div className="h-72">
+        <div className="h-72 min-h-[288px]">
           {genderData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%" className="my-4">
+            <ResponsiveContainer width="100%" height="100%" minHeight={288} className="my-4">
               <PieChart>
                 <Pie
                   data={genderData}
