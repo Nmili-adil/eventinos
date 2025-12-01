@@ -63,9 +63,11 @@ export const updateEventRequest = (eventId: string | undefined,event: any) : Upd
       const response = await updateEventApi(eventId,event)
       // updateEventApi returns response.data directly, not full response
       dispatch(updateEventSuccess(response))
+      return response;
     } catch (error: any) {
       console.error('Update event error:', error);
       dispatch(updateEventFailure(error.response?.data?.message || error.message || 'Update event failed'))
+      throw error;
     }
   };
 }

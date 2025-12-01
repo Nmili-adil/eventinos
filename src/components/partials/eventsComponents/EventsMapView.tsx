@@ -160,7 +160,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
           )}
         >
           {/* Sidebar Header */}
-          <div className="p-4 border-b bg-linear-to-r from-blue-600 to-purple-600 text-white">
+          <div className="p-4 border text-white bg-slate-700">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <MapPin className="h-5 w-5" />

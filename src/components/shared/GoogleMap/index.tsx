@@ -12,6 +12,7 @@ const DEFAULT_LIBRARIES: Libraries = ['marker']
 
 interface GoogleMapsContextValue {
   isLoaded: boolean
+  loadError?: Error | null
   mapId?: string
 }
 

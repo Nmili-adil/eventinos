@@ -34,7 +34,7 @@ export function RichTextEditor({
       placeholder={placeholder}
       disabled={disabled}
       containerProps={{
-        className: `rich-text-editor border rounded-md focus-within:ring-2 focus-within:ring-primary/40 ${className ?? ""}`,
+        className: `rich-text-editor whitespace-nowrap overflow-hidden border rounded-md focus-within:ring-2 focus-within:ring-primary/40 ${className ?? ""}`,
       }}
       style={{ minHeight: 180 }}
     />

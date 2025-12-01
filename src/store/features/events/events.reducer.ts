@@ -81,7 +81,7 @@ const eventReducrer = (
       return {
         ...state,
         isLoading: false,
-        isUpdating: true,
+        isUpdating: false,
         event: action.payload,
       };
     case UPDATE_EVENT_FAILURE:

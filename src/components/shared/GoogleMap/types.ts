@@ -30,3 +30,16 @@ export interface BaseMapProps {
   className?: string
   onMapReady?: (map: google.maps.Map) => void
 }
+
+export interface MultiMarkerMapProps extends BaseMapProps {
+  markers?: MapMarker[]
+  onMarkerClick?: (marker: MapMarker) => void
+  selectedMarkerId?: string | null
+  fitBounds?: boolean
+}
+
+interface GoogleMapsContextValue {
+  isLoaded: boolean
+  loadError?: Error | null
+  mapId?: string
+}

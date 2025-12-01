@@ -1,19 +1,10 @@
+// Update the imports at the top
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api'
-import type { LocationCoordinates, MapMarker, BaseMapProps } from './types'
+import type { LocationCoordinates, MapMarker, BaseMapProps, MultiMarkerMapProps } from './types'
 import { useGoogleMaps } from './index'
 
-interface MultiMarkerMapProps extends BaseMapProps {
-  markers: MapMarker[]
-  onMarkerClick?: (marker: MapMarker) => void
-  selectedMarkerId?: string | null
-  fitBounds?: boolean
-}
-
-const defaultCenter: LocationCoordinates = {
-  lat: 31.792306, // Casablanca
-  lng: -7.080168,
-}
+const defaultCenter: LocationCoordinates = { lat: 40.416775, lng: -3.703790 }; // Madrid coordinates as default
 
 export const MultiMarkerMap = ({
   markers = [],
@@ -27,58 +18,65 @@ export const MultiMarkerMap = ({
   fitBounds = true,
   onMapReady,
 }: MultiMarkerMapProps) => {
-  const { mapId } = useGoogleMaps()
+  const { isLoaded, loadError } = useGoogleMaps()
   const [map, setMap] = useState<google.maps.Map | null>(null)
+  const [mapCenter, setMapCenter] = useState<LocationCoordinates>(center || defaultCenter)
+  const [mapZoom, setMapZoom] = useState(zoom)
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null)
-  const googleMaps = typeof window !== 'undefined' ? window.google : undefined
 
   // Calculate map bounds based on markers
   const mapBounds = useMemo(() => {
-    if (markers.length === 0 || !googleMaps?.maps) return null
-    const bounds = new googleMaps.maps.LatLngBounds()
+    if (markers.length === 0 || !window.google?.maps) return null
+    const bounds = new window.google.maps.LatLngBounds()
     markers.forEach(marker => {
       bounds.extend(marker.position)
     })
     return bounds
-  }, [markers, googleMaps])
+  }, [markers])
 
-  // Determine map center
-  const getMapCenter = () => {
-    if (center) return center
-    if (markers.length === 1) return markers[0].position
-    return defaultCenter
-  }
+  // Set initial map center and zoom
+  useEffect(() => {
+    if (center) {
+      setMapCenter(center)
+      setMapZoom(zoom)
+    } else if (markers.length === 1) {
+      setMapCenter(markers[0].position)
+      setMapZoom(15)
+    } else if (markers.length > 1 && mapBounds) {
+      setMapZoom(zoom)
+    }
+  }, [center, markers, zoom, mapBounds])
 
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     setMap(mapInstance)
-    if (fitBounds && mapBounds) {
-      mapInstance.fitBounds(mapBounds)
-    }
     if (onMapReady) {
       onMapReady(mapInstance)
     }
-  }, [mapBounds, fitBounds, onMapReady])
-
-  const onUnmount = useCallback(() => {
-    setMap(null)
-  }, [])
+  }, [onMapReady])
 
   // Update map bounds when markers change
   useEffect(() => {
-    if (map && fitBounds && mapBounds) {
+    if (map && fitBounds && mapBounds && markers.length > 0) {
       map.fitBounds(mapBounds)
+      // Add padding to the bounds
+      map.panToBounds(mapBounds, {
+        top: 50,
+        bottom: 50,
+        left: 50,
+        right: 50,
+      })
     }
-  }, [map, mapBounds, fitBounds])
+  }, [map, mapBounds, fitBounds, markers.length])
 
-  // Update selected marker when selectedMarkerId changes
+  // Handle selected marker changes
   useEffect(() => {
     if (selectedMarkerId) {
       const marker = markers.find(m => m.id === selectedMarkerId)
       if (marker) {
         setSelectedMarker(marker)
         if (map) {
-          map.setCenter(marker.position)
-          map.setZoom(12)
+          map.panTo(marker.position)
+          map.setZoom(15)
         }
       }
     } else {
@@ -95,67 +93,65 @@ export const MultiMarkerMap = ({
       marker.onClick()
     }
     if (map) {
-      map.setCenter(marker.position)
-      map.setZoom(12)
+      map.panTo(marker.position)
+      map.setZoom(15)
     }
   }
 
-  const mapOptions = useMemo(
-    () => ({
-      mapId,
-      disableDefaultUI: false,
-      zoomControl: showControls,
-      streetViewControl: false,
-      mapTypeControl: showControls,
-      fullscreenControl: showControls,
-      styles: [
-        {
-          featureType: 'poi',
-          elementType: 'labels',
-          stylers: [{ visibility: 'off' }],
-        },
-      ],
-    }),
-    [mapId, showControls],
-  )
+  const mapOptions = useMemo(() => ({
+    disableDefaultUI: !showControls,
+    zoomControl: showControls,
+    streetViewControl: showControls,
+    mapTypeControl: showControls,
+    fullscreenControl: showControls,
+    styles: [{
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }],
+    }],
+  }), [showControls])
+
+  if (loadError) {
+    return <div>Error loading maps</div>
+  }
+
+  if (!isLoaded) {
+    return <div>Loading maps...</div>
+  }
 
   return (
-    <div className={`relative ${className}`} style={{ height }}>
+    <div className={`relative rounded-lg overflow-hidden border bg-white ${className}`} style={{ height }}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={getMapCenter()}
-        zoom={zoom}
+        center={mapCenter}
+        zoom={mapZoom}
         onLoad={onLoad}
-        onUnmount={onUnmount}
         options={mapOptions}
       >
-        {markers.map(marker => (
+        {markers.map((marker) => (
           <Marker
-            key={marker.id}
+            key={marker.id || `marker-${marker.position.lat}-${marker.position.lng}`}
             position={marker.position}
             title={marker.title}
             onClick={() => handleMarkerClick(marker)}
-            icon={
-              marker.icon ||
-              (googleMaps?.maps
-                ? {
-                    url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                    scaledSize: new googleMaps.maps.Size(32, 32),
-                  }
-                : undefined)
-            }
+            icon={{
+              url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+              scaledSize: new window.google.maps.Size(32, 32),
+            }}
           />
         ))}
 
-        {selectedMarker && selectedMarker.info && (
+        {selectedMarker && (
           <InfoWindow
             position={selectedMarker.position}
             onCloseClick={() => setSelectedMarker(null)}
-            options={{
-              maxWidth: 300,
-            }}
           >
-            <div>{selectedMarker.info}</div>
+            <div className="p-3 max-w-xs">
+              <h3 className="font-semibold text-sm">{selectedMarker.title}</h3>
+              {selectedMarker.info && (
+                <p className="text-xs text-gray-600 mt-1">{selectedMarker.info}</p>
+              )}
+            </div>
           </InfoWindow>
         )}
       </GoogleMap>

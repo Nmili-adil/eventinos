@@ -366,9 +366,9 @@ const filteredUsers = useMemo(() => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-row justify-between items-start sm:items-center gap-4">
         <PageHead
           title={t("accounts.title", "Admin & Organizer Accounts")}
           icon={UserCog}
@@ -386,8 +386,8 @@ const filteredUsers = useMemo(() => {
 
       {/* Role Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardContent className="pt-6">
+        <Card className="p-2">
+          <CardContent className="">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-red-100 rounded-lg">
@@ -403,8 +403,8 @@ const filteredUsers = useMemo(() => {
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
+        <Card className="p-2">
+          <CardContent className="">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-purple-100 rounded-lg">
@@ -423,8 +423,8 @@ const filteredUsers = useMemo(() => {
       </div>
 
       {/* Sort Options */}
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="p-2">
+        <CardContent className="">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <span className="text-sm font-medium text-muted-foreground">
               {t("accounts.sort.by", "Sort by:")}
@@ -595,23 +595,23 @@ const filteredUsers = useMemo(() => {
                     </span>
                   </div>
 
-                  {user.phoneNumber && (
+                  {/* {user.phoneNumber && (
                     <div className="flex items-center space-x-2 text-sm">
                       <Phone className="w-4 h-4 text-muted-foreground" />
                       <span className="text-muted-foreground">
                         {user.phoneNumber}
                       </span>
                     </div>
-                  )}
+                  )} */}
 
-                  {(user.city || user.country) && (
+                  {/* {(user.city || user.country) && (
                     <div className="flex items-center space-x-2 text-sm">
                       <MapPin className="w-4 h-4 text-muted-foreground" />
                       <span className="text-muted-foreground">
                         {[user.city, user.country].filter(Boolean).join(", ")}
                       </span>
                     </div>
-                  )}
+                  )} */}
 
                   {user.company?.name && (
                     <div className="flex items-center space-x-2 text-sm">
@@ -622,16 +622,16 @@ const filteredUsers = useMemo(() => {
                     </div>
                   )}
 
-                  <div className="flex items-center space-x-2 text-sm">
+                  {/* <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
                       {t("accounts.fields.joined", "Joined")}{" "}
                       {formatDate(user.createdAt)}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="border-t border-gray-200">
                 <div className="flex w-full justify-between items-center text-xs text-muted-foreground">
                   <span>
                     {t("accounts.fields.registration", "Registration")}{" "}

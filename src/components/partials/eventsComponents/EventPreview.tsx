@@ -34,7 +34,7 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
   }
 
   return (
-    <div className="w-full flex justify-center p-0">
+    <div className="w-full flex justify-center">
       <DeviceFrameset device="Galaxy Note 8" color="white" zoom={0.90} width={350} height={670}>
         {/* Content */}
         <div className="bg-white w-full h-full overflow-y-auto" style={{ minHeight: '670px', maxHeight: '812px' }}>

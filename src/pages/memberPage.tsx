@@ -57,9 +57,9 @@ import {
   ArrowDown,
   Loader2,
 } from 'lucide-react';
-import { 
-  fetchMembersRequest, 
-  deleteMemberRequest, 
+import {
+  fetchMembersRequest,
+  deleteMemberRequest,
   updateMemberRequest,
   updateMemberStatusRequest,
   createMemberRequest
@@ -164,17 +164,17 @@ export const MembersPage: React.FC = () => {
   const routeState = location.state as MembersLocationState | null;
   const preselectedEvent = routeState?.eventFilter ?? null;
   const routeEventHandledRef = useRef(false);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
-  
+
   const [filters, setFilters] = useState<MembersFiltersType>({
     search: '',
     status: 'all',
     registrationStatus: 'all',
     gender: 'all',
   });
-  
+
   const [sort, setSort] = useState<{
     field: MemberSortField;
     direction: MemberSortDirection;
@@ -213,7 +213,7 @@ export const MembersPage: React.FC = () => {
   const handleEventDialogOpenChange = (open: boolean) => {
     // Prevent closing the dialog when no event is selected
     if (!open && !selectedEvent) {
-     setExitConfirmOpen(true)
+      setExitConfirmOpen(true)
       return;
     }
     setEventSelectorOpen(open);
@@ -330,7 +330,7 @@ export const MembersPage: React.FC = () => {
 
 
 
-  
+
   const handleEventSelection = (eventOption: { id: string; name: string }) => {
     setSelectedEvent(eventOption)
     setEventSelectorOpen(false)
@@ -431,22 +431,22 @@ export const MembersPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (member: Member) => {
-    
+
     setActionLoading(member._id.toString());
 
     try {
       const response: any = await dispatch(updateMemberStatusRequest(getMemberId(member._id), !member.isActive));
       if (response?.success) {
-      toast.success(
-        t(
-          `members.messages.${!member.isActive ? 'activateSuccess' : 'deactivateSuccess'}`,
-          `Member ${!member.isActive ? 'activated' : 'deactivated'} successfully`
-        )
-      );
-      refreshMemberSources();
-    } else {
-      toast.error(response?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
-    }
+        toast.success(
+          t(
+            `members.messages.${!member.isActive ? 'activateSuccess' : 'deactivateSuccess'}`,
+            `Member ${!member.isActive ? 'activated' : 'deactivated'} successfully`
+          )
+        );
+        refreshMemberSources();
+      } else {
+        toast.error(response?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
+      }
     } catch (error: any) {
       toast.error(error?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
     } finally {
@@ -499,7 +499,7 @@ export const MembersPage: React.FC = () => {
           </div>
           <Skeleton className="h-10 w-32" />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, index) => (
             <Card key={index} className="overflow-hidden">
@@ -533,10 +533,10 @@ export const MembersPage: React.FC = () => {
     <div className="container mx-auto  space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <PageHead 
+        <PageHead
           title={t('members.title')}
-          icon={Users} 
-          description={t('members.description')} 
+          icon={Users}
+          description={t('members.description')}
           total={total ?? 0}
         />
         {/* <Button onClick={() => setAddDialogOpen(true)}>
@@ -665,7 +665,7 @@ export const MembersPage: React.FC = () => {
                       <h3 className="font-semibold text-lg leading-tight">
                         {member.firstName} {member.lastName}
                       </h3>
-                      <Badge 
+                      <Badge
                         variant={member.isActive ? "default" : "secondary"}
                         className="mt-1"
                       >
@@ -675,9 +675,9 @@ export const MembersPage: React.FC = () => {
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="h-8 w-8 p-0"
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -685,20 +685,20 @@ export const MembersPage: React.FC = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="z-50">
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={(e) => handleDropdownAction(e, () => handleViewDetails(member))}
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         {t('members.preview')}
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={(e) => handleDropdownAction(e, () => handleEdit(member))}
                       >
                         <Edit className="w-4 h-4 mr-2" />
                         {t('members.edit')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
                         disabled={actionLoading === getMemberId(member._id)}
                       >
@@ -715,7 +715,7 @@ export const MembersPage: React.FC = () => {
                         )}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
                         className="text-destructive"
                         disabled={actionLoading === getMemberId(member._id)}
@@ -736,27 +736,27 @@ export const MembersPage: React.FC = () => {
                       {member.email || t('members.notAvailable', 'N/A')}
                     </span>
                   </div>
-                  
+
                   {member.phoneNumber && (
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {member.phoneNumber}
-                    </span>
-                  </div>
+                    <div className="flex items-center space-x-2 text-sm">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        {member.phoneNumber}
+                      </span>
+                    </div>
                   )}
 
                   {(member.city || member.country) && (
-  <div className="flex items-center space-x-2 text-sm">
-    <MapPin className="w-4 h-4 text-muted-foreground" />
-    <span className="text-muted-foreground">
-      {[
-        typeof member.city === 'string' ? member.city : '',
-        typeof member.country === 'string' ? member.country : ''
-      ].filter(Boolean).join(', ')}
-    </span>
-  </div>
-)}
+                    <div className="flex items-center space-x-2 text-sm">
+                      <MapPin className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">
+                        {[
+                          typeof member.city === 'string' ? member.city : '',
+                          typeof member.country === 'string' ? member.country : ''
+                        ].filter(Boolean).join(', ')}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="flex items-center space-x-2 text-sm">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -781,11 +781,11 @@ export const MembersPage: React.FC = () => {
                     </Badge>
                   )}
                   {member.status && ['PENDING', 'CONFIRMED', 'EXPIRED'].includes(member.status) && (
-                    <Badge 
+                    <Badge
                       variant={
-                        member.status === 'CONFIRMED' ? 'default' : 
-                        member.status === 'PENDING' ? 'secondary' : 
-                        'destructive'
+                        member.status === 'CONFIRMED' ? 'default' :
+                          member.status === 'PENDING' ? 'secondary' :
+                            'destructive'
                       }
                       className="text-xs"
                     >
@@ -802,17 +802,17 @@ export const MembersPage: React.FC = () => {
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
                   <span>
                     {t('members.registration.status', 'Registration')}{' '}
-                    {member.registrationCompleted ? 
-                      t('members.registration.completed') : 
+                    {member.registrationCompleted ?
+                      t('members.registration.completed') :
                       t('members.registration.pending')
                     }
                   </span>
                   <span>
-  {typeof member.user === 'object' 
-    ? member.user?.firstName || t('members.notAvailable', 'N/A')
-    : member.user || t('members.notAvailable', 'N/A')
-  }
-</span>
+                    {typeof member.user === 'object'
+                      ? member.user?.firstName || t('members.notAvailable', 'N/A')
+                      : member.user || t('members.notAvailable', 'N/A')
+                    }
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -832,8 +832,8 @@ export const MembersPage: React.FC = () => {
                 : t('members.emptyState.noMembers', 'No members have been added yet.')}
             </p>
             {(filters.search || filters.status !== 'all' || filters.registrationStatus !== 'all' || filters.gender !== 'all') ? (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setFilters({
                   search: '',
                   status: 'all',
@@ -885,104 +885,99 @@ export const MembersPage: React.FC = () => {
         isLoading={actionLoading === 'create'}
       />
 
-<Dialog open={eventSelectorOpen} onOpenChange={handleEventDialogOpenChange}>
-  <DialogContent className="max-w-3xl border-slate-300">
-    <DialogHeader className='relative'>
-      <DialogTitle>{t('members.events.dialog.title', 'Select an event')}</DialogTitle>
-      <DialogDescription>
-        {t('members.events.dialog.description', 'Choose an event to display its registered members.')}
-      </DialogDescription>
-    </DialogHeader>
-    {eventsLoading ? (
-      <div className="space-y-3 pt-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-16 w-full" />
-        ))}
-      </div>
-    ) : eventsError ? (
-      <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
-        {eventsError}
-      </div>
-    ) : availableEvents.length === 0 ? (
-      <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
-        {t('members.events.dialog.empty', 'No events available at the moment.')}
-      </div>
-    ) : (
-      <div className="space-y-4 pt-4 overflow-y-auto">
-        <Input
-          value={eventSearchTerm}
-          onChange={(e) => setEventSearchTerm(e.target.value)}
-          placeholder={t('members.events.dialog.searchPlaceholder', 'Search events by name')}
-        />
-        <ScrollArea className="max-h-[420px] pr-4">
-          <div className="space-y-3">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((eventOption) => (
-                <Card
-                  key={eventOption._id}
-                  className="cursor-pointer border-slate-300 transition hover:border-slate-500 object-cover"
-                  onClick={() => handleEventSelection({ id: eventOption._id, name: eventOption.name })}
-                  style={{
-                    backgroundImage: `url(${eventOption.image})`,
-                    backgroundPosition: "center",
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat'
-                  }}
-                >
-                  <CardContent className="flex flex-col gap-1 py-4 backdrop-blur-2xl bg-white/20 mx-4 rounded-md shadow-md text-gray-100" >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold truncate">{eventOption.name}</span>
-                      <Badge variant="default">{eventOption.status}</Badge>
+      <Dialog open={eventSelectorOpen} onOpenChange={handleEventDialogOpenChange}>
+        <DialogContent className="max-w-3xl border-slate-300">
+          <DialogHeader className='relative'>
+            <DialogTitle>{t('members.events.dialog.title', 'Select an event')}</DialogTitle>
+            <DialogDescription>
+              {t('members.events.dialog.description', 'Choose an event to display its registered members.')}
+            </DialogDescription>
+          </DialogHeader>
+          {eventsLoading ? (
+            <div className="space-y-3 pt-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton key={index} className="h-16 w-full" />
+              ))}
+            </div>
+          ) : eventsError ? (
+            <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
+              {eventsError}
+            </div>
+          ) : availableEvents.length === 0 ? (
+            <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
+              {t('members.events.dialog.empty', 'No events available at the moment.')}
+            </div>
+          ) : (
+            <div className="space-y-4 pt-4 overflow-y-auto">
+              <Input
+                value={eventSearchTerm}
+                onChange={(e) => setEventSearchTerm(e.target.value)}
+                placeholder={t('members.events.dialog.searchPlaceholder', 'Search events by name')}
+              />
+              <ScrollArea className="max-h-[420px] pr-4">
+                <div className="space-y-3">
+                  {filteredEvents.length > 0 ? (
+                    filteredEvents.map((eventOption) => (
+                      <Card
+                        key={eventOption._id}
+                        className="cursor-pointer border-slate-300 transition hover:border-slate-500 bg-slate-800"
+                        onClick={() => handleEventSelection({ id: eventOption._id, name: eventOption.name })}
+                        
+                      >
+                        <CardContent className="flex flex-col gap-1 py-4 backdrop-blur-2xl bg-white/30 mx-4 rounded-md shadow-md text-gray-100" >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold truncate">{eventOption.name}</span>
+                            <Badge variant="default">{eventOption.status}</Badge>
+                          </div>
+                          <span className="text-sm text-gray-200">
+                            {formatDate(eventOption.startDate?.date)}
+                          </span>
+                          <span className="text-xs text-gray-200">
+                            {[
+                              typeof eventOption.location === 'object' && eventOption.location !== null
+                                ? eventOption.location.city
+                                : null,
+                              typeof eventOption.location === 'object' && eventOption.location !== null
+                                ? eventOption.location.country
+                                : eventOption.location
+                            ].filter(Boolean).join(', ')}
+                          </span>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
+                      {t('members.events.dialog.noResults', 'No events match your search.')}
                     </div>
-                    <span className="text-sm text-gray-200">
-                      {formatDate(eventOption.startDate?.date)}
-                    </span>
-                    <span className="text-xs text-gray-200">
-                      {[
-                        typeof eventOption.location === 'object' && eventOption.location !== null 
-                          ? eventOption.location.city 
-                          : null,
-                        typeof eventOption.location === 'object' && eventOption.location !== null 
-                          ? eventOption.location.country 
-                          : eventOption.location
-                      ].filter(Boolean).join(', ')}
-                    </span>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
-                {t('members.events.dialog.noResults', 'No events match your search.')}
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
-    )}
-  </DialogContent>
-</Dialog>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
-{/* Exit Confirmation Dialog */}
-<AlertDialog open={exitConfirmOpen} onOpenChange={setExitConfirmOpen}>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>
-        {t('members.events.exitConfirm.title', 'Event Selection Required')}
-      </AlertDialogTitle>
-      <AlertDialogDescription>
-        {t('members.events.exitConfirm.description', 'You must select an event to view its participants. Would you like to return to the previous page?')}
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel onClick={() => setExitConfirmOpen(false)}>
-        {t('members.events.exitConfirm.stay', 'Stay Here')}
-      </AlertDialogCancel>
-      <AlertDialogAction onClick={handleReturnToPrevious}>
-        {t('members.events.exitConfirm.return', 'Return to Previous Page')}
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={exitConfirmOpen} onOpenChange={setExitConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('members.events.exitConfirm.title', 'Event Selection Required')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('members.events.exitConfirm.description', 'You must select an event to view its participants. Would you like to return to the previous page?')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setExitConfirmOpen(false)}>
+              {t('members.events.exitConfirm.stay', 'Stay Here')}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleReturnToPrevious}>
+              {t('members.events.exitConfirm.return', 'Return to Previous Page')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* Pagination */}
       {!selectedEvent && pagination && (
         <MembersPagination
@@ -1000,14 +995,14 @@ export const MembersPage: React.FC = () => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {t(
-                'members.deleteDialog.description', 
+                'members.deleteDialog.description',
                 'Are you sure you want to delete This action cannot be undone.',
                 { name: `${selectedMember?.firstName} ${selectedMember?.lastName}` }
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel 
+            <AlertDialogCancel
               onClick={() => {
                 setDeleteDialogOpen(false);
                 setSelectedMember(null);

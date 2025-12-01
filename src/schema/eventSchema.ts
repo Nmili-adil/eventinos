@@ -1,79 +1,93 @@
 import { z } from 'zod';
 
 const socialNetworksSchema = z.object({
-  facebook: z.string().url().optional().or(z.literal('')),
-  instagram: z.string().url().optional().or(z.literal('')),
-  linkedin: z.string().url().optional().or(z.literal('')),
-  twitter: z.string().url().optional().or(z.literal('')),
-  website: z.string().url().optional().or(z.literal('')),
+  facebook: z.string().url().optional().or(z.literal('')).default(''),
+  instagram: z.string().url().optional().or(z.literal('')).default(''),
+  linkedin: z.string().url().optional().or(z.literal('')).default(''),
+  twitter: z.string().url().optional().or(z.literal('')).default(''),
+  website: z.string().url().optional().or(z.literal('')).default(''),
 });
 
 const speakerSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Full name is required"),
-  picture: z.string().url().optional().or(z.literal('')),
-  socialNetworks: socialNetworksSchema,
+  picture: z.string().url().optional().or(z.literal('')).default(''),
+  socialNetworks: socialNetworksSchema.default({}),
 });
 
 const exhibitorSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Exhibitor name is required"),
-  picture: z.string().url().optional().or(z.literal('')),
-  socialNetworks: socialNetworksSchema,
+  picture: z.string().url().optional().or(z.literal('')).default(''),
+  socialNetworks: socialNetworksSchema.default({}),
 });
 
 const sponsorSchema = z.object({
   _id: z.string().optional(),
   name: z.string().min(1, "Sponsor name is required"),
-  logo: z.string().url().optional().or(z.literal('')),
-  socialNetworks: socialNetworksSchema,
+  logo: z.string().url().optional().or(z.literal('')).default(''),
+  socialNetworks: socialNetworksSchema.default({}),
 });
 
 const dateTimeSchema = z.object({
-  date: z.string().min(1, "Date is required"),
-  time: z.string().optional(),
+  date: z.string().optional().default(''),
+  time: z.string().optional().default(''),
 });
 
 const locationSchema = z.object({
   location: z.object({
-    lat: z.number(),
-    lng: z.number(),
-  }),
-  name: z.string().min(1, "Location name is required"),
-  place_id: z.string(),
-  city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
-  countryCode: z.string().min(2, "Country code is required"),
+    lat: z.number().default(0),
+    lng: z.number().default(0),
+  }).default({ lat: 0, lng: 0 }),
+  name: z.string().default(''),
+  place_id: z.string().optional().default(''),
+  city: z.string().default(''),
+  country: z.string().default(''),
+  countryCode: z.string().default(''),
 });
 
 export const eventFormSchema = z.object({
-  createdBy:z.string().optional(),
+  createdBy: z.string().optional().default(''),
   name: z.string().min(1, "Event name is required").max(100),
-  description: z.string().optional().or(z.literal('')),
-  image: z.string().url("Invalid URL").optional().or(z.literal('')),
-  visibility: z.enum(["PUBLIC", "PRIVATE"]),
-  type: z.enum(["FACETOFACE", "VIRTUEL"]),
+  description: z.string().default(''),
+  image: z.string().url("Invalid URL").optional().or(z.literal('')).default(''),
+  visibility: z.enum(["PUBLIC", "PRIVATE"]).default("PUBLIC"),
+  type: z.enum(["FACETOFACE", "VIRTUEL", "HYBRID"]).default("FACETOFACE"), // Added HYBRID
   isNearestEvent: z.boolean().default(false),
-  isUpCommingEvent: z.boolean().default(false),
+  isUpComingEvent: z.boolean().default(false), // Note: backend uses "isUpComingEvent" (different spelling)
   status: z.enum(["PENDING", "ACCEPTED", "REFUSED", "CLOSED"]).default("PENDING"),
-  startDate: dateTimeSchema,
-  endDate: dateTimeSchema,
-  location: locationSchema,
-  socialNetworks: socialNetworksSchema,
-  speakers: z.array(speakerSchema),
-  exhibitors: z.array(exhibitorSchema),
-  sponsors: z.array(sponsorSchema),
-  categories: z.string().optional().or(z.literal('')),
+  startDate: dateTimeSchema.default({ date: '', time: '' }),
+  endDate: dateTimeSchema.default({ date: '', time: '' }),
+  location: locationSchema.default({
+    location: { lat: 0, lng: 0 },
+    name: '',
+    place_id: '',
+    city: '',
+    country: '',
+    countryCode: '',
+  }),
+  socialNetworks: socialNetworksSchema.default({
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    twitter: '',
+    website: '',
+  }),
+  speakers: z.array(speakerSchema).default([]),
+  exhibitors: z.array(exhibitorSchema).default([]),
+  sponsors: z.array(sponsorSchema).default([]),
+  category: z.string().optional().or(z.literal('')).default(''),
   badges: z.array(z.string()).default([]),
-  gallery: z.array(z.string().url()).default([]),
-  program: z.string().optional().or(z.literal('')),
+  gallery: z.array(z.string().url().optional().or(z.literal(''))).default([]), // Made URL optional
+  program: z.string().default(''),
   requirements: z.array(z.string()).default([]),
-  capacity: z.number().optional().default(0),
+  capacity: z.number().min(0).default(0),
   allowRegistration: z.boolean().default(false),
-  registrationDeadline: dateTimeSchema,
+  registrationDeadline: dateTimeSchema.optional().default({ date: '', time: '' }), // Made optional
   tags: z.array(z.string()).default([]),
-}).refine((data) => {
-  // Validate that end date is after start date
+})
+.refine((data) => {
+  // Only validate if both dates are provided
   if (data.startDate.date && data.endDate.date) {
     const startDate = new Date(data.startDate.date);
     const endDate = new Date(data.endDate.date);
@@ -82,7 +96,7 @@ export const eventFormSchema = z.object({
   return true;
 }, {
   message: "End date must be equal to or after start date",
-  path: ["endDate", "date"],
+  path: ["endDate.date"],
 });
 
 export type EventFormData = z.infer<typeof eventFormSchema>;
