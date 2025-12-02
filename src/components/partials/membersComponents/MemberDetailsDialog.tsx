@@ -21,6 +21,8 @@ import {
 import type { Member } from "@/types/membersType"
 import { useTranslation } from "react-i18next"
 import { fetchMemberParticipationsApi } from "@/api/guestsApi"
+import { useNavigate } from "react-router-dom"
+import { EVENT_DETAILS_PAGE } from "@/constants/routerConstants"
 
 interface MemberDetailsDialogProps {
   member: Member | null
@@ -64,7 +66,11 @@ const MemberDetailsDialog = ({
   const [eventsLoading, setEventsLoading] = useState(false)
   const [eventsError, setEventsError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'activity'>('overview')
+  const navigate = useNavigate()
 
+  const handleViewEventDetails = (eventRecord: any) => {
+    navigate(EVENT_DETAILS_PAGE(eventRecord._id))
+  }
   // Close dialog on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -370,7 +376,7 @@ const MemberDetailsDialog = ({
               </div>
 
               {/* Account Timeline */}
-              <div className="bg-gray-50 rounded-xl p-6">
+              <div className="bg-gray-50 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Calendar className="w-5 h-5 mr-2 text-orange-600" />
                   {t('members.detailsDialog.sections.accountInfo')}
@@ -393,8 +399,8 @@ const MemberDetailsDialog = ({
 
           {activeTab === 'events' && (
             <div className="p-6">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="bg-gray-50 ">
+                <h3 className="text-md font-semibold text-gray-900 mb-4 flex items-center">
                   <Users className="w-5 h-5 mr-2 text-blue-600" />
                   {t('members.detailsDialog.labels.eventParticipation')}
                 </h3>
@@ -414,7 +420,8 @@ const MemberDetailsDialog = ({
                     {memberEvents.map((eventRecord: any, index: number) => (
                       <div
                         key={eventRecord?._id || eventRecord?.eventId || index}
-                        className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200"
+                        onClick={() => handleViewEventDetails(eventRecord)}
+                        className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer hover:bg-gray-50 hover:border-gray-300"
                       >
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
@@ -432,7 +439,7 @@ const MemberDetailsDialog = ({
                               </span>
                             </div>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          {/* <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             eventRecord?.status === 'confirmed' 
                               ? 'bg-emerald-100 text-emerald-800'
                               : eventRecord?.status === 'pending'
@@ -440,7 +447,7 @@ const MemberDetailsDialog = ({
                               : 'bg-gray-100 text-gray-800'
                           }`}>
                             {safeRender(eventRecord?.status, t('members.detailsDialog.events.registered'))}
-                          </span>
+                          </span> */}
                         </div>
                       </div>
                     ))}

@@ -37,6 +37,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 // Icons
 import {
@@ -56,6 +65,13 @@ import {
   ArrowUp,
   ArrowDown,
   Loader2,
+  Check,
+  X,
+  CheckIcon,
+  XIcon,
+  Search,
+  Grid3x3,
+  List,
 } from 'lucide-react';
 import {
   fetchMembersRequest,
@@ -79,6 +95,8 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '@/lib/helperFunctions';
 import { fetchEventParticipantsApi } from '@/api/guestsApi';
 import { fetchEvents } from '@/api/eventsApi';
+import { cn } from '@/lib/utils';
+import { getLayout, getLayoutPreferences, setLayoutPreferences } from '@/services/localStorage';
 
 const createPlaceholderDate = (): { $date: { $numberLong: string } } => ({
   $date: { $numberLong: `${Date.now()}` },
@@ -157,6 +175,8 @@ const normalizeParticipantToMember = (record: any): Member => {
   };
 };
 
+type LayoutType = 'grid' | 'list';
+
 export const MembersPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
@@ -175,6 +195,8 @@ export const MembersPage: React.FC = () => {
     gender: 'all',
   });
 
+  const [layout, setLayout] = useState<LayoutType>(getLayoutPreferences().membersLayout); // Default to grid layout
+
   const [sort, setSort] = useState<{
     field: MemberSortField;
     direction: MemberSortDirection;
@@ -190,7 +212,7 @@ export const MembersPage: React.FC = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [eventSelectorOpen, setEventSelectorOpen] = useState(() => !preselectedEvent);
+  const [eventSelectorOpen, setEventSelectorOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<{ id: string; name: string } | null>(preselectedEvent ?? null);
   const [availableEvents, setAvailableEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState(false);
@@ -200,9 +222,17 @@ export const MembersPage: React.FC = () => {
   const navigate = useNavigate()
 
 
+  const setLayoutfunc = (layout: LayoutType) => {
+    setLayout(layout)
+    setLayoutPreferences({
+      ...getLayoutPreferences(),
+      membersLayout: layout
+    })
+  }
+
   const filteredEvents = useMemo(() => {
     if (!eventSearchTerm.trim()) {
-      return availableEvents;
+      return [];
     }
     const term = eventSearchTerm.toLowerCase();
     return availableEvents.filter((eventOption) =>
@@ -211,11 +241,6 @@ export const MembersPage: React.FC = () => {
   }, [availableEvents, eventSearchTerm]);
 
   const handleEventDialogOpenChange = (open: boolean) => {
-    // Prevent closing the dialog when no event is selected
-    if (!open && !selectedEvent) {
-      setExitConfirmOpen(true)
-      return;
-    }
     setEventSelectorOpen(open);
   };
   const handleReturnToPrevious = () => {
@@ -260,9 +285,9 @@ export const MembersPage: React.FC = () => {
 
   // Fetch members when page changes
   useEffect(() => {
-    if (selectedEvent || eventSelectorOpen) return;
+    if (selectedEvent) return;
     dispatch(fetchMembersRequest(currentPage, pageSize));
-  }, [dispatch, currentPage, pageSize, selectedEvent, eventSelectorOpen]);
+  }, [dispatch, currentPage, pageSize, selectedEvent]);
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -328,9 +353,6 @@ export const MembersPage: React.FC = () => {
     }
   }
 
-
-
-
   const handleEventSelection = (eventOption: { id: string; name: string }) => {
     setSelectedEvent(eventOption)
     setEventSelectorOpen(false)
@@ -341,7 +363,7 @@ export const MembersPage: React.FC = () => {
     setSelectedEvent(null)
     setEventMembers([])
     setEventMembersError(null)
-    setEventSelectorOpen(true)
+    dispatch(fetchMembersRequest(currentPage, pageSize))
   }
 
   const baseMembers = selectedEvent ? eventMembers : (members || [])
@@ -431,7 +453,6 @@ export const MembersPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (member: Member) => {
-
     setActionLoading(member._id.toString());
 
     try {
@@ -476,7 +497,6 @@ export const MembersPage: React.FC = () => {
       <ArrowDown className="w-4 h-4" />
     );
   };
-
 
   // Handle dropdown actions with event propagation stopped
   const handleDropdownAction = (e: React.MouseEvent, action: () => void) => {
@@ -529,8 +549,319 @@ export const MembersPage: React.FC = () => {
     );
   }
 
+  // Grid Card Component
+  const GridCard = ({ member }: { member: Member }) => (
+    <Card 
+      key={getMemberId(member._id)} 
+      className={cn(
+        'overflow-hidden hover:shadow-md transition-all duration-200 relative',
+        member.isActive ? 'border-green-200' : 'border-red-200'
+      )}
+      onClick={() => handleViewDetails(member)}
+    >
+      <CardContent className="p-4">
+        {/* Avatar and Name Section */}
+        <div className="flex flex-col items-center text-center mb-4">
+          <Avatar className="w-16 h-16 mb-3">
+            <AvatarImage src={member.picture} alt={`${member.firstName} ${member.lastName}`} />
+            <AvatarFallback className="text-lg">
+              {getInitials(member.firstName, member.lastName)}
+            </AvatarFallback>
+          </Avatar>
+          
+          <div className="space-y-1">
+            <h3 className="font-semibold text-base">
+              {member.firstName} {member.lastName}
+            </h3>
+            <Badge
+              className={cn(
+                'text-xs',
+                member.isActive 
+                  ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                  : 'bg-red-100 text-red-800 hover:bg-red-100'
+              )}
+            >
+              {member.isActive ? t('members.active') : t('members.inActive')}
+            </Badge>
+          </div>
+        </div>
+
+        {/* Contact Info */}
+        <div className="space-y-2 mb-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Mail className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground truncate">
+              {member.email || t('members.notAvailable', 'N/A')}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground text-xs">
+              {t('members.joinedOn', 'Joined')} {formatDate(member.createdAt)}
+            </span>
+          </div>
+        </div>
+
+        <Separator className="my-3" />
+
+        {/* Additional Info */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center text-xs">
+            <span className="text-muted-foreground">
+              {t('members.registration.status', 'Registration')}
+            </span>
+            <div className="flex items-center gap-1">
+              {member.registrationCompleted ? (
+                <>
+                  <CheckIcon className="w-3 h-3 text-green-500" />
+                  <span className="text-green-600 font-medium">
+                    {t('members.registration.completed')}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <XIcon className="w-3 h-3 text-red-500" />
+                  <span className="text-red-600 font-medium">
+                    {t('members.registration.pending')}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Status badges if present */}
+          {(member.verified !== undefined || member.isOrganizator || member.status) && (
+            <div className="flex flex-wrap gap-1 pt-2">
+              {member.verified !== undefined && (
+                <Badge variant="outline" className={cn(
+                  'text-xs',
+                  member.verified 
+                    ? 'border-green-300 text-green-700' 
+                    : 'border-gray-300 text-gray-700'
+                )}>
+                  {member.verified ? '✓ Verified' : 'Unverified'}
+                </Badge>
+              )}
+              {member.isOrganizator && (
+                <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
+                  👑 Organizer
+                </Badge>
+              )}
+              {member.status && ['PENDING', 'CONFIRMED', 'EXPIRED'].includes(member.status) && (
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    'text-xs',
+                    member.status === 'CONFIRMED' 
+                      ? 'border-green-300 text-green-700' 
+                      : member.status === 'PENDING' 
+                        ? 'border-orange-300 text-orange-700' 
+                        : 'border-red-300 text-red-700'
+                  )}
+                >
+                  {member.status}
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Action Menu */}
+        <div className="absolute top-2 right-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="z-50">
+              <DropdownMenuItem
+                onClick={(e) => handleDropdownAction(e, () => handleViewDetails(member))}
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                {t('members.preview')}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => handleDropdownAction(e, () => handleEdit(member))}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                {t('members.edit')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
+                disabled={actionLoading === getMemberId(member._id)}
+              >
+                {member.isActive ? (
+                  <>
+                    <UserX className="w-4 h-4 mr-2" />
+                    {t('members.deactivated')}
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    {t('members.activated')}
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
+                className="text-destructive"
+                disabled={actionLoading === getMemberId(member._id)}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                {t('members.delete')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  // List Row Component
+  const ListRow = ({ member }: { member: Member }) => (
+    <TableRow 
+      key={getMemberId(member._id)} 
+      className="cursor-pointer hover:bg-muted/50"
+      onClick={() => handleViewDetails(member)}
+    >
+      <TableCell className="py-3">
+        <div className="flex items-center gap-3">
+          <Avatar className="w-10 h-10">
+            <AvatarImage src={member.picture} alt={`${member.firstName} ${member.lastName}`} />
+            <AvatarFallback className="text-sm">
+              {getInitials(member.firstName, member.lastName)}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-medium">
+              {member.firstName} {member.lastName}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {member.email || t('members.notAvailable', 'N/A')}
+            </div>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className="py-3">
+        <Badge
+          className={cn(
+            member.isActive 
+              ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+              : 'bg-red-100 text-red-800 hover:bg-red-100'
+          )}
+        >
+          {member.isActive ? t('members.active') : t('members.inActive')}
+        </Badge>
+      </TableCell>
+      <TableCell className="py-3">
+        <div className="flex items-center gap-1">
+          {member.registrationCompleted ? (
+            <>
+              <CheckIcon className="w-4 h-4 text-green-500" />
+              <span className="text-green-600 font-medium">
+                {t('members.registration.completed')}
+              </span>
+            </>
+          ) : (
+            <>
+              <XIcon className="w-4 h-4 text-red-500" />
+              <span className="text-red-600 font-medium">
+                {t('members.registration.pending')}
+              </span>
+            </>
+          )}
+        </div>
+      </TableCell>
+      <TableCell className="py-3">
+        {formatDate(member.createdAt)}
+      </TableCell>
+      <TableCell className="py-3">
+        <div className="flex flex-wrap gap-1">
+          {member.verified !== undefined && (
+            <Badge variant="outline" className={cn(
+              'text-xs',
+              member.verified 
+                ? 'border-green-300 text-green-700' 
+                : 'border-gray-300 text-gray-700'
+            )}>
+              {member.verified ? '✓ Verified' : 'Unverified'}
+            </Badge>
+          )}
+          {member.isOrganizator && (
+            <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
+              Organizer
+            </Badge>
+          )}
+        </div>
+      </TableCell>
+      <TableCell className="py-3 text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="z-50">
+            <DropdownMenuItem
+              onClick={(e) => handleDropdownAction(e, () => handleViewDetails(member))}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              {t('members.preview')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => handleDropdownAction(e, () => handleEdit(member))}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              {t('members.edit')}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
+              disabled={actionLoading === getMemberId(member._id)}
+            >
+              {member.isActive ? (
+                <>
+                  <UserX className="w-4 h-4 mr-2" />
+                  {t('members.deactivated')}
+                </>
+              ) : (
+                <>
+                  <UserCheck className="w-4 h-4 mr-2" />
+                  {t('members.activated')}
+                </>
+              )}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
+              className="text-destructive"
+              disabled={actionLoading === getMemberId(member._id)}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              {t('members.delete')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    </TableRow>
+  );
+
   return (
-    <div className="container mx-auto  space-y-4">
+    <div className="container mx-auto space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <PageHead
@@ -539,10 +870,28 @@ export const MembersPage: React.FC = () => {
           description={t('members.description')}
           total={total ?? 0}
         />
-        {/* <Button onClick={() => setAddDialogOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          {t('members.addMember')}
-        </Button> */}
+        <div className="flex items-center gap-3">
+          {/* Layout Toggle */}
+          <Tabs 
+            value={layout} 
+            onValueChange={(value) => setLayoutfunc(value as LayoutType)}
+            className="w-auto"
+          >
+            <TabsList className="grid w-20 grid-cols-2">
+              <TabsTrigger value="grid" className="h-8 px-2">
+                <Grid3x3 className="w-4 h-4" />
+              </TabsTrigger>
+              <TabsTrigger value="list" className="h-8 px-2">
+                <List className="w-4 h-4" />
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
+          {/* <Button onClick={() => setAddDialogOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            {t('members.addMember')}
+          </Button> */}
+        </div>
       </div>
 
       {/* Filters */}
@@ -625,7 +974,7 @@ export const MembersPage: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleSort('createdAt')}
-                className="gap-2 text-xs "
+                className="gap-2 text-xs"
               >
                 {t('members.sort.dateJoing')} {getSortIcon('createdAt')}
               </Button>
@@ -647,177 +996,39 @@ export const MembersPage: React.FC = () => {
         <ErrorState error={error} />
       )}
 
-      {/* Members Grid */}
+      {/* Members Display - Grid or List */}
       {processedMembers.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {processedMembers.map((member) => (
-            <Card key={getMemberId(member._id)} className="overflow-hidden hover:shadow-lg cursor-pointer transition-shadow" onClick={() => handleViewDetails(member)}>
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center space-x-3 flex-1">
-                    <Avatar className="w-12 h-12">
-                      <AvatarImage src={member.picture} alt={`${member.firstName} ${member.lastName}`} />
-                      <AvatarFallback className="text-sm">
-                        {getInitials(member.firstName, member.lastName)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg leading-tight">
-                        {member.firstName} {member.lastName}
-                      </h3>
-                      <Badge
-                        variant={member.isActive ? "default" : "secondary"}
-                        className="mt-1"
-                      >
-                        {member.isActive ? t('members.active') : t('members.inActive')}
-                      </Badge>
-                    </div>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="z-50">
-                      <DropdownMenuItem
-                        onClick={(e) => handleDropdownAction(e, () => handleViewDetails(member))}
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        {t('members.preview')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => handleDropdownAction(e, () => handleEdit(member))}
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        {t('members.edit')}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
-                        disabled={actionLoading === getMemberId(member._id)}
-                      >
-                        {member.isActive ? (
-                          <>
-                            <UserX className="w-4 h-4 mr-2" />
-                            {t('members.deactivated')}
-                          </>
-                        ) : (
-                          <>
-                            <UserCheck className="w-4 h-4 mr-2" />
-                            {t('members.activated')}
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
-                        className="text-destructive"
-                        disabled={actionLoading === getMemberId(member._id)}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        {t('members.delete')}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pb-3">
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground truncate">
-                      {member.email || t('members.notAvailable', 'N/A')}
-                    </span>
-                  </div>
-
-                  {member.phoneNumber && (
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Phone className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {member.phoneNumber}
-                      </span>
-                    </div>
-                  )}
-
-                  {(member.city || member.country) && (
-                    <div className="flex items-center space-x-2 text-sm">
-                      <MapPin className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {[
-                          typeof member.city === 'string' ? member.city : '',
-                          typeof member.country === 'string' ? member.country : ''
-                        ].filter(Boolean).join(', ')}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {t('members.joinedOn', 'Joined')} {formatDate(member.createdAt)}
-                    </span>
-                  </div>
-                </div>
-
-                <Separator className="my-3" />
-
-                {/* New fields from backend */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {member.verified !== undefined && (
-                    <Badge variant={member.verified ? "default" : "secondary"} className="text-xs">
-                      {member.verified ? '✓ Verified' : 'Unverified'}
-                    </Badge>
-                  )}
-                  {member.isOrganizator && (
-                    <Badge variant="outline" className="text-xs border-purple-500 text-purple-700">
-                      👑 Organizer
-                    </Badge>
-                  )}
-                  {member.status && ['PENDING', 'CONFIRMED', 'EXPIRED'].includes(member.status) && (
-                    <Badge
-                      variant={
-                        member.status === 'CONFIRMED' ? 'default' :
-                          member.status === 'PENDING' ? 'secondary' :
-                            'destructive'
-                      }
-                      className="text-xs"
-                    >
-                      {member.status}
-                    </Badge>
-                  )}
-                  {member.qrCode && (
-                    <Badge variant="outline" className="text-xs">
-                      📱 QR Code
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="flex justify-between items-center text-xs text-muted-foreground">
-                  <span>
-                    {t('members.registration.status', 'Registration')}{' '}
-                    {member.registrationCompleted ?
-                      t('members.registration.completed') :
-                      t('members.registration.pending')
-                    }
-                  </span>
-                  <span>
-                    {typeof member.user === 'object'
-                      ? member.user?.firstName || t('members.notAvailable', 'N/A')
-                      : member.user || t('members.notAvailable', 'N/A')
-                    }
-                  </span>
-                </div>
+        <>
+          {layout === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {processedMembers.map((member) => (
+                <GridCard key={getMemberId(member._id)} member={member} />
+              ))}
+            </div>
+          ) : (
+            <Card className="p-0">
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="">
+                      <TableHead>{t('members.list.name', 'Name')}</TableHead>
+                      <TableHead>{t('members.list.status', 'Status')}</TableHead>
+                      <TableHead>{t('members.list.registration', 'Registration')}</TableHead>
+                      <TableHead>{t('members.list.joinDate', 'Join Date')}</TableHead>
+                      <TableHead>{t('members.list.tags', 'Tags')}</TableHead>
+                      <TableHead className="text-right">{t('members.list.actions', 'Actions')}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody className="divide-y divide-gray-200">
+                    {processedMembers.map((member) => (
+                      <ListRow key={getMemberId(member._id)} member={member} />
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         /* Empty State */
         <Card>
@@ -890,7 +1101,7 @@ export const MembersPage: React.FC = () => {
           <DialogHeader className='relative'>
             <DialogTitle>{t('members.events.dialog.title', 'Select an event')}</DialogTitle>
             <DialogDescription>
-              {t('members.events.dialog.description', 'Choose an event to display its registered members.')}
+              {t('members.events.dialog.description', 'Search for an event to display its registered members.')}
             </DialogDescription>
           </DialogHeader>
           {eventsLoading ? (
@@ -903,55 +1114,45 @@ export const MembersPage: React.FC = () => {
             <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
               {eventsError}
             </div>
-          ) : availableEvents.length === 0 ? (
-            <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
-              {t('members.events.dialog.empty', 'No events available at the moment.')}
-            </div>
           ) : (
-            <div className="space-y-4 pt-4 overflow-y-auto">
-              <Input
-                value={eventSearchTerm}
-                onChange={(e) => setEventSearchTerm(e.target.value)}
-                placeholder={t('members.events.dialog.searchPlaceholder', 'Search events by name')}
-              />
-              <ScrollArea className="max-h-[420px] pr-4">
-                <div className="space-y-3">
-                  {filteredEvents.length > 0 ? (
-                    filteredEvents.map((eventOption) => (
-                      <Card
-                        key={eventOption._id}
-                        className="cursor-pointer border-slate-300 transition hover:border-slate-500 bg-slate-800"
-                        onClick={() => handleEventSelection({ id: eventOption._id, name: eventOption.name })}
-                        
-                      >
-                        <CardContent className="flex flex-col gap-1 py-4 backdrop-blur-2xl bg-white/30 mx-4 rounded-md shadow-md text-gray-100" >
-                          <div className="flex items-center justify-between">
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={eventSearchTerm}
+                  onChange={(e) => setEventSearchTerm(e.target.value)}
+                  placeholder={t('members.events.dialog.searchPlaceholder', 'Type to search events by name...')}
+                  className="pl-10"
+                />
+              </div>
+              
+              {eventSearchTerm.trim() ? (
+                filteredEvents.length > 0 ? (
+                  <ScrollArea className="max-h-[420px] pr-4 overflow-y-auto">
+                    <div className="space-y-3">
+                      {filteredEvents.map((eventOption) => (
+                        <Card
+                          key={eventOption._id}
+                          className="cursor-pointer py-2 border-slate-300 transition hover:border-slate-500"
+                          onClick={() => handleEventSelection({ id: eventOption._id, name: eventOption.name })}
+                        >
+                          <CardContent>
                             <span className="font-bold truncate">{eventOption.name}</span>
-                            <Badge variant="default">{eventOption.status}</Badge>
-                          </div>
-                          <span className="text-sm text-gray-200">
-                            {formatDate(eventOption.startDate?.date)}
-                          </span>
-                          <span className="text-xs text-gray-200">
-                            {[
-                              typeof eventOption.location === 'object' && eventOption.location !== null
-                                ? eventOption.location.city
-                                : null,
-                              typeof eventOption.location === 'object' && eventOption.location !== null
-                                ? eventOption.location.country
-                                : eventOption.location
-                            ].filter(Boolean).join(', ')}
-                          </span>
-                        </CardContent>
-                      </Card>
-                    ))
-                  ) : (
-                    <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
-                      {t('members.events.dialog.noResults', 'No events match your search.')}
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
-                  )}
+                  </ScrollArea>
+                ) : (
+                  <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
+                    {t('members.events.dialog.noResults', 'No events match your search. Try typing a different name.')}
+                  </div>
+                )
+              ) : (
+                <div className="rounded-md border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
+                  {t('members.events.dialog.startTyping', 'Start typing in the search bar to find events.')}
                 </div>
-              </ScrollArea>
+              )}
             </div>
           )}
         </DialogContent>
@@ -978,6 +1179,7 @@ export const MembersPage: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
       {/* Pagination */}
       {!selectedEvent && pagination && (
         <MembersPagination

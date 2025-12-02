@@ -142,7 +142,7 @@ const Overviewpage = () => {
         acceptedEvents: countsData.accepted || 0,
         refusedEvents: countsData.canceled || 0,
         pendingEvents: countsData.pending || 0,
-        totalUsers: countsData.users || usersCount,
+        totalUsers: countsData.members || usersCount,
       };
     }
 

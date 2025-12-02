@@ -13,7 +13,7 @@ import {
   type LogoutAction,
   type SetCredentialsAction,
 } from "./auth.type";
-import { clearAuthData, setAuthToken, setRole, setUserData } from "@/services/localStorage";
+import { clearAuthData, setAuthToken, setLayoutPreferences, setRole, setUserData } from "@/services/localStorage";
 import type { User } from "@/types/usersType";
 
 export const authLoginRequest = (payload: LoginPayload) => {
@@ -26,6 +26,7 @@ export const authLoginRequest = (payload: LoginPayload) => {
         setAuthToken(response.data.token)
         setUserData(response.data.user)
         setRole(response.data.user.role.name)
+        setLayoutPreferences(null)
         dispatch(authLoginSuccess(response.data.user, response.data.token, response.data.message, response.data.role))
       } else {
         dispatch(authLoginFailure(response.data.message))

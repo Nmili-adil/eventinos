@@ -27,18 +27,22 @@ import { EventsCalendarView } from './EventsCalendarView'
 import type { EventStatus } from '@/types/eventsTypes'
 import { useTranslation } from 'react-i18next'
 import EventsTableSkeleton from './EventsTableSkeleton'
+import { getLayoutPreferences, setLayoutPreferences, type EventLayout } from '@/services/localStorage'
 
 const PAGE_SIZE = 10
 
-type ViewMode = 'table' | 'calendar' | 'maps'
-
 export function EventsTable() {
-  const [viewMode, setViewMode] = useState<ViewMode>('table')
+  const [viewMode, setViewMode] = useState<EventLayout>(getLayoutPreferences().eventsLayout)
   const { events, isLoading } = useSelector((state: RootState) => state.events)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const { t } = useTranslation()
+
+  const setViewModeFunc = (mode: EventLayout) => {
+    setViewMode(mode)
+    setLayoutPreferences({ ...getLayoutPreferences(), eventsLayout: mode })
+  }
 
   const [filters, setFilters] = useState<EventsFilters>({
     search: '',
@@ -211,16 +215,16 @@ export function EventsTable() {
             <Button
               variant={viewMode === 'table' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setViewMode('table')}
+              onClick={() => setViewModeFunc('table')}
               className="gap-2"
             >
               <Table2 className="h-4 w-4" />
               <span className="hidden sm:inline">{t('events.view.table')}</span>
             </Button>
             <Button
-              variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+              variant={viewMode === 'calender' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setViewMode('calendar')}
+              onClick={() => setViewModeFunc('calender')}
               className="gap-2"
             >
               <CalendarIcon className="h-4 w-4" />
@@ -229,7 +233,7 @@ export function EventsTable() {
             <Button
               variant={viewMode === 'maps' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setViewMode('maps')}
+              onClick={() => setViewModeFunc('maps')}
               className="gap-2"
             >
               <MapPin className="h-4 w-4" />
@@ -297,7 +301,7 @@ export function EventsTable() {
       )}
 
       {/* Calendar View */}
-      {viewMode === 'calendar' && (
+      {viewMode === 'calender' && (
         <EventsCalendarView
           events={processedEvents}
           onEventClick={(event) => handlePreview(event._id)}

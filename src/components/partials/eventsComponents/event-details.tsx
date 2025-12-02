@@ -615,7 +615,9 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               </TabsContent>
             </Tabs>
           </Card>
-          <EventParticipantsSection eventId={eventIdentifier} onStatsChange={handleParticipantsStats} />
+          <div className="hidden">
+            <EventParticipantsSection eventId={eventIdentifier} onStatsChange={handleParticipantsStats} />
+          </div>
         </div>
 
         {/* Sidebar */}
