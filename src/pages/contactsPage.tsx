@@ -51,9 +51,6 @@ import {
   MessageSquare,
   Send,
   Search,
-  Reply,
-  ReplyAll,
-  Forward,
   ArrowLeft,
   Loader2,
 } from 'lucide-react';
@@ -68,7 +65,6 @@ const ContactsPage: React.FC = () => {
   const { t } = useTranslation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -116,7 +112,30 @@ const ContactsPage: React.FC = () => {
     setUserConversationsLoading(true)
     setUserConversationsError(null)
     try {
-      const response = await fetchContactUserConversationApi(contact._id)
+      // Extract user ID from the contact
+      const userId = contact.user?._id;
+      
+      if (!userId) {
+        // If no user ID, just show the current contact message
+        console.warn('No user ID found for contact:', contact._id);
+        const incomingMessages = buildConversationMessages([contact]);
+        
+        setConversationMap(prev => {
+          const existing = prev[contact._id] || []
+          const outgoingMessages = existing.filter(message => message.direction === 'outgoing')
+          const merged = [...incomingMessages, ...outgoingMessages].sort(
+            (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          )
+          return {
+            ...prev,
+            [contact._id]: merged,
+          }
+        })
+        setUserConversationsLoading(false)
+        return;
+      }
+      
+      const response = await fetchContactUserConversationApi(userId)
       const conversationContacts = extractContactsFromResponse(response)
       const incomingMessages = buildConversationMessages(conversationContacts.length ? conversationContacts : [contact])
 
@@ -146,7 +165,6 @@ const ContactsPage: React.FC = () => {
   useEffect(() => {
     const loadContacts = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         const response = await fetchContactsApi();
@@ -169,8 +187,7 @@ const ContactsPage: React.FC = () => {
         setConversationMap(initialConversations);
       } catch (err: any) {
         console.error('Error fetching contacts:', err);
-        setError(err?.response?.data?.message || t('contacts.errors.fetchFailed', 'Failed to fetch contacts'));
-        toast.error(t('contacts.errors.fetchFailed', 'Failed to load contacts'));
+        toast.error(err?.response?.data?.message || t('contacts.errors.fetchFailed', 'Failed to load contacts'));
       } finally {
         setLoading(false);
       }

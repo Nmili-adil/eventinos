@@ -662,7 +662,15 @@
         "stay": "Stay Here",
         "return": "Return to Previous Page"
       }
-    }
+    },
+     "list": {
+        "name": "Name",
+        "status": "Status",
+        "registration": "Registration",
+        "joinDate": "Join Date",
+        "tags": "Tags",
+        "actions": "Actions"
+      }
   },
   "categories": {
     "title": "Categories",
@@ -798,6 +806,7 @@
   },
   "profilePage": {
     "title": "Profile",
+    "completion": "Complete your profile",
     "description": "Manage your account settings and personal information",
     "buttons": {
       "editProfile": "Edit Profile",

@@ -400,6 +400,14 @@
       "active": "Actif",
       "inactive": "Inactif"
     },
+    "list": {
+        "name": "Nom",
+        "status": "Statut",
+        "registration": "Inscription",
+        "joinDate": "Date d'adhésion",
+        "tags": "Étiquettes",
+        "actions": "Actions"
+      },
     "registration": {
       "all": "Toutes les inscriptions",
       "completed": "Complété",
@@ -790,6 +798,7 @@
   },
   "profilePage": {
     "title": "Profil",
+    "completion": "Complétez votre profil",
     "description": "Gérez les paramètres de votre compte et vos informations personnelles",
     "buttons": {
       "editProfile": "Modifier le profil",

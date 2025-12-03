@@ -100,14 +100,22 @@ export const MapLocationSelector = ({
           const findComponent = (type: string) =>
             components.find(component => component.types.includes(type))
 
+          // Extract venue name from address components
+          const venueName = findComponent('premise')?.long_name || 
+                           findComponent('point_of_interest')?.long_name ||
+                           findComponent('establishment')?.long_name ||
+                           findComponent('route')?.long_name ||
+                           ''
+
           onChange({
             ...value,
             location: { lat, lng },
-            address: place.formatted_address || value?.address,
-            city: findComponent('locality')?.long_name || value?.city,
-            country: findComponent('country')?.long_name || value?.country,
-            countryCode: findComponent('country')?.short_name || value?.countryCode,
-            place_id: place.place_id || value?.place_id,
+            name: venueName,
+            address: place.formatted_address || '',
+            city: findComponent('locality')?.long_name || '',
+            country: findComponent('country')?.long_name || '',
+            countryCode: findComponent('country')?.short_name || '',
+            place_id: place.place_id || '',
           })
         } else {
           onChange({
@@ -149,15 +157,22 @@ export const MapLocationSelector = ({
     const findComponent = (type: string) =>
       components.find(component => component.types.includes(type))
 
+    // Extract venue name - use place.name if available, otherwise use first address component
+    const venueName = place.name || 
+                      findComponent('premise')?.long_name || 
+                      findComponent('street_number')?.long_name ||
+                      findComponent('route')?.long_name ||
+                      ''
+
     onChange({
       ...value,
       location: newCenter,
-      name: place.name || value?.name,
-      address: place.formatted_address || value?.address,
-      city: findComponent('locality')?.long_name || value?.city,
-      country: findComponent('country')?.long_name || value?.country,
-      countryCode: findComponent('country')?.short_name || value?.countryCode,
-      place_id: place.place_id || value?.place_id,
+      name: venueName,
+      address: place.formatted_address || '',
+      city: findComponent('locality')?.long_name || '',
+      country: findComponent('country')?.long_name || '',
+      countryCode: findComponent('country')?.short_name || '',
+      place_id: place.place_id || '',
     })
 
     setSearchInput('')
@@ -188,14 +203,22 @@ export const MapLocationSelector = ({
             const findComponent = (type: string) =>
               components.find(component => component.types.includes(type))
 
+            // Extract venue name from address components
+            const venueName = findComponent('premise')?.long_name || 
+                             findComponent('point_of_interest')?.long_name ||
+                             findComponent('establishment')?.long_name ||
+                             findComponent('route')?.long_name ||
+                             ''
+
             onChange({
               ...value,
               location: coords,
-              address: place.formatted_address || value?.address,
-              city: findComponent('locality')?.long_name || value?.city,
-              country: findComponent('country')?.long_name || value?.country,
-              countryCode: findComponent('country')?.short_name || value?.countryCode,
-              place_id: place.place_id || value?.place_id,
+              name: venueName,
+              address: place.formatted_address || '',
+              city: findComponent('locality')?.long_name || '',
+              country: findComponent('country')?.long_name || '',
+              countryCode: findComponent('country')?.short_name || '',
+              place_id: place.place_id || '',
             })
           } else {
             onChange({

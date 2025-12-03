@@ -905,6 +905,8 @@ const EventEditForm = ({
                           <LocationSelector
                             value={{
                               name: form.watch("location.name"),
+                              address: form.watch("location.address"),
+                              area: form.watch("location.area"),
                               city: form.watch("location.city"),
                               country: form.watch("location.country"),
                               countryCode: form.watch("location.countryCode"),

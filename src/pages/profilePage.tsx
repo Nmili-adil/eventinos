@@ -44,7 +44,7 @@ import PageHead from '@/components/shared/page-head';
 import { fetchRoleByIdRequest } from '@/store/features/roles/roles.actions';
 import { fetchRightsRequest } from '@/store/features/rights/rights.actions';
 import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
-import { uploadFileApi } from '@/api/filesApi';
+import { uploadFileApi, getFileUrlApi } from '@/api/filesApi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { getRole } from '@/services/localStorage';
@@ -114,6 +114,7 @@ const profileFormSchema = z.object({
 
 export const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('personal');
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -354,8 +355,14 @@ export const ProfilePage: React.FC = () => {
     setIsUploadingPhoto(true);
 
     try {
-      const imagePath = await uploadFileApi(selectedPhoto);
-      await updateUserApi(params.userId, { picture: imagePath.data?.data?.path });
+      // Upload file and get file ID
+      const fileId = await uploadFileApi(selectedPhoto);
+      
+      // Get file URL from file ID
+      const fileUrl = await getFileUrlApi(fileId);
+      
+      // Update user profile with the file URL
+      await updateUserApi(params.userId, { picture: fileUrl });
 
       toast.success(t('profilePage.messages.photoUpdated'), {
         style: {
@@ -367,6 +374,9 @@ export const ProfilePage: React.FC = () => {
 
       setSelectedPhoto(null);
       setPhotoPreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       dispatch(fetchUserByIdRequest(params.userId));
     } catch (error: any) {
       toast.error(error?.message || t('profilePage.messages.photoUploadFailed'));
@@ -453,10 +463,12 @@ export const ProfilePage: React.FC = () => {
   const profileCompletion = calculateProfileCompletion();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 ">
+    <div className="min-h-screen p-4" style={{ background: 'linear-gradient(to bottom, #f8fafc, #e2e8f0)' }}>
       {/* Header */}
       <div className="mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" style={{ 
+          background: 'linear-gradient(135deg, rgba(163, 201, 217, 0.1) 0%, rgba(255, 255, 255, 1) 100%)'
+        }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex-1">
               <PageHead
@@ -513,7 +525,7 @@ export const ProfilePage: React.FC = () => {
             </div>
             <div className="mt-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">Profile Completion</span>
+                  <span className="text-sm font-medium text-gray-600">{t('profilePage.completion')}</span>
                   <span className="text-sm font-bold" style={{ color: COLORS.highlight }}>{profileCompletion}%</span>
                 </div>
                 <Progress value={profileCompletion} className="h-2 bg-gray-200">
@@ -528,54 +540,123 @@ export const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="personal" className="space-y-8 py-1">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 py-1">
         {/* Tabs */}
-        <TabsList className="bg-slate-700 border border-gray-200 rounded-xl p-2 shadow-sm">
-          <TabsTrigger
-            value="personal"
-            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
-            style={{ 
-              backgroundColor: 'transparent',
-              color: COLORS.gray[600]
-            }}
-          >
-            <User className="w-4 h-4 mr-2" />
-            {t('profilePage.tabs.personal')}
-          </TabsTrigger>
-          <TabsTrigger
-            value="professional"
-            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
-            style={{ 
-              backgroundColor: 'transparent',
-              color: COLORS.gray[600]
-            }}
-          >
-            <Briefcase className="w-4 h-4 mr-2" />
-            {t('profilePage.tabs.professional')}
-          </TabsTrigger>
-          <TabsTrigger
-            value="account"
-            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
-            style={{ 
-              backgroundColor: 'transparent',
-              color: COLORS.gray[600]
-            }}
-          >
-            <Shield className="w-4 h-4 mr-2" />
-            {t('profilePage.tabs.account')}
-          </TabsTrigger>
-          <TabsTrigger
-            value="roles-rights"
-            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
-            style={{ 
-              backgroundColor: 'transparent',
-              color: COLORS.gray[600]
-            }}
-          >
-            <Award className="w-4 h-4 mr-2" />
-            {t('profilePage.tabs.rolesRights')}
-          </TabsTrigger>
-        </TabsList>
+        <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl p-3 shadow-xl">
+          <TabsList className="bg-transparent w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 h-auto">
+            <TabsTrigger
+              value="personal"
+              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              style={{
+                background: activeTab === 'personal'
+                  ? `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.secondary})`
+                  : 'linear-gradient(135deg, rgba(163, 201, 217, 0.15), rgba(163, 201, 217, 0.05))',
+                color: activeTab === 'personal' ? 'white' : '#4b5563',
+                borderColor: activeTab === 'personal' ? COLORS.primary : 'transparent',
+                boxShadow: activeTab === 'personal' ? '0 10px 25px rgba(163, 201, 217, 0.3)' : 'none'
+              }}
+            >
+              <div className="flex items-center gap-3 relative z-10">
+                <div 
+                  className="p-2 rounded-lg transition-all duration-300"
+                  style={{
+                    backgroundColor: activeTab === 'personal' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(163, 201, 217, 0.2)'
+                  }}
+                >
+                  <User className="w-5 h-5" />
+                </div>
+                <span className="text-base">{t('profilePage.tabs.personal')}</span>
+              </div>
+              {activeTab === 'personal' && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+              )}
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="professional"
+              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              style={{
+                background: activeTab === 'professional'
+                  ? `linear-gradient(135deg, ${COLORS.secondary}, ${COLORS.highlight})`
+                  : 'linear-gradient(135deg, rgba(106, 155, 166, 0.15), rgba(106, 155, 166, 0.05))',
+                color: activeTab === 'professional' ? 'white' : '#4b5563',
+                borderColor: activeTab === 'professional' ? COLORS.secondary : 'transparent',
+                boxShadow: activeTab === 'professional' ? '0 10px 25px rgba(106, 155, 166, 0.3)' : 'none'
+              }}
+            >
+              <div className="flex items-center gap-3 relative z-10">
+                <div 
+                  className="p-2 rounded-lg transition-all duration-300"
+                  style={{
+                    backgroundColor: activeTab === 'professional' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(106, 155, 166, 0.2)'
+                  }}
+                >
+                  <Briefcase className="w-5 h-5" />
+                </div>
+                <span className="text-base">{t('profilePage.tabs.professional')}</span>
+              </div>
+              {activeTab === 'professional' && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+              )}
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="account"
+              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              style={{
+                background: activeTab === 'account'
+                  ? `linear-gradient(135deg, ${COLORS.highlight}, ${COLORS.accent})`
+                  : 'linear-gradient(135deg, rgba(52, 108, 115, 0.15), rgba(52, 108, 115, 0.05))',
+                color: activeTab === 'account' ? 'white' : '#4b5563',
+                borderColor: activeTab === 'account' ? COLORS.highlight : 'transparent',
+                boxShadow: activeTab === 'account' ? '0 10px 25px rgba(52, 108, 115, 0.3)' : 'none'
+              }}
+            >
+              <div className="flex items-center gap-3 relative z-10">
+                <div 
+                  className="p-2 rounded-lg transition-all duration-300"
+                  style={{
+                    backgroundColor: activeTab === 'account' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(52, 108, 115, 0.2)'
+                  }}
+                >
+                  <Shield className="w-5 h-5" />
+                </div>
+                <span className="text-base">{t('profilePage.tabs.account')}</span>
+              </div>
+              {activeTab === 'account' && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+              )}
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="roles-rights"
+              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              style={{
+                background: activeTab === 'roles-rights'
+                  ? `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.dark})`
+                  : 'linear-gradient(135deg, rgba(16, 59, 64, 0.15), rgba(16, 59, 64, 0.05))',
+                color: activeTab === 'roles-rights' ? 'white' : '#4b5563',
+                borderColor: activeTab === 'roles-rights' ? COLORS.accent : 'transparent',
+                boxShadow: activeTab === 'roles-rights' ? '0 10px 25px rgba(16, 59, 64, 0.3)' : 'none'
+              }}
+            >
+              <div className="flex items-center gap-3 relative z-10">
+                <div 
+                  className="p-2 rounded-lg transition-all duration-300"
+                  style={{
+                    backgroundColor: activeTab === 'roles-rights' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(16, 59, 64, 0.2)'
+                  }}
+                >
+                  <Award className="w-5 h-5" />
+                </div>
+                <span className="text-base">{t('profilePage.tabs.rolesRights')}</span>
+              </div>
+              {activeTab === 'roles-rights' && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+              )}
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="personal" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -594,8 +675,9 @@ export const ProfilePage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-8 pt-8">
                 <div className="flex flex-col items-center space-y-6">
-                  <div className="relative">
-                    <Avatar className="w-40 h-40 border-4 border-white shadow-lg">
+                  <div className="relative group">
+                    <div className="absolute inset-0 rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" style={{ backgroundColor: COLORS.primary }} />
+                    <Avatar className="w-40 h-40 border-4 shadow-2xl relative" style={{ borderColor: COLORS.primary }}>
                       <AvatarImage
                         src={photoPreview || user.picture}
                         alt={`${user.firstName} ${user.lastName}`}
@@ -603,7 +685,7 @@ export const ProfilePage: React.FC = () => {
                       />
                       <AvatarFallback 
                         className="text-4xl font-bold text-white"
-                        style={{ backgroundColor: COLORS.primary }}
+                        style={{ background: `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.secondary})` }}
                       >
                         {getInitials(user.firstName, user.lastName)}
                       </AvatarFallback>
@@ -613,12 +695,16 @@ export const ProfilePage: React.FC = () => {
                         type="button"
                         variant="secondary"
                         size="sm"
-                        className="absolute -bottom-2 -right-2 rounded-full w-12 h-12 p-0 shadow-lg text-white transition-all duration-300 z-10"
-                        style={{ backgroundColor: COLORS.accent }}
+                        className="absolute -bottom-2 -right-2 rounded-full w-12 h-12 p-0 shadow-xl text-white transition-all duration-300 hover:scale-110 z-10"
+                        style={{ background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.highlight})` }}
                         onClick={handlePhotoClick}
                         disabled={isUploadingPhoto}
                       >
-                        <Camera className="w-5 h-5" />
+                        {isUploadingPhoto ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <Camera className="w-5 h-5" />
+                        )}
                       </Button>
                     )}
                   </div>
@@ -708,12 +794,12 @@ export const ProfilePage: React.FC = () => {
                   </h4>
                   <div className="space-y-4">
                     {hasValue(user.isActive) && (
-                      <div className="flex items-center justify-between p-4 rounded-lg border" style={{ 
-                        backgroundColor: COLORS.lightBg,
+                      <div className="flex items-center justify-between p-4 rounded-lg border shadow-sm hover:shadow-md transition-all duration-300" style={{ 
+                        background: 'linear-gradient(135deg, rgba(163, 201, 217, 0.05) 0%, rgba(255, 255, 255, 1) 100%)',
                         borderColor: COLORS.gray[200]
                       }}>
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
+                          <div className="p-2 rounded-lg shadow-sm" style={{ background: `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.secondary})` }}>
                             {user.isActive ? (
                               <CheckCircle className="w-4 h-4 text-white" />
                             ) : (
@@ -722,7 +808,7 @@ export const ProfilePage: React.FC = () => {
                           </div>
                           <span className="text-sm font-medium text-gray-700">{t('profilePage.personal.status')}</span>
                         </div>
-                        <Badge className="rounded-full border" style={{ 
+                        <Badge className="rounded-full border shadow-sm" style={{ 
                           backgroundColor: user.isActive ? '#d1fae5' : '#fef3c7',
                           color: user.isActive ? '#065f46' : '#92400e',
                           borderColor: user.isActive ? '#a7f3d0' : '#fde68a'

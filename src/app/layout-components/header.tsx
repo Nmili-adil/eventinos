@@ -111,9 +111,9 @@ const Header = () => {
     }
 
     return (
-        <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-50 w-full">
+        <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-40 w-full">
             {/* Top Header Section */}
-            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-4 sm:px-6 overflow-y-hidden">
+            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-4 sm:px-6 ">
                 {/* Left Section - Brand & Mobile Menu */}
                 <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}
@@ -138,7 +138,7 @@ const Header = () => {
                     </div>
 
                     {/* Search Bar - Desktop */}
-                    <div className="hidden md:block relative w-60 lg:w-80">
+                    <div className="hidden md:block relative w-60 lg:w-80 relative ">
                         <GlobalSearchInput placeholder={t('header.searchPlaceholder')} />
                     </div>
                 </div>

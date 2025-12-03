@@ -40,6 +40,7 @@ const locationSchema = z.object({
     lng: z.number().default(0),
   }).default({ lat: 0, lng: 0 }),
   name: z.string().default(''),
+  address: z.string().optional().default(''),
   place_id: z.string().optional().default(''),
   city: z.string().default(''),
   country: z.string().default(''),
@@ -61,6 +62,7 @@ export const eventFormSchema = z.object({
   location: locationSchema.default({
     location: { lat: 0, lng: 0 },
     name: '',
+    address: '',
     place_id: '',
     city: '',
     country: '',

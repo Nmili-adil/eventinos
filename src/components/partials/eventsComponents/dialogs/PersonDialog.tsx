@@ -185,10 +185,10 @@ export const PersonDialog = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             {t("eventForm.buttons.cancel") || "Cancel"}
           </Button>
-          <Button onClick={handleSave}>
+          <Button type="button" onClick={handleSave}>
             {t("eventForm.buttons.save") || "Save"}
           </Button>
         </DialogFooter>
