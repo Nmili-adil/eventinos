@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -26,6 +25,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import type { date } from "zod";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -41,9 +41,6 @@ import {
   Award,
   Image,
   Users,
-  ChevronRight,
-  Save,
-  Pencil,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -60,8 +57,6 @@ import {
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { Skeleton } from "@/components/ui/skeleton";
 import EventParticipantsSection from "./EventParticipantsSection";
-import { PersonDialog } from "./dialogs/PersonDialog";
-import { useEventTabSave } from "./hooks/useEventTabSave";
 
 interface EventEditFormProps {
   event?: any | null;
@@ -72,7 +67,7 @@ interface EventEditFormProps {
 
 const EventEditForm = ({
   event,
-  onSubmit: _onSubmit, // Not used - kept for backward compatibility
+  onSubmit,
   isLoading = false,
   isFetching = false,
 }: EventEditFormProps) => {
@@ -83,15 +78,6 @@ const EventEditForm = ({
   const [activeTab, setActiveTab] = useState("basic");
   const [newImageUrl, setNewImageUrl] = useState("");
   const [showPreview, setShowPreview] = useState(true);
-  const [exhibitorDialog, setExhibitorDialog] = useState<{ open: boolean; person: any }>({
-    open: false,
-    person: null,
-  });
-  const [sponsorDialog, setSponsorDialog] = useState<{ open: boolean; person: any }>({
-    open: false,
-    person: null,
-  });
-  
   const { t } = useTranslation();
   const eventIdentifier =
     typeof event._id === "string" ? event._id : event?._id?.$oid || "";
@@ -99,20 +85,6 @@ const EventEditForm = ({
   const dispatch = useDispatch<AppDispatch>();
   const { categories } = useSelector((state: RootState) => state.categories);
   const { badges } = useSelector((state: RootState) => state.badges);
-  
-  // Use the custom hook for tab saving
-  const {
-    isSaving,
-    saveBasicInfo,
-    saveDateTime,
-    saveLocation,
-    saveSocialNetworks,
-    saveProgram,
-    saveBadges,
-    saveGallery,
-    // saveSpeakers, // Not used yet
-    saveExhibitorsSponsors,
-  } = useEventTabSave(eventIdentifier);
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema) as any,
@@ -205,16 +177,6 @@ const EventEditForm = ({
   const navigate = useNavigate();
 
   // Field arrays for dynamic fields
-  // Speaker fields - not used yet, keeping for future
-  // const {
-  //   fields: speakerFields,
-  //   append: appendSpeaker,
-  //   remove: removeSpeaker,
-  // } = useFieldArray({
-  //   control: form.control,
-  //   name: "speakers",
-  // });
-
   const {
     fields: exhibitorFields,
     append: appendExhibitor,
@@ -234,32 +196,53 @@ const EventEditForm = ({
   });
 
 
-  // Old submit handler - no longer used with tab-based saving
   // const handleSubmitSend = (data: EventFormData) => {
   //   console.log("Form submitted with data:", data);
-  //   const currentExhibitors = form.getValues("exhibitors");
-  //   const currentSponsors = form.getValues("sponsors");
-  //   const currentSpeakers = form.getValues("speakers");
+  //   // Explicitly merge array fields to ensure they are included
   //   const finalData = {
   //     ...data,
-  //     exhibitors: data.exhibitors.map((exhibitor, index) => ({
-  //       ...exhibitor,
-  //       _id: currentExhibitors[index]?._id || exhibitor._id || undefined,
-  //     })),
-  //     sponsors: data.sponsors.map((sponsor, index) => ({
-  //       ...sponsor,
-  //       _id: currentSponsors[index]?._id || sponsor._id || undefined,
-  //     })),
-  //     speakers: data.speakers.map((speaker, index) => ({
-  //       ...speaker,
-  //       _id: currentSpeakers[index]?._id || speaker._id || undefined,
-  //     })),
+  //     exhibitors: form.getValues("exhibitors"),
+  //     sponsors: form.getValues("sponsors"),
+  //     speakers: form.getValues("speakers"),
   //   };
   //   console.log("Final data being submitted:", finalData);
-  //   console.log("Exhibitors with _id:", finalData.exhibitors);
-  //   console.log("Sponsors with _id:", finalData.sponsors);
   //   onSubmit(finalData);
-  // };
+  // };// Call your original onSubmit
+
+  const handleSubmitSend = (data: EventFormData) => {
+  console.log("Form submitted with data:", data);
+  
+  // Get the current values from the form to preserve _id fields
+  const currentExhibitors = form.getValues("exhibitors");
+  const currentSponsors = form.getValues("sponsors");
+  const currentSpeakers = form.getValues("speakers");
+  
+  // Create a copy of the validated data and preserve _id fields
+  const finalData = {
+    ...data,
+    exhibitors: data.exhibitors.map((exhibitor, index) => ({
+      ...exhibitor,
+      // Preserve the _id from the current form values if it exists
+      _id: currentExhibitors[index]?._id || exhibitor._id || undefined,
+    })),
+    sponsors: data.sponsors.map((sponsor, index) => ({
+      ...sponsor,
+      // Preserve the _id from the current form values if it exists
+      _id: currentSponsors[index]?._id || sponsor._id || undefined,
+    })),
+    speakers: data.speakers.map((speaker, index) => ({
+      ...speaker,
+      // Preserve the _id from the current form values if it exists
+      _id: currentSpeakers[index]?._id || speaker._id || undefined,
+    })),
+  };
+  
+  console.log("Final data being submitted:", finalData);
+  console.log("Exhibitors with _id:", finalData.exhibitors);
+  console.log("Sponsors with _id:", finalData.sponsors);
+  
+  onSubmit(finalData);
+};
 
   useEffect(() => {
     dispatch(fetchCategoriesRequest());
@@ -408,7 +391,10 @@ const EventEditForm = ({
             </CardHeader>
             <CardContent className="flex flex-col " style={{ height: 'calc(100vh - 22rem)' }}>
               <Form {...form}>
-                <form className="flex flex-col h-full">
+                <form
+                  onSubmit={form.handleSubmit(handleSubmitSend)}
+                  className="flex flex-col h-full"
+                >
                   <Tabs
                     value={activeTab}
                     onValueChange={setActiveTab}
@@ -714,62 +700,7 @@ const EventEditForm = ({
                             />
                           </div>
 
-                          {/* Tags Field */}
-                          <FormField
-                            control={form.control as any}
-                            name="tags"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("eventForm.fields.tags")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t("eventForm.placeholders.enterTags")}
-                                    value={Array.isArray(field.value) ? field.value.join(", ") : ""}
-                                    onChange={(e) => {
-                                      const tags = e.target.value
-                                        .split(",")
-                                        .map((tag) => tag.trim())
-                                        .filter((tag) => tag.length > 0);
-                                      field.onChange(tags);
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  {t("eventForm.descriptions.tags")}
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
 
-                          {/* Requirements Field */}
-                          <FormField
-                            control={form.control as any}
-                            name="requirements"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t("eventForm.fields.requirements")}</FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder={t("eventForm.placeholders.enterRequirements")}
-                                    value={Array.isArray(field.value) ? field.value.join("\n") : ""}
-                                    onChange={(e) => {
-                                      const requirements = e.target.value
-                                        .split("\n")
-                                        .map((req) => req.trim())
-                                        .filter((req) => req.length > 0);
-                                      field.onChange(requirements);
-                                    }}
-                                    rows={4}
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  {t("eventForm.descriptions.requirements")}
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
 
                           <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
                             <h4 className="font-medium text-sm">
@@ -831,22 +762,15 @@ const EventEditForm = ({
                           </div>
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-end pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveBasicInfo(form.getValues(), () => setActiveTab("datetime"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("datetime")}
+                            className="place-self-end"
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.dateTime")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -868,7 +792,7 @@ const EventEditForm = ({
                                 name="startDate.date"
                                 render={({ field }) => (
                                   <DateTimePicker
-                                    date={field.value as any}
+                                    date={field.value as date}
                                     onDateChange={field.onChange}
                                     placeholder={t(
                                       "eventForm.placeholders.enterEventName"
@@ -888,7 +812,7 @@ const EventEditForm = ({
                                 name="endDate.date"
                                 render={({ field }) => (
                                   <DateTimePicker
-                                    date={field.value as any}
+                                    date={field.value as date}
                                     onDateChange={field.onChange}
                                     placeholder={t(
                                       "eventForm.placeholders.enterEventName"
@@ -952,22 +876,22 @@ const EventEditForm = ({
                           </div>
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveDateTime(form.getValues(), () => setActiveTab("location"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("basic")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.basicInfo")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("location")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.location")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -994,22 +918,22 @@ const EventEditForm = ({
                           />
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveLocation(form.getValues(), () => setActiveTab("social"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("datetime")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.dateTime")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("social")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.socialNetworks")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1131,22 +1055,22 @@ const EventEditForm = ({
                           </div>
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveSocialNetworks(form.getValues(), () => setActiveTab("program"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("location")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.location")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("program")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.program")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1182,22 +1106,22 @@ const EventEditForm = ({
                           />
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveProgram(form.getValues(), () => setActiveTab("badges"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("social")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.socialNetworks")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("badges")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.badges")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1302,22 +1226,22 @@ const EventEditForm = ({
                           )}
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveBadges(form.getValues(), () => setActiveTab("gallery"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("program")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.program")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("gallery")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.gallery")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1484,22 +1408,22 @@ const EventEditForm = ({
                           />
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveGallery(form.getValues(), () => setActiveTab("exhibitors"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("badges")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.badges")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("exhibitors")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.exhibitorsSponsors")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1512,150 +1436,393 @@ const EventEditForm = ({
                           </h3>
 
                           {/* Exhibitors Section */}
-                          <div>
-                            <div className="flex justify-between items-center mb-4">
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
                               <h4 className="text-md font-medium">
                                 {t("eventForm.fields.exhibitors")}
                               </h4>
                               <Button
                                 type="button"
+                                variant="outline"
                                 size="sm"
-                                onClick={() => setExhibitorDialog({ open: true, person: null })}
+                                onClick={() =>
+                                  appendExhibitor({
+                                    fullName: "",
+                                    picture: "",
+                                    socialNetworks: {
+                                      facebook: "",
+                                      instagram: "",
+                                      linkedin: "",
+                                      twitter: "",
+                                      website: "",
+                                    },
+                                  })
+                                }
                               >
                                 <Plus className="w-4 h-4 mr-2" />
                                 {t("eventForm.buttons.addExhibitor")}
                               </Button>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {exhibitorFields.map((field, index) => (
-                                <Card key={field.id} className="p-4">
-                                  <div className="flex gap-3">
-                                    {field.picture && (
-                                      <img
-                                        src={field.picture}
-                                        alt={field.fullName}
-                                        className="w-16 h-16 rounded object-cover"
-                                      />
+                            {exhibitorFields.map((field, index) => (
+                              <Card key={field.id} className="p-4">
+                                <div className="space-y-4">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <h5 className="font-medium">
+                                      {t("eventForm.fields.exhibitors")}{" "}
+                                      {index + 1}
+                                    </h5>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeExhibitor(index)}
+                                    >
+                                      <Trash2 className="w-4 h-4 text-red-500" />
+                                    </Button>
+                                  </div>
+
+                                  <FormField
+                                    control={form.control as any}
+                                    name={`exhibitors.${index}.fullName`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          {t("eventForm.fields.fullName")} *
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder={t(
+                                              "eventForm.placeholders.enterExhibitorName"
+                                            )}
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
                                     )}
-                                    <div className="flex-1 min-w-0">
-                                      <h4 className="font-medium truncate">{field.fullName}</h4>
-                                      <div className="flex gap-2 mt-2">
-                                        <Button
-                                          type="button"
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() =>
-                                            setExhibitorDialog({
-                                              open: true,
-                                              person: { ...field, index },
-                                            })
-                                          }
-                                        >
-                                          <Pencil className="w-3 h-3" />
-                                        </Button>
-                                        <Button
-                                          type="button"
-                                          size="sm"
-                                          variant="destructive"
-                                          onClick={() => removeExhibitor(index)}
-                                        >
-                                          <Trash2 className="w-3 h-3" />
-                                        </Button>
-                                      </div>
+                                  />
+
+                                  <FormField
+                                    control={form.control as any}
+                                    name={`exhibitors.${index}.picture`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          {t("eventForm.fields.picture")}
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder={t(
+                                              "eventForm.placeholders.enterExhibitorPicture"
+                                            )}
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">
+                                      {t("eventForm.descriptions.socialNetworks")}
+                                    </Label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`exhibitors.${index}.socialNetworks.facebook`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterFacebook"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`exhibitors.${index}.socialNetworks.instagram`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterInstagram"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`exhibitors.${index}.socialNetworks.linkedin`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterLinkedIn"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`exhibitors.${index}.socialNetworks.twitter`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterTwitter"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`exhibitors.${index}.socialNetworks.website`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterWebsite"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
                                     </div>
                                   </div>
-                                </Card>
-                              ))}
-                              {exhibitorFields.length === 0 && (
-                                <div className="col-span-full text-center py-8 text-gray-500">
-                                  {t("eventForm.labels.noExhibitors") || "No exhibitors added yet"}
                                 </div>
-                              )}
-                            </div>
+                              </Card>
+                            ))}
                           </div>
 
                           {/* Sponsors Section */}
-                          <div>
-                            <div className="flex justify-between items-center mb-4">
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
                               <h4 className="text-md font-medium">
                                 {t("eventForm.fields.sponsors")}
                               </h4>
                               <Button
                                 type="button"
+                                variant="outline"
                                 size="sm"
-                                onClick={() => setSponsorDialog({ open: true, person: null })}
+                                onClick={() =>
+                                  appendSponsor({
+                                    name: "",
+                                    logo: "",
+                                    socialNetworks: {
+                                      facebook: "",
+                                      instagram: "",
+                                      linkedin: "",
+                                      twitter: "",
+                                      website: "",
+                                    },
+                                  })
+                                }
                               >
                                 <Plus className="w-4 h-4 mr-2" />
                                 {t("eventForm.buttons.addSponsor")}
                               </Button>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {sponsorFields.map((field, index) => (
-                                <Card key={field.id} className="p-4">
-                                  <div className="flex gap-3">
-                                    {field.logo && (
-                                      <img
-                                        src={field.logo}
-                                        alt={field.name}
-                                        className="w-16 h-16 rounded object-cover"
-                                      />
+                            {sponsorFields.map((field, index) => (
+                              <Card key={field.id} className="p-4">
+                                <div className="space-y-4">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <h5 className="font-medium">
+                                      {t("eventForm.fields.sponsors")} {index + 1}
+                                    </h5>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeSponsor(index)}
+                                    >
+                                      <Trash2 className="w-4 h-4 text-red-500" />
+                                    </Button>
+                                  </div>
+
+                                  <FormField
+                                    control={form.control as any}
+                                    name={`sponsors.${index}.name`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          {t("eventForm.fields.sponsorName")} *
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder={t(
+                                              "eventForm.placeholders.enterSponsorName"
+                                            )}
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
                                     )}
-                                    <div className="flex-1 min-w-0">
-                                      <h4 className="font-medium truncate">{field.name}</h4>
-                                      <div className="flex gap-2 mt-2">
-                                        <Button
-                                          type="button"
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() =>
-                                            setSponsorDialog({
-                                              open: true,
-                                              person: { ...field, index },
-                                            })
-                                          }
-                                        >
-                                          <Pencil className="w-3 h-3" />
-                                        </Button>
-                                        <Button
-                                          type="button"
-                                          size="sm"
-                                          variant="destructive"
-                                          onClick={() => removeSponsor(index)}
-                                        >
-                                          <Trash2 className="w-3 h-3" />
-                                        </Button>
-                                      </div>
+                                  />
+
+                                  <FormField
+                                    control={form.control as any}
+                                    name={`sponsors.${index}.logo`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          {t("eventForm.fields.logo")}
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder={t(
+                                              "eventForm.placeholders.enterSponsorLogo"
+                                            )}
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">
+                                      {t("eventForm.descriptions.socialNetworks")}
+                                    </Label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`sponsors.${index}.socialNetworks.facebook`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterFacebook"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`sponsors.${index}.socialNetworks.instagram`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterInstagram"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`sponsors.${index}.socialNetworks.linkedin`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterLinkedIn"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`sponsors.${index}.socialNetworks.twitter`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterTwitter"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control as any}
+                                        name={`sponsors.${index}.socialNetworks.website`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Input
+                                                placeholder={t(
+                                                  "eventForm.placeholders.enterWebsite"
+                                                )}
+                                                {...field}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
                                     </div>
                                   </div>
-                                </Card>
-                              ))}
-                              {sponsorFields.length === 0 && (
-                                <div className="col-span-full text-center py-8 text-gray-500">
-                                  {t("eventForm.labels.noSponsors") || "No sponsors added yet"}
                                 </div>
-                              )}
-                            </div>
+                              </Card>
+                            ))}
                           </div>
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t">
+                        <div className="flex justify-between pt-4">
                           <Button
                             type="button"
-                            onClick={() => saveExhibitorsSponsors(form.getValues(), () => setActiveTab("members"))}
-                            disabled={isSaving}
-                            className="gap-2"
+                            variant="outline"
+                            onClick={() => setActiveTab("gallery")}
                           >
-                            {isSaving ? (
-                              t("eventForm.buttons.saving")
-                            ) : (
-                              <>
-                                <Save className="w-4 h-4" />
-                                {t("eventForm.buttons.saveAndNext")}
-                                <ChevronRight className="w-4 h-4" />
-                              </>
-                            )}
+                            {t("eventForm.buttons.previous")}:{" "}
+                            {t("eventForm.sections.badges")}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setActiveTab("members")}
+                          >
+                            {t("eventForm.buttons.next")}:{" "}
+                            {t("eventForm.sections.members")}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1681,6 +1848,23 @@ const EventEditForm = ({
                       </TabsContent>
                     </div>
                   </Tabs>
+                  <div className="border-t bg-white mt-auto">
+                    <div className="flex justify-end space-x-4 w-full p-6">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => navigate(-1)}
+                      >
+                        {t("eventForm.buttons.cancel")}
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Updating..." : t("events.editEvent")}
+                      </Button>
+                    </div>
+                  </div>
                 </form>
               </Form>
             </CardContent>
@@ -1698,62 +1882,6 @@ const EventEditForm = ({
           </div>
         )}
       </div>
-
-      {/* Exhibitor Dialog */}
-      <PersonDialog
-        open={exhibitorDialog.open}
-        onOpenChange={(open) => setExhibitorDialog({ open, person: null })}
-        person={exhibitorDialog.person}
-        onSave={(person) => {
-          if (person.index !== undefined) {
-            // Edit existing
-            const current = form.getValues("exhibitors");
-            current[person.index] = {
-              _id: person._id,
-              fullName: person.fullName,
-              picture: person.picture,
-              socialNetworks: person.socialNetworks,
-            };
-            form.setValue("exhibitors", current);
-          } else {
-            // Add new
-            appendExhibitor({
-              fullName: person.fullName,
-              picture: person.picture,
-              socialNetworks: person.socialNetworks,
-            } as any);
-          }
-        }}
-        type="exhibitor"
-      />
-
-      {/* Sponsor Dialog */}
-      <PersonDialog
-        open={sponsorDialog.open}
-        onOpenChange={(open) => setSponsorDialog({ open, person: null })}
-        person={sponsorDialog.person}
-        onSave={(person) => {
-          if (person.index !== undefined) {
-            // Edit existing
-            const current = form.getValues("sponsors");
-            current[person.index] = {
-              _id: person._id,
-              name: person.name,
-              logo: person.logo,
-              socialNetworks: person.socialNetworks,
-            };
-            form.setValue("sponsors", current);
-          } else {
-            // Add new
-            appendSponsor({
-              name: person.name,
-              logo: person.logo,
-              socialNetworks: person.socialNetworks,
-            } as any);
-          }
-        }}
-        type="sponsor"
-      />
     </div>
   );
 };

@@ -8,7 +8,8 @@ import { MultiMarkerMap } from './MultiMarkerMap'
 import { LocationSelector } from './LocationSelector'
 
 const SCRIPT_ID = 'eventinos-google-maps'
-const DEFAULT_LIBRARIES: Libraries = ['marker']
+// Always include places library by default since LocationSelector needs it
+const DEFAULT_LIBRARIES: Libraries = ['marker', 'places']
 
 interface GoogleMapsContextValue {
   isLoaded: boolean
@@ -33,7 +34,7 @@ interface GoogleMapWrapperProps {
 }
 
 const LoadingState = () => (
-  <div className="flex items-center justify-center bg-gray-50 rounded-lg border p-6">
+  <div className="flex items-center justify-center bg-gray-50 rounded-lg border p-6 border-slate-300">
     <div className="text-center">
       <div className="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-2 border-b-transparent border-blue-500" />
       <p className="text-sm text-muted-foreground">Loading Google Maps…</p>
@@ -108,13 +109,21 @@ export const GoogleMapWrapper = ({
   const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID
 
   const requestedLibraries = useMemo<Libraries>(() => {
+    // Start with default libraries
     const merged = [...DEFAULT_LIBRARIES]
-    if (loadPlaces) merged.push('places')
+    
+    // Add places if requested and not already included
+    if (loadPlaces && !merged.includes('places')) {
+      merged.push('places')
+    }
+    
+    // Add any additional libraries that aren't already included
     libraries.forEach(library => {
       if (!merged.includes(library)) {
         merged.push(library)
       }
     })
+    
     return merged
   }, [libraries, loadPlaces])
 

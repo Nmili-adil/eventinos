@@ -6,14 +6,13 @@ import { z } from 'zod';
 // Shadcn Components
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -24,14 +23,14 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-// import { Progress } from '@/components/ui/progress';
+import { Progress } from '@/components/ui/progress';
 
 // Icons
-import { 
-  User, Mail, Phone, Calendar, Camera, Save, Edit, AlertCircle, Briefcase, 
-  Link as LinkIcon, Plus, ArrowLeft, Loader2, Shield, Key, Globe, Building, 
-  Award, Users, Zap, CheckCircle, Clock, MapPin, PhoneCall, Globe2,
-  Crown, Lock, Unlock, Eye, EyeOff, Star, TrendingUp, Target, PieChart
+import {
+  User, Mail, Calendar, Camera, Save, Edit, AlertCircle, Briefcase,
+  Link as LinkIcon, ArrowLeft, Loader2, Shield, Key, Globe, Building,
+  Award, Users, CheckCircle, Clock, MapPin, Globe2,
+  Crown, Lock, Eye, EyeOff, TrendingUp
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
@@ -50,14 +49,46 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { getRole } from '@/services/localStorage';
 
+// Color palette
+const COLORS = {
+  primary: '#A3C9D9',      // Light blue
+  secondary: '#6A9BA6',    // Medium blue
+  dark: '#012326',         // Dark teal
+  accent: '#103B40',       // Medium-dark teal
+  highlight: '#346C73',    // Teal
+  lightBg: '#f8fafc',      // Light background
+  white: '#ffffff',
+  gray: {
+    50: '#f9fafb',
+    100: '#f3f4f6',
+    200: '#e5e7eb',
+    300: '#d1d5db',
+    400: '#9ca3af',
+    500: '#6b7280',
+    600: '#4b5563',
+    700: '#374151',
+    800: '#1f2937',
+    900: '#111827'
+  }
+};
+
 interface ProfileFormData {
   firstName: string;
   lastName: string;
   email: string;
-  birthday: string;
-  country: string;
-  city: string;
-  gender: string;
+  country?: string;
+  city?: string;
+  gender?: 'MALE' | 'FEMALE';
+  company?: {
+    name?: string;
+    jobTitle?: string;
+    size?: string;
+    industry?: string;
+  };
+  socialNetworks?: {
+    linkedin?: string;
+    website?: string;
+  };
 }
 
 // Validation Schema
@@ -65,7 +96,7 @@ const profileFormSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
-  birthday: z.string().optional().or(z.literal('')),
+  // birthday: z.string().optional().or(z.literal('')),
   country: z.string().optional().or(z.literal('')),
   city: z.string().optional().or(z.literal('')),
   gender: z.enum(['MALE', 'FEMALE']).optional(),
@@ -105,70 +136,34 @@ export const ProfilePage: React.FC = () => {
   const navigate = useNavigate()
   const viewerRole = getRole();
 
-  // Color themes
-  const colorThemes = {
-    primary: {
-      light: 'from-violet-50 to-purple-50',
-      dark: 'from-violet-900/20 to-purple-900/20',
-      gradient: 'bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500',
-      text: 'text-violet-600',
-      border: 'border-violet-200',
-      bg: 'bg-violet-50'
-    },
-    success: {
-      gradient: 'bg-gradient-to-br from-emerald-400 to-teal-500',
-      text: 'text-emerald-600',
-      border: 'border-emerald-200',
-      bg: 'bg-emerald-50'
-    },
-    warning: {
-      gradient: 'bg-gradient-to-br from-amber-400 to-orange-500',
-      text: 'text-amber-600',
-      border: 'border-amber-200',
-      bg: 'bg-amber-50'
-    },
-    danger: {
-      gradient: 'bg-gradient-to-br from-rose-400 to-pink-500',
-      text: 'text-rose-600',
-      border: 'border-rose-200',
-      bg: 'bg-rose-50'
-    },
-    info: {
-      gradient: 'bg-gradient-to-br from-cyan-400 to-blue-500',
-      text: 'text-cyan-600',
-      border: 'border-cyan-200',
-      bg: 'bg-cyan-50'
-    }
-  };
+  // Safe date formatting function (unused but kept for future use)
+  // const formatDate = (dateInput: any): string => {
+  //   if (!dateInput) return '';
 
-  // Safe date formatting function
-  const formatDate = (dateInput: any): string => {
-    if (!dateInput) return '';
-    
-    try {
-      if (typeof dateInput === 'string') {
-        return new Date(dateInput).toISOString().split('T')[0];
-      } else if (dateInput.$date && dateInput.$date.$numberLong) {
-        return new Date(parseInt(dateInput.$date.$numberLong)).toISOString().split('T')[0];
-      } else if (dateInput.$numberLong) {
-        return new Date(parseInt(dateInput.$numberLong)).toISOString().split('T')[0];
-      } else if (dateInput instanceof Date) {
-        return dateInput.toISOString().split('T')[0];
-      }
-      return '';
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return '';
-    }
-  };
+  //   try {
+  //     if (typeof dateInput === 'string') {
+  //       return new Date(dateInput).toISOString().split('T')[0];
+  //     } else if (dateInput.$date && dateInput.$date.$numberLong) {
+  //       return new Date(parseInt(dateInput.$date.$numberLong)).toISOString().split('T')[0];
+  //     } else if (dateInput.$numberLong) {
+  //       return new Date(parseInt(dateInput.$numberLong)).toISOString().split('T')[0];
+  //     } else if (dateInput instanceof Date) {
+  //       return dateInput.toISOString().split('T')[0];
+  //     }
+  //     return '';
+  //   } catch (error) {
+  //     console.error('Error formatting date:', error);
+  //     return '';
+  //   }
+  // };
 
   // Safe date display formatting
   const formatDateForDisplay = (dateInput: any): string => {
     if (!dateInput) return t('profilePage.common.notAvailable');
-    
+
     try {
       let date: Date;
-      
+
       if (typeof dateInput === 'string') {
         date = new Date(dateInput);
       } else if (dateInput.$date && dateInput.$date.$numberLong) {
@@ -180,11 +175,11 @@ export const ProfilePage: React.FC = () => {
       } else {
         return t('profilePage.common.notAvailable');
       }
-      
+
       return date.toLocaleDateString();
     } catch (error) {
       console.error('Error formatting date for display:', error);
-        return t('profilePage.common.notAvailable');
+      return t('profilePage.common.notAvailable');
     }
   };
 
@@ -193,16 +188,16 @@ export const ProfilePage: React.FC = () => {
     return value !== null && value !== undefined && value !== '';
   };
 
-  const form = useForm<ProfileFormData>({
+  const form = useForm({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
-      birthday: '',
+      // birthday: '',
       country: '',
       city: '',
-      gender: 'MALE',
+      gender: undefined,
       company: {
         name: '',
         jobTitle: '',
@@ -223,10 +218,10 @@ export const ProfilePage: React.FC = () => {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
-        birthday: user.birthday ? formatDate(user.birthday) : '',
+        // birthday: user.birthday ? formatDate(user.birthday) : '',
         country: user.country || '',
         city: user.city || '',
-        gender: user.gender || 'MALE',
+        gender: user.gender || undefined,
         company: {
           name: user.company?.name || '',
           jobTitle: user.company?.jobTitle || '',
@@ -239,7 +234,11 @@ export const ProfilePage: React.FC = () => {
         },
       });
 
-      dispatch(fetchRoleByIdRequest(user.role));
+      if (user.role && typeof user.role === 'object' && '$oid' in user.role) {
+        dispatch(fetchRoleByIdRequest(user.role.$oid));
+      } else if (typeof user.role === 'string') {
+        dispatch(fetchRoleByIdRequest(user.role));
+      }
       dispatch(fetchRightsRequest());
     }
   }, [user, form, dispatch]);
@@ -258,7 +257,7 @@ export const ProfilePage: React.FC = () => {
         await updateUserApi(params.userId, data);
         toast.success(t('profilePage.messages.profileUpdated'), {
           style: {
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundColor: COLORS.highlight,
             color: 'white',
             border: 'none'
           }
@@ -277,18 +276,18 @@ export const ProfilePage: React.FC = () => {
 
   const handlePasswordChange = async () => {
     setPasswordError('');
-    
+
     // Validation
     if (!newPassword || !confirmPassword) {
       setPasswordError(t('profilePage.errors.passwordRequired'));
       return;
     }
-    
+
     if (newPassword.length < 8) {
       setPasswordError(t('profilePage.errors.passwordMinLength'));
       return;
     }
-    
+
     if (newPassword !== confirmPassword) {
       setPasswordError(t('profilePage.errors.passwordMismatch'));
       return;
@@ -300,7 +299,7 @@ export const ProfilePage: React.FC = () => {
         await updateUserPasswordApi(params.userId, newPassword);
         toast.success(t('profilePage.messages.passwordUpdated'), {
           style: {
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundColor: COLORS.highlight,
             color: 'white',
             border: 'none'
           }
@@ -331,7 +330,7 @@ export const ProfilePage: React.FC = () => {
         toast.error(t('profilePage.messages.invalidFileType'));
         return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error(t('profilePage.messages.fileTooLarge'));
@@ -339,7 +338,7 @@ export const ProfilePage: React.FC = () => {
       }
 
       setSelectedPhoto(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -353,19 +352,19 @@ export const ProfilePage: React.FC = () => {
     if (!selectedPhoto || !params.userId) return;
 
     setIsUploadingPhoto(true);
-    
+
     try {
       const imagePath = await uploadFileApi(selectedPhoto);
       await updateUserApi(params.userId, { picture: imagePath.data?.data?.path });
-      
+
       toast.success(t('profilePage.messages.photoUpdated'), {
         style: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          backgroundColor: COLORS.highlight,
           color: 'white',
           border: 'none'
         }
       });
-      
+
       setSelectedPhoto(null);
       setPhotoPreview(null);
       dispatch(fetchUserByIdRequest(params.userId));
@@ -390,14 +389,14 @@ export const ProfilePage: React.FC = () => {
     setRoleChangeLoading(true)
     setRoleChangeTarget(targetRole)
     try {
-      await updateUserApi(params.userId, { user: targetRole })
+      await updateUserApi(params.userId, { role: targetRole })
       toast.success(
         t('profilePage.roles.roleActions.success', {
           role: targetRole === 'Admin' ? t('profilePage.roles.roleActions.adminLabel', 'Admin') : t('profilePage.roles.roleActions.organizerLabel', 'Organizer'),
         }),
         {
           style: {
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundColor: COLORS.highlight,
             color: 'white',
             border: 'none'
           }
@@ -440,13 +439,13 @@ export const ProfilePage: React.FC = () => {
       user.email,
       user.picture,
       user.phoneNumber,
-      user.birthday,
+      // user.birthday,
       user.country,
       user.city,
       user.company?.name,
       user.company?.jobTitle
     ];
-    
+
     const filledFields = fields.filter(field => hasValue(field)).length;
     return Math.round((filledFields / fields.length) * 100);
   };
@@ -454,11 +453,10 @@ export const ProfilePage: React.FC = () => {
   const profileCompletion = calculateProfileCompletion();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50/30 p-4 md:p-6">
-      {/* Header with glass effect */}
-      <div className="relative mb-8">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 rounded-2xl blur-3xl" />
-        <div className="relative bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl shadow-violet-500/10">
+    <div className="min-h-screen bg-gray-50 p-4 ">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex-1">
               <PageHead
@@ -467,95 +465,126 @@ export const ProfilePage: React.FC = () => {
                 icon={User}
                 total={0}
               />
-              <div className="mt-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-600">Profile Completion</span>
-                  <span className="text-sm font-bold text-violet-600">{profileCompletion}%</span>
-                </div>
-                {/* <Progress value={profileCompletion} className="h-2 bg-gray-200">
-                  <div className={`h-full rounded-full transition-all duration-500 ${colorThemes.primary.gradient}`} />
-                </Progress> */}
-              </div>
+              
             </div>
+            <div>
             <div className="flex items-center gap-3">
               <Button
+                type="button"
                 variant={"outline"}
                 size={'icon'}
                 onClick={() => navigate(-1)}
-                className="rounded-full border-violet-200 hover:border-violet-300 hover:bg-violet-50 transition-all duration-300 hover:scale-105"
+                className="rounded-full border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
+                style={{ borderColor: COLORS.secondary }}
               >
-                <ArrowLeft className='w-4 h-4'/>
+                <ArrowLeft className='w-4 h-4' />
               </Button>
               {canManageRole && (
                 <Button
+                  type="button"
                   variant="default"
                   onClick={() => setRoleDialogOpen(true)}
                   disabled={roleChangeLoading}
-                  className={`rounded-full ${colorThemes.primary.gradient} text-white hover:shadow-lg hover:shadow-violet-500/30 transition-all duration-300 hover:scale-105`}
+                  className="rounded-full text-white transition-all duration-300"
+                  style={{ backgroundColor: COLORS.accent }}
                 >
                   <Crown className="w-4 h-4 mr-2" />
                   {t('profilePage.roles.roleActions.changeRoleButton')}
                 </Button>
               )}
               <Button
+                type="button"
                 variant={isEditing ? "outline" : "default"}
                 onClick={() => setIsEditing(!isEditing)}
                 disabled={isLoading}
-                className={`rounded-full transition-all duration-300 hover:scale-105 ${isEditing ? 'border-violet-300 text-violet-600 hover:bg-violet-50' : `${colorThemes.primary.gradient} text-white hover:shadow-lg hover:shadow-violet-500/30`}`}
+                className="rounded-full transition-all duration-300"
+                style={isEditing ? {
+                  borderColor: COLORS.secondary,
+                  color: COLORS.highlight,
+                  backgroundColor: 'transparent'
+                } : {
+                  backgroundColor: COLORS.primary,
+                  color: 'white'
+                }}
               >
                 <Edit className="w-4 h-4 mr-2" />
                 {isEditing ? t('profilePage.buttons.cancelEdit') : t('profilePage.buttons.editProfile')}
               </Button>
             </div>
+            <div className="mt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-600">Profile Completion</span>
+                  <span className="text-sm font-bold" style={{ color: COLORS.highlight }}>{profileCompletion}%</span>
+                </div>
+                <Progress value={profileCompletion} className="h-2 bg-gray-200">
+                  <div 
+                    className="h-full rounded-full transition-all duration-500" 
+                    style={{ backgroundColor: COLORS.primary }}
+                  />
+                </Progress>
+              </div>
+                </div>
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="personal" className="space-y-8">
-        {/* Enhanced Tabs */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-purple-500/5 to-fuchsia-500/5 rounded-2xl blur-xl" />
-          <TabsList className="relative bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl p-1 shadow-lg shadow-violet-500/5">
-            <TabsTrigger 
-              value="personal" 
-              className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-purple-500 data-[state=active]:text-white transition-all duration-300"
-            >
-              <User className="w-4 h-4 mr-2" />
-              {t('profilePage.tabs.personal')}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="professional" 
-              className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white transition-all duration-300"
-            >
-              <Briefcase className="w-4 h-4 mr-2" />
-              {t('profilePage.tabs.professional')}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="account" 
-              className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-300"
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              {t('profilePage.tabs.account')}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="roles-rights" 
-              className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white transition-all duration-300"
-            >
-              <Award className="w-4 h-4 mr-2" />
-              {t('profilePage.tabs.rolesRights')}
-            </TabsTrigger>
-          </TabsList>
-        </div>
+      <Tabs defaultValue="personal" className="space-y-8 py-1">
+        {/* Tabs */}
+        <TabsList className="bg-slate-700 border border-gray-200 rounded-xl p-2 shadow-sm">
+          <TabsTrigger
+            value="personal"
+            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
+            style={{ 
+              backgroundColor: 'transparent',
+              color: COLORS.gray[600]
+            }}
+          >
+            <User className="w-4 h-4 mr-2" />
+            {t('profilePage.tabs.personal')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="professional"
+            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
+            style={{ 
+              backgroundColor: 'transparent',
+              color: COLORS.gray[600]
+            }}
+          >
+            <Briefcase className="w-4 h-4 mr-2" />
+            {t('profilePage.tabs.professional')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="account"
+            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
+            style={{ 
+              backgroundColor: 'transparent',
+              color: COLORS.gray[600]
+            }}
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            {t('profilePage.tabs.account')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="roles-rights"
+            className="rounded-lg data-[state=active]:text-white transition-all duration-300"
+            style={{ 
+              backgroundColor: 'transparent',
+              color: COLORS.gray[600]
+            }}
+          >
+            <Award className="w-4 h-4 mr-2" />
+            {t('profilePage.tabs.rolesRights')}
+          </TabsTrigger>
+        </TabsList>
 
         <TabsContent value="personal" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Enhanced Profile Card */}
-            <Card className="lg:col-span-1 border-0 shadow-2xl shadow-violet-500/10 overflow-hidden">
-              <div className={`absolute inset-0 ${colorThemes.primary.gradient} opacity-5`} />
-              <CardHeader className="relative bg-gradient-to-br from-violet-50/50 via-purple-50/50 to-fuchsia-50/50 border-b border-white/20 backdrop-blur-sm">
-                <CardTitle className="flex items-center gap-3 text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  <div className={`p-2 rounded-xl ${colorThemes.primary.gradient} shadow-lg`}>
-                    <User className="h-6 w-6 text-white" />
+            {/* Profile Card */}
+            <Card className="lg:col-span-1 border border-gray-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
+                <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
+                  <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
+                    <User className="h-5 w-5 text-white" />
                   </div>
                   {t('profilePage.personal.profilePicture.title')}
                 </CardTitle>
@@ -563,26 +592,29 @@ export const ProfilePage: React.FC = () => {
                   {t('profilePage.personal.profilePicture.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="relative space-y-8 pt-8">
+              <CardContent className="space-y-8 pt-8">
                 <div className="flex flex-col items-center space-y-6">
                   <div className="relative">
-                    <div className="absolute -inset-4 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 rounded-full blur-xl opacity-30 animate-pulse" />
-                    <Avatar className="w-40 h-40 border-8 border-white shadow-2xl ring-4 ring-violet-500/20 relative">
-                      <AvatarImage 
-                        src={photoPreview || user.picture} 
+                    <Avatar className="w-40 h-40 border-4 border-white shadow-lg">
+                      <AvatarImage
+                        src={photoPreview || user.picture}
                         alt={`${user.firstName} ${user.lastName}`}
                         className="object-cover"
                       />
-                      <AvatarFallback className={`text-4xl ${colorThemes.primary.gradient} text-white font-bold`}>
+                      <AvatarFallback 
+                        className="text-4xl font-bold text-white"
+                        style={{ backgroundColor: COLORS.primary }}
+                      >
                         {getInitials(user.firstName, user.lastName)}
                       </AvatarFallback>
                     </Avatar>
                     {isEditing && (
-                      <Button 
+                      <Button
                         type="button"
-                        variant="secondary" 
-                        size="sm" 
-                        className={`absolute -bottom-2 -right-2 rounded-full w-12 h-12 p-0 shadow-2xl ${colorThemes.primary.gradient} text-white hover:shadow-violet-500/40 transition-all duration-300 hover:scale-110 z-10`}
+                        variant="secondary"
+                        size="sm"
+                        className="absolute -bottom-2 -right-2 rounded-full w-12 h-12 p-0 shadow-lg text-white transition-all duration-300 z-10"
+                        style={{ backgroundColor: COLORS.accent }}
                         onClick={handlePhotoClick}
                         disabled={isUploadingPhoto}
                       >
@@ -590,7 +622,7 @@ export const ProfilePage: React.FC = () => {
                       </Button>
                     )}
                   </div>
-                  
+
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -598,25 +630,33 @@ export const ProfilePage: React.FC = () => {
                     onChange={handlePhotoChange}
                     className="hidden"
                   />
-                  
+
                   {isEditing && !selectedPhoto && (
-                    <Button 
+                    <Button
                       type="button"
-                      variant="outline" 
-                      size="sm" 
+                      variant="outline"
+                      size="sm"
                       onClick={handlePhotoClick}
                       disabled={isUploadingPhoto}
-                      className="rounded-full border-violet-300 text-violet-600 hover:bg-violet-50 hover:border-violet-400 transition-all duration-300"
+                      className="rounded-full transition-all duration-300"
+                      style={{ 
+                        borderColor: COLORS.secondary,
+                        color: COLORS.highlight,
+                        backgroundColor: 'transparent'
+                      }}
                     >
                       <Camera className="w-4 h-4 mr-2" />
                       {t('profilePage.buttons.changePhoto')}
                     </Button>
                   )}
-                  
+
                   {selectedPhoto && (
                     <div className="w-full space-y-4 animate-in fade-in duration-300">
-                      <div className="p-4 rounded-2xl bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-100">
-                        <p className="text-sm font-medium text-violet-700 text-center truncate">
+                      <div className="p-4 rounded-lg border" style={{ 
+                        backgroundColor: COLORS.lightBg,
+                        borderColor: COLORS.secondary
+                      }}>
+                        <p className="text-sm font-medium text-center truncate" style={{ color: COLORS.highlight }}>
                           {selectedPhoto.name}
                         </p>
                       </div>
@@ -627,7 +667,11 @@ export const ProfilePage: React.FC = () => {
                           size="sm"
                           onClick={handleCancelPhotoUpload}
                           disabled={isUploadingPhoto}
-                          className="flex-1 rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 transition-all duration-300"
+                          className="flex-1 rounded-full transition-all duration-300"
+                          style={{ 
+                            borderColor: COLORS.gray[300],
+                            color: COLORS.gray[600]
+                          }}
                         >
                           {t('common.cancel')}
                         </Button>
@@ -636,7 +680,8 @@ export const ProfilePage: React.FC = () => {
                           size="sm"
                           onClick={handlePhotoUpload}
                           disabled={isUploadingPhoto}
-                          className={`flex-1 rounded-full ${colorThemes.primary.gradient} text-white hover:shadow-lg hover:shadow-violet-500/30 transition-all duration-300`}
+                          className="flex-1 rounded-full text-white transition-all duration-300"
+                          style={{ backgroundColor: COLORS.primary }}
                         >
                           {isUploadingPhoto ? (
                             <>
@@ -654,18 +699,21 @@ export const ProfilePage: React.FC = () => {
                     </div>
                   )}
                 </div>
-                
-                <Separator className="bg-gradient-to-r from-transparent via-violet-200/50 to-transparent h-0.5" />
-                
+
+                <Separator className="bg-gray-200" />
+
                 <div className="space-y-6">
-                  <h4 className="font-semibold text-lg bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                  <h4 className="font-semibold text-lg" style={{ color: COLORS.dark }}>
                     {t('profilePage.personal.accountStatus')}
                   </h4>
                   <div className="space-y-4">
                     {hasValue(user.isActive) && (
-                      <div className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-emerald-50/50 to-teal-50/50 border border-emerald-100 backdrop-blur-sm hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300">
+                      <div className="flex items-center justify-between p-4 rounded-lg border" style={{ 
+                        backgroundColor: COLORS.lightBg,
+                        borderColor: COLORS.gray[200]
+                      }}>
                         <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-xl ${colorThemes.success.gradient} shadow-md`}>
+                          <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
                             {user.isActive ? (
                               <CheckCircle className="w-4 h-4 text-white" />
                             ) : (
@@ -674,33 +722,51 @@ export const ProfilePage: React.FC = () => {
                           </div>
                           <span className="text-sm font-medium text-gray-700">{t('profilePage.personal.status')}</span>
                         </div>
-                        <Badge className={`rounded-full ${user.isActive ? 'bg-emerald-100 text-emerald-800 border-emerald-200 hover:bg-emerald-200' : 'bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200'}`}>
+                        <Badge className="rounded-full border" style={{ 
+                          backgroundColor: user.isActive ? '#d1fae5' : '#fef3c7',
+                          color: user.isActive ? '#065f46' : '#92400e',
+                          borderColor: user.isActive ? '#a7f3d0' : '#fde68a'
+                        }}>
                           {user.isActive ? t('profilePage.status.active') : t('profilePage.status.inactive')}
                         </Badge>
                       </div>
                     )}
                     {hasValue(user.registrationCompleted) && (
-                      <div className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-blue-50/50 to-cyan-50/50 border border-blue-100 backdrop-blur-sm hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300">
+                      <div className="flex items-center justify-between p-4 rounded-lg border" style={{ 
+                        backgroundColor: COLORS.lightBg,
+                        borderColor: COLORS.gray[200]
+                      }}>
                         <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-xl ${colorThemes.info.gradient} shadow-md`}>
+                          <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
                             <CheckCircle className="w-4 h-4 text-white" />
                           </div>
                           <span className="text-sm font-medium text-gray-700">{t('profilePage.personal.registration')}</span>
                         </div>
-                        <Badge className={`rounded-full ${user.registrationCompleted ? 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200' : 'bg-rose-100 text-rose-800 border-rose-200 hover:bg-rose-200'}`}>
+                        <Badge className="rounded-full border" style={{ 
+                          backgroundColor: user.registrationCompleted ? '#dbeafe' : '#fee2e2',
+                          color: user.registrationCompleted ? '#1e40af' : '#991b1b',
+                          borderColor: user.registrationCompleted ? '#bfdbfe' : '#fecaca'
+                        }}>
                           {user.registrationCompleted ? t('profilePage.status.completed') : t('profilePage.status.pending')}
                         </Badge>
                       </div>
                     )}
                     {hasValue(role) && (
-                      <div className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-purple-50/50 to-fuchsia-50/50 border border-purple-100 backdrop-blur-sm hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
+                      <div className="flex items-center justify-between p-4 rounded-lg border" style={{ 
+                        backgroundColor: COLORS.lightBg,
+                        borderColor: COLORS.gray[200]
+                      }}>
                         <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-xl ${colorThemes.primary.gradient} shadow-md`}>
+                          <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.highlight }}>
                             <Award className="w-4 h-4 text-white" />
                           </div>
                           <span className="text-sm font-medium text-gray-700">{t('profilePage.personal.role')}</span>
                         </div>
-                        <Badge className="rounded-full bg-gradient-to-r from-violet-100 to-purple-100 text-violet-800 border-violet-200 hover:from-violet-200 hover:to-purple-200">
+                        <Badge className="rounded-full border" style={{ 
+                          backgroundColor: '#e0f2fe',
+                          color: '#0369a1',
+                          borderColor: '#bae6fd'
+                        }}>
                           {typeof role === 'object' && role !== null ? role.name : role}
                         </Badge>
                       </div>
@@ -710,13 +776,12 @@ export const ProfilePage: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced Personal Information Form */}
-            <Card className="lg:col-span-2 border-0 shadow-2xl shadow-violet-500/10 overflow-hidden">
-              <div className={`absolute inset-0 ${colorThemes.primary.gradient} opacity-5`} />
-              <CardHeader className="relative bg-gradient-to-r from-violet-50/50 via-purple-50/50 to-fuchsia-50/50 border-b border-white/20 backdrop-blur-sm">
-                <CardTitle className="flex items-center gap-3 text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  <div className={`p-2 rounded-xl ${colorThemes.primary.gradient} shadow-lg`}>
-                    <User className="h-6 w-6 text-white" />
+            {/* Personal Information Form */}
+            <Card className="lg:col-span-2 border border-gray-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
+                <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
+                  <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
+                    <User className="h-5 w-5 text-white" />
                   </div>
                   {t('profilePage.personal.form.title')}
                 </CardTitle>
@@ -724,7 +789,7 @@ export const ProfilePage: React.FC = () => {
                   {t('profilePage.personal.form.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="relative py-8 px-8">
+              <CardContent className="py-8 px-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -734,15 +799,15 @@ export const ProfilePage: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                              <User className="w-4 h-4 text-violet-500" />
+                              <User className="w-4 h-4" style={{ color: COLORS.primary }} />
                               {t('profilePage.fields.firstName.label')}
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                                {...field} 
+                              <Input
+                                {...field}
                                 disabled={!isEditing || isLoading}
                                 placeholder={t('profilePage.fields.firstName.placeholder')}
-                                className="rounded-xl border-violet-200 focus:border-violet-500 focus:ring-violet-500 transition-all duration-300 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                               />
                             </FormControl>
                             <FormMessage />
@@ -756,15 +821,15 @@ export const ProfilePage: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                              <User className="w-4 h-4 text-violet-500" />
+                              <User className="w-4 h-4" style={{ color: COLORS.primary }} />
                               {t('profilePage.fields.lastName.label')}
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                                {...field} 
+                              <Input
+                                {...field}
                                 disabled={!isEditing || isLoading}
                                 placeholder={t('profilePage.fields.lastName.placeholder')}
-                                className="rounded-xl border-violet-200 focus:border-violet-500 focus:ring-violet-500 transition-all duration-300 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                               />
                             </FormControl>
                             <FormMessage />
@@ -779,16 +844,16 @@ export const ProfilePage: React.FC = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                            <Mail className="w-4 h-4 text-violet-500" />
+                            <Mail className="w-4 h-4" style={{ color: COLORS.primary }} />
                             {t('profilePage.fields.email.label')}
                           </FormLabel>
                           <FormControl>
-                            <Input 
-                              {...field} 
+                            <Input
+                              {...field}
                               type="email"
                               disabled={!isEditing || isLoading}
                               placeholder={t('profilePage.fields.email.placeholder')}
-                              className="rounded-xl border-violet-200 focus:border-violet-500 focus:ring-violet-500 transition-all duration-300 h-12"
+                              className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                             />
                           </FormControl>
                           <FormMessage />
@@ -797,30 +862,6 @@ export const ProfilePage: React.FC = () => {
                     />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {hasValue(user.birthday) && (
-                        <FormField
-                          control={form.control}
-                          name="birthday"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-violet-500" />
-                                {t('profilePage.fields.birthday.label')}
-                              </FormLabel>
-                              <FormControl>
-                                <Input 
-                                  {...field} 
-                                  type="date"
-                                  disabled={!isEditing || isLoading}
-                                  className="rounded-xl border-violet-200 focus:border-violet-500 focus:ring-violet-500 transition-all duration-300 h-12"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
-
                       {hasValue(user.gender) && (
                         <FormField
                           control={form.control}
@@ -828,22 +869,26 @@ export const ProfilePage: React.FC = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                                <Users className="w-4 h-4 text-violet-500" />
+                                <Users className="w-4 h-4" style={{ color: COLORS.primary }} />
                                 {t('profilePage.fields.gender.label')}
                               </FormLabel>
-                              <Select 
-                                onValueChange={field.onChange} 
+                              <Select
+                                onValueChange={field.onChange}
                                 defaultValue={field.value}
                                 disabled={!isEditing || isLoading}
                               >
                                 <FormControl>
-                                  <SelectTrigger className="rounded-xl border-violet-200 focus:ring-violet-500 focus:border-violet-500 h-12">
+                                  <SelectTrigger className="rounded-lg border-gray-300 focus:ring-gray-400 focus:border-gray-400 h-12">
                                     <SelectValue placeholder={t('profilePage.fields.gender.placeholder')} />
                                   </SelectTrigger>
                                 </FormControl>
-                                <SelectContent className="rounded-xl border-violet-200">
-                                  <SelectItem value="MALE" className="focus:bg-violet-50 focus:text-violet-700">{t('profilePage.fields.gender.options.male')}</SelectItem>
-                                  <SelectItem value="FEMALE" className="focus:bg-violet-50 focus:text-violet-700">{t('profilePage.fields.gender.options.female')}</SelectItem>
+                                <SelectContent className="rounded-lg border-gray-300">
+                                  <SelectItem value="MALE" className="focus:bg-gray-100 focus:text-gray-900">
+                                    {t('profilePage.fields.gender.options.male')}
+                                  </SelectItem>
+                                  <SelectItem value="FEMALE" className="focus:bg-gray-100 focus:text-gray-900">
+                                    {t('profilePage.fields.gender.options.female')}
+                                  </SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -861,15 +906,15 @@ export const ProfilePage: React.FC = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                                <Globe className="w-4 h-4 text-violet-500" />
+                                <Globe className="w-4 h-4" style={{ color: COLORS.primary }} />
                                 {t('profilePage.fields.country.label')}
                               </FormLabel>
                               <FormControl>
-                                <Input 
-                                  {...field} 
+                                <Input
+                                  {...field}
                                   disabled={!isEditing || isLoading}
                                   placeholder={t('profilePage.fields.country.placeholder')}
-                                  className="rounded-xl border-violet-200 focus:border-violet-500 focus:ring-violet-500 transition-all duration-300 h-12"
+                                  className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -885,15 +930,15 @@ export const ProfilePage: React.FC = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-violet-500" />
+                                <MapPin className="w-4 h-4" style={{ color: COLORS.primary }} />
                                 {t('profilePage.fields.city.label')}
                               </FormLabel>
                               <FormControl>
-                                <Input 
-                                  {...field} 
+                                <Input
+                                  {...field}
                                   disabled={!isEditing || isLoading}
                                   placeholder={t('profilePage.fields.city.placeholder')}
-                                  className="rounded-xl border-violet-200 focus:border-violet-500 focus:ring-violet-500 transition-all duration-300 h-12"
+                                  className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -910,14 +955,20 @@ export const ProfilePage: React.FC = () => {
                           variant="outline"
                           onClick={() => setIsEditing(false)}
                           disabled={isLoading}
-                          className="rounded-full border-violet-300 text-violet-600 hover:bg-violet-50 hover:border-violet-400 px-8 transition-all duration-300"
+                          className="rounded-full px-8 transition-all duration-300"
+                          style={{ 
+                            borderColor: COLORS.secondary,
+                            color: COLORS.highlight,
+                            backgroundColor: 'transparent'
+                          }}
                         >
                           {t('common.cancel')}
                         </Button>
-                        <Button 
-                          type="submit" 
+                        <Button
+                          type="submit"
                           disabled={isLoading}
-                          className={`rounded-full ${colorThemes.primary.gradient} text-white hover:shadow-lg hover:shadow-violet-500/30 px-8 transition-all duration-300`}
+                          className="rounded-full text-white px-8 transition-all duration-300"
+                          style={{ backgroundColor: COLORS.primary }}
                         >
                           <Save className="w-4 h-4 mr-2" />
                           {isLoading ? t('common.updating') : t('common.save')}
@@ -932,12 +983,11 @@ export const ProfilePage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="professional" className="space-y-6">
-          <Card className="border-0 shadow-2xl shadow-emerald-500/10 overflow-hidden">
-            <div className={`absolute inset-0 ${colorThemes.success.gradient} opacity-5`} />
-            <CardHeader className="relative bg-gradient-to-r from-emerald-50/50 via-teal-50/50 to-green-50/50 border-b border-white/20 backdrop-blur-sm">
-              <CardTitle className="flex items-center gap-3 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                <div className={`p-2 rounded-xl ${colorThemes.success.gradient} shadow-lg`}>
-                  <Briefcase className="h-6 w-6 text-white" />
+          <Card className="border border-gray-200 bg-white shadow-sm">
+            <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
+              <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
+                <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
+                  <Briefcase className="h-5 w-5 text-white" />
                 </div>
                 {t('profilePage.professional.title')}
               </CardTitle>
@@ -945,7 +995,7 @@ export const ProfilePage: React.FC = () => {
                 {t('profilePage.professional.description')}
               </CardDescription>
             </CardHeader>
-            <CardContent className="relative py-8 px-8">
+            <CardContent className="py-8 px-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -956,15 +1006,15 @@ export const ProfilePage: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                              <Building className="w-4 h-4 text-emerald-500" />
+                              <Building className="w-4 h-4" style={{ color: COLORS.secondary }} />
                               {t('profilePage.professional.fields.companyName.label')}
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                                {...field} 
+                              <Input
+                                {...field}
                                 disabled={!isEditing || isLoading}
                                 placeholder={t('profilePage.professional.fields.companyName.placeholder')}
-                                className="rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-300 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                               />
                             </FormControl>
                             <FormMessage />
@@ -980,15 +1030,15 @@ export const ProfilePage: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                              <Briefcase className="w-4 h-4 text-emerald-500" />
+                              <Briefcase className="w-4 h-4" style={{ color: COLORS.secondary }} />
                               {t('profilePage.professional.fields.jobTitle.label')}
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                                {...field} 
+                              <Input
+                                {...field}
                                 disabled={!isEditing || isLoading}
                                 placeholder={t('profilePage.professional.fields.jobTitle.placeholder')}
-                                className="rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-300 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                               />
                             </FormControl>
                             <FormMessage />
@@ -1004,15 +1054,15 @@ export const ProfilePage: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                              <TrendingUp className="w-4 h-4 text-emerald-500" />
+                              <TrendingUp className="w-4 h-4" style={{ color: COLORS.secondary }} />
                               {t('profilePage.professional.fields.industry.label')}
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                                {...field} 
+                              <Input
+                                {...field}
                                 disabled={!isEditing || isLoading}
                                 placeholder={t('profilePage.professional.fields.industry.placeholder')}
-                                className="rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-300 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                               />
                             </FormControl>
                             <FormMessage />
@@ -1028,15 +1078,15 @@ export const ProfilePage: React.FC = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                              <Users className="w-4 h-4 text-emerald-500" />
+                              <Users className="w-4 h-4" style={{ color: COLORS.secondary }} />
                               {t('profilePage.professional.fields.companySize.label')}
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                                {...field} 
+                              <Input
+                                {...field}
                                 disabled={!isEditing || isLoading}
                                 placeholder={t('profilePage.professional.fields.companySize.placeholder')}
-                                className="rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-300 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                               />
                             </FormControl>
                             <FormMessage />
@@ -1046,12 +1096,12 @@ export const ProfilePage: React.FC = () => {
                     )}
                   </div>
 
-                  <Separator className="bg-gradient-to-r from-transparent via-emerald-200/50 to-transparent h-0.5" />
+                  <Separator className="bg-gray-200" />
 
                   <div className="space-y-6">
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent flex items-center gap-3">
-                      <div className={`p-2 rounded-xl ${colorThemes.success.gradient} shadow-lg`}>
-                        <Globe2 className="w-5 h-5 text-white" />
+                    <h3 className="text-xl font-bold flex items-center gap-3" style={{ color: COLORS.dark }}>
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
+                        <Globe2 className="w-4 h-4 text-white" />
                       </div>
                       {t('profilePage.professional.socialNetworks')}
                     </h3>
@@ -1064,16 +1114,16 @@ export const ProfilePage: React.FC = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                                <LinkIcon className="w-4 h-4 text-emerald-500" />
+                                <LinkIcon className="w-4 h-4" style={{ color: COLORS.secondary }} />
                                 {t('profilePage.professional.fields.linkedin.label')}
                               </FormLabel>
                               <FormControl>
-                                <Input 
-                                  {...field} 
+                                <Input
+                                  {...field}
                                   type="url"
                                   disabled={!isEditing || isLoading}
                                   placeholder={t('profilePage.professional.fields.linkedin.placeholder')}
-                                  className="rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-300 h-12"
+                                  className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -1089,16 +1139,16 @@ export const ProfilePage: React.FC = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="text-gray-700 font-medium flex items-center gap-2">
-                                <Globe2 className="w-4 h-4 text-emerald-500" />
+                                <Globe2 className="w-4 h-4" style={{ color: COLORS.secondary }} />
                                 {t('profilePage.professional.fields.website.label')}
                               </FormLabel>
                               <FormControl>
-                                <Input 
-                                  {...field} 
+                                <Input
+                                  {...field}
                                   type="url"
                                   disabled={!isEditing || isLoading}
                                   placeholder={t('profilePage.professional.fields.website.placeholder')}
-                                  className="rounded-xl border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-300 h-12"
+                                  className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 transition-all duration-300 h-12"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -1116,14 +1166,20 @@ export const ProfilePage: React.FC = () => {
                         variant="outline"
                         onClick={() => setIsEditing(false)}
                         disabled={isLoading}
-                        className="rounded-full border-emerald-300 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-400 px-8 transition-all duration-300"
+                        className="rounded-full px-8 transition-all duration-300"
+                        style={{ 
+                          borderColor: COLORS.secondary,
+                          color: COLORS.highlight,
+                          backgroundColor: 'transparent'
+                        }}
                       >
                         {t('common.cancel')}
                       </Button>
-                      <Button 
-                        type="submit" 
+                      <Button
+                        type="submit"
                         disabled={isLoading}
-                        className={`rounded-full ${colorThemes.success.gradient} text-white hover:shadow-lg hover:shadow-emerald-500/30 px-8 transition-all duration-300`}
+                        className="rounded-full text-white px-8 transition-all duration-300"
+                        style={{ backgroundColor: COLORS.secondary }}
                       >
                         <Save className="w-4 h-4 mr-2" />
                         {isLoading ? t('common.updating') : t('common.save')}
@@ -1137,12 +1193,11 @@ export const ProfilePage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="account" className="space-y-6">
-          <Card className="border-0 shadow-2xl shadow-cyan-500/10 overflow-hidden">
-            <div className={`absolute inset-0 ${colorThemes.info.gradient} opacity-5`} />
-            <CardHeader className="relative bg-gradient-to-r from-cyan-50/50 via-blue-50/50 to-sky-50/50 border-b border-white/20 backdrop-blur-sm">
-              <CardTitle className="flex items-center gap-3 text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                <div className={`p-2 rounded-xl ${colorThemes.info.gradient} shadow-lg`}>
-                  <Shield className="h-6 w-6 text-white" />
+          <Card className="border border-gray-200 bg-white shadow-sm">
+            <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
+              <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
+                <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.highlight }}>
+                  <Shield className="h-5 w-5 text-white" />
                 </div>
                 {t('profilePage.account.title')}
               </CardTitle>
@@ -1150,126 +1205,131 @@ export const ProfilePage: React.FC = () => {
                 {t('profilePage.account.description')}
               </CardDescription>
             </CardHeader>
-            <CardContent className="relative pt-8 px-8">
+            <CardContent className="pt-8 px-8">
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {hasValue(user.user) && (
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-violet-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-violet-500/10 transition-all duration-300">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-xl ${colorThemes.primary.gradient} shadow-lg`}>
-                            <User className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">{t('profilePage.account.userType')}</p>
-                            <p className="text-lg font-bold text-gray-900">{user.user}</p>
-                          </div>
+                    <div className="p-6 rounded-lg border" style={{ 
+                      backgroundColor: COLORS.lightBg,
+                      borderColor: COLORS.gray[200]
+                    }}>
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
+                          <User className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">{t('profilePage.account.userType')}</p>
+                          <p className="text-lg font-bold text-gray-900">{user.user}</p>
                         </div>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.verificationCode?.code) && (
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-emerald-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-xl ${colorThemes.success.gradient} shadow-lg`}>
-                            <Key className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">{t('profilePage.account.verificationCode')}</p>
-                            <p className="text-lg font-bold text-gray-900 font-mono">{user.verificationCode?.code}</p>
-                          </div>
+                    <div className="p-6 rounded-lg border" style={{ 
+                      backgroundColor: COLORS.lightBg,
+                      borderColor: COLORS.gray[200]
+                    }}>
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
+                          <Key className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">{t('profilePage.account.verificationCode')}</p>
+                          <p className="text-lg font-bold text-gray-900 font-mono">{user.verificationCode?.code}</p>
                         </div>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.createdAt) && (
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-purple-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-xl ${colorThemes.primary.gradient} shadow-lg`}>
-                            <Calendar className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">{t('profilePage.account.memberSince')}</p>
-                            <p className="text-lg font-bold text-gray-900">
-                              {formatDateForDisplay(user.createdAt)}
-                            </p>
-                          </div>
+                    <div className="p-6 rounded-lg border" style={{ 
+                      backgroundColor: COLORS.lightBg,
+                      borderColor: COLORS.gray[200]
+                    }}>
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.highlight }}>
+                          <Calendar className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">{t('profilePage.account.memberSince')}</p>
+                          <p className="text-lg font-bold text-gray-900">
+                            {formatDateForDisplay(user.createdAt)}
+                          </p>
                         </div>
                       </div>
                     </div>
                   )}
 
                   {hasValue(user.updatedAt) && (
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-amber-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300">
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-xl ${colorThemes.warning.gradient} shadow-lg`}>
-                            <Clock className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">{t('profilePage.account.lastUpdated')}</p>
-                            <p className="text-lg font-bold text-gray-900">
-                              {formatDateForDisplay(user.updatedAt)}
-                            </p>
-                          </div>
+                    <div className="p-6 rounded-lg border" style={{ 
+                      backgroundColor: COLORS.lightBg,
+                      borderColor: COLORS.gray[200]
+                    }}>
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.accent }}>
+                          <Clock className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">{t('profilePage.account.lastUpdated')}</p>
+                          <p className="text-lg font-bold text-gray-900">
+                            {formatDateForDisplay(user.updatedAt)}
+                          </p>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <Separator className="bg-gradient-to-r from-transparent via-cyan-200/50 to-transparent h-0.5" />
-                
+                <Separator className="bg-gray-200" />
+
                 <div className="space-y-6">
-                  <h4 className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
-                    <div className={`p-2 rounded-xl ${colorThemes.info.gradient} shadow-lg`}>
-                      <Lock className="w-5 h-5 text-white" />
+                  <h4 className="text-xl font-bold flex items-center gap-3" style={{ color: COLORS.dark }}>
+                    <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.highlight }}>
+                      <Lock className="w-4 h-4 text-white" />
                     </div>
                     {t('profilePage.security.title')}
                   </h4>
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                    <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-rose-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-rose-500/10 transition-all duration-300">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`p-3 rounded-xl ${colorThemes.danger.gradient} shadow-lg`}>
-                            <Key className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">{t('profilePage.security.password')}</p>
-                            <p className="text-sm text-gray-500">
-                              {t('profilePage.security.lastUpdated', { date: formatDateForDisplay(user.updatedAt) })}
-                            </p>
-                          </div>
+                  <div className="p-6 rounded-lg border" style={{ 
+                    backgroundColor: COLORS.lightBg,
+                    borderColor: COLORS.gray[200]
+                  }}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.accent }}>
+                          <Key className="w-5 h-5 text-white" />
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setShowPasswordChange(!showPasswordChange)}
-                          disabled={isLoading}
-                          className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-700 transition-all duration-300"
-                        >
-                          {showPasswordChange ? t('common.cancel') : t('profilePage.security.changePassword')}
-                        </Button>
+                        <div>
+                          <p className="text-sm font-medium text-gray-700">{t('profilePage.security.password')}</p>
+                          <p className="text-sm text-gray-500">
+                            {t('profilePage.security.lastUpdated', { date: formatDateForDisplay(user.updatedAt) })}
+                          </p>
+                        </div>
                       </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowPasswordChange(!showPasswordChange)}
+                        disabled={isLoading}
+                        className="rounded-full transition-all duration-300"
+                        style={{ 
+                          borderColor: COLORS.secondary,
+                          color: COLORS.highlight,
+                          backgroundColor: 'transparent'
+                        }}
+                      >
+                        {showPasswordChange ? t('common.cancel') : t('profilePage.security.changePassword')}
+                      </Button>
                     </div>
                   </div>
 
                   {showPasswordChange && (
-                    <Card className="bg-gradient-to-br from-cyan-50/50 to-blue-50/50 border-cyan-100/50 mt-6 backdrop-blur-sm">
+                    <Card className="border border-gray-200 bg-white mt-6">
                       <CardContent className="pt-8">
                         <div className="space-y-6">
                           <div>
                             <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                              <Lock className="w-4 h-4 text-cyan-500" />
+                              <Lock className="w-4 h-4" style={{ color: COLORS.highlight }} />
                               {t('profilePage.security.newPassword')}
                             </label>
                             <div className="relative">
@@ -1279,7 +1339,7 @@ export const ProfilePage: React.FC = () => {
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 disabled={isLoading}
-                                className="rounded-xl border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500 pr-10 h-12"
+                                className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 pr-10 h-12"
                               />
                               <Button
                                 type="button"
@@ -1299,7 +1359,7 @@ export const ProfilePage: React.FC = () => {
 
                           <div>
                             <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                              <Lock className="w-4 h-4 text-cyan-500" />
+                              <Lock className="w-4 h-4" style={{ color: COLORS.highlight }} />
                               {t('profilePage.security.confirmPassword')}
                             </label>
                             <Input
@@ -1308,14 +1368,17 @@ export const ProfilePage: React.FC = () => {
                               value={confirmPassword}
                               onChange={(e) => setConfirmPassword(e.target.value)}
                               disabled={isLoading}
-                              className="rounded-xl border-cyan-200 focus:border-cyan-500 focus:ring-cyan-500 h-12"
+                              className="rounded-lg border-gray-300 focus:border-gray-400 focus:ring-gray-400 h-12"
                             />
                           </div>
 
                           {passwordError && (
-                            <div className="flex items-center space-x-3 p-4 rounded-xl bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-200">
-                              <AlertCircle className="w-5 h-5 text-rose-600" />
-                              <span className="text-sm text-rose-700">{passwordError}</span>
+                            <div className="flex items-center space-x-3 p-4 rounded-lg border" style={{ 
+                              backgroundColor: '#fef2f2',
+                              borderColor: '#fecaca'
+                            }}>
+                              <AlertCircle className="w-5 h-5" style={{ color: '#dc2626' }} />
+                              <span className="text-sm" style={{ color: '#991b1b' }}>{passwordError}</span>
                             </div>
                           )}
 
@@ -1330,7 +1393,12 @@ export const ProfilePage: React.FC = () => {
                                 setPasswordError('');
                               }}
                               disabled={isLoading}
-                              className="rounded-full border-cyan-300 text-cyan-600 hover:bg-cyan-50 hover:border-cyan-400 px-6 transition-all duration-300"
+                              className="rounded-full px-6 transition-all duration-300"
+                              style={{ 
+                                borderColor: COLORS.secondary,
+                                color: COLORS.highlight,
+                                backgroundColor: 'transparent'
+                              }}
                             >
                               {t('common.cancel')}
                             </Button>
@@ -1338,7 +1406,8 @@ export const ProfilePage: React.FC = () => {
                               size="sm"
                               onClick={handlePasswordChange}
                               disabled={isLoading}
-                              className={`rounded-full ${colorThemes.info.gradient} text-white hover:shadow-lg hover:shadow-cyan-500/30 px-6 transition-all duration-300`}
+                              className="rounded-full text-white px-6 transition-all duration-300"
+                              style={{ backgroundColor: COLORS.highlight }}
                             >
                               {isLoading ? (
                                 <>
@@ -1365,13 +1434,12 @@ export const ProfilePage: React.FC = () => {
 
         <TabsContent value="roles-rights" className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Enhanced Role Information */}
-            <Card className="border-0 shadow-2xl shadow-amber-500/10 overflow-hidden">
-              <div className={`absolute inset-0 ${colorThemes.warning.gradient} opacity-5`} />
-              <CardHeader className="relative bg-gradient-to-r from-amber-50/50 via-orange-50/50 to-yellow-50/50 border-b border-white/20 backdrop-blur-sm">
-                <CardTitle className="flex items-center gap-3 text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  <div className={`p-2 rounded-xl ${colorThemes.warning.gradient} shadow-lg`}>
-                    <Award className="h-6 w-6 text-white" />
+            {/* Role Information */}
+            <Card className="border border-gray-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
+                <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
+                  <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.accent }}>
+                    <Award className="h-5 w-5 text-white" />
                   </div>
                   {t('profilePage.roles.roleInfo.title')}
                 </CardTitle>
@@ -1379,63 +1447,67 @@ export const ProfilePage: React.FC = () => {
                   {t('profilePage.roles.roleInfo.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="relative py-8 px-8">
+              <CardContent className="py-8 px-8">
                 {rightsLoading ? (
                   <div className="space-y-6 animate-pulse">
-                    <div className="h-24 bg-gradient-to-r from-amber-100/50 to-orange-100/50 rounded-2xl" />
-                    <div className="h-16 bg-gradient-to-r from-amber-100/50 to-orange-100/50 rounded-2xl" />
-                    <div className="h-12 bg-gradient-to-r from-amber-100/50 to-orange-100/50 rounded-2xl" />
+                    <div className="h-24 rounded-lg bg-gray-200" />
+                    <div className="h-16 rounded-lg bg-gray-200" />
+                    <div className="h-12 rounded-lg bg-gray-200" />
                   </div>
                 ) : role ? (
                   <div className="space-y-6">
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-amber-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">{t('profilePage.roles.roleInfo.roleName')}</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                              {typeof role === 'object' && role !== null ? role.name : role}
-                            </p>
-                          </div>
-                          <Badge className={`rounded-full ${role.systemRole ? 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border-emerald-200' : 'bg-gradient-to-r from-violet-100 to-purple-100 text-violet-800 border-violet-200'}`}>
-                            {role.systemRole ? t('profilePage.roles.roleInfo.systemRole') : t('profilePage.roles.roleInfo.customRole')}
-                          </Badge>
+                    <div className="p-6 rounded-lg border" style={{ 
+                      backgroundColor: COLORS.lightBg,
+                      borderColor: COLORS.gray[200]
+                    }}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">{t('profilePage.roles.roleInfo.roleName')}</p>
+                          <p className="text-xl font-bold text-gray-900">
+                            {typeof role === 'object' && role !== null ? role.name : role}
+                          </p>
                         </div>
+                        <Badge className="rounded-full border" style={{ 
+                          backgroundColor: role.systemRole ? '#d1fae5' : '#e0f2fe',
+                          color: role.systemRole ? '#065f46' : '#0369a1',
+                          borderColor: role.systemRole ? '#a7f3d0' : '#bae6fd'
+                        }}>
+                          {role.systemRole ? t('profilePage.roles.roleInfo.systemRole') : t('profilePage.roles.roleInfo.customRole')}
+                        </Badge>
                       </div>
                     </div>
-                    
+
                     {role.rights && Array.isArray(role.rights) && (
-                      <div className="relative group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                        <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-cyan-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium text-gray-500">{t('profilePage.roles.roleInfo.totalRights')}</p>
-                              <p className="text-3xl font-bold text-gray-900">{role.rights.length}</p>
-                            </div>
-                            <div className={`p-3 rounded-xl ${colorThemes.info.gradient} shadow-lg`}>
-                              <Shield className="w-6 h-6 text-white" />
-                            </div>
+                      <div className="p-6 rounded-lg border" style={{ 
+                        backgroundColor: COLORS.lightBg,
+                        borderColor: COLORS.gray[200]
+                      }}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">{t('profilePage.roles.roleInfo.totalRights')}</p>
+                            <p className="text-2xl font-bold text-gray-900">{role.rights.length}</p>
+                          </div>
+                          <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
+                            <Shield className="w-5 h-5 text-white" />
                           </div>
                         </div>
                       </div>
                     )}
 
                     {role.createdAt && (
-                      <div className="relative group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                        <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-white to-purple-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300">
-                          <div className="flex items-center space-x-4">
-                            <div className={`p-3 rounded-xl ${colorThemes.primary.gradient} shadow-lg`}>
-                              <Calendar className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-500">{t('profilePage.roles.roleInfo.created')}</p>
-                              <p className="text-lg font-bold text-gray-900">
-                                {formatDateForDisplay(role.createdAt)}
-                              </p>
-                            </div>
+                      <div className="p-6 rounded-lg border" style={{ 
+                        backgroundColor: COLORS.lightBg,
+                        borderColor: COLORS.gray[200]
+                      }}>
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
+                            <Calendar className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">{t('profilePage.roles.roleInfo.created')}</p>
+                            <p className="text-lg font-bold text-gray-900">
+                              {formatDateForDisplay(role.createdAt)}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -1443,8 +1515,11 @@ export const ProfilePage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100">
-                      <AlertCircle className="w-12 h-12 text-amber-400" />
+                    <div className="inline-flex p-4 rounded-lg border" style={{ 
+                      backgroundColor: '#fef3c7',
+                      borderColor: '#fde68a'
+                    }}>
+                      <AlertCircle className="w-12 h-12" style={{ color: '#d97706' }} />
                     </div>
                     <p className="mt-4 text-sm text-gray-500">{t('profilePage.roles.roleInfo.noRole')}</p>
                   </div>
@@ -1452,14 +1527,13 @@ export const ProfilePage: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced Rights List */}
-            <Card className="border-0 shadow-2xl shadow-violet-500/10 overflow-hidden">
-              <div className={`absolute inset-0 ${colorThemes.primary.gradient} opacity-5`} />
-              <CardHeader className="relative bg-gradient-to-r from-violet-50/50 via-purple-50/50 to-fuchsia-50/50 border-b border-white/20 backdrop-blur-sm flex items-center justify-between">
+            {/* Rights List */}
+            <Card className="border border-gray-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-gray-100 flex items-center justify-between" style={{ backgroundColor: COLORS.lightBg }}>
                 <div>
-                  <CardTitle className="flex items-center gap-3 text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                    <div className={`p-2 rounded-xl ${colorThemes.primary.gradient} shadow-lg`}>
-                      <Shield className="h-6 w-6 text-white" />
+                  <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
+                    <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
+                      <Shield className="h-5 w-5 text-white" />
                     </div>
                     {t('profilePage.roles.rights.title')}
                   </CardTitle>
@@ -1468,30 +1542,32 @@ export const ProfilePage: React.FC = () => {
                   </CardDescription>
                 </div>
                 {getRole() === 'admin' && (
-                  <Button 
+                  <Button
+                    type="button"
                     onClick={() => setRoleDialogOpen(true)}
-                    className={`rounded-full ${colorThemes.primary.gradient} text-white hover:shadow-lg hover:shadow-violet-500/30 transition-all duration-300`}
+                    className="rounded-full text-white transition-all duration-300"
+                    style={{ backgroundColor: COLORS.accent }}
                   >
                     <Crown className="w-4 h-4 mr-2" />
                     {t('profilePage.roles.roleActions.changeRoleButton')}
                   </Button>
                 )}
               </CardHeader>
-              <CardContent className="relative pt-8 px-8">
+              <CardContent className="pt-8 px-8">
                 {rightsLoading ? (
                   <div className="space-y-4 animate-pulse">
                     {Array.from({ length: 5 }).map((_, index) => (
-                      <div key={index} className="h-16 bg-gradient-to-r from-violet-100/50 to-purple-100/50 rounded-2xl" />
+                      <div key={index} className="h-16 rounded-lg bg-gray-200" />
                     ))}
                   </div>
                 ) : role && role.rights && Array.isArray(role.rights) ? (
                   <ScrollArea className="h-[600px] pr-4">
                     <div className="space-y-6">
                       {(() => {
-                        const assignedRights = rights.filter((right) => 
+                        const assignedRights = rights.filter((right) =>
                           role.rights.includes(right._id)
                         );
-                        
+
                         const groupedRights = assignedRights.reduce((acc, right) => {
                           if (!acc[right.group]) {
                             acc[right.group] = [];
@@ -1503,8 +1579,11 @@ export const ProfilePage: React.FC = () => {
                         if (assignedRights.length === 0) {
                           return (
                             <div className="text-center py-12">
-                              <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100">
-                                <AlertCircle className="w-12 h-12 text-violet-400" />
+                              <div className="inline-flex p-4 rounded-lg border" style={{ 
+                                backgroundColor: '#e0f2fe',
+                                borderColor: '#bae6fd'
+                              }}>
+                                <AlertCircle className="w-12 h-12" style={{ color: COLORS.primary }} />
                               </div>
                               <p className="mt-4 text-sm text-gray-500">{t('profilePage.roles.rights.noRights')}</p>
                             </div>
@@ -1514,41 +1593,48 @@ export const ProfilePage: React.FC = () => {
                         return Object.entries(groupedRights).map(([group, groupRights]) => (
                           <div key={group} className="space-y-4">
                             <div className="flex items-center gap-3">
-                              <div className={`w-1 h-6 rounded-full ${colorThemes.primary.gradient}`} />
-                              <h4 className="text-lg font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                              <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.primary }} />
+                              <h4 className="text-lg font-bold" style={{ color: COLORS.dark }}>
                                 {group}
                               </h4>
-                              <Badge className="rounded-full bg-gradient-to-r from-violet-100 to-purple-100 text-violet-800 border-violet-200">
+                              <Badge className="rounded-full border" style={{ 
+                                backgroundColor: '#e0f2fe',
+                                color: '#0369a1',
+                                borderColor: '#bae6fd'
+                              }}>
                                 {groupRights.length} rights
                               </Badge>
                             </div>
                             {groupRights.map((right) => (
                               <div
                                 key={right._id}
-                                className="relative group"
+                                className="p-4 rounded-lg border" style={{ 
+                                  backgroundColor: COLORS.lightBg,
+                                  borderColor: COLORS.gray[200]
+                                }}
                               >
-                                <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-purple-500/5 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                                <div className="relative p-4 rounded-2xl bg-gradient-to-br from-white via-white to-violet-50/30 border border-white/30 backdrop-blur-sm hover:shadow-2xl hover:shadow-violet-500/10 transition-all duration-300">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                      <div className={`p-2 rounded-xl ${colorThemes.success.gradient} shadow-md`}>
-                                        <CheckCircle className="w-4 h-4 text-white" />
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-900">
-                                          {right.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                        </p>
-                                        <p className="text-xs text-gray-500">{right.group}</p>
-                                      </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
+                                      <CheckCircle className="w-4 h-4 text-white" />
                                     </div>
-                                    <Badge variant="outline" className="rounded-full border-violet-200 text-violet-700">
-                                      {right.name}
-                                    </Badge>
+                                    <div>
+                                      <p className="text-sm font-medium text-gray-900">
+                                        {right.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                      </p>
+                                      <p className="text-xs text-gray-500">{right.group}</p>
+                                    </div>
                                   </div>
+                                  <Badge variant="outline" className="rounded-full border" style={{ 
+                                    borderColor: COLORS.secondary,
+                                    color: COLORS.highlight
+                                  }}>
+                                    {right.name}
+                                  </Badge>
                                 </div>
                               </div>
                             ))}
-                            <Separator className="bg-gradient-to-r from-transparent via-violet-200/30 to-transparent h-0.5" />
+                            <Separator className="bg-gray-200" />
                           </div>
                         ));
                       })()}
@@ -1556,8 +1642,11 @@ export const ProfilePage: React.FC = () => {
                   </ScrollArea>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100">
-                      <AlertCircle className="w-12 h-12 text-violet-400" />
+                    <div className="inline-flex p-4 rounded-lg border" style={{ 
+                      backgroundColor: '#e0f2fe',
+                      borderColor: '#bae6fd'
+                    }}>
+                      <AlertCircle className="w-12 h-12" style={{ color: COLORS.primary }} />
                     </div>
                     <p className="mt-4 text-sm text-gray-500">{t('profilePage.roles.rights.noInfo')}</p>
                   </div>
@@ -1568,7 +1657,7 @@ export const ProfilePage: React.FC = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Enhanced Role Dialog */}
+      {/* Role Dialog */}
       <AlertDialog
         open={roleDialogOpen}
         onOpenChange={(open) => {
@@ -1579,56 +1668,72 @@ export const ProfilePage: React.FC = () => {
           }
         }}
       >
-        <AlertDialogContent className="border-0 shadow-2xl shadow-violet-500/20">
-          <div className={`absolute inset-0 ${colorThemes.primary.gradient} opacity-10 rounded-2xl`} />
-          <AlertDialogHeader className="relative">
-            <AlertDialogTitle className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+        <AlertDialogContent className="border border-gray-200 bg-white shadow-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold" style={{ color: COLORS.dark }}>
               {t('profilePage.roles.roleActions.changeRoleTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600">
               {t('profilePage.roles.roleActions.description')}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="relative space-y-4">
+          <div className="space-y-4">
             <Button
+              type="button"
               variant="default"
-              className="w-full justify-between p-6 rounded-2xl bg-gradient-to-br from-white via-white to-emerald-50/30 border border-emerald-100 backdrop-blur-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 group"
+              className="w-full justify-between p-6 rounded-lg border transition-all duration-300"
+              style={{ 
+                backgroundColor: normalizedViewedRole === 'admin' ? COLORS.gray[200] : COLORS.lightBg,
+                borderColor: COLORS.gray[200],
+                color: COLORS.dark
+              }}
               disabled={roleChangeLoading || normalizedViewedRole === 'admin'}
               onClick={() => handleRoleUpdate('Admin')}
             >
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl ${colorThemes.success.gradient} shadow-lg group-hover:scale-110 transition-all duration-300`}>
+                <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
                   <Crown className="h-5 w-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="font-bold text-gray-900">{t('profilePage.roles.roleActions.upgradeAdmin')}</span>
+                  <span className="font-bold">{t('profilePage.roles.roleActions.upgradeAdmin')}</span>
                   <p className="text-sm text-gray-500 mt-1">Full system access and control</p>
                 </div>
               </div>
-              {roleChangeLoading && roleChangeTarget === 'Admin' && <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />}
+              {roleChangeLoading && roleChangeTarget === 'Admin' && <Loader2 className="h-4 w-4 animate-spin" style={{ color: COLORS.highlight }} />}
             </Button>
             <Button
+              type="button"
               variant="outline"
-              className="w-full justify-between p-6 rounded-2xl bg-gradient-to-br from-white via-white to-violet-50/30 border border-violet-100 backdrop-blur-sm hover:shadow-2xl hover:shadow-violet-500/10 transition-all duration-300 group"
+              className="w-full justify-between p-6 rounded-lg border transition-all duration-300"
+              style={{ 
+                backgroundColor: normalizedViewedRole === 'organizer' ? COLORS.gray[200] : COLORS.lightBg,
+                borderColor: COLORS.gray[200],
+                color: COLORS.dark
+              }}
               disabled={roleChangeLoading || normalizedViewedRole === 'organizer'}
               onClick={() => handleRoleUpdate('Organizer')}
             >
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl ${colorThemes.primary.gradient} shadow-lg group-hover:scale-110 transition-all duration-300`}>
+                <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.primary }}>
                   <Award className="h-5 w-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <span className="font-bold text-gray-900">{t('profilePage.roles.roleActions.downgradeOrganizer')}</span>
+                  <span className="font-bold">{t('profilePage.roles.roleActions.downgradeOrganizer')}</span>
                   <p className="text-sm text-gray-500 mt-1">Event management access only</p>
                 </div>
               </div>
-              {roleChangeLoading && roleChangeTarget === 'Organizer' && <Loader2 className="h-4 w-4 animate-spin text-violet-600" />}
+              {roleChangeLoading && roleChangeTarget === 'Organizer' && <Loader2 className="h-4 w-4 animate-spin" style={{ color: COLORS.primary }} />}
             </Button>
           </div>
-          <AlertDialogFooter className="relative">
-            <AlertDialogCancel 
+          <AlertDialogFooter>
+            <AlertDialogCancel
               disabled={roleChangeLoading}
-              className="rounded-full border-violet-300 text-violet-600 hover:bg-violet-50 hover:border-violet-400 transition-all duration-300"
+              className="rounded-full transition-all duration-300"
+              style={{ 
+                borderColor: COLORS.secondary,
+                color: COLORS.highlight,
+                backgroundColor: 'transparent'
+              }}
             >
               {t('common.cancel')}
             </AlertDialogCancel>

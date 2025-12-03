@@ -120,7 +120,7 @@ export const MultiMarkerMap = ({
   }
 
   return (
-    <div className={`relative rounded-lg overflow-hidden border bg-white ${className}`} style={{ height }}>
+    <div className={`relative rounded-lg overflow-hidden border bg-white border-gray-200 ${className}`} style={{ height }}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
         center={mapCenter}
@@ -136,7 +136,7 @@ export const MultiMarkerMap = ({
             onClick={() => handleMarkerClick(marker)}
             icon={{
               url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-              scaledSize: new window.google.maps.Size(32, 32),
+              scaledSize: new window.google.maps.Size(24, 24),
             }}
           />
         ))}
@@ -145,11 +145,34 @@ export const MultiMarkerMap = ({
           <InfoWindow
             position={selectedMarker.position}
             onCloseClick={() => setSelectedMarker(null)}
+            options={{
+              pixelOffset: new window.google.maps.Size(10, 30),
+              
+            }}
           >
-            <div className="p-3 max-w-xs">
-              <h3 className="font-semibold text-sm">{selectedMarker.title}</h3>
-              {selectedMarker.info && (
-                <p className="text-xs text-gray-600 mt-1">{selectedMarker.info}</p>
+            <div >
+              {typeof selectedMarker.info === 'string' ? (
+                <div style={{ minWidth: '300px', maxWidth: '280px' }}>
+                  <h3 style={{ 
+                    fontSize: '15px', 
+                    fontWeight: '600', 
+                    color: '#1f2937',
+                    margin: '0 0 8px 0',
+                    lineHeight: '1.4'
+                  }}>
+                    {selectedMarker.title}
+                  </h3>
+                  <p style={{ 
+                    fontSize: '13px', 
+                    color: '#6b7280',
+                    margin: '0',
+                    lineHeight: '1.5'
+                  }}>
+                    {selectedMarker.info}
+                  </p>
+                </div>
+              ) : (
+                selectedMarker.info
               )}
             </div>
           </InfoWindow>

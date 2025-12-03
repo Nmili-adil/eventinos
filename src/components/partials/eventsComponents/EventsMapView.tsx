@@ -96,20 +96,39 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
       title: event.name || event.title,
       icon: pinIcon,
       info: (
-        <div className="p-2 max-w-[280px]">
+        <div style={{ maxWidth: '300px', minWidth: '280px' }}>
           {event.image && (
             <img 
               src={event.image} 
               alt={event.name || event.title}
-              className="w-full h-32 object-cover rounded mb-2"
+              style={{
+                width: '100%',
+                height: '160px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                marginBottom: '12px'
+              }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement
                 target.style.display = 'none'
               }}
             />
           )}
-          <h3 className="font-semibold text-sm mb-2">{event.name || event.title}</h3>
-          <div className="flex items-center gap-1 flex-wrap mb-2">
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#111827',
+            marginBottom: '10px',
+            lineHeight: '1.4'
+          }}>
+            {event.name || event.title}
+          </h3>
+          <div style={{ 
+            display: 'flex', 
+            gap: '6px', 
+            flexWrap: 'wrap',
+            marginBottom: '8px'
+          }}>
             <Badge variant="secondary" className="text-xs">{event.location?.city}</Badge>
             <Badge className={cn('text-xs', getStatusColor(event.status))}>
               {event.status}
@@ -117,6 +136,19 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
             <Badge variant="outline" className="text-xs">{event.visibility}</Badge>
             <Badge variant="outline" className="text-xs">{event.type}</Badge>
           </div>
+          {event.startDate?.date && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '13px',
+              color: '#6B7280',
+              marginTop: '8px'
+            }}>
+              <Calendar style={{ width: '14px', height: '14px' }} />
+              <span>{format(new Date(event.startDate.date), 'MMM dd, yyyy')}</span>
+            </div>
+          )}
         </div>
       ),
     }))
