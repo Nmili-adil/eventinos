@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   Table, 
   TableBody, 
@@ -49,6 +50,7 @@ interface CategoriesTableProps {
 }
 
 const CategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: CategoriesTableProps) => {
+  const { t } = useTranslation()
   const [categories, setCategories] = useState<Category[]>(data)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null)
@@ -279,8 +281,8 @@ const CategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: C
         isOpen={isDeleteDialogOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        title="Delete Category"
-        description="Are you sure you want to delete this category? This will permanently remove the category and all associated data."
+        title={t('categories.deleteDialog.title')}
+        description={t('categories.deleteDialog.description')}
         itemName={categoryToDelete?.name || ''}
         isLoading={isDeleting}
       />

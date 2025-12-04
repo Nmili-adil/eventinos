@@ -91,7 +91,7 @@ const RoleAddDialog = ({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-3xl border-slate-300 max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Create New Role</DialogTitle>
+            <DialogTitle className="text-2xl">{t('roles.dialog.createTitle')}</DialogTitle>
             <DialogDescription>
               Create a new role and assign permissions to it.
             </DialogDescription>
@@ -130,7 +130,7 @@ const RoleAddDialog = ({
                       onClick={() => setPermissionsDialogOpen(true)}
                     >
                       <Shield className="w-4 h-4 mr-2" />
-                      Manage Permissions
+                      {t('roles.dialog.managePermissions')}
                     </Button>
                   </div>
 
@@ -154,7 +154,7 @@ const RoleAddDialog = ({
                     <div className="text-center py-8 border border-dashed rounded-lg">
                       <Shield className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
                       <p className="text-sm text-muted-foreground">
-                        No permissions selected. Click "Manage Permissions" to add permissions.
+                        {t('roles.dialog.noPermissionsSelected')}
                       </p>
                     </div>
                   )}
@@ -164,16 +164,16 @@ const RoleAddDialog = ({
 
             <div className="flex justify-end gap-2 pt-4 border-t mt-4">
               <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-                Cancel
+                {t('roles.dialog.cancel')}
               </Button>
               <Button type="submit" disabled={isLoading || selectedPermissions.length === 0}>
                 {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Creating...
+                    {t('roles.dialog.creating')}
                   </>
                 ) : (
-                  'Create Role'
+                  t('roles.dialog.create')
                 )}
               </Button>
             </div>

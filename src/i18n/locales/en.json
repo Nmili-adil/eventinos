@@ -735,6 +735,10 @@
         "editCategory": "Edit Category",
         "deleteCategory": "Delete Category"
       }
+    },
+    "deleteDialog": {
+      "title": "Delete Category",
+      "description": "Are you sure you want to delete this category? This will permanently remove the category and all associated data."
     }
   },
   "badges": {
@@ -1187,5 +1191,69 @@
       "organizer": "Organizers",
       "admin": "Admins"
     }
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "restrictedArea": "Restricted Area",
+    "insufficientPermissions": "Insufficient Permissions",
+    "message": "You don't have the necessary permissions to access this page.",
+    "contactAdmin": "This area is restricted to administrators and organizers only. If you believe this is an error, please contact your system administrator.",
+    "goBack": "Go Back",
+    "dashboard": "Dashboard",
+    "needAccess": "Need access? Contact your administrator"
+  },
+  "auth": {
+    "verifyingAuthentication": "Verifying authentication...",
+    "accessDenied": "Access Denied",
+    "restrictedToAdminOrganizer": "This application is restricted to administrators and organizers only.",
+    "returnToLogin": "Return to Login"
+  },
+  "profile": {
+    "notFound": {
+      "title": "No User Data",
+      "message": "Unable to load user profile. Please try again.",
+      "reload": "Reload"
+    },
+    "error": {
+      "title": "Error Loading Profile",
+      "tryAgain": "Try Again"
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "Manage Permissions",
+      "description": "Select permissions to assign to this user",
+      "selectAll": "Select All",
+      "of": "of",
+      "selected": "selected",
+      "noPermissions": "No permissions available",
+      "cancel": "Cancel",
+      "save": "Save Permissions",
+      "saving": "Saving..."
+    }
+  },
+  "roles": {
+    "dialog": {
+      "createTitle": "Create New Role",
+      "editTitle": "Edit Role",
+      "noPermissionsSelected": "No permissions selected. Click \"Manage Permissions\" to add permissions.",
+      "managePermissions": "Manage Permissions",
+      "cancel": "Cancel",
+      "create": "Create Role",
+      "creating": "Creating...",
+      "update": "Update Role",
+      "updating": "Updating...",
+      "deleteTitle": "Delete Role",
+      "deleteMessage": "Are you sure you want to delete this role?",
+      "deleteConfirm": "Delete"
+    }
+  },
+  "location": {
+    "searchLocation": "Search Location",
+    "manualCoordinates": "Or Enter Coordinates Manually",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "enterAddress": "Enter address or place name",
+    "selectLocation": "Select a location"
   }
 }

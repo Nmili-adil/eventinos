@@ -235,11 +235,16 @@ export const ProfilePage: React.FC = () => {
         },
       });
 
-      if (user.role && typeof user.role === 'object' && '$oid' in user.role) {
-        dispatch(fetchRoleByIdRequest(user.role.$oid));
-      } else if (typeof user.role === 'string') {
-        dispatch(fetchRoleByIdRequest(user.role));
+      // Fetch role by ID - handle both object and string formats
+      if (user.role) {
+        if (typeof user.role === 'object' && '$oid' in user.role) {
+          dispatch(fetchRoleByIdRequest(user.role.$oid));
+        } else if (typeof user.role === 'string') {
+          dispatch(fetchRoleByIdRequest(user.role));
+        }
       }
+      
+      // Always fetch rights to have the complete rights list for mapping
       dispatch(fetchRightsRequest());
     }
   }, [user, form, dispatch]);
@@ -1688,7 +1693,7 @@ const isViewerAdminOrOrganizer = viewerRole === 'admin' || viewerRole === 'organ
                     {t('profilePage.roles.rights.description')}
                   </CardDescription>
                 </div>
-                {getRole() === 'admin' && (
+                {canManageRole && (
                   <Button
                     type="button"
                     onClick={() => setRoleDialogOpen(true)}

@@ -2,9 +2,11 @@ import { ShieldAlert, ArrowLeft, Home, Lock } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { DASHBOARD_OVERVIEW } from '@/constants/routerConstants'
+import { useTranslation } from 'react-i18next'
 
 const UnauthorizedPage = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
@@ -25,7 +27,7 @@ const UnauthorizedPage = () => {
                 <ShieldAlert className="h-16 w-16 text-white drop-shadow-lg" />
               </div>
               <h1 className="text-5xl font-bold text-white mb-2 drop-shadow-lg">401</h1>
-              <p className="text-xl font-semibold text-white/90 drop-shadow-md">Access Denied</p>
+              <p className="text-xl font-semibold text-white/90 drop-shadow-md">{t('unauthorized.title')}</p>
             </div>
           </div>
 
@@ -34,20 +36,20 @@ const UnauthorizedPage = () => {
             <div className="flex justify-center mb-6">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-red-50 border-2 border-red-100 rounded-full">
                 <Lock className="h-5 w-5 text-red-600" />
-                <span className="text-sm font-semibold text-red-700">Restricted Area</span>
+                <span className="text-sm font-semibold text-red-700">{t('unauthorized.restrictedArea')}</span>
               </div>
             </div>
 
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Insufficient Permissions
+              {t('unauthorized.insufficientPermissions')}
             </h2>
             
             <p className="text-gray-600 mb-3 leading-relaxed max-w-md mx-auto">
-              You don't have the necessary permissions to access this page. 
+              {t('unauthorized.message')}
             </p>
             
             <p className="text-gray-500 text-sm mb-8 max-w-md mx-auto">
-              This area is restricted to administrators and organizers only. If you believe this is an error, please contact your system administrator.
+              {t('unauthorized.contactAdmin')}
             </p>
 
             {/* Action buttons */}
@@ -60,7 +62,7 @@ const UnauthorizedPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <span className="relative flex items-center gap-2 font-semibold text-gray-700">
                   <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-300" />
-                  Go Back
+                  {t('unauthorized.goBack')}
                 </span>
               </Button>
 
@@ -71,7 +73,7 @@ const UnauthorizedPage = () => {
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <span className="relative flex items-center gap-2 font-semibold text-white">
                   <Home className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                  Dashboard
+                  {t('unauthorized.dashboard')}
                 </span>
               </Button>
             </div>
@@ -84,7 +86,7 @@ const UnauthorizedPage = () => {
         {/* Additional info card */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3 inline-block border border-white/40 shadow-sm">
-            Need access? Contact your administrator
+            {t('unauthorized.needAccess')}
           </p>
         </div>
       </div>

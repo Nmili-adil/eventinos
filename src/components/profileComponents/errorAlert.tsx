@@ -4,9 +4,11 @@ import { Button } from "../ui/button"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store/app/store"
 import { fetchUserByIdRequest } from "@/store/features/users/users.actions"
+import { useTranslation } from 'react-i18next'
 
 const ErrorAlert = ({error, userId}) => {
     const dispatch = useDispatch<AppDispatch>()
+    const { t } = useTranslation()
 
   return (
     <div className="container mx-auto p-6">
@@ -15,7 +17,7 @@ const ErrorAlert = ({error, userId}) => {
             <div className="flex items-center space-x-2 text-destructive">
               <AlertCircle className="h-6 w-6" />
               <div>
-                <h3 className="font-semibold">Error Loading Profile</h3>
+                <h3 className="font-semibold">{t('profile.error.title')}</h3>
                 <p className="text-sm">{error}</p>
               </div>
             </div>
@@ -23,7 +25,7 @@ const ErrorAlert = ({error, userId}) => {
               className="mt-4" 
               onClick={() => userId && dispatch(fetchUserByIdRequest(userId))}
             >
-              Try Again
+              {t('profile.error.tryAgain')}
             </Button>
           </CardContent>
         </Card>

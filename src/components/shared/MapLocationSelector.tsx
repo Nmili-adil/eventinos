@@ -274,7 +274,7 @@ export const MapLocationSelector = ({
       <div className="space-y-3">
         {enableSearch && (
           <div className="relative">
-            <Label className="text-sm font-medium mb-2 block">Search Location</Label>
+            <Label className="text-sm font-medium mb-2 block">{t('location.searchLocation')}</Label>
             <StandaloneSearchBox onLoad={setSearchBox} onPlacesChanged={handlePlacesChanged}>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
@@ -400,7 +400,7 @@ export const MapLocationSelector = ({
 
       {/* Manual Coordinates Input */}
       <div className="space-y-2 border-t border-slate-200 pt-4">
-        <Label className="text-sm font-medium">Or Enter Coordinates Manually</Label>
+        <Label className="text-sm font-medium">{t('location.manualCoordinates')}</Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <Label htmlFor="lat-input" className="text-xs text-muted-foreground mb-1 block">

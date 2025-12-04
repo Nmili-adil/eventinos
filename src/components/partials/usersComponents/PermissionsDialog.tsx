@@ -25,6 +25,7 @@ import { fetchRightsRequest } from "@/store/features/rights/rights.actions"
 import type { AppDispatch } from "@/store/app/store"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Right } from "@/store/features/rights/rights.types"
+import { useTranslation } from 'react-i18next'
 
 interface PermissionsDialogProps {
   isOpen: boolean
@@ -42,6 +43,7 @@ const PermissionsDialog = ({
   isLoading = false,
 }: PermissionsDialogProps) => {
   const dispatch = useDispatch<AppDispatch>()
+  const { t } = useTranslation()
   const { rights, loading: rightsLoading } = useSelector((state: RootState) => state.rights)
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>(initialPermissions)
   const hasInitializedRef = useRef(false)
@@ -138,10 +140,10 @@ const PermissionsDialog = ({
       <DialogContent className="max-w-4xl border-slate-300 max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            Assign Permissions
+            {t('permissions.dialog.title')}
           </DialogTitle>
           <DialogDescription>
-            Select the permissions to assign to this user. Permissions are grouped by category.
+            {t('permissions.dialog.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -154,7 +156,7 @@ const PermissionsDialog = ({
                 onCheckedChange={handleSelectAll}
               />
               <Label className="text-sm font-medium">
-                Select All ({selectedPermissions.length} of {rights.length} selected)
+                {t('permissions.dialog.selectAll')} ({selectedPermissions.length} {t('permissions.dialog.of')} {rights.length} {t('permissions.dialog.selected')})
               </Label>
             </div>
           </div>
@@ -216,7 +218,7 @@ const PermissionsDialog = ({
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-sm text-muted-foreground">No permissions available</p>
+                <p className="text-sm text-muted-foreground">{t('permissions.dialog.noPermissions')}</p>
               </div>
             )}
           </ScrollArea>
@@ -231,10 +233,10 @@ const PermissionsDialog = ({
             {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                Saving...
+                {t('permissions.dialog.saving')}
               </>
             ) : (
-              `Save Permissions (${selectedPermissions.length})`
+              `${t('permissions.dialog.save')} (${selectedPermissions.length})`
             )}
           </Button>
         </div>

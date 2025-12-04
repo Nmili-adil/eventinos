@@ -730,6 +730,10 @@
         "editCategory": "Modifier la Catégorie",
         "deleteCategory": "Supprimer la Catégorie"
       }
+    },
+    "deleteDialog": {
+      "title": "Supprimer la Catégorie",
+      "description": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Cela supprimera définitivement la catégorie et toutes les données associées."
     }
   },
   "badges": {
@@ -1128,5 +1132,69 @@
       "organizer": "Organisateurs",
       "admin": "Admins"
     }
+  },
+  "unauthorized": {
+    "title": "Accès Refusé",
+    "restrictedArea": "Zone Restreinte",
+    "insufficientPermissions": "Permissions Insuffisantes",
+    "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+    "contactAdmin": "Cette zone est réservée aux administrateurs et organisateurs uniquement. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter votre administrateur système.",
+    "goBack": "Retour",
+    "dashboard": "Tableau de bord",
+    "needAccess": "Besoin d'accès ? Contactez votre administrateur"
+  },
+  "auth": {
+    "verifyingAuthentication": "Vérification de l'authentification...",
+    "accessDenied": "Accès Refusé",
+    "restrictedToAdminOrganizer": "Cette application est réservée aux administrateurs et organisateurs uniquement.",
+    "returnToLogin": "Retour à la connexion"
+  },
+  "profile": {
+    "notFound": {
+      "title": "Aucune Donnée Utilisateur",
+      "message": "Impossible de charger le profil utilisateur. Veuillez réessayer.",
+      "reload": "Recharger"
+    },
+    "error": {
+      "title": "Erreur de Chargement du Profil",
+      "tryAgain": "Réessayer"
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "Gérer les Permissions",
+      "description": "Sélectionnez les permissions à attribuer à cet utilisateur",
+      "selectAll": "Tout Sélectionner",
+      "of": "sur",
+      "selected": "sélectionné(s)",
+      "noPermissions": "Aucune permission disponible",
+      "cancel": "Annuler",
+      "save": "Enregistrer les Permissions",
+      "saving": "Enregistrement..."
+    }
+  },
+  "roles": {
+    "dialog": {
+      "createTitle": "Créer un Nouveau Rôle",
+      "editTitle": "Modifier le Rôle",
+      "noPermissionsSelected": "Aucune permission sélectionnée. Cliquez sur \"Gérer les Permissions\" pour ajouter des permissions.",
+      "managePermissions": "Gérer les Permissions",
+      "cancel": "Annuler",
+      "create": "Créer le Rôle",
+      "creating": "Création...",
+      "update": "Mettre à Jour le Rôle",
+      "updating": "Mise à jour...",
+      "deleteTitle": "Supprimer le Rôle",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle?",
+      "deleteConfirm": "Supprimer"
+    }
+  },
+  "location": {
+    "searchLocation": "Rechercher un Emplacement",
+    "manualCoordinates": "Ou Entrez les Coordonnées Manuellement",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "enterAddress": "Entrez une adresse ou un nom de lieu",
+    "selectLocation": "Sélectionnez un emplacement"
   }
 }

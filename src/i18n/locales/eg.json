@@ -625,7 +625,11 @@
     "deletedSuccessfully": "Category deleted successfully",
     "createFailed": "Failed to create category",
     "updateFailed": "Failed to update category",
-    "deleteFailed": "Failed to delete category"
+    "deleteFailed": "Failed to delete category",
+    "deleteDialog": {
+      "title": "حذف الفئة",
+      "description": "هل أنت متأكد من حذف هذه الفئة؟ سيؤدي هذا إلى إزالة الفئة وجميع البيانات المرتبطة بها نهائيًا."
+    }
   },
   "badges": {
     "title": "Badges",
@@ -920,5 +924,69 @@
       "organizer": "Organizers",
       "admin": "Admins"
     }
+  },
+  "unauthorized": {
+    "title": "تم رفض الوصول",
+    "restrictedArea": "منطقة محظورة",
+    "insufficientPermissions": "صلاحيات غير كافية",
+    "message": "ليس لديك الصلاحيات اللازمة للوصول إلى هذه الصفحة.",
+    "contactAdmin": "هذه المنطقة مخصصة للمسؤولين والمنظمين فقط. إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بمسؤول النظام.",
+    "goBack": "العودة",
+    "dashboard": "لوحة القيادة",
+    "needAccess": "تحتاج إلى وصول؟ اتصل بالمسؤول"
+  },
+  "auth": {
+    "verifyingAuthentication": "جاري التحقق من المصادقة...",
+    "accessDenied": "تم رفض الوصول",
+    "restrictedToAdminOrganizer": "هذا التطبيق مخصص للمسؤولين والمنظمين فقط.",
+    "returnToLogin": "العودة إلى تسجيل الدخول"
+  },
+  "profile": {
+    "notFound": {
+      "title": "لا توجد بيانات المستخدم",
+      "message": "تعذر تحميل ملف تعريف المستخدم. يرجى المحاولة مرة أخرى.",
+      "reload": "إعادة تحميل"
+    },
+    "error": {
+      "title": "خطأ في تحميل الملف الشخصي",
+      "tryAgain": "حاول مرة أخرى"
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "إدارة الصلاحيات",
+      "description": "حدد الصلاحيات لتعيينها لهذا المستخدم",
+      "selectAll": "تحديد الكل",
+      "of": "من",
+      "selected": "محدد",
+      "noPermissions": "لا توجد صلاحيات متاحة",
+      "cancel": "إلغاء",
+      "save": "حفظ الصلاحيات",
+      "saving": "جاري الحفظ..."
+    }
+  },
+  "roles": {
+    "dialog": {
+      "createTitle": "إنشاء دور جديد",
+      "editTitle": "تعديل الدور",
+      "noPermissionsSelected": "لم يتم تحديد صلاحيات. انقر على \"إدارة الصلاحيات\" لإضافة صلاحيات.",
+      "managePermissions": "إدارة الصلاحيات",
+      "cancel": "إلغاء",
+      "create": "إنشاء الدور",
+      "creating": "جاري الإنشاء...",
+      "update": "تحديث الدور",
+      "updating": "جاري التحديث...",
+      "deleteTitle": "حذف الدور",
+      "deleteMessage": "هل أنت متأكد من حذف هذا الدور؟",
+      "deleteConfirm": "حذف"
+    }
+  },
+  "location": {
+    "searchLocation": "بحث عن موقع",
+    "manualCoordinates": "أو أدخل الإحداثيات يدويًا",
+    "latitude": "خط العرض",
+    "longitude": "خط الطول",
+    "enterAddress": "أدخل عنوانًا أو اسم مكان",
+    "selectLocation": "اختر موقعًا"
   }
 }
