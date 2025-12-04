@@ -21,10 +21,14 @@ import { getUserData } from "@/services/localStorage"
 import { useTranslation } from 'react-i18next'
 
 const ProfileDropDown = () => {
-  const { user } = useSelector((state: RootState) => state.auth)
+  const { user, role: authRole } = useSelector((state: RootState) => state.auth)
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const { t } = useTranslation()
+  
+  const userData = getUserData()
+  const userRole = authRole || userData?.user?.toLowerCase()
+  const isAdminOrOrganizer = userRole === 'admin'
 
   const handleLogout = (e: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
     e.preventDefault()
@@ -60,12 +64,14 @@ const ProfileDropDown = () => {
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900">
-            <Link to={SETTINGS_PAGE} className="w-full flex items-center gap-2" >
-            <Settings className="w-4 h-4" />
-            {t('common.settings')}
-            </Link>
-          </DropdownMenuItem>
+          {isAdminOrOrganizer && (
+            <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900">
+              <Link to={SETTINGS_PAGE} className="w-full flex items-center gap-2" >
+              <Settings className="w-4 h-4" />
+              {t('common.settings')}
+              </Link>
+            </DropdownMenuItem>
+          )}
 
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

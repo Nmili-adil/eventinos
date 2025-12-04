@@ -112,6 +112,12 @@ export const PersonDialog = ({
                   [type === "sponsor" ? "name" : "fullName"]: e.target.value,
                 })
               }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSave();
+                }
+              }}
               placeholder={
                 type === "sponsor"
                   ? t("eventForm.placeholders.enterSponsorName") || "Enter sponsor name"
@@ -175,6 +181,12 @@ export const PersonDialog = ({
                           },
                         })
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleSave();
+                        }
+                      }}
                       placeholder={`${platform} URL`}
                     />
                   </div>

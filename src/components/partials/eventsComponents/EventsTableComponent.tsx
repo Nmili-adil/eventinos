@@ -83,20 +83,32 @@ export function EventsTable() {
 
   const [statusLoading, setStatusLoading] = useState(false)
 
-  // Fetch events when component mounts or page changes
+  // Fetch all events once when component mounts
   useEffect(() => {
-    dispatch(fetchEventsRequest(currentPage, PAGE_SIZE))
-  }, [currentPage, dispatch])
+    dispatch(fetchEventsRequest())
+  }, [dispatch])
 
   // Use events directly from Redux store
   let eventsData = events || []
 
-  // Filter and sort events (client-side for all filtering/sorting)
+  // Filter, sort, and paginate events (all client-side)
   const processedEvents = useMemo(() => {
     const filtered = filterEvents(eventsData, filters)
     const sorted = sortEvents(filtered, sort.field, sort.direction)
     return sorted
   }, [eventsData, filters, sort.field, sort.direction])
+
+  // Client-side pagination
+  const paginatedEvents = useMemo(() => {
+    return paginateEvents(processedEvents, currentPage, PAGE_SIZE)
+  }, [processedEvents, currentPage])
+
+  const totalItems = processedEvents.length
+  const pagination: PaginationState = {
+    currentPage,
+    pageSize: PAGE_SIZE,
+    totalItems
+  }
 
   const handleSort = (field: EventsSort['field']) => {
     setSort(prev => ({
@@ -140,7 +152,7 @@ export function EventsTable() {
     try {
       await dispatch(updateEventStatusRequest(eventId, newStatus))
       // Refetch events to update UI immediately
-      await dispatch(fetchEventsRequest(currentPage, PAGE_SIZE))
+      await dispatch(fetchEventsRequest())
       toast.success('Event status updated successfully')
       setStatusDialog({ open: false, eventId: null, currentStatus: null })
     } catch (error: any) {
@@ -256,7 +268,7 @@ export function EventsTable() {
                   onSort={handleSort}
                 />
                 <TableBody>
-                  {processedEvents.map((event) => (
+                  {paginatedEvents.map((event) => (
                     <EventTableRow
                       key={event._id}
                       event={event}
@@ -277,13 +289,9 @@ export function EventsTable() {
           </div>
 
           {/* Pagination */}
-          {backendPagination && backendPagination.totalItems > 0 && (
+          {totalItems > 0 && (
             <EventsPagination 
-              pagination={{
-                currentPage: backendPagination.currentPage,
-                pageSize: backendPagination.pageSize,
-                totalItems: backendPagination.totalItems
-              }}
+              pagination={pagination}
               onPageChange={handlePageChange}
             />
           )}

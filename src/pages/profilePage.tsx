@@ -498,10 +498,9 @@ export const ProfilePage: React.FC = () => {
     return <ProfileNotFound userId={params.userId} />;
   }
 
-  const normalizedViewedRole = user.user?.toLowerCase()
-  const canManageRole = viewerRole === 'admin' && (normalizedViewedRole === 'organizer' || normalizedViewedRole === 'admin')
-
-  // Calculate profile completion percentage
+const normalizedViewedRole = user.user?.toLowerCase()
+const canManageRole = viewerRole === 'admin' && (normalizedViewedRole === 'organizer' || normalizedViewedRole === 'admin')
+const isViewerAdminOrOrganizer = viewerRole === 'admin' || viewerRole === 'organizer'  // Calculate profile completion percentage
   const calculateProfileCompletion = () => {
     const fields = [
       user.firstName,
@@ -660,33 +659,35 @@ export const ProfilePage: React.FC = () => {
               )}
             </TabsTrigger>
 
-            <TabsTrigger
-              value="account"
-              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
-              style={{
-                background: activeTab === 'account'
-                  ? `linear-gradient(135deg, ${COLORS.highlight}, ${COLORS.accent})`
-                  : 'linear-gradient(135deg, rgba(52, 108, 115, 0.15), rgba(52, 108, 115, 0.05))',
-                color: activeTab === 'account' ? 'white' : '#4b5563',
-                borderColor: activeTab === 'account' ? COLORS.highlight : 'transparent',
-                boxShadow: activeTab === 'account' ? '0 10px 25px rgba(52, 108, 115, 0.3)' : 'none'
-              }}
-            >
-              <div className="flex items-center gap-3 relative z-10">
-                <div 
-                  className="p-2 rounded-lg transition-all duration-300"
-                  style={{
-                    backgroundColor: activeTab === 'account' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(52, 108, 115, 0.2)'
-                  }}
-                >
-                  <Shield className="w-5 h-5" />
+            {isViewerAdminOrOrganizer && (
+              <TabsTrigger
+                value="account"
+                className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+                style={{
+                  background: activeTab === 'account'
+                    ? `linear-gradient(135deg, ${COLORS.highlight}, ${COLORS.accent})`
+                    : 'linear-gradient(135deg, rgba(52, 108, 115, 0.15), rgba(52, 108, 115, 0.05))',
+                  color: activeTab === 'account' ? 'white' : '#4b5563',
+                  borderColor: activeTab === 'account' ? COLORS.highlight : 'transparent',
+                  boxShadow: activeTab === 'account' ? '0 10px 25px rgba(52, 108, 115, 0.3)' : 'none'
+                }}
+              >
+                <div className="flex items-center gap-3 relative z-10">
+                  <div 
+                    className="p-2 rounded-lg transition-all duration-300"
+                    style={{
+                      backgroundColor: activeTab === 'account' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(52, 108, 115, 0.2)'
+                    }}
+                  >
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <span className="text-base">{t('profilePage.tabs.account')}</span>
                 </div>
-                <span className="text-base">{t('profilePage.tabs.account')}</span>
-              </div>
-              {activeTab === 'account' && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
-              )}
-            </TabsTrigger>
+                {activeTab === 'account' && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                )}
+              </TabsTrigger>
+            )}
 
             <TabsTrigger
               value="roles-rights"
@@ -1803,7 +1804,8 @@ export const ProfilePage: React.FC = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Role Dialog */}
+      {/* Role Dialog - Only show for admins managing other admin/organizer roles */}
+      {canManageRole && (
       <AlertDialog
         open={roleDialogOpen}
         onOpenChange={(open) => {
@@ -1886,6 +1888,7 @@ export const ProfilePage: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      )}
     </div>
   );
 };

@@ -9,14 +9,18 @@ import {
   UserCheck, 
   MessageSquare 
 } from 'lucide-react'
+import { useSelector } from 'react-redux'
+import type { RootState } from '@/store/app/rootReducer'
+import { getUserData } from '@/services/localStorage'
 
 interface NavLink {
   nameKey: string
   path: string
   icon: React.ComponentType<{ className?: string }>
+  requiresAdminOrOrganizer?: boolean
 }
 
-const navLinks: NavLink[] = [
+const allNavLinks: NavLink[] = [
   { 
     nameKey: 'navigation.dashboard', 
     path: DASHBOARD_OVERVIEW, 
@@ -35,7 +39,8 @@ const navLinks: NavLink[] = [
   { 
     nameKey: 'navigation.accounts', 
     path: COMPTES_PAGE, 
-    icon: UserCheck 
+    icon: UserCheck,
+    requiresAdminOrOrganizer: true
   },
   { 
     nameKey: 'navigation.contacts', 
@@ -51,6 +56,15 @@ interface SimpleNavBarProps {
 const SimpleNavBar = ({ mobile = false }: SimpleNavBarProps) => {
   const location = useLocation()
   const { t } = useTranslation()
+  const { role: authRole } = useSelector((state: RootState) => state.auth)
+  const userData = getUserData()
+  const userRole = authRole || userData?.user?.toLowerCase()
+  const isAdminOrOrganizer = userRole === 'admin' 
+  
+  // Filter nav links based on user role
+  const navLinks = allNavLinks.filter(link => 
+    !link.requiresAdminOrOrganizer || isAdminOrOrganizer
+  )
 
   const isActive = (path: string): boolean => {
     return location.pathname === path

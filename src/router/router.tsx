@@ -10,6 +10,7 @@ import  { MembersPage } from '@/pages/memberPage'
 import Overviewpage from '@/pages/overviewpage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import ProtectedRoute from '@/services/protectedRoute'
+import RoleProtectedRoute from '@/services/roleProtectedRoute'
 import { createBrowserRouter } from 'react-router-dom'
 import SettingsPage from '@/pages/settingsPage'
 import ProfilePage from '@/pages/profilePage'
@@ -65,7 +66,11 @@ export const Router = createBrowserRouter([
             },
             {
                 path: SETTINGS_PAGE,
-                element: <SettingsPage />
+                element: (
+                    <RoleProtectedRoute allowedRoles={['admin']}>
+                        <SettingsPage />
+                    </RoleProtectedRoute>
+                )
             },
             {
                 path: PROFILE_PAGE(':userId'),
@@ -77,7 +82,11 @@ export const Router = createBrowserRouter([
             },
             {
                 path: COMPTES_PAGE,
-                element: <ComptesPage />
+                element: (
+                    <RoleProtectedRoute allowedRoles={['admin']}>
+                        <ComptesPage />
+                    </RoleProtectedRoute>
+                )
             },
             {
                 path: '*',

@@ -353,11 +353,6 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && currentSection < sections.length - 1) {
-                      e.preventDefault();
-                    }
-                  }}
                   className="flex-1 flex flex-col overflow-hidden"
                 >
                   <div className="flex-1 overflow-y-auto space-y-6 px-1">
@@ -1306,17 +1301,17 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                     </div>
 
                     <div>
-                      {currentSection < sections.length - 1 ? (
+                      {currentSection == sections.length - 1 ?  (
+                        <Button type="submit" disabled={isLoading}>
+                          {isLoading ? t('eventForm.buttons.creating') : t('eventForm.buttons.createEvent')}
+                        </Button>
+                      ) : (
                         <Button
                           type="button"
                           onClick={handleNext}
                         >
                           {t('eventForm.buttons.next')}
                           <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      ) : (
-                        <Button type="submit" disabled={isLoading}>
-                          {isLoading ? t('eventForm.buttons.creating') : t('eventForm.buttons.createEvent')}
                         </Button>
                       )}
                     </div>
