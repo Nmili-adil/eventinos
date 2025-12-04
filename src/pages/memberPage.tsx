@@ -464,7 +464,14 @@ export const MembersPage: React.FC = () => {
             `Member ${!member.isActive ? 'activated' : 'deactivated'} successfully`
           )
         );
-        refreshMemberSources();
+        // Refresh data based on current filter state
+        if (selectedEvent) {
+          // If filtering by event, reload the event members data
+          await loadMembersByEvent(selectedEvent.id);
+        } else {
+          // Otherwise, refresh regular members
+          dispatch(fetchMembersRequest(currentPage, pageSize));
+        }
       } else {
         toast.error(response?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
       }
@@ -785,23 +792,10 @@ export const MembersPage: React.FC = () => {
         {formatDate(member.createdAt)}
       </TableCell>
       <TableCell className="py-3">
-        <div className="flex flex-wrap gap-1">
-          {member.verified !== undefined && (
-            <Badge variant="outline" className={cn(
-              'text-xs',
-              member.verified 
-                ? 'border-green-300 text-green-700' 
-                : 'border-gray-300 text-gray-700'
-            )}>
-              {member.verified ? '✓ Verified' : 'Unverified'}
-            </Badge>
-          )}
-          {member.isOrganizator && (
-            <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-              Organizer
-            </Badge>
-          )}
-        </div>
+       
+          {member.gender }
+          
+       
       </TableCell>
       <TableCell className="py-3 text-right">
         <DropdownMenu>
@@ -1015,7 +1009,7 @@ export const MembersPage: React.FC = () => {
                       <TableHead>{t('members.list.status', 'Status')}</TableHead>
                       <TableHead>{t('members.list.registration', 'Registration')}</TableHead>
                       <TableHead>{t('members.list.joinDate', 'Join Date')}</TableHead>
-                      <TableHead>{t('members.list.tags', 'Tags')}</TableHead>
+                      <TableHead>{t('members.list.gender', 'Gender')}</TableHead>
                       <TableHead className="text-right">{t('members.list.actions', 'Actions')}</TableHead>
                     </TableRow>
                   </TableHeader>

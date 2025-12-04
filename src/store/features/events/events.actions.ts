@@ -1,13 +1,13 @@
 import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi, updateEventStatusApi } from "@/api/eventsApi";
 import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction, UPDATE_EVENT_STATUS_REQUEST, UPDATE_EVENT_STATUS_SUCCESS, UPDATE_EVENT_STATUS_FAILURE, type UpdateEventStatusRequestAction, type UpdateEventStatusSuccessAction, type UpdateEventStatusFailureAction } from "./events.type"
 
-export const fetchEventsRequest = (): FetchEventsRequestAction => {
+export const fetchEventsRequest = (page: number = 1, limit: number = 10) => {
     return async (dispatch: any) => {
       dispatch({ type: FETCH_EVENTS_REQUEST })
       try {
-        const response = await fetchEvents()
-        if(response.status ===200) {
-          dispatch(fetchEventsSuccess(response.data.data, response.data.count))
+        const response = await fetchEvents(page, limit)
+        if(response.status === 200) {
+          dispatch(fetchEventsSuccess(response.data.data, response.data.pagination))
         } else {
           dispatch(fetchEventsFailure(response.data.message))
         }
@@ -17,10 +17,11 @@ export const fetchEventsRequest = (): FetchEventsRequestAction => {
     };
     
 }
-export const fetchEventsSuccess = (events: any[], count: number): FetchEventsSuccessAction => ({
+export const fetchEventsSuccess = (events: any[], pagination: any): FetchEventsSuccessAction => ({
   type: FETCH_EVENTS_SUCCESS,
-  count: count,
+  count: pagination?.totalItems || events.length,
   payload: events,
+  pagination: pagination,
 })
 
 export const fetchEventsFailure = (error: string): FetchEventsFailureAction => ({

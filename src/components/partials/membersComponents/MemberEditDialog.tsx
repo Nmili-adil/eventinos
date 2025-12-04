@@ -73,6 +73,12 @@ const MemberEditDialog = ({
 
   useEffect(() => {
     if (member && isOpen) {
+      const mapGender = (gender: string | undefined): "MALE" | "FEMALE" | "OTHER" => {
+        if (gender === "MALE" || gender === "FEMALE") return gender;
+        if (gender === "Unspecified") return "OTHER";
+        return "MALE";
+      };
+
       reset({
         firstName: member.firstName || "",
         lastName: member.lastName || "",
@@ -80,7 +86,7 @@ const MemberEditDialog = ({
         phoneNumber: member.phoneNumber || "",
         city: member.city || "",
         country: member.country || "",
-        gender: member.gender || "MALE",
+        gender: mapGender(member.gender),
         isActive: member.isActive ?? true,
       });
     }
@@ -90,7 +96,11 @@ const MemberEditDialog = ({
     if (!member) return;
 
     try {
-      await onSave(member._id.toString(), data);
+      const mappedData: Partial<Member> = {
+        ...data,
+        gender: data.gender === "OTHER" ? "Unspecified" : data.gender,
+      };
+      await onSave(member._id.toString(), mappedData);
       onClose();
     } catch (error) {
       console.error("Failed to update member:", error);
@@ -176,28 +186,27 @@ const MemberEditDialog = ({
                     <Label htmlFor="gender">
                       {t("members.editDialog.fields.gender", "Gender")}
                     </Label>
-                    <select
-                      value={watch("gender")}
-                      onChange={(e) =>
-                        setValue("gender", e.target.value as "MALE" | "FEMALE")
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-slate-500 focus:border-transparent"
-                    >
-                      <option value="" disabled>
-                        {t(
-                          "members.editDialog.placeholders.selectGender",
-                          "Select gender"
-                        )}
-                      </option>
-
-                      <option value="MALE">
-                        {t("members.editDialog.genderOptions.male", "Male")}
-                      </option>
-
-                      <option value="FEMALE">
-                        {t("members.editDialog.genderOptions.female", "Female")}
-                      </option>
-                    </select>
+                   <Select
+  value={watch("gender")}
+  onValueChange={(value: "MALE" | "FEMALE") => setValue("gender", value)}
+>
+  <SelectTrigger className="w-full">
+    <SelectValue
+      placeholder={t(
+        "members.editDialog.placeholders.selectGender",
+        "Select gender"
+      )}
+    />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="MALE">
+      {t("members.editDialog.genderOptions.male", "Male")}
+    </SelectItem>
+    <SelectItem value="FEMALE">
+      {t("members.editDialog.genderOptions.female", "Female")}
+    </SelectItem>
+  </SelectContent>
+</Select>
                   </div>
                 </div>
               </div>
@@ -325,23 +334,27 @@ const MemberEditDialog = ({
                       "Account Status"
                     )}
                   </Label>
-                  <select
+<Select
   value={isActive ? "active" : "inactive"}
-  onChange={(e) => setValue("isActive", e.target.value === "active")}
-  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-slate-500 focus:border-transparent"
+  onValueChange={(value) => setValue("isActive", value === "active")}
 >
-  <option value="" disabled>
-    {t("members.editDialog.placeholders.selectStatus", "Select status")}
-  </option>
-
-  <option value="active">
-    {t("members.editDialog.statusOptions.active", "Active")}
-  </option>
-
-  <option value="inactive">
-    {t("members.editDialog.statusOptions.inactive", "Inactive")}
-  </option>
-</select>
+  <SelectTrigger className="w-full">
+    <SelectValue
+      placeholder={t(
+        "members.editDialog.placeholders.selectStatus",
+        "Select status"
+      )}
+    />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="active">
+      {t("members.editDialog.statusOptions.active", "Active")}
+    </SelectItem>
+    <SelectItem value="inactive">
+      {t("members.editDialog.statusOptions.inactive", "Inactive")}
+    </SelectItem>
+  </SelectContent>
+</Select>
 
                 </div>
               </div>

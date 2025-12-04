@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react"
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  UserCheck,
-  UserX,
-  Edit,
-  Trash2,
-  Cake,
-  Shield,
-  Users,
-  X,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  Clock
-} from "lucide-react"
 import type { Member } from "@/types/membersType"
 import { useTranslation } from "react-i18next"
 import { fetchMemberParticipationsApi } from "@/api/guestsApi"
 import { useNavigate } from "react-router-dom"
 import { EVENT_DETAILS_PAGE } from "@/constants/routerConstants"
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface MemberDetailsDialogProps {
   member: Member | null
@@ -42,6 +37,7 @@ const MemberDetailsDialog = ({
   onDelete,
 }: MemberDetailsDialogProps) => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   // Enhanced safe render helper
   const safeRender = (value: any, fallback: string = t('members.detailsDialog.notAvailable')): string => {
@@ -65,22 +61,11 @@ const MemberDetailsDialog = ({
   const [memberEvents, setMemberEvents] = useState<any[]>([])
   const [eventsLoading, setEventsLoading] = useState(false)
   const [eventsError, setEventsError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'activity'>('overview')
-  const navigate = useNavigate()
 
   const handleViewEventDetails = (eventRecord: any) => {
     navigate(EVENT_DETAILS_PAGE(eventRecord._id))
+    onClose()
   }
-  // Close dialog on Escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose()
-      }
-    }
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen, onClose])
 
   const formatDate = (dateInput: any): string => {
     try {
@@ -123,28 +108,11 @@ const MemberDetailsDialog = ({
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase()
   }
 
-  const getMemberId = (member: Member): string => {
-    if (!member?._id) return 'N/A'
-    if (typeof member._id === 'string') return member._id.slice(-8)
-    if (member._id.$oid) return member._id.$oid.slice(-8)
-    return 'N/A'
-  }
-
-  const getStatusColor = (isActive: boolean) => {
-    return isActive 
-      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-      : 'bg-gray-100 text-gray-800 border-gray-200'
-  }
-
-  const getRegistrationColor = (isCompleted: boolean) => {
-    return isCompleted
-      ? 'bg-blue-100 text-blue-800 border-blue-200'
-      : 'bg-amber-100 text-amber-800 border-amber-200'
-  }
-
   const handleEdit = () => {
-    if (member) onEdit?.(member)
-    onClose()
+    if (member) {
+      onClose() // Close this dialog first
+      onEdit?.(member) // Then open edit dialog
+    }
   }
 
   const handleDelete = () => {
@@ -179,358 +147,263 @@ const MemberDetailsDialog = ({
 
     if (member && isOpen) {
       loadMemberEvents()
-      setActiveTab('overview')
     }
   }, [member, isOpen, t])
 
   if (!member || !isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all duration-300">
-      <div 
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] mx-4 overflow-hidden transform transition-transform duration-300 scale-100 border border-slate-300"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                {member.picture ? (
-                  <img 
-                    src={member.picture} 
-                    alt={`${member.firstName} ${member.lastName}`}
-                    className="w-14 h-14 rounded-2xl object-cover"
-                  />
-                ) : (
-                  <span className="text-white font-semibold text-lg">
-                    {getInitials(member.firstName, member.lastName)}
-                  </span>
-                )}
-              </div>
-              <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
-                member.isActive ? 'bg-emerald-500' : 'bg-gray-400'
-              }`} />
-            </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={member.picture} alt={`${member.firstName} ${member.lastName}`} />
+              <AvatarFallback>
+                {getInitials(member.firstName, member.lastName)}
+              </AvatarFallback>
+            </Avatar>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <div className="text-xl font-semibold">
                 {safeRender(member.firstName)} {safeRender(member.lastName)}
-              </h2>
-              <p className="text-gray-600 flex items-center space-x-2 mt-1">
-                <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-                  ID: {getMemberId(member)}
-                </span>
-                <span className="text-sm">{safeRender(member.email)}</span>
-              </p>
+              </div>
+              <div className="text-sm text-muted-foreground">{safeRender(member.email)}</div>
             </div>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-red-700  rounded-xl transition-colors duration-200 group border-red-600 border cursor-pointer"
-            >
-              <X className="w-5 h-5 text-red-600 group-hover:text-gray-100" />
-            </button>
-          </div>
-        </div>
+          </DialogTitle>
+        </DialogHeader>
 
-        {/* Navigation Tabs */}
-        <div className="border-b border-gray-200 bg-white">
-          <div className="flex space-x-1 px-6">
-            {[
-              { id: 'overview', label: t('members.detailsDialog.tabs.overview'), icon: User },
-              { id: 'events', label: t('members.detailsDialog.tabs.events'), icon: Users, count: memberEvents.length },
-              { id: 'activity', label: t('members.detailsDialog.tabs.activity'), icon: Calendar }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium rounded-t-lg transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-                {tab.count !== undefined && (
-                  <span className={`px-1.5 py-0.5 text-xs rounded-full ${
-                    activeTab === tab.id 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="events">Events</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+          </TabsList>
 
-        {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-300px)]">
-          {activeTab === 'overview' && (
-            <div className="p-6 space-y-6">
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-4">
+            <ScrollArea className="h-[500px] pr-4">
               {/* Status Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className={`border-2 rounded-xl px-4 py-2 ${getStatusColor(member.isActive ?? false)}`}>
-                  <div className="flex items-center justify-between py-0">
-                    <div className="py-0">
-                      <p className="text-xs font-medium">{t('members.detailsDialog.labels.accountStatus')}</p>
-                      <p className="text-sm font-semibold mt-1">
-                        {member.isActive ? t('members.detailsDialog.status.active') : t('members.detailsDialog.status.inactive')}
-                      </p>
-                    </div>
-                    {member.isActive ? (
-                      <CheckCircle className="w-4 h-4 text-emerald-600" />
-                    ) : (
-                      <UserX className="w-4 h-4 text-gray-600" />
-                    )}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <Card className="p-4">
+                  <div className="text-sm text-muted-foreground mb-1">
+                    Status
                   </div>
-                </div>
+                  <Badge className={member.isActive ? 'bg-green-500' : 'bg-red-500'}>
+                    {member.isActive ? 'Active' : 'Inactive'}
+                  </Badge>
+                </Card>
                 
-                <div className={`border-2 rounded-xl px-4 py-2 ${getRegistrationColor(member.registrationCompleted ?? false)}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-medium">{t('members.detailsDialog.labels.registration')}</p>
-                      <p className="text-sm font-semibold mt-1">
-                        {member.registrationCompleted ? t('members.detailsDialog.status.registrationComplete') : t('members.detailsDialog.status.registrationPending')}
-                      </p>
-                    </div>
-                    {member.registrationCompleted ? (
-                      <CheckCircle className="w-4 h-4 text-blue-600" />
-                    ) : (
-                      <Clock className="w-4 h-4 text-amber-600" />
-                    )}
+                <Card className="p-4">
+                  <div className="text-sm text-muted-foreground mb-1">
+                    Registration
                   </div>
-                </div>
+                  <Badge className={member.registrationCompleted ? 'bg-green-500' : 'secondary'}>
+                    {member.registrationCompleted ? 'Complete' : 'Pending'}
+                  </Badge>
+                </Card>
               </div>
 
               {/* Contact Information */}
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <Mail className="w-5 h-5 mr-2 text-blue-600" />
-                  {t('members.detailsDialog.sections.contactInfo')}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.emailAddress')}</label>
-                    <div className="flex items-center mt-1 space-x-2">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <p className="text-gray-900">{safeRender(member.email, t('members.detailsDialog.labels.notProvided'))}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.phoneNumber')}</label>
-                    <div className="flex items-center mt-1 space-x-2">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      <p className="text-gray-900">{safeRender(member.phoneNumber, t('members.detailsDialog.labels.notProvided'))}</p>
-                    </div>
-                  </div>
-                  {(member.city || member.country) && (
-                    <div className="md:col-span-2">
-                      <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.location')}</label>
-                      <div className="flex items-center mt-1 space-x-2">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <p className="text-gray-900">
-                          {[safeRender(member.city), safeRender(member.country)].filter(Boolean).join(', ') || t('members.detailsDialog.labels.notProvided')}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Personal Details */}
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <User className="w-5 h-5 mr-2 text-purple-600" />
-                  {t('members.detailsDialog.sections.personalInfo')}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.firstName')}</label>
-                    <p className="text-gray-900 mt-1">{safeRender(member.firstName)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.lastName')}</label>
-                    <p className="text-gray-900 mt-1">{safeRender(member.lastName)}</p>
-                  </div>
-                  {member.gender && (
-                    <div>
-                      <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.gender')}</label>
-                      <p className="text-gray-900 mt-1 capitalize">{safeRender(member.gender)}</p>
-                    </div>
-                  )}
-                  {member.birthday && (
-                    <div>
-                      <label className="text-sm text-gray-600 font-medium">{t('members.detailsDialog.labels.birthday')}</label>
-                      <div className="flex items-center mt-1 space-x-2">
-                        <Cake className="w-4 h-4 text-gray-400" />
-                        <p className="text-gray-900">{formatDate(member.birthday)}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Account Timeline */}
-              <div className="bg-gray-50 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-orange-600" />
-                  {t('members.detailsDialog.sections.accountInfo')}
+              <Card className="p-4 mb-4">
+                <h3 className="text-lg font-semibold mb-4">
+                  Contact Information
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-gray-600">{t('members.detailsDialog.labels.memberSince')}</span>
-                    <span className="font-medium text-gray-900">{formatDate(member.createdAt)}</span>
-                  </div>
-                  {member.updatedAt && (
-                    <div className="flex justify-between items-center py-2 border-t border-gray-200">
-                      <span className="text-gray-600">{t('members.detailsDialog.labels.lastUpdated')}</span>
-                      <span className="font-medium text-gray-900">{formatDate(member.updatedAt)}</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-sm text-muted-foreground">Email</div>
+                      <div className="font-medium">{safeRender(member.email, 'Not provided')}</div>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'events' && (
-            <div className="p-6">
-              <div className="bg-gray-50 ">
-                <h3 className="text-md font-semibold text-gray-900 mb-4 flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-blue-600" />
-                  {t('members.detailsDialog.labels.eventParticipation')}
-                </h3>
-                
-                {eventsLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-2" />
-                    <span className="text-gray-600">{t('members.detailsDialog.events.loadingEvents')}</span>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Phone</div>
+                      <div className="font-medium">{safeRender(member.phoneNumber, 'Not provided')}</div>
+                    </div>
                   </div>
-                ) : eventsError ? (
-                  <div className="flex items-center justify-center py-8 text-red-600 bg-red-50 rounded-lg">
-                    <AlertCircle className="w-5 h-5 mr-2" />
-                    <span>{eventsError}</span>
-                  </div>
-                ) : memberEvents.length > 0 ? (
-                  <div className="space-y-3">
-                    {memberEvents.map((eventRecord: any, index: number) => (
-                      <div
-                        key={eventRecord?._id || eventRecord?.eventId || index}
-                        onClick={() => handleViewEventDetails(eventRecord)}
-                        className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer hover:bg-gray-50 hover:border-gray-300"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900">
-                              {safeRender(eventRecord?.eventName || eventRecord?.name, t('members.detailsDialog.events.untitledEvent'))}
-                            </h4>
-                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
-                              <span className="flex items-center space-x-1">
-                                <Calendar className="w-4 h-4" />
-                                <span>{eventRecord?.date ? formatDate(eventRecord.date) : t('members.detailsDialog.events.dateNotSet')}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <MapPin className="w-4 h-4" />
-                                <span>{safeRender(eventRecord?.city || eventRecord?.location, t('members.detailsDialog.events.locationNotSet'))}</span>
-                              </span>
-                            </div>
-                          </div>
-                          {/* <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            eventRecord?.status === 'confirmed' 
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : eventRecord?.status === 'pending'
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {safeRender(eventRecord?.status, t('members.detailsDialog.events.registered'))}
-                          </span> */}
+                  
+                  {(member.city || member.country) && (
+                    <>
+                      <Separator />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Location</div>
+                        <div className="font-medium">
+                          {[safeRender(member.city), safeRender(member.country)].filter(v => v && v !== 'Not available').join(', ') || 'Not provided'}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                    <p>{t('members.detailsDialog.events.noEvents')}</p>
-                    <p className="text-sm mt-1">{t('members.detailsDialog.events.noEventsDescription')}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+                    </>
+                  )}
+                </div>
+              </Card>
 
-          {activeTab === 'activity' && (
-            <div className="p-6">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-green-600" />
-                  {t('members.detailsDialog.labels.accountActivity')}
+              {/* Personal Information */}
+              <Card className="p-4 mb-4">
+                <h3 className="text-lg font-semibold mb-4">
+                  Personal Details
                 </h3>
-                <div className="space-y-4">
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">{t('members.detailsDialog.labels.accountCreated')}</span>
-                      <span className="font-medium text-gray-900">{formatDate(member.createdAt)}</span>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-sm text-muted-foreground">First Name</div>
+                      <div className="font-medium">{safeRender(member.firstName)}</div>
                     </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Last Name</div>
+                      <div className="font-medium">{safeRender(member.lastName)}</div>
+                    </div>
+                  </div>
+                  
+                  {(member.gender || member.birthday) && (
+                    <>
+                      <Separator />
+                      <div className="grid grid-cols-2 gap-4">
+                        {member.gender && (
+                          <div>
+                            <div className="text-sm text-muted-foreground">Gender</div>
+                            <div className="font-medium capitalize">{safeRender(member.gender)}</div>
+                          </div>
+                        )}
+                        {member.birthday && (
+                          <div>
+                            <div className="text-sm text-muted-foreground">Birthday</div>
+                            <div className="font-medium">{formatDate(member.birthday)}</div>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </Card>
+
+              {/* Account Timeline */}
+              <Card className="p-4">
+                <h3 className="text-lg font-semibold mb-4">
+                  Account Timeline
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-muted-foreground">Member since</div>
+                    <div className="font-medium">{formatDate(member.createdAt)}</div>
                   </div>
                   {member.updatedAt && (
-                    <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <>
+                      <Separator />
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">{t('members.detailsDialog.labels.lastProfileUpdate')}</span>
-                        <span className="font-medium text-gray-900">{formatDate(member.updatedAt)}</span>
+                        <div className="text-sm text-muted-foreground">Last updated</div>
+                        <div className="font-medium">{formatDate(member.updatedAt)}</div>
                       </div>
-                    </div>
+                    </>
                   )}
-                  <div className="bg-white rounded-lg border border-gray-200 p-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">{t('members.detailsDialog.labels.eventParticipations')}</span>
-                      <span className="font-medium text-gray-900">{t('members.detailsDialog.events.eventsCount', { count: memberEvents.length })}</span>
-                    </div>
+                </div>
+              </Card>
+            </ScrollArea>
+          </TabsContent>
+
+          {/* Events Tab */}
+          <TabsContent value="events" className="space-y-4">
+            <ScrollArea className="h-[500px] pr-4">
+              {eventsLoading && (
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-muted-foreground">Loading events...</div>
+                </div>
+              )}
+              
+              {eventsError && (
+                <Card className="p-4 border-destructive">
+                  <div className="text-destructive">{eventsError}</div>
+                </Card>
+              )}
+              
+              {!eventsLoading && !eventsError && memberEvents.length === 0 && (
+                <Card className="p-8">
+                  <div className="text-center text-muted-foreground">
+                    <p>No events found</p>
+                    <p className="text-sm mt-1">This member hasn't participated in any events yet</p>
+                  </div>
+                </Card>
+              )}
+              
+              {!eventsLoading && !eventsError && memberEvents.length > 0 && (
+                <div className="space-y-3">
+                  {memberEvents.map((eventRecord: any, index: number) => (
+                    <Card 
+                      key={eventRecord?._id || eventRecord?.eventId || index}
+                      className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => handleViewEventDetails(eventRecord)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-lg mb-2">
+                            {safeRender(eventRecord?.eventName || eventRecord?.name, 'Untitled Event')}
+                          </h4>
+                          <div className="space-y-1 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">Date:</span>
+                              <span>{eventRecord?.date ? formatDate(eventRecord.date) : 'Not set'}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">Location:</span>
+                              <span>{safeRender(eventRecord?.city || eventRecord?.location, 'Not set')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+          </TabsContent>
+
+          {/* Activity Tab */}
+          <TabsContent value="activity" className="space-y-4">
+            <ScrollArea className="h-[500px] pr-4">
+              <Card className="p-4 mb-4">
+                <h3 className="text-lg font-semibold mb-4">
+                  Account Activity
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-muted-foreground">Account Created</span>
+                    <span className="font-medium">{formatDate(member.createdAt)}</span>
+                  </div>
+                  
+                  {member.updatedAt && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                        <span className="text-muted-foreground">Last Profile Update</span>
+                        <span className="font-medium">{formatDate(member.updatedAt)}</span>
+                      </div>
+                    </>
+                  )}
+                  
+                  <Separator />
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-muted-foreground">Event Participations</span>
+                    <span className="font-medium">{memberEvents.length} {memberEvents.length === 1 ? 'event' : 'events'}</span>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
-        </div>
+              </Card>
+            </ScrollArea>
+          </TabsContent>
+        </Tabs>
 
-        {/* Footer Actions */}
-        <div className="border-t border-gray-200 bg-gray-50 px-6  h-[80px] overflow-hidden">
-          <div className="flex justify-between items-center h-full mb-5 overflow-hidden">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:text-gray-100 font-medium transition-colors duration-200 border border-slate-400 rounded-md shadow-sm hover:bg-gray-700 cursor-pointer overflow-hidden"
-            >
-              {t('members.detailsDialog.buttons.close')}
-            </button>
-            
-            <div className="flex space-x-3 overflow-hidden">
-              {/* {onEdit && (
-                <button
-                  onClick={handleEdit}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium cursor-pointer"
-                >
-                  <Edit className="w-4 h-4" />
-                  <span>Edit Member</span>
-                </button>
-              )} */}
-              {/* {onDelete && (
-                <button
-                  onClick={handleDelete}
-                  className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete Member</span>
-                </button>
-              )} */}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <DialogFooter className="gap-2">
+          <Button variant="outline" onClick={onClose}>
+            Close
+          </Button>
+          {onEdit && (
+            <Button variant="default" onClick={handleEdit}>
+              Edit
+            </Button>
+          )}
+          {onDelete && (
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

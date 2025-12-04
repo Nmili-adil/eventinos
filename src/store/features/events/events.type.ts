@@ -7,6 +7,14 @@ export interface EventState {
   isCreating: boolean
   isDeleted: boolean
   error: string | null
+  pagination: {
+    currentPage: number
+    totalPages: number
+    pageSize: number
+    totalItems: number
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+  } | null
 }
 
 export const FETCH_EVENTS_REQUEST = 'FETCH_EVENTS_REQUEST'
@@ -42,6 +50,7 @@ export interface FetchEventsSuccessAction {
   type: typeof FETCH_EVENTS_SUCCESS
   count: number
   payload: any[]
+  pagination: any
 }
 
 export interface FetchEventsFailureAction {

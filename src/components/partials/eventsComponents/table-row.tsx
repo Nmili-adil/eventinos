@@ -42,17 +42,17 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
     <>
       {/* Desktop Table Row */}
       <TableRow 
-        className='border-slate-400 cursor-pointer hidden md:table-row' 
+        className='border-slate-200 cursor-pointer hidden md:table-row hover:bg-slate-50 transition-colors duration-150' 
         onClick={handleRowClick}
       >
-        <TableCell className="font-medium">{tableEvent.name}</TableCell>
-        <TableCell>{tableEvent.type}</TableCell>
-        <TableCell>{tableEvent.website}</TableCell>
-        <TableCell>{tableEvent.location}</TableCell>
-        <TableCell>{tableEvent.startDate}</TableCell>
-        <TableCell>{tableEvent.endDate}</TableCell>
+        <TableCell className="font-medium text-slate-900">{tableEvent.name}</TableCell>
+        <TableCell className="text-slate-700">{tableEvent.type}</TableCell>
+        <TableCell className="text-slate-600 text-sm">{tableEvent.website}</TableCell>
+        <TableCell className="text-slate-700">{tableEvent.location}</TableCell>
+        <TableCell className="text-slate-600">{tableEvent.startDate}</TableCell>
+        <TableCell className="text-slate-600">{tableEvent.endDate}</TableCell>
         <TableCell>
-          <Badge variant="outline" className={getStatusColor(tableEvent.status)}>
+          <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} font-medium`}>
             {tableEvent.status}
           </Badge>
         </TableCell>
@@ -112,33 +112,33 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
       <tr className="md:hidden">
         <td colSpan={8} className="p-0">
           <div 
-            className="border-b border-slate-300 p-4 hover:bg-muted/50 cursor-pointer"
+            className="border border-slate-200 rounded-lg p-4 m-2 hover:shadow-md hover:border-slate-300 cursor-pointer transition-all duration-200 bg-white"
             onClick={handleRowClick}
           >
             <div className="space-y-3">
               {/* Title and Status */}
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold text-base line-clamp-2 flex-1">{tableEvent.name}</h3>
-                <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} shrink-0`}>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="font-semibold text-base line-clamp-2 flex-1 text-slate-900">{tableEvent.name}</h3>
+                <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} shrink-0 font-medium`}>
                   {tableEvent.status}
                 </Badge>
               </div>
 
               {/* Event Details */}
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 shrink-0" />
-                  <span>{tableEvent.startDate} → {tableEvent.endDate}</span>
+              <div className="space-y-2.5 text-sm text-slate-600">
+                <div className="flex items-center gap-2.5">
+                  <Calendar className="h-4 w-4 shrink-0 text-slate-400" />
+                  <span className="font-medium">{tableEvent.startDate} → {tableEvent.endDate}</span>
                 </div>
                 {tableEvent.location && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 shrink-0" />
+                  <div className="flex items-center gap-2.5">
+                    <MapPin className="h-4 w-4 shrink-0 text-slate-400" />
                     <span className="truncate">{tableEvent.location}</span>
                   </div>
                 )}
                 {tableEvent.website && (
-                  <div className="flex items-center gap-2">
-                    <Globe className="h-4 w-4 shrink-0" />
+                  <div className="flex items-center gap-2.5">
+                    <Globe className="h-4 w-4 shrink-0 text-slate-400" />
                     <span className="truncate">{tableEvent.website}</span>
                   </div>
                 )}
@@ -146,7 +146,7 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
 
               {/* Type Badge */}
               <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs font-medium">
                   {tableEvent.type}
                 </Badge>
               </div>

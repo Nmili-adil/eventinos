@@ -31,20 +31,20 @@ export function TableHeader({ sortField, sortDirection, onSort }: TableHeaderPro
 
   return (
     <UITableHeader className="hidden md:table-header-group">
-      <TableRow className='border-slate-500 bg-slate-200 '>
+      <TableRow className='border-b-2 border-slate-300 bg-gradient-to-r from-slate-50 to-slate-100'>
         {headers.map((header) => (
           <TableHead 
             key={header.key}
-            className="cursor-pointer hover:bg-muted/50 divide-slate-400"
+            className="cursor-pointer hover:bg-slate-200/50 transition-colors duration-200 font-semibold text-slate-700"
             onClick={() => onSort(header.key)}
           >
-            <div className="flex items-center gap-1">
-              {header.label}
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm">{header.label}</span>
               {getSortIcon(header.key)}
             </div>
           </TableHead>
         ))}
-        <TableHead className="text-right">{t('events.table.actions')}</TableHead>
+        <TableHead className="text-right font-semibold text-slate-700">{t('events.table.actions')}</TableHead>
       </TableRow>
     </UITableHeader>
   )

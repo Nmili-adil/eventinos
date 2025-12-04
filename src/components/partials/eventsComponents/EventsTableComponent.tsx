@@ -1,7 +1,7 @@
 // components/events/events-table.tsx
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo,useEffect } from 'react'
 import { Table, TableBody } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { List, Plus, Calendar as CalendarIcon, Table2, MapPin } from 'lucide-react'
@@ -17,7 +17,7 @@ import type { RootState } from '@/store/app/rootReducer'
 import { useNavigate } from 'react-router-dom'
 import { EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE } from '@/constants/routerConstants'
 import type { AppDispatch } from '@/store/app/store'
-import { deleteEventRequest, updateEventStatusRequest } from '@/store/features/events/events.actions'
+import { deleteEventRequest, fetchEventsRequest, updateEventStatusRequest } from '@/store/features/events/events.actions'
 import { DeleteDialog } from '@/components/shared/alert-dialog-reusable'
 import { toast } from 'sonner'
 import PageHead from '@/components/shared/page-head'
@@ -33,7 +33,7 @@ const PAGE_SIZE = 10
 
 export function EventsTable() {
   const [viewMode, setViewMode] = useState<EventLayout>(getLayoutPreferences().eventsLayout)
-  const { events, isLoading } = useSelector((state: RootState) => state.events)
+  const { events, isLoading, pagination: backendPagination } = useSelector((state: RootState) => state.events)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
@@ -57,12 +57,8 @@ export function EventsTable() {
     direction: 'desc'
   })
   
-  const [pagination, setPagination] = useState<PaginationState>({
-    currentPage: 1,
-    pageSize: PAGE_SIZE,
-    totalItems: 0
-  })
-
+  const [currentPage, setCurrentPage] = useState(1)
+  
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean
     eventId: string | null
@@ -87,44 +83,36 @@ export function EventsTable() {
 
   const [statusLoading, setStatusLoading] = useState(false)
 
-  // Use events directly from Redux store instead of local state
+  // Fetch events when component mounts or page changes
+  useEffect(() => {
+    dispatch(fetchEventsRequest(currentPage, PAGE_SIZE))
+  }, [currentPage, dispatch])
+
+  // Use events directly from Redux store
   let eventsData = events || []
 
-  // Filter and sort events
+  // Filter and sort events (client-side for all filtering/sorting)
   const processedEvents = useMemo(() => {
     const filtered = filterEvents(eventsData, filters)
     const sorted = sortEvents(filtered, sort.field, sort.direction)
-    
-    // Update total items for pagination
-    setPagination(prev => ({ 
-      ...prev, 
-      totalItems: sorted.length,
-      currentPage: prev.currentPage > Math.ceil(sorted.length / prev.pageSize) ? 1 : prev.currentPage
-    }))
-    
     return sorted
   }, [eventsData, filters, sort.field, sort.direction])
-
-  // Paginate events
-  const paginatedEvents = useMemo(() => {
-    return paginateEvents(processedEvents, pagination.currentPage, pagination.pageSize)
-  }, [processedEvents, pagination.currentPage, pagination.pageSize])
 
   const handleSort = (field: EventsSort['field']) => {
     setSort(prev => ({
       field,
       direction: prev.field === field ? (prev.direction === 'asc' ? 'desc' : 'asc') : 'asc'
     }))
-    setPagination(prev => ({ ...prev, currentPage: 1 }))
+    setCurrentPage(1)
   }
 
   const handlePageChange = (page: number) => {
-    setPagination(prev => ({ ...prev, currentPage: page }))
+    setCurrentPage(page)
   }
 
   const handleResetFilters = () => {
     setFilters({ search: '', status: 'all', type: 'all', startDate: null, endDate: null })
-    setPagination(prev => ({ ...prev, currentPage: 1 }))
+    setCurrentPage(1)
   }
 
   const handleEdit = (eventId: string) => {
@@ -148,13 +136,11 @@ export function EventsTable() {
 
     const eventId = statusDialog.eventId
     setStatusLoading(true)
-
-
-    
     
     try {
       await dispatch(updateEventStatusRequest(eventId, newStatus))
-      eventsData = eventsData.map(event => event._id === eventId ? {...event, status: newStatus} : event)
+      // Refetch events to update UI immediately
+      await dispatch(fetchEventsRequest(currentPage, PAGE_SIZE))
       toast.success('Event status updated successfully')
       setStatusDialog({ open: false, eventId: null, currentStatus: null })
     } catch (error: any) {
@@ -202,21 +188,21 @@ export function EventsTable() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-start md:justify-between lg:justify-between items-start ">
+      <div className="flex flex-col md:flex-row justify-start md:justify-between lg:justify-between items-start gap-4">
         <PageHead 
           title={t('events.title')} 
           icon={List} 
           description={t('events.eventDescription')}
           total={0}
         />
-        <div className="flex items-center gap-2 justify-evenly ">
+        <div className="flex items-center gap-3 justify-evenly flex-wrap">
           {/* View Toggle */}
-          <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
+          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200">
             <Button
               variant={viewMode === 'table' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewModeFunc('table')}
-              className="gap-2"
+              className="gap-2 transition-all duration-200"
             >
               <Table2 className="h-4 w-4" />
               <span className="hidden sm:inline">{t('events.view.table')}</span>
@@ -225,7 +211,7 @@ export function EventsTable() {
               variant={viewMode === 'calender' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewModeFunc('calender')}
-              className="gap-2"
+              className="gap-2 transition-all duration-200"
             >
               <CalendarIcon className="h-4 w-4" />
               <span className="hidden sm:inline">{t('events.view.calendar')}</span>
@@ -234,7 +220,7 @@ export function EventsTable() {
               variant={viewMode === 'maps' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewModeFunc('maps')}
-              className="gap-2"
+              className="gap-2 transition-all duration-200"
             >
               <MapPin className="h-4 w-4" />
               <span className="hidden sm:inline">{t('events.view.maps')}</span>
@@ -242,7 +228,7 @@ export function EventsTable() {
           </div>
           <Button 
             onClick={() => navigate(EVENT_ADD_PAGE)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-200"
           >
             <Plus className="h-4 w-4" />
             {t('events.addEvent')}
@@ -261,7 +247,7 @@ export function EventsTable() {
       {/* Table View */}
       {viewMode === 'table' && (
         <>
-          <div className="border border-slate-300 shadow-md rounded-lg overflow-hidden">
+          <div className="border border-slate-200 shadow-lg rounded-xl overflow-hidden bg-white">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader 
@@ -270,7 +256,7 @@ export function EventsTable() {
                   onSort={handleSort}
                 />
                 <TableBody>
-                  {paginatedEvents.map((event) => (
+                  {processedEvents.map((event) => (
                     <EventTableRow
                       key={event._id}
                       event={event}
@@ -285,15 +271,19 @@ export function EventsTable() {
             </div>
 
             {/* Empty State */}
-            {paginatedEvents.length === 0 && !isLoading && (
+            {processedEvents.length === 0 && !isLoading && (
               <EmptyState onResetFilters={handleResetFilters} />
             )}
           </div>
 
           {/* Pagination */}
-          {processedEvents.length > 0 && (
+          {backendPagination && backendPagination.totalItems > 0 && (
             <EventsPagination 
-              pagination={pagination}
+              pagination={{
+                currentPage: backendPagination.currentPage,
+                pageSize: backendPagination.pageSize,
+                totalItems: backendPagination.totalItems
+              }}
               onPageChange={handlePageChange}
             />
           )}

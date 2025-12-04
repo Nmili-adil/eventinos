@@ -362,7 +362,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Description</h3>
                   <div
-                    className="prose max-w-none"
+                    className="prose prose-slate max-w-none prose-headings:font-semibold prose-p:text-slate-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-ul:list-disc prose-ol:list-decimal prose-li:text-slate-700"
                     dangerouslySetInnerHTML={{ __html: safeEvent.description }}
                   />
                 </div>
@@ -571,10 +571,10 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
               {/* Program Tab */}
               <TabsContent value="program" className="p-6">
-                <div className="rounded-lg border bg-muted/30 p-6">
+                <div className="rounded-lg border border-slate-300 shadow-sm bg-muted/30 p-6">
                   {safeEvent.program ? (
                     <div
-                      className="prose max-w-none whitespace-pre-wrap break-words text-sm text-muted-foreground"
+                      className="prose prose-slate max-w-none prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-slate-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-ul:list-disc prose-ol:list-decimal prose-li:text-slate-700 prose-table:border-collapse prose-th:border prose-th:p-2 prose-td:border prose-td:p-2"
                       dangerouslySetInnerHTML={{ __html: safeEvent.program }}
                     />
                   ) : (

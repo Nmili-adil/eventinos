@@ -1,8 +1,8 @@
 import { api } from "@/lib/apiClient"
 import { getAuthToken } from "@/services/localStorage"
 
-export const fetchEvents = async () => {
-  return api.get('/events?limit=all', {
+export const fetchEvents = async (page: number = 1, limit: number = 10) => {
+  return api.get(`/events?page=${page}&limit=${limit}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAuthToken()}`,

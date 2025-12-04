@@ -30,6 +30,7 @@ const initialState: EventState = {
   isCreating: false,
   isDeleted: false,
   error: null,
+  pagination: null,
 };
 
 const eventReducrer = (
@@ -50,6 +51,7 @@ const eventReducrer = (
         isLoading: false,
         count: action.count,
         events: action.payload,
+        pagination: action.pagination,
       };
     case FETCH_EVENTS_FAILURE:
       return {
