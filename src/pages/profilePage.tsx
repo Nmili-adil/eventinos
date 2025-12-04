@@ -41,9 +41,9 @@ import LoadingProfileInfo from '@/components/profileComponents/loadingProfile-in
 import ProfileNotFound from '@/components/profileComponents/profileNotFound';
 import ErrorAlert from '@/components/profileComponents/errorAlert';
 import PageHead from '@/components/shared/page-head';
-import { fetchRoleByIdRequest } from '@/store/features/roles/roles.actions';
+import { fetchRoleByIdRequest, fetchRolesRequest } from '@/store/features/roles/roles.actions';
 import { fetchRightsRequest } from '@/store/features/rights/rights.actions';
-import { updateUserApi, updateUserPasswordApi } from '@/api/usersApi';
+import { updateUserApi, updateUserPasswordApi, updateOrganizerProfessionalInfoApi } from '@/api/usersApi';
 import { uploadFileApi, getFileUrlApi } from '@/api/filesApi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -130,7 +130,7 @@ export const ProfilePage: React.FC = () => {
   const [roleChangeTarget, setRoleChangeTarget] = useState<'Admin' | 'Organizer' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, isLoading: loadingData, error } = useSelector((state: RootState) => state.users);
-  const { role } = useSelector((state: RootState) => state.roles);
+  const { role, roles } = useSelector((state: RootState) => state.roles);
   const { rights, loading: rightsLoading } = useSelector((state: RootState) => state.rights);
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -244,18 +244,28 @@ export const ProfilePage: React.FC = () => {
     }
   }, [user, form, dispatch]);
 
-  // Fetch user data when component mounts or userId changes
+  // Fetch user data and roles when component mounts or userId changes
   useEffect(() => {
     if (params.userId) {
       dispatch(fetchUserByIdRequest(params.userId));
     }
+    dispatch(fetchRolesRequest());
   }, [params.userId, dispatch]);
 
   const onSubmit = async (data: ProfileFormData) => {
     setIsLoading(true);
     try {
       if (params.userId) {
-        await updateUserApi(params.userId, data);
+        // Only send personal info fields
+        const personalData = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          country: data.country,
+          city: data.city,
+          gender: data.gender,
+        };
+        await updateUserApi(params.userId, personalData);
         toast.success(t('profilePage.messages.profileUpdated'), {
           style: {
             backgroundColor: COLORS.highlight,
@@ -270,6 +280,43 @@ export const ProfilePage: React.FC = () => {
     } catch (error: any) {
       toast.error(error?.response?.data?.message || error?.message || t('profilePage.messages.profileUpdateFailed'));
       console.error('Failed to update profile:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmitProfessional = async (data: ProfileFormData) => {
+    setIsLoading(true);
+    try {
+      if (params.userId && user) {
+        // Only send professional info fields
+        const professionalData = {
+          company: data.company,
+          socialNetworks: data.socialNetworks,
+        };
+        
+        // Use user._id as the organizer ID, extracting string value if it's an object
+        const organizerId = typeof user._id === 'object' && user._id !== null && '$oid' in user._id 
+          ? user._id.$oid 
+          : (user._id || params.userId);
+        console.log('Updating organizer professional info for ID:', organizerId);
+        
+        await updateOrganizerProfessionalInfoApi(organizerId as string, professionalData);
+        toast.success(t('profilePage.messages.professionalInfoUpdated', 'Professional information updated successfully'), {
+          style: {
+            backgroundColor: COLORS.highlight,
+            color: 'white',
+            border: 'none'
+          }
+        });
+        setIsEditing(false);
+        // Refresh user data
+        dispatch(fetchUserByIdRequest(params.userId));
+      }
+    } catch (error: any) {
+      console.error('Failed to update professional info:', error);
+      console.error('Error details:', error?.response?.data);
+      toast.error(error?.response?.data?.message || error?.message || t('profilePage.messages.professionalInfoUpdateFailed', 'Failed to update professional information'));
     } finally {
       setIsLoading(false);
     }
@@ -396,10 +443,23 @@ export const ProfilePage: React.FC = () => {
 
   const handleRoleUpdate = async (targetRole: 'Admin' | 'Organizer') => {
     if (!params.userId) return
+    
+    // Find the role ID by name (case-insensitive matching)
+    const roleObject = roles.find((r: any) => 
+      r.name?.toLowerCase() === targetRole.toLowerCase()
+    )
+    
+    if (!roleObject || !roleObject._id) {
+      console.error('Role not found. Available roles:', roles)
+      console.error('Looking for role:', targetRole)
+      toast.error(`Role "${targetRole}" not found in system roles`)
+      return
+    }
+    
     setRoleChangeLoading(true)
     setRoleChangeTarget(targetRole)
     try {
-      await updateUserApi(params.userId, { role: targetRole })
+      await updateUserApi(params.userId, { role: roleObject._id })
       toast.success(
         t('profilePage.roles.roleActions.success', {
           role: targetRole === 'Admin' ? t('profilePage.roles.roleActions.adminLabel', 'Admin') : t('profilePage.roles.roleActions.organizerLabel', 'Organizer'),
@@ -1083,9 +1143,9 @@ export const ProfilePage: React.FC = () => {
             </CardHeader>
             <CardContent className="py-8 px-8">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmitProfessional)} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {hasValue(user.company?.name) && (
+                    {(isEditing || hasValue(user.company?.name)) && (
                       <FormField
                         control={form.control}
                         name="company.name"
@@ -1109,7 +1169,7 @@ export const ProfilePage: React.FC = () => {
                       />
                     )}
 
-                    {hasValue(user.company?.jobTitle) && (
+                    {(isEditing || hasValue(user.company?.jobTitle)) && (
                       <FormField
                         control={form.control}
                         name="company.jobTitle"
@@ -1133,7 +1193,7 @@ export const ProfilePage: React.FC = () => {
                       />
                     )}
 
-                    {hasValue(user.company?.industry) && (
+                    {(isEditing || hasValue(user.company?.industry)) && (
                       <FormField
                         control={form.control}
                         name="company.industry"
@@ -1157,7 +1217,7 @@ export const ProfilePage: React.FC = () => {
                       />
                     )}
 
-                    {hasValue(user.company?.size) && (
+                    {(isEditing || hasValue(user.company?.size)) && (
                       <FormField
                         control={form.control}
                         name="company.size"
@@ -1193,7 +1253,7 @@ export const ProfilePage: React.FC = () => {
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {hasValue(user.socialNetworks?.linkedin) && (
+                      {(isEditing || hasValue(user.socialNetworks?.linkedin)) && (
                         <FormField
                           control={form.control}
                           name="socialNetworks.linkedin"
@@ -1218,7 +1278,7 @@ export const ProfilePage: React.FC = () => {
                         />
                       )}
 
-                      {hasValue(user.socialNetworks?.website) && (
+                      {(isEditing || hasValue(user.socialNetworks?.website)) && (
                         <FormField
                           control={form.control}
                           name="socialNetworks.website"

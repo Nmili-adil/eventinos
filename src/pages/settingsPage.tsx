@@ -39,6 +39,7 @@ import {
   updateRoleRequest,
   deleteRoleRequest
 } from "@/store/features/roles/roles.actions";
+import { fetchRightsRequest } from "@/store/features/rights/rights.actions";
 import { useTranslation } from "react-i18next";
 
 interface Category {
@@ -80,6 +81,7 @@ const SettingsPage = () => {
   const [optimisticCategories, setOptimisticCategories] = useState<Category[]>([]);
   const [optimisticBadges, setOptimisticBadges] = useState<Badge[]>([]);
   const [optimisticRoles, setOptimisticRoles] = useState<any[]>([]);
+  const [rolesUpdateTimestamp, setRolesUpdateTimestamp] = useState(Date.now());
   
   const [currentCategoriesPage, setCurrentCategoriesPage] = useState(1);
   const [currentBadgesPage, setCurrentBadgesPage] = useState(1);
@@ -101,6 +103,8 @@ const SettingsPage = () => {
     dispatch(fetchCategoriesRequest());
     dispatch(fetchBadgesRequest());
     dispatch(fetchRolesRequest());
+    // Pre-fetch rights to make permissions dialog faster
+    dispatch(fetchRightsRequest());
   }, [dispatch]);
 
   // Sync Redux state with optimistic state
@@ -114,6 +118,7 @@ const SettingsPage = () => {
 
   useEffect(() => {
     setOptimisticRoles(roles);
+    setRolesUpdateTimestamp(Date.now());
   }, [roles]);
 
   const handleEditCategory = (category: Category) => {
@@ -133,6 +138,8 @@ const SettingsPage = () => {
       
       // Then make API call
       await dispatch(updateCategoryRequest(categoryId, data));
+      // Refetch to ensure sync with backend
+      await dispatch(fetchCategoriesRequest());
       toast.success(t('categories.updatedSuccessfully'));
       setCategoryEditDialogOpen(false);
       setSelectedCategory(null);
@@ -151,6 +158,8 @@ const SettingsPage = () => {
     setOptimisticCategories(prev => [tempCategory, ...prev]);
     try {
       await dispatch(createCategoryRequest(data));
+      // Refetch to get the actual created category from backend
+      await dispatch(fetchCategoriesRequest());
       toast.success(t('categories.createdSuccessfully'));
       setCategoryAddDialogOpen(false);
     } catch (error: any) {
@@ -169,6 +178,8 @@ const SettingsPage = () => {
       );
       
       await dispatch(deleteCategoryRequest(category._id));
+      // Refetch to ensure sync
+      await dispatch(fetchCategoriesRequest());
       toast.success(t('categories.deletedSuccessfully'));
     } catch (error: any) {
       // Revert on error
@@ -193,6 +204,8 @@ const SettingsPage = () => {
       );
       
       await dispatch(updateBadgeRequest(badgeId, data));
+      // Refetch to ensure sync with backend
+      await dispatch(fetchBadgesRequest());
       toast.success(t('badges.updatedSuccessfully'));
       setBadgeEditDialogOpen(false);
       setSelectedBadge(null);
@@ -211,6 +224,8 @@ const SettingsPage = () => {
     setOptimisticBadges(prev => [tempBadge, ...prev]);
     try {
       await dispatch(createBadgeRequest(data));
+      // Refetch to get the actual created badge from backend
+      await dispatch(fetchBadgesRequest());
       toast.success(t('badges.createdSuccessfully'));
       setBadgeAddDialogOpen(false);
     } catch (error: any) {
@@ -229,6 +244,8 @@ const SettingsPage = () => {
       );
       
       await dispatch(deleteBadgeRequest(badge._id));
+      // Refetch to ensure sync
+      await dispatch(fetchBadgesRequest());
       toast.success(t('badges.deletedSuccessfully'));
     } catch (error: any) {
       // Revert on error
@@ -245,16 +262,19 @@ const SettingsPage = () => {
   const handleSaveRole = async (roleId: string, data: any) => {
     setActionLoading(roleId);
     try {
-      // Optimistic update
+      // Optimistic update - merge all data properly
       setOptimisticRoles(prev => 
         prev.map(role => 
           role._id === roleId 
-            ? { ...role, rights: data.rights.length > 0 ? data.rights : role.rights }
+            ? { ...role, ...data }
             : role
         )
       );
       
       await dispatch(updateRoleRequest(roleId, data));
+      // Refetch to ensure sync with backend
+      await dispatch(fetchRolesRequest());
+      setRolesUpdateTimestamp(Date.now());
       toast.success(t('roles.updatedSuccessfully'));
       setRoleEditDialogOpen(false);
       setSelectedRole(null);
@@ -275,6 +295,9 @@ const SettingsPage = () => {
       );
       
       await dispatch(deleteRoleRequest(role._id));
+      // Refetch to ensure sync
+      await dispatch(fetchRolesRequest());
+      setRolesUpdateTimestamp(Date.now());
       toast.success(t('roles.deletedSuccessfully'));
     } catch (error: any) {
       // Revert on error
@@ -337,6 +360,7 @@ const SettingsPage = () => {
   const displayRoles = optimisticRoles.length > 0 ? optimisticRoles : roles;
   const categoriesTableKey = `categories-${currentCategoriesPage}`;
   const badgesTableKey = `badges-${currentBadgesPage}`;
+  const rolesTableKey = `roles-${rolesUpdateTimestamp}`;
 
   return (
     <div className="container mx-auto p-6">
@@ -492,6 +516,7 @@ const SettingsPage = () => {
                 </div>
               ) : displayRoles.length > 0 ? (
                 <RolesTable
+                  key={rolesTableKey}
                   data={displayRoles}
                   onDelete={handleDeleteRole}
                   onEdit={handleEditRole}

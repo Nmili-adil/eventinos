@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo, memo } from "react"
 import {
   Dialog,
   DialogContent,
@@ -48,7 +48,10 @@ const PermissionsDialog = ({
 
   useEffect(() => {
     if (isOpen) {
-      dispatch(fetchRightsRequest())
+      // Only fetch rights if not already loaded
+      if (rights.length === 0) {
+        dispatch(fetchRightsRequest())
+      }
       hasInitializedRef.current = false
       // Reset to initial permissions when dialog opens
       setSelectedPermissions(initialPermissions)
@@ -58,7 +61,7 @@ const PermissionsDialog = ({
     } else {
       hasInitializedRef.current = false
     }
-  }, [isOpen, dispatch])
+  }, [isOpen, dispatch, rights.length])
 
   // Update selected permissions when initialPermissions changes (e.g., when role is loaded asynchronously)
   useEffect(() => {
@@ -117,14 +120,16 @@ const PermissionsDialog = ({
     }
   }
 
-  // Group rights by group
-  const groupedRights = rights.reduce((acc, right) => {
-    if (!acc[right.group]) {
-      acc[right.group] = []
-    }
-    acc[right.group].push(right)
-    return acc
-  }, {} as Record<string, Right[]>)
+  // Group rights by group - memoized to avoid recalculation
+  const groupedRights = useMemo(() => {
+    return rights.reduce((acc, right) => {
+      if (!acc[right.group]) {
+        acc[right.group] = []
+      }
+      acc[right.group].push(right)
+      return acc
+    }, {} as Record<string, Right[]>)
+  }, [rights])
 
   const allSelected = rights.length > 0 && selectedPermissions.length === rights.length
 

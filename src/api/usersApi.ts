@@ -46,6 +46,21 @@ export const updateUserApi = async (userId: string, data: any) => {
   }
 }
 
+export  const updateUserRoleApi = async (userId: string, roleId: string) => {
+  try {
+    const response = await api.put(`/users/${userId}/role`, { roleId }, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 export const updateUserPasswordApi = async (userId: string, newPassword: string) => {
   try {
     const response = await api.put(`/users/${userId}`, { password: newPassword }, {
@@ -88,5 +103,20 @@ export const updateAccoutStatusApi = async (memberId: string, isActive: boolean)
   } catch (error) {
       console.log(error)
       throw error
+  }
+}
+
+export const updateOrganizerProfessionalInfoApi = async (organizerId: string, info: any) => { 
+  try {
+    const response = await api.put(`/organizers/${organizerId}`, info, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
