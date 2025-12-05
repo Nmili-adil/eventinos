@@ -7,10 +7,10 @@ const UnauthorizedPage = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+    <div className="h-[calc(100vh-15rem)] flex items-center justify-center relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-blue-100/30 to-indigo-100/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -top-1/2 -right-1/2 w-full h-full  rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-tr from-purple-100/30 to-pink-100/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
