@@ -181,11 +181,11 @@ const CategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: C
           <Table className='divide-slate-300'>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Icon</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t('categories.table.id')}</TableHead>
+                <TableHead>{t('categories.table.icon')}</TableHead>
+                <TableHead>{t('categories.table.name')}</TableHead>
+                <TableHead>{t('categories.table.description')}</TableHead>
+                <TableHead className="text-right">{t('categories.table.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className='divide-slate-300  max-h-[calc(70vh-300px)] overflow-y-auto'>
@@ -239,9 +239,11 @@ const CategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: C
         {pagination && pagination.totalPages > 1 && (
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
-              Showing {((pagination.currentPage - 1) * pagination.pageSize) + 1} to{' '}
-              {Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)} of{' '}
-              {pagination.totalItems} entries
+              {t('categories.table.showing', {
+                from: ((pagination.currentPage - 1) * pagination.pageSize) + 1,
+                to: Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems),
+                total: pagination.totalItems
+              })}
             </div>
             
             <Pagination>

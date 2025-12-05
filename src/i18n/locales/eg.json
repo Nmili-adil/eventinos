@@ -250,6 +250,71 @@
       "startDatePlaceholder": "Select start date",
       "endDatePlaceholder": "Select end date",
       "clearDates": "Clear dates"
+    },
+    "details": {
+      "eventOrganizer": "منظم الفعالية",
+      "invalidDate": "تاريخ غير صالح",
+      "invalidTime": "وقت غير صالح",
+      "untitledEvent": "فعالية بدون عنوان",
+      "noDescription": "لا يوجد وصف متاح.",
+      "locationNotSpecified": "الموقع غير محدد",
+      "noProgramDetails": "لا تتوفر تفاصيل البرنامج.",
+      "organizedBy": "نظمها",
+      "editEvent": "تعديل الفعالية",
+      "deleteEvent": "حذف هذه الفعالية",
+      "tabs": {
+        "details": "التفاصيل",
+        "speakers": "المتحدثون",
+        "program": "البرنامج",
+        "gallery": "المعرض"
+      },
+      "description": "الوصف",
+      "dateTime": "التاريخ والوقت",
+      "start": "البداية",
+      "end": "النهاية",
+      "at": "في",
+      "socialLinks": "روابط التواصل الاجتماعي",
+      "website": "الموقع الإلكتروني",
+      "facebook": "فيسبوك",
+      "twitter": "تويتر",
+      "linkedin": "لينكد إن",
+      "noSpeakers": "لم يتم الإعلان عن متحدثين بعد.",
+      "noGallery": "لا توجد صور معرض متاحة.",
+      "eventInformation": "معلومات الفعالية",
+      "date": "التاريخ",
+      "time": "الوقت",
+      "venue": "المكان",
+      "eventType": "نوع الفعالية",
+      "exhibitors": "العارضون",
+      "exhibitor": "عارض",
+      "sponsors": "الرعاة",
+      "sponsor": "راعي",
+      "deleteConfirmTitle": "هل أنت متأكد من حذف هذه الفعالية؟",
+      "deleteConfirmDescription": "لا يمكن التراجع عن هذا الإجراء. الفعالية",
+      "willBeDeleted": "ستُحذف نهائيًا من مؤسستك.",
+      "speakerDetails": "تفاصيل المتحدث",
+      "speaker": "متحدث",
+      "about": "نبذة عن"
+    },
+    "status": {
+      "published": "منشور",
+      "draft": "مسودة",
+      "cancelled": "ملغى",
+      "closed": "مغلق",
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "refused": "مرفوض"
+    },
+    "type": {
+      "facetoface": "حضوري",
+      "online": "عبر الإنترنت",
+      "hybrid": "هجين"
+    },
+    "membersCard": {
+      "title": "الأعضاء المسجلون",
+      "subtitle": "اعرض جميع المشاركين في هذه الفعالية.",
+      "totalLabel": "إجمالي المشاركين",
+      "viewMembers": "إدارة الأعضاء"
     }
   },
   "eventForm": {
@@ -302,7 +367,9 @@
       "fullName": "Full Name",
       "picture": "Picture URL",
       "logo": "Logo URL",
-      "sponsorName": "Sponsor Name"
+      "sponsorName": "Sponsor Name",
+      "tags": "Tags",
+      "requirements": "Requirements"
     },
     "placeholders": {
       "enterEventName": "Enter event name",
@@ -329,7 +396,9 @@
       "enterExhibitorName": "Enter exhibitor name",
       "enterExhibitorPicture": "https://example.com/image.jpg",
       "enterSponsorName": "Enter sponsor name",
-      "enterSponsorLogo": "https://example.com/logo.jpg"
+      "enterSponsorLogo": "https://example.com/logo.jpg",
+      "enterTags": "Enter tags separated by commas",
+      "enterRequirements": "Enter event requirements"
     },
     "options": {
       "visibility": {
@@ -355,7 +424,9 @@
       "isUpcomingEvent": "Feature this event in upcoming events section",
       "badges": "Select badges that participants can earn at this event",
       "gallery": "Add images to showcase your event",
-      "socialNetworks": "Social Networks"
+      "socialNetworks": "Social Networks",
+      "tags": "Add tags to categorize and help find the event",
+      "requirements": "Specify any special requirements for participants at this event"
     },
     "buttons": {
       "cancel": "Cancel",
@@ -367,7 +438,8 @@
       "addExhibitor": "Add Exhibitor",
       "addSponsor": "Add Sponsor",
       "uploadImage": "Upload Event Image",
-      "uploadGalleryImage": "Upload Gallery Image"
+      "uploadGalleryImage": "Upload Gallery Image",
+      "saveAndNext": "Save & Next"
     },
     "labels": {
       "eventHighlights": "Event Highlights",
@@ -380,6 +452,8 @@
       "noBadges": "No badges available. Please create badges first.",
       "noImages": "No images added yet",
       "noImagesDescription": "Add image URLs to create your event gallery",
+      "noExhibitors": "No exhibitors added yet",
+      "noSponsors": "No sponsors added yet",
       "imageNumber": "Image {{number}}"
     },
     "validation": {
@@ -392,6 +466,48 @@
     "messages": {
       "debugLocation": "Location Data:",
       "notSet": "Not set"
+    },
+    "addExhibitorDialog": {
+      "title": "Add Exhibitor",
+      "description": "Enter exhibitor details",
+      "fields": {
+        "fullName": "Full Name",
+        "picture": "Picture URL"
+      },
+      "placeholders": {
+        "enterFullName": "Enter exhibitor name",
+        "enterPictureUrl": "https://example.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "addExhibitor": "Add Exhibitor",
+        "adding": "Adding..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidUrl": "Please enter a valid URL"
+      }
+    },
+    "addSponsorDialog": {
+      "title": "Add Sponsor",
+      "description": "Enter sponsor details",
+      "fields": {
+        "name": "Name",
+        "logo": "Logo URL"
+      },
+      "placeholders": {
+        "enterName": "Enter sponsor name",
+        "enterLogoUrl": "https://example.com/logo.jpg"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "addSponsor": "Add Sponsor",
+        "adding": "Adding..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidUrl": "Please enter a valid URL"
+      }
     }
   },
  "members": {
@@ -553,44 +669,86 @@
           "passwordMinLength": "Password must be at least 6 characters"
         }
       }, "detailsDialog": {
-        "title": "Member Details",
-        "description": "Complete information about the member",
+        "title": "تفاصيل العضو",
+        "description": "معلومات كاملة عن العضو",
+        "tabs": {
+          "overview": "نظرة عامة",
+          "events": "الفعاليات",
+          "activity": "النشاط"
+        },
         "sections": {
-          "contactInfo": "Contact Information",
-          "personalInfo": "Personal Information",
-          "accountInfo": "Account Information",
-          "timestamps": "Timestamps"
+          "contactInfo": "معلومات الاتصال",
+          "personalInfo": "المعلومات الشخصية",
+          "accountInfo": "الجدول الزمني للحساب",
+          "timestamps": "الطوابع الزمنية"
         },
         "fields": {
-          "email": "Email Address",
-          "phone": "Phone Number",
-          "location": "Location",
-          "firstName": "First Name",
-          "lastName": "Last Name",
-          "gender": "Gender",
-          "birthday": "Birthday",
-          "accountStatus": "Account Status",
-          "registrationStatus": "Registration Status",
-          "userId": "User ID",
-          "roleId": "Role ID",
-          "joinedDate": "Joined Date",
-          "lastUpdated": "Last Updated",
-          "memberId": "Member ID"
+          "email": "البريد الإلكتروني",
+          "phone": "رقم الهاتف",
+          "location": "الموقع",
+          "firstName": "الاسم الأول",
+          "lastName": "الاسم الأخير",
+          "gender": "الجنس",
+          "birthday": "تاريخ الميلاد",
+          "accountStatus": "حالة الحساب",
+          "registrationStatus": "حالة التسجيل",
+          "userId": "معرف المستخدم",
+          "roleId": "معرف الدور",
+          "joinedDate": "تاريخ الانضمام",
+          "lastUpdated": "آخر تحديث",
+          "memberId": "معرف العضو"
         },
         "status": {
-          "active": "Active",
-          "inactive": "Inactive",
-          "registrationComplete": "Registration Complete",
-          "registrationPending": "Registration Pending",
-          "completed": "Completed",
-          "pending": "Pending"
+          "active": "نشط",
+          "inactive": "غير نشط",
+          "registrationComplete": "مكتمل",
+          "registrationPending": "قيد الانتظار",
+          "completed": "مكتمل",
+          "pending": "قيد الانتظار"
+        },
+        "notAvailable": "غير متاح",
+        "notProvided": "غير متوفر",
+        "status": "الحالة",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "registration": "التسجيل",
+        "complete": "مكتمل",
+        "pending": "قيد الانتظار",
+        "contactInformation": "معلومات الاتصال",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "location": "الموقع",
+        "personalDetails": "المعلومات الشخصية",
+        "firstName": "الاسم الأول",
+        "lastName": "الاسم الأخير",
+        "gender": "الجنس",
+        "birthday": "تاريخ الميلاد",
+        "accountTimeline": "الجدول الزمني للحساب",
+        "memberSince": "عضو منذ",
+        "lastUpdated": "آخر تحديث",
+        "events": {
+          "loading": "جاري تحميل الفعاليات...",
+          "noEvents": "لم يتم العثور على فعاليات",
+          "noParticipation": "لم يشارك هذا العضو في أي فعاليات بعد",
+          "untitledEvent": "فعالية بدون عنوان",
+          "date": "التاريخ",
+          "location": "الموقع",
+          "notSet": "غير محدد",
+          "unableToLoad": "تعذر تحميل فعاليات العضو."
+        },
+        "activity": {
+          "title": "نشاط الحساب",
+          "accountCreated": "تم إنشاء الحساب",
+          "lastProfileUpdate": "آخر تحديث للملف الشخصي",
+          "eventParticipations": "المشاركات في الفعاليات",
+          "event": "فعالية",
+          "events": "فعاليات"
         },
         "buttons": {
-          "close": "Close",
-          "editMember": "Edit Member",
-          "deleteMember": "Delete Member"
-        },
-        "notAvailable": "N/A"
+          "close": "إغلاق",
+          "editMember": "تعديل العضو",
+          "deleteMember": "حذف العضو"
+        }
       }
     },
   "categories": {
@@ -629,74 +787,158 @@
     "deleteDialog": {
       "title": "حذف الفئة",
       "description": "هل أنت متأكد من حذف هذه الفئة؟ سيؤدي هذا إلى إزالة الفئة وجميع البيانات المرتبطة بها نهائيًا."
+    },
+    "table": {
+      "id": "المعرف",
+      "icon": "الرمز",
+      "name": "الاسم",
+      "description": "الوصف",
+      "actions": "الإجراءات",
+      "showing": "عرض {{from}} إلى {{to}} من {{total}} إدخال"
     }
   },
   "badges": {
-    "title": "Badges",
-    "addBadge": "Add Badge",
-    "editBadge": "Edit Badge",
-    "createBadge": "Create Badge",
-    "createNew": "Create New Badge",
-    "createDescription": "Add a new badge to reward your users. All required fields must be filled.",
-    "editDescription": "Update badge information. Changes will be saved immediately.",
-    "badgeName": "Badge Name",
-    "badgeDescription": "Description",
-    "badgeImage": "Badge Image",
+    "title": "الشارات",
+    "addBadge": "إضافة شارة",
+    "editBadge": "تعديل الشارة",
+    "createBadge": "إنشاء شارة",
+    "createNew": "إنشاء شارة جديدة",
+    "createDescription": "أضف شارة جديدة لمكافأة المستخدمين. يجب ملء جميع الحقول المطلوبة.",
+    "editDescription": "قم بتحديث معلومات الشارة. سيتم حفظ التغييرات فوراً.",
     "fields": {
-      "name": "Badge Name",
-      "namePlaceholder": "Enter badge name",
-      "description": "Description",
-      "descriptionPlaceholder": "Enter badge description",
-      "design": "Design",
-      "designPlaceholder": "Select design",
-      "image": "Image URL",
-      "imagePlaceholder": "Enter image URL",
-      "imageHint": "Optional: URL to the badge image",
-      "uploadLabel": "Badge Image"
+      "name": "اسم الشارة",
+      "namePlaceholder": "أدخل اسم الشارة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "أدخل وصف الشارة",
+      "design": "التصميم",
+      "designPlaceholder": "اختر التصميم",
+      "image": "رابط الصورة",
+      "imagePlaceholder": "أدخل رابط الصورة",
+      "imageHint": "اختياري: رابط لصورة الشارة",
+      "uploadLabel": "صورة الشارة"
     },
     "validation": {
-      "nameRequired": "Badge name is required",
-      "descriptionRequired": "Description is required"
+      "nameRequired": "اسم الشارة مطلوب",
+      "descriptionRequired": "الوصف مطلوب"
     },
     "designOptions": {
-      "gold": "Gold",
-      "silver": "Silver",
-      "bronze": "Bronze",
-      "platinum": "Platinum",
-      "diamond": "Diamond"
+      "gold": "ذهبي",
+      "silver": "فضي",
+      "bronze": "برونزي",
+      "platinum": "بلاتيني",
+      "diamond": "ألماسي"
     },
     "buttons": {
-      "create": "Create Badge",
-      "creating": "Creating...",
-      "save": "Save Changes",
-      "saving": "Saving..."
+      "create": "إنشاء شارة",
+      "creating": "جاري الإنشاء...",
+      "save": "حفظ التغييرات",
+      "saving": "جاري الحفظ..."
     },
-    "noBadgesFound": "No badges found",
-    "getStartedBadge": "Start by creating your first badge to reward your users.",
-    "rewardUsers": "Reward your users with badges",
-    "createdSuccessfully": "Badge created successfully",
-    "updatedSuccessfully": "Badge updated successfully",
-    "deletedSuccessfully": "Badge deleted successfully",
-    "createFailed": "Failed to create badge",
-    "updateFailed": "Failed to update badge",
-    "deleteFailed": "Failed to delete badge"
+    "noBadgesFound": "لا توجد شارات",
+    "getStartedBadge": "ابدأ بإنشاء أول شارة لمكافأة مستخدميك.",
+    "rewardUsers": "كافئ مستخدميك بالشارات",
+    "createdSuccessfully": "تم إنشاء الشارة بنجاح",
+    "updatedSuccessfully": "تم تحديث الشارة بنجاح",
+    "deletedSuccessfully": "تم حذف الشارة بنجاح",
+    "createFailed": "فشل إنشاء الشارة",
+    "updateFailed": "فشل تحديث الشارة",
+    "deleteFailed": "فشل حذف الشارة",
+    "table": {
+      "id": "المعرف",
+      "image": "الصورة",
+      "name": "الاسم",
+      "description": "الوصف",
+      "design": "التصميم",
+      "actions": "الإجراءات",
+      "deleteTitle": "حذف الشارة",
+      "deleteDescription": "هل أنت متأكد من أنك تريد حذف هذه الشارة؟ سيؤدي هذا إلى إزالة الشارة وجميع البيانات المرتبطة بها نهائياً."
+    },
+    "details": {
+      "title": "تفاصيل الشارة",
+      "description": "معلومات تفصيلية حول الشارة",
+      "designInformation": "معلومات التصميم",
+      "designType": "نوع التصميم",
+      "badgeId": "معرف الشارة",
+      "imageInformation": "معلومات الصورة",
+      "imageUrl": "رابط الصورة",
+      "noImageUrl": "لم يتم توفير رابط صورة",
+      "timestamps": "الطوابع الزمنية",
+      "created": "تم الإنشاء",
+      "lastUpdated": "آخر تحديث",
+      "additionalInfo": "معلومات إضافية",
+      "additionalInfoText": "تمثل هذه الشارة إنجازًا يمكن للمستخدمين كسبه داخل المنصة.",
+      "close": "إغلاق",
+      "editBadge": "تعديل الشارة",
+      "deleteBadge": "حذف الشارة"
+    }
   },
   "settings": {
-    "title": "Settings",
-    "description": "Manage your categories and badges",
-    "navigation": "Navigation"
+    "title": "الإعدادات",
+    "description": "إدارة الفئات والشارات الخاصة بك",
+    "navigation": "التنقل"
   },
   "roles": {
-    "title": "Roles",
-    "description": "Manage user roles and their permissions",
-    "noRolesFound": "No roles found",
-    "emptyDescription": "Get started by creating your first role to manage user permissions.",
-    "createdSuccessfully": "Role created successfully",
-    "updatedSuccessfully": "Role updated successfully",
-    "deletedSuccessfully": "Role deleted successfully",
-    "createFailed": "Failed to create role",
-    "updateFailed": "Failed to update role",
-    "deleteFailed": "Failed to delete role"
+    "title": "الأدوار",
+    "description": "إدارة أدوار المستخدمين وصلاحياتهم",
+    "noRolesFound": "لا توجد أدوار",
+    "emptyDescription": "ابدأ بإنشاء أول دور لإدارة صلاحيات المستخدمين.",
+    "createdSuccessfully": "تم إنشاء الدور بنجاح",
+    "updatedSuccessfully": "تم تحديث الدور بنجاح",
+    "deletedSuccessfully": "تم حذف الدور بنجاح",
+    "createFailed": "فشل إنشاء الدور",
+    "updateFailed": "فشل تحديث الدور",
+    "deleteFailed": "فشل حذف الدور",
+    "dialog": {
+      "editTitle": "تعديل الدور",
+      "editDescription": "تحديث معلومات الدور وإدارة الصلاحيات",
+      "roleName": "اسم الدور",
+      "roleNamePlaceholder": "أدخل اسم الدور",
+      "roleNameRequired": "اسم الدور مطلوب",
+      "systemRoleWarning": "لا يمكن إعادة تسمية أدوار النظام",
+      "permissions": "الصلاحيات",
+      "permissionsDescription": "حدد الصلاحيات المراد تعيينها لهذا الدور",
+      "managePermissions": "إدارة الصلاحيات",
+      "noPermissionsSelected": "لم يتم تحديد أي صلاحيات. انقر على 'إدارة الصلاحيات' لإضافة بعضها.",
+      "permissionsCount": "تم تحديد {{count}} صلاحية",
+      "permissionsCount_plural": "تم تحديد {{count}} صلاحية",
+      "cancel": "إلغاء",
+      "update": "تحديث الدور",
+      "updating": "جاري التحديث..."
+    },
+    "table": {
+      "id": "المعرف",
+      "name": "الاسم",
+      "type": "النوع",
+      "permissions": "الصلاحيات",
+      "actions": "الإجراءات",
+      "system": "نظام",
+      "custom": "مخصص",
+      "permissionsCount": "{{count}} صلاحية",
+      "permissionsCount_plural": "{{count}} صلاحية",
+      "showing": "عرض {{from}} إلى {{to}} من {{total}} إدخال",
+      "deleteTitle": "حذف الدور",
+      "deleteDescription": "هل أنت متأكد من أنك تريد حذف هذا الدور؟ سيؤدي هذا إلى إزالة الدور وجميع الصلاحيات المرتبطة به نهائياً. سيحتاج المستخدمون الذين لديهم هذا الدور إلى إعادة تعيين."
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "إدارة الصلاحيات",
+      "description": "حدد الصلاحيات التي تريد تعيينها. يمكنك تحديد جميع الصلاحيات في مجموعة أو صلاحيات فردية.",
+      "selectAll": "تحديد الكل",
+      "of": "من",
+      "selected": "محددة",
+      "noPermissions": "لا توجد صلاحيات متاحة",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جاري الحفظ..."
+    }
+  },
+  "footer": {
+    "tagline": "منصة إدارة الفعاليات",
+    "rights": "جميع الحقوق محفوظة",
+    "madeWith": "صنع بـ",
+    "by": "من قبل",
+    "followUs": "تابعنا"
   },
   "profilePage": {
     "title": "Profile",
@@ -987,6 +1229,33 @@
     "latitude": "خط العرض",
     "longitude": "خط الطول",
     "enterAddress": "أدخل عنوانًا أو اسم مكان",
-    "selectLocation": "اختر موقعًا"
+    "selectLocation": "اختر موقعًا",
+    "searchPlaceholder": "ابحث عن مكان أو عنوان أو مؤسسة...",
+    "currentLocation": "الموقع الحالي",
+    "locating": "جاري التحديد...",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "clear": "مسح",
+    "selectionHint": "انقر على الخريطة أو استخدم البحث أو فعّل تحديد الموقع الجغرافي لاختيار موقع.",
+    "latitudePlaceholder": "مثال، 33.5731",
+    "longitudePlaceholder": "مثال، -7.5898",
+    "geolocationNotSupported": "تحديد الموقع الجغرافي غير مدعوم في متصفحك",
+    "geolocationError": "تعذر الحصول على موقعك",
+    "interactiveMap": "خريطة تفاعلية",
+    "manualEntry": "إدخال يدوي",
+    "venueName": "اسم المكان",
+    "venueNamePlaceholder": "مثال، قاعة فندق جراند",
+    "address": "العنوان",
+    "addressPlaceholder": "مثال، 123 شارع الرئيسي، جناح 100",
+    "city": "المدينة",
+    "cityPlaceholder": "مثال، القاهرة",
+    "country": "الدولة",
+    "countryPlaceholder": "مثال، مصر",
+    "countryCode": "رمز الدولة",
+    "countryCodePlaceholder": "مثال، EG",
+    "placeId": "معرّف المكان (اختياري)",
+    "placeIdPlaceholder": "معرّف Google Place",
+    "coordinates": "الإحداثيات",
+    "coordinatesSet": "تم تعيين الإحداثيات:"
   }
 }

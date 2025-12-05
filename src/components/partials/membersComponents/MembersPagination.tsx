@@ -74,7 +74,7 @@ export function MembersPagination({ pagination, onPageChange, entityLabel = 'mem
           disabled={!pagination.hasPreviousPage}
         >
           <ChevronLeft className="h-4 w-4" />
-          Previous
+       
         </Button>
 
         <div className="flex items-center gap-1">
@@ -108,7 +108,7 @@ export function MembersPagination({ pagination, onPageChange, entityLabel = 'mem
           onClick={() => onPageChange(currentPage + 1)}
           disabled={!pagination.hasNextPage}
         >
-          Next
+         
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>

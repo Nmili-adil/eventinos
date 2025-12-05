@@ -240,6 +240,71 @@
           "description": "تم إغلاق الفعالية"
         }
       }
+    },
+    "details": {
+      "eventOrganizer": "منظم الفعالية",
+      "invalidDate": "تاريخ غير صالح",
+      "invalidTime": "وقت غير صالح",
+      "untitledEvent": "فعالية بدون عنوان",
+      "noDescription": "لا يوجد وصف متاح.",
+      "locationNotSpecified": "الموقع غير محدد",
+      "noProgramDetails": "لا تتوفر تفاصيل البرنامج.",
+      "organizedBy": "نظمها",
+      "editEvent": "تعديل الفعالية",
+      "deleteEvent": "حذف هذه الفعالية",
+      "tabs": {
+        "details": "التفاصيل",
+        "speakers": "المتحدثون",
+        "program": "البرنامج",
+        "gallery": "المعرض"
+      },
+      "description": "الوصف",
+      "dateTime": "التاريخ والوقت",
+      "start": "البداية",
+      "end": "النهاية",
+      "at": "في",
+      "socialLinks": "روابط التواصل الاجتماعي",
+      "website": "الموقع الإلكتروني",
+      "facebook": "فيسبوك",
+      "twitter": "تويتر",
+      "linkedin": "لينكد إن",
+      "noSpeakers": "لم يتم الإعلان عن متحدثين بعد.",
+      "noGallery": "لا توجد صور معرض متاحة.",
+      "eventInformation": "معلومات الفعالية",
+      "date": "التاريخ",
+      "time": "الوقت",
+      "venue": "المكان",
+      "eventType": "نوع الفعالية",
+      "exhibitors": "العارضون",
+      "exhibitor": "عارض",
+      "sponsors": "الرعاة",
+      "sponsor": "راعي",
+      "deleteConfirmTitle": "هل أنت متأكد من حذف هذه الفعالية؟",
+      "deleteConfirmDescription": "لا يمكن التراجع عن هذا الإجراء. الفعالية",
+      "willBeDeleted": "ستُحذف نهائيًا من مؤسستك.",
+      "speakerDetails": "تفاصيل المتحدث",
+      "speaker": "متحدث",
+      "about": "نبذة عن"
+    },
+    "status": {
+      "published": "منشور",
+      "draft": "مسودة",
+      "cancelled": "ملغى",
+      "closed": "مغلق",
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "refused": "مرفوض"
+    },
+    "type": {
+      "facetoface": "حضوري",
+      "online": "عبر الإنترنت",
+      "hybrid": "هجين"
+    },
+    "membersCard": {
+      "title": "الأعضاء المسجلون",
+      "subtitle": "اعرض جميع المشاركين في هذه الفعالية.",
+      "totalLabel": "إجمالي المشاركين",
+      "viewMembers": "إدارة الأعضاء"
     }
   },
   "eventForm": {
@@ -292,7 +357,9 @@
       "fullName": "الاسم الكامل",
       "picture": "رابط الصورة",
       "logo": "رابط الشعار",
-      "sponsorName": "اسم الراعي"
+      "sponsorName": "اسم الراعي",
+      "requirements": "المتطلبات",
+      "tags": "العلامات"
     },
     "placeholders": {
       "enterEventName": "أدخل اسم الحدث",
@@ -319,7 +386,9 @@
       "enterExhibitorName": "أدخل اسم العارض",
       "enterExhibitorPicture": "https://example.com/image.jpg",
       "enterSponsorName": "أدخل اسم الراعي",
-      "enterSponsorLogo": "https://example.com/logo.jpg"
+      "enterSponsorLogo": "https://example.com/logo.jpg",
+      "enterTags": "أدخل العلامات مفصولة بفواصل",
+      "enterRequirements": "أدخل متطلبات الحدث الخاصة بك"
     },
     "options": {
       "visibility": {
@@ -345,7 +414,9 @@
       "isUpcomingEvent": "إبراز هذا الحدث في قسم الأحداث القادمة",
       "badges": "اختر الشارات التي يمكن للمشاركين كسبها في هذا الحدث",
       "gallery": "أضف صورًا لعرض حدثك",
-      "socialNetworks": "الشبكات الاجتماعية"
+      "socialNetworks": "الشبكات الاجتماعية",
+      "tags": "أضف علامات لتصنيف الحدث والمساعدة في البحث عنه",
+      "requirements": "حدد أي متطلبات خاصة للمشاركين في هذا الحدث"
     },
     "buttons": {
       "cancel": "إلغاء",
@@ -357,7 +428,8 @@
       "addExhibitor": "إضافة عارض",
       "addSponsor": "إضافة راعي",
       "uploadImage": "رفع صورة الحدث",
-      "uploadGalleryImage": "رفع صورة المعرض"
+      "uploadGalleryImage": "رفع صورة المعرض",
+      "saveAndNext": "حفظ والمتابعة"
     },
     "labels": {
       "eventHighlights": "أبرز الأحداث",
@@ -370,6 +442,8 @@
       "noBadges": "لا توجد شارات متاحة. يرجى إنشاء الشارات أولاً.",
       "noImages": "لم تتم إضافة أي صور بعد",
       "noImagesDescription": "أضف روابط الصور لإنشاء معرض الأحداث الخاص بك",
+      "noExhibitors": "لم تتم إضافة أي عارضين بعد",
+      "noSponsors": "لم تتم إضافة أي رعاة بعد",
       "imageNumber": "الصورة {{number}}"
     },
     "validation": {
@@ -382,6 +456,48 @@
     "messages": {
       "debugLocation": "بيانات الموقع:",
       "notSet": "غير محدد"
+    },
+    "addExhibitorDialog": {
+      "title": "إضافة عارض",
+      "description": "أضف عارضًا للمشاركة في هذا الحدث",
+      "fields": {
+        "name": "اسم العارض",
+        "picture": "رابط صورة العارض"
+      },
+      "placeholders": {
+        "enterName": "أدخل اسم العارض",
+        "enterPicture": "https://example.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "إلغاء",
+        "addExhibitor": "إضافة العارض",
+        "adding": "جاري الإضافة..."
+      },
+      "validation": {
+        "required": "هذا الحقل مطلوب",
+        "invalidUrl": "يرجى إدخال رابط صحيح"
+      }
+    },
+    "addSponsorDialog": {
+      "title": "إضافة راعي",
+      "description": "أضف راعيًا للمشاركة في هذا الحدث",
+      "fields": {
+        "name": "اسم الراعي",
+        "logo": "رابط شعار الراعي"
+      },
+      "placeholders": {
+        "enterName": "أدخل اسم الراعي",
+        "enterLogo": "https://example.com/logo.jpg"
+      },
+      "buttons": {
+        "cancel": "إلغاء",
+        "addSponsor": "إضافة الراعي",
+        "adding": "جاري الإضافة..."
+      },
+      "validation": {
+        "required": "هذا الحقل مطلوب",
+        "invalidUrl": "يرجى إدخال رابط صحيح"
+      }
     }
   },
   "notFound": {
@@ -612,17 +728,51 @@
         "completed": "مكتمل",
         "pending": "قيد الانتظار"
       },
+      "notAvailable": "غير متاح",
+      "notProvided": "غير متوفر",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "registration": "التسجيل",
+      "complete": "مكتمل",
+      "pending": "قيد الانتظار",
+      "contactInformation": "معلومات الاتصال",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "location": "الموقع",
+      "personalDetails": "المعلومات الشخصية",
+      "firstName": "الاسم الأول",
+      "lastName": "الاسم الأخير",
+      "gender": "الجنس",
+      "birthday": "تاريخ الميلاد",
+      "accountTimeline": "الجدول الزمني للحساب",
+      "memberSince": "عضو منذ",
+      "lastUpdated": "آخر تحديث",
       "events": {
+        "loading": "جاري تحميل الفعاليات...",
+        "noEvents": "لم يتم العثور على فعاليات",
+        "noParticipation": "لم يشارك هذا العضو في أي فعاليات بعد",
+        "untitledEvent": "فعالية بدون عنوان",
+        "date": "التاريخ",
+        "location": "الموقع",
+        "notSet": "غير محدد",
         "loadingEvents": "جاري تحميل الفعاليات...",
-        "noEvents": "لم يتم العثور على مشاركات في الفعاليات",
         "noEventsDescription": "لم يسجل هذا العضو في أي فعاليات بعد.",
         "unableToLoad": "تعذر تحميل فعاليات العضو.",
-        "untitledEvent": "فعالية بدون عنوان",
         "dateNotSet": "التاريخ غير محدد",
         "locationNotSet": "الموقع غير محدد",
         "registered": "مسجل",
         "eventsCount": "{{count}} فعاليات"
       },
+      "activity": {
+        "title": "نشاط الحساب",
+        "accountCreated": "تم إنشاء الحساب",
+        "lastProfileUpdate": "آخر تحديث للملف الشخصي",
+        "eventParticipations": "المشاركات في الفعاليات",
+        "event": "فعالية",
+        "events": "فعاليات"
+      },
+    
       "buttons": {
         "close": "إغلاق",
         "editMember": "تعديل العضو",
@@ -723,6 +873,18 @@
         "editCategory": "تعديل الفئة",
         "deleteCategory": "حذف الفئة"
       }
+    },
+    "deleteDialog": {
+      "title": "حذف الفئة",
+      "description": "هل أنت متأكد من أنك تريد حذف هذه الفئة؟ سيؤدي هذا إلى إزالة الفئة وجميع البيانات المرتبطة بها نهائياً."
+    },
+    "table": {
+      "id": "المعرف",
+      "icon": "الرمز",
+      "name": "الاسم",
+      "description": "الوصف",
+      "actions": "الإجراءات",
+      "showing": "عرض {{from}} إلى {{to}} من {{total}} إدخال"
     }
   },
   "badges": {
@@ -770,7 +932,35 @@
     "deletedSuccessfully": "تم حذف الشارة بنجاح",
     "createFailed": "فشل إنشاء الشارة",
     "updateFailed": "فشل تحديث الشارة",
-    "deleteFailed": "فشل حذف الشارة"
+    "deleteFailed": "فشل حذف الشارة",
+    "table": {
+      "id": "المعرف",
+      "image": "الصورة",
+      "name": "الاسم",
+      "description": "الوصف",
+      "design": "التصميم",
+      "actions": "الإجراءات",
+      "deleteTitle": "حضف الشارة",
+      "deleteDescription": "هل أنت متأكد من أنك تريد حذف هذه الشارة؟ سيؤدي هذا إلى إزالة الشارة وجميع البيانات المرتبطة بها نهائياً."
+    },
+    "details": {
+      "title": "تفاصيل الشارة",
+      "description": "معلومات تفصيلية حول الشارة",
+      "designInformation": "معلومات التصميم",
+      "designType": "نوع التصميم",
+      "badgeId": "معرف الشارة",
+      "imageInformation": "معلومات الصورة",
+      "imageUrl": "رابط الصورة",
+      "noImageUrl": "لم يتم توفير رابط صورة",
+      "timestamps": "الطوابع الزمنية",
+      "created": "تم الإنشاء",
+      "lastUpdated": "آخر تحديث",
+      "additionalInfo": "معلومات إضافية",
+      "additionalInfoText": "تمثل هذه الشارة إنجازًا يمكن للمستخدمين كسبه داخل المنصة.",
+      "close": "إغلاق",
+      "editBadge": "تعديل الشارة",
+      "deleteBadge": "حذف الشارة"
+    }
   },
   "settings": {
     "title": "الإعدادات",
@@ -787,7 +977,58 @@
     "deletedSuccessfully": "تم حذف الدور بنجاح",
     "createFailed": "فشل إنشاء الدور",
     "updateFailed": "فشل تحديث الدور",
-    "deleteFailed": "فشل حذف الدور"
+    "deleteFailed": "فشل حذف الدور",
+    "dialog": {
+      "editTitle": "تعديل الدور",
+      "editDescription": "تحديث معلومات الدور وإدارة الصلاحيات",
+      "roleName": "اسم الدور",
+      "roleNamePlaceholder": "أدخل اسم الدور",
+      "roleNameRequired": "اسم الدور مطلوب",
+      "systemRoleWarning": "لا يمكن إعادة تسمية أدوار النظام",
+      "permissions": "الصلاحيات",
+      "permissionsDescription": "حدد الصلاحيات المراد تعيينها لهذا الدور",
+      "managePermissions": "إدارة الصلاحيات",
+      "noPermissionsSelected": "لم يتم تحديد أي صلاحيات. انقر على 'إدارة الصلاحيات' لإضافة بعضها.",
+      "permissionsCount": "تم تحديد {{count}} صلاحية",
+      "permissionsCount_plural": "تم تحديد {{count}} صلاحية",
+      "cancel": "إلغاء",
+      "update": "تحديث الدور",
+      "updating": "جاري التحديث..."
+    },
+    "table": {
+      "id": "المعرف",
+      "name": "الاسم",
+      "type": "النوع",
+      "permissions": "الصلاحيات",
+      "actions": "الإجراءات",
+      "system": "نظام",
+      "custom": "مخصص",
+      "permissionsCount": "{{count}} صلاحية",
+      "permissionsCount_plural": "{{count}} صلاحية",
+      "showing": "عرض {{from}} إلى {{to}} من {{total}} إدخال",
+      "deleteTitle": "حذف الدور",
+      "deleteDescription": "هل أنت متأكد من أنك تريد حذف هذا الدور؟ سيؤدي هذا إلى إزالة الدور وجميع الصلاحيات المرتبطة به نهائياً. سيحتاج المستخدمون الذين لديهم هذا الدور إلى إعادة تعيين."
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "إدارة الصلاحيات",
+      "description": "حدد الصلاحيات التي تريد تعيينها. يمكنك تحديد جميع الصلاحيات في مجموعة أو صلاحيات فردية.",
+      "selectAll": "تحديد الكل",
+      "of": "من",
+      "selected": "محددة",
+      "noPermissions": "لا توجد صلاحيات متاحة",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جاري الحفظ..."
+    }
+  },
+  "footer": {
+    "tagline": "منصة إدارة الفعاليات",
+    "rights": "جميع الحقوق محفوظة",
+    "madeWith": "صنع بـ",
+    "by": "من قبل",
+    "followUs": "تابعنا"
   },
   "profilePage": {
     "title": "الملف الشخصي",
@@ -1121,5 +1362,40 @@
       "organizer": "المنظمون",
       "admin": "المديرون"
     }
+  },
+  "location": {
+    "searchLocation": "بحث عن موقع",
+    "manualCoordinates": "أو أدخل الإحداثيات يدويًا",
+    "latitude": "خط العرض",
+    "longitude": "خط الطول",
+    "enterAddress": "أدخل عنوانًا أو اسم مكان",
+    "selectLocation": "اختر موقعًا",
+    "searchPlaceholder": "ابحث عن مكان أو عنوان أو مؤسسة...",
+    "currentLocation": "الموقع الحالي",
+    "locating": "جاري التحديد...",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "clear": "مسح",
+    "selectionHint": "انقر على الخريطة أو استخدم البحث أو فعّل تحديد الموقع الجغرافي لاختيار موقع.",
+    "latitudePlaceholder": "مثال، 33.5731",
+    "longitudePlaceholder": "مثال، -7.5898",
+    "geolocationNotSupported": "تحديد الموقع الجغرافي غير مدعوم في متصفحك",
+    "geolocationError": "تعذر الحصول على موقعك",
+    "interactiveMap": "خريطة تفاعلية",
+    "manualEntry": "إدخال يدوي",
+    "venueName": "اسم المكان",
+    "venueNamePlaceholder": "مثال، قاعة فندق جراند",
+    "address": "العنوان",
+    "addressPlaceholder": "مثال، 123 شارع الرئيسي، جناح 100",
+    "city": "المدينة",
+    "cityPlaceholder": "مثال، الرياض",
+    "country": "الدولة",
+    "countryPlaceholder": "مثال، السعودية",
+    "countryCode": "رمز الدولة",
+    "countryCodePlaceholder": "مثال، SA",
+    "placeId": "معرّف المكان (اختياري)",
+    "placeIdPlaceholder": "معرّف Google Place",
+    "coordinates": "الإحداثيات",
+    "coordinatesSet": "تم تعيين الإحداثيات:"
   }
 }

@@ -59,6 +59,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null)
   const DEFAULT_MAP_ZOOM = 7
+
   const pinIcon = useMemo(() => {
     const svg = `<svg width="40" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z" fill="%232563EB"/></svg>`
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
@@ -96,14 +97,15 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
       title: event.name || event.title,
       icon: pinIcon,
       info: (
-        <div style={{ maxWidth: '300px', minWidth: '280px' }}>
+        <div className='bg-slate-800 rounded-lg shadow-md p-2' style={{ maxWidth: '300px', minWidth: '280px', backdropFilter: 'blur(10px)' }}>
           {event.image && (
             <img 
+            className='border border-slate-600'
               src={event.image} 
               alt={event.name || event.title}
               style={{
                 width: '100%',
-                height: '160px',
+                height: '100px',
                 objectFit: 'cover',
                 borderRadius: '8px',
                 marginBottom: '12px'
@@ -114,13 +116,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
               }}
             />
           )}
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: '600',
-            color: '#111827',
-            marginBottom: '10px',
-            lineHeight: '1.4'
-          }}>
+          <h3 className='text-gray-50 font-medium mb-3 text-lg truncate' >
             {event.name || event.title}
           </h3>
           <div style={{ 
@@ -133,18 +129,11 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
             <Badge className={cn('text-xs', getStatusColor(event.status))}>
               {event.status}
             </Badge>
-            <Badge variant="outline" className="text-xs">{event.visibility}</Badge>
-            <Badge variant="outline" className="text-xs">{event.type}</Badge>
+            <Badge className="text-xs bg-teal-500 text-black">{event.visibility}</Badge>
+            <Badge  className="text-xs bg-fuchsia-500 text-white">{event.type}</Badge>
           </div>
           {event.startDate?.date && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
-              color: '#6B7280',
-              marginTop: '8px'
-            }}>
+            <div className="flex items-center gap-2 text-sm text-gray-200">
               <Calendar style={{ width: '14px', height: '14px' }} />
               <span>{format(new Date(event.startDate.date), 'MMM dd, yyyy')}</span>
             </div>

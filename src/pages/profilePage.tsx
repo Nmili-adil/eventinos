@@ -48,6 +48,8 @@ import { uploadFileApi, getFileUrlApi } from '@/api/filesApi';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { getRole } from '@/services/localStorage';
+import { UNAUTHORIZED_PAGE } from '@/constants/routerConstants';
+import UnauthorizedPage from './UnauthorizedPage';
 
 // Color palette
 const COLORS = {
@@ -496,7 +498,7 @@ export const ProfilePage: React.FC = () => {
   }
 
   if (error) {
-    return <ErrorAlert error={error} userId={params.userId} />;
+    return <UnauthorizedPage />
   }
 
   if (!user) {

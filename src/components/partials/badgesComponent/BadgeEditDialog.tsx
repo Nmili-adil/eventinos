@@ -104,7 +104,6 @@ const BadgeEditDialog = ({
             {t('badges.editDescription')}
           </DialogDescription>
         </DialogHeader>
-
         <form onSubmit={handleSubmit(onSubmit)}>
           <ScrollArea className="max-h-[calc(90vh-200px)] pr-4">
             <div className="space-y-6">

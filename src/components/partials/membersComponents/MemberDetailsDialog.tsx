@@ -154,7 +154,7 @@ const MemberDetailsDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
+      <DialogContent className="max-w-5xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <Avatar className="h-12 w-12">
@@ -174,9 +174,9 @@ const MemberDetailsDialog = ({
 
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsTrigger value="overview">{t('members.detailsDialog.tabs.overview', 'Overview')}</TabsTrigger>
+            <TabsTrigger value="events">{t('members.detailsDialog.tabs.events', 'Events')}</TabsTrigger>
+            <TabsTrigger value="activity">{t('members.detailsDialog.tabs.activity', 'Activity')}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -186,19 +186,19 @@ const MemberDetailsDialog = ({
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <Card className="p-4">
                   <div className="text-sm text-muted-foreground mb-1">
-                    Status
+                    {t('members.detailsDialog.status', 'Status')}
                   </div>
                   <Badge className={member.isActive ? 'bg-green-500' : 'bg-red-500'}>
-                    {member.isActive ? 'Active' : 'Inactive'}
+                    {member.isActive ? t('members.detailsDialog.active', 'Active') : t('members.detailsDialog.inactive', 'Inactive')}
                   </Badge>
                 </Card>
                 
                 <Card className="p-4">
                   <div className="text-sm text-muted-foreground mb-1">
-                    Registration
+                    {t('members.detailsDialog.registration', 'Registration')}
                   </div>
                   <Badge className={member.registrationCompleted ? 'bg-green-500' : 'secondary'}>
-                    {member.registrationCompleted ? 'Complete' : 'Pending'}
+                    {member.registrationCompleted ? t('members.detailsDialog.complete', 'Complete') : t('members.detailsDialog.pending', 'Pending')}
                   </Badge>
                 </Card>
               </div>
@@ -206,17 +206,17 @@ const MemberDetailsDialog = ({
               {/* Contact Information */}
               <Card className="p-4 mb-4">
                 <h3 className="text-lg font-semibold mb-4">
-                  Contact Information
+                  {t('members.detailsDialog.contactInformation', 'Contact Information')}
                 </h3>
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-muted-foreground">Email</div>
-                      <div className="font-medium">{safeRender(member.email, 'Not provided')}</div>
+                      <div className="text-sm text-muted-foreground">{t('members.detailsDialog.email', 'Email')}</div>
+                      <div className="font-medium">{safeRender(member.email, t('members.detailsDialog.notProvided', 'Not provided'))}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-muted-foreground">Phone</div>
-                      <div className="font-medium">{safeRender(member.phoneNumber, 'Not provided')}</div>
+                      <div className="text-sm text-muted-foreground">{t('members.detailsDialog.phone', 'Phone')}</div>
+                      <div className="font-medium">{safeRender(member.phoneNumber, t('members.detailsDialog.notProvided', 'Not provided'))}</div>
                     </div>
                   </div>
                   
@@ -224,9 +224,9 @@ const MemberDetailsDialog = ({
                     <>
                       <Separator />
                       <div>
-                        <div className="text-sm text-muted-foreground">Location</div>
+                        <div className="text-sm text-muted-foreground">{t('members.detailsDialog.location', 'Location')}</div>
                         <div className="font-medium">
-                          {[safeRender(member.city), safeRender(member.country)].filter(v => v && v !== 'Not available').join(', ') || 'Not provided'}
+                          {[safeRender(member.city), safeRender(member.country)].filter(v => v && v !== t('members.detailsDialog.notAvailable')).join(', ') || t('members.detailsDialog.notProvided', 'Not provided')}
                         </div>
                       </div>
                     </>
@@ -237,16 +237,16 @@ const MemberDetailsDialog = ({
               {/* Personal Information */}
               <Card className="p-4 mb-4">
                 <h3 className="text-lg font-semibold mb-4">
-                  Personal Details
+                  {t('members.detailsDialog.personalDetails', 'Personal Details')}
                 </h3>
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-muted-foreground">First Name</div>
+                      <div className="text-sm text-muted-foreground">{t('members.detailsDialog.firstName', 'First Name')}</div>
                       <div className="font-medium">{safeRender(member.firstName)}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-muted-foreground">Last Name</div>
+                      <div className="text-sm text-muted-foreground">{t('members.detailsDialog.lastName', 'Last Name')}</div>
                       <div className="font-medium">{safeRender(member.lastName)}</div>
                     </div>
                   </div>
@@ -257,13 +257,13 @@ const MemberDetailsDialog = ({
                       <div className="grid grid-cols-2 gap-4">
                         {member.gender && (
                           <div>
-                            <div className="text-sm text-muted-foreground">Gender</div>
+                            <div className="text-sm text-muted-foreground">{t('members.detailsDialog.gender', 'Gender')}</div>
                             <div className="font-medium capitalize">{safeRender(member.gender)}</div>
                           </div>
                         )}
                         {member.birthday && (
                           <div>
-                            <div className="text-sm text-muted-foreground">Birthday</div>
+                            <div className="text-sm text-muted-foreground">{t('members.detailsDialog.birthday', 'Birthday')}</div>
                             <div className="font-medium">{formatDate(member.birthday)}</div>
                           </div>
                         )}
@@ -276,18 +276,18 @@ const MemberDetailsDialog = ({
               {/* Account Timeline */}
               <Card className="p-4">
                 <h3 className="text-lg font-semibold mb-4">
-                  Account Timeline
+                  {t('members.detailsDialog.accountTimeline', 'Account Timeline')}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <div className="text-sm text-muted-foreground">Member since</div>
+                    <div className="text-sm text-muted-foreground">{t('members.detailsDialog.memberSince', 'Member since')}</div>
                     <div className="font-medium">{formatDate(member.createdAt)}</div>
                   </div>
                   {member.updatedAt && (
                     <>
                       <Separator />
                       <div className="flex justify-between items-center">
-                        <div className="text-sm text-muted-foreground">Last updated</div>
+                        <div className="text-sm text-muted-foreground">{t('members.detailsDialog.lastUpdated', 'Last updated')}</div>
                         <div className="font-medium">{formatDate(member.updatedAt)}</div>
                       </div>
                     </>
@@ -302,7 +302,7 @@ const MemberDetailsDialog = ({
             <ScrollArea className="h-[500px] pr-4">
               {eventsLoading && (
                 <div className="flex items-center justify-center h-64">
-                  <div className="text-muted-foreground">Loading events...</div>
+                  <div className="text-muted-foreground">{t('members.detailsDialog.events.loading', 'Loading events...')}</div>
                 </div>
               )}
               
@@ -315,8 +315,8 @@ const MemberDetailsDialog = ({
               {!eventsLoading && !eventsError && memberEvents.length === 0 && (
                 <Card className="p-8">
                   <div className="text-center text-muted-foreground">
-                    <p>No events found</p>
-                    <p className="text-sm mt-1">This member hasn't participated in any events yet</p>
+                    <p>{t('members.detailsDialog.events.noEvents', 'No events found')}</p>
+                    <p className="text-sm mt-1">{t('members.detailsDialog.events.noParticipation', "This member hasn't participated in any events yet")}</p>
                   </div>
                 </Card>
               )}
@@ -332,16 +332,16 @@ const MemberDetailsDialog = ({
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h4 className="font-semibold text-lg mb-2">
-                            {safeRender(eventRecord?.eventName || eventRecord?.name, 'Untitled Event')}
+                            {safeRender(eventRecord?.eventName || eventRecord?.name, t('members.detailsDialog.events.untitledEvent', 'Untitled Event'))}
                           </h4>
                           <div className="space-y-1 text-sm text-muted-foreground">
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">Date:</span>
-                              <span>{eventRecord?.date ? formatDate(eventRecord.date) : 'Not set'}</span>
+                              <span className="font-medium">{t('members.detailsDialog.events.date', 'Date')}:</span>
+                              <span>{eventRecord?.date ? formatDate(eventRecord.date) : t('members.detailsDialog.events.notSet', 'Not set')}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">Location:</span>
-                              <span>{safeRender(eventRecord?.city || eventRecord?.location, 'Not set')}</span>
+                              <span className="font-medium">{t('members.detailsDialog.events.location', 'Location')}:</span>
+                              <span>{safeRender(eventRecord?.city || eventRecord?.location, t('members.detailsDialog.events.notSet', 'Not set'))}</span>
                             </div>
                           </div>
                         </div>
@@ -358,11 +358,11 @@ const MemberDetailsDialog = ({
             <ScrollArea className="h-[500px] pr-4">
               <Card className="p-4 mb-4">
                 <h3 className="text-lg font-semibold mb-4">
-                  Account Activity
+                  {t('members.detailsDialog.activity.title', 'Account Activity')}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                    <span className="text-muted-foreground">Account Created</span>
+                    <span className="text-muted-foreground">{t('members.detailsDialog.activity.accountCreated', 'Account Created')}</span>
                     <span className="font-medium">{formatDate(member.createdAt)}</span>
                   </div>
                   
@@ -370,7 +370,7 @@ const MemberDetailsDialog = ({
                     <>
                       <Separator />
                       <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                        <span className="text-muted-foreground">Last Profile Update</span>
+                        <span className="text-muted-foreground">{t('members.detailsDialog.activity.lastProfileUpdate', 'Last Profile Update')}</span>
                         <span className="font-medium">{formatDate(member.updatedAt)}</span>
                       </div>
                     </>
@@ -378,8 +378,8 @@ const MemberDetailsDialog = ({
                   
                   <Separator />
                   <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                    <span className="text-muted-foreground">Event Participations</span>
-                    <span className="font-medium">{memberEvents.length} {memberEvents.length === 1 ? 'event' : 'events'}</span>
+                    <span className="text-muted-foreground">{t('members.detailsDialog.activity.eventParticipations', 'Event Participations')}</span>
+                    <span className="font-medium">{memberEvents.length} {memberEvents.length === 1 ? t('members.detailsDialog.activity.event', 'event') : t('members.detailsDialog.activity.events', 'events')}</span>
                   </div>
                 </div>
               </Card>
@@ -389,16 +389,16 @@ const MemberDetailsDialog = ({
 
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose}>
-            Close
+            {t('common.close', 'Close')}
           </Button>
           {onEdit && (
             <Button variant="default" onClick={handleEdit}>
-              Edit
+              {t('common.edit', 'Edit')}
             </Button>
           )}
           {onDelete && (
             <Button variant="destructive" onClick={handleDelete}>
-              Delete
+              {t('common.delete', 'Delete')}
             </Button>
           )}
         </DialogFooter>

@@ -69,11 +69,11 @@ export const PersonDialog = ({
 
   const handleSave = () => {
     if (type === "sponsor" && !formData.name) {
-      toast.error(t("eventForm.errors.sponsorNameRequired") || "Sponsor name is required");
+      toast.error(t("eventForm.addSponsorDialog.validation.required") || "Sponsor name is required");
       return;
     }
     if (type === "exhibitor" && !formData.fullName) {
-      toast.error(t("eventForm.errors.exhibitorNameRequired") || "Exhibitor name is required");
+      toast.error(t("eventForm.addExhibitorDialog.validation.required") || "Exhibitor name is required");
       return;
     }
     onSave(formData);
@@ -88,11 +88,11 @@ export const PersonDialog = ({
             {person?._id
               ? t(`eventForm.edit${type === "sponsor" ? "Sponsor" : "Exhibitor"}`) ||
                 `Edit ${type}`
-              : t(`eventForm.add${type === "sponsor" ? "Sponsor" : "Exhibitor"}`) ||
+              : t(`eventForm.add${type === "exhibitor" ? "ExhibitorDialog.title" : "SponsorDialog.title"}`) ||
                 `Add ${type}`}
           </DialogTitle>
           <DialogDescription>
-            {t(`eventForm.${type}DialogDescription`) ||
+            {t(`eventForm.${type === "exhibitor" ? "addExhibitorDialog.description" : "addSponsorDialog.description"}`) ||
               `Enter ${type} details`}
           </DialogDescription>
         </DialogHeader>
@@ -120,8 +120,8 @@ export const PersonDialog = ({
               }}
               placeholder={
                 type === "sponsor"
-                  ? t("eventForm.placeholders.enterSponsorName") || "Enter sponsor name"
-                  : t("eventForm.placeholders.enterFullName") || "Enter full name"
+                  ? t("eventForm.addSponsorDialog.placeholders.enterName") || "Enter sponsor name"
+                  : t("eventForm.addExhibitorDialog.placeholders.enterName") || "Enter full name"
               }
             />
           </div>
@@ -129,8 +129,8 @@ export const PersonDialog = ({
           <div>
             <label className="text-sm font-medium">
               {type === "sponsor"
-                ? t("eventForm.fields.logo") || "Logo"
-                : t("eventForm.fields.picture") || "Picture"}
+                ? t("eventForm.addSponsorDialog.fields.logo") || "Logo"
+                : t("eventForm.addExhibitorDialog.fields.picture") || "Picture"}
             </label>
             <FileUpload
               onUploadComplete={(url: string | null) => {
@@ -142,9 +142,7 @@ export const PersonDialog = ({
                 }
               }}
               label={
-                type === "sponsor"
-                  ? t("eventForm.buttons.uploadLogo") || "Upload Logo"
-                  : t("eventForm.buttons.uploadPicture") || "Upload Picture"
+                ' ' 
               }
               accept="image/*"
             />
@@ -201,7 +199,12 @@ export const PersonDialog = ({
             {t("eventForm.buttons.cancel") || "Cancel"}
           </Button>
           <Button type="button" onClick={handleSave}>
-            {t("eventForm.buttons.save") || "Save"}
+            {/* {t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Save"} */}
+            {
+                type === "sponsor"
+                  ? t("eventForm.addSponsorDialog.buttons.addSponsor") || "Add Sponsor"
+                  : t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor"
+              }
           </Button>
         </DialogFooter>
       </DialogContent>

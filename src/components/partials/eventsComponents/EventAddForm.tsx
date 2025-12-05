@@ -1021,7 +1021,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
 
                     {/* Section 6: Gallery */}
                     {currentSection === 6 && (
-                      <div className="space-y-4 animate-in fade-in duration-300">
+                      <div className="space-y-1 animate-in fade-in duration-300">
                         <h3 className="text-lg font-semibold">
                           {t('eventForm.sections.gallery')}
                         </h3>
@@ -1034,7 +1034,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           name="gallery"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>{t('eventForm.fields.galleryImages')}</FormLabel>
+                              {/* <FormLabel>{t('eventForm.fields.galleryImages')}</FormLabel> */}
                               <div className="space-y-4">
                                 <FileUpload
                                   onUploadComplete={(url) => {
@@ -1169,17 +1169,17 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {exhibitorFields.map((field, index) => (
-                              <Card key={field.id} className="p-4">
+                              <Card key={field.id} className="p-2">
                                 <div className="flex gap-3">
                                   {field.picture && (
                                     <img
                                       src={field.picture}
                                       alt={field.fullName}
-                                      className="w-16 h-16 rounded object-cover"
+                                      className="w-12 h-12 rounded object-cover"
                                     />
                                   )}
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-medium truncate">{field.fullName}</h4>
+                                  <div className="flex-1 flex items-center justify-between min-w-0">
+                                    <h4 className="font-medium truncate text-sm">{field.fullName}</h4>
                                     <div className="flex gap-2 mt-2">
                                       <Button
                                         type="button"
@@ -1231,17 +1231,17 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {sponsorFields.map((field, index) => (
-                              <Card key={field.id} className="p-4">
+                              <Card key={field.id} className="p-2">
                                 <div className="flex gap-3">
                                   {field.logo && (
                                     <img
                                       src={field.logo}
                                       alt={field.name}
-                                      className="w-16 h-16 rounded object-cover"
+                                      className="w-12 h-12 rounded object-cover"
                                     />
                                   )}
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-medium truncate">{field.name}</h4>
+                                  <div className="flex-1 flex items-center justify-between min-w-0">
+                                    <h4 className="font-medium truncate text-sm">{field.name}</h4>
                                     <div className="flex gap-2 mt-2">
                                       <Button
                                         type="button"

@@ -227,7 +227,7 @@ const PermissionsDialog = ({
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-4 border-t my-4">
           <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-            Cancel
+            {t('permissions.dialog.cancel')}
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? (

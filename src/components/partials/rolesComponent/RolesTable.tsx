@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   Table, 
   TableBody, 
@@ -48,6 +49,7 @@ interface RolesTableProps {
 }
 
 const RolesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: RolesTableProps) => {
+  const { t } = useTranslation()
   const [roles, setRoles] = useState<Role[]>(data)
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -156,11 +158,11 @@ const RolesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: RolesT
           <Table className='divide-slate-300'>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Permissions</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t('roles.table.id')}</TableHead>
+                <TableHead>{t('roles.table.name')}</TableHead>
+                <TableHead>{t('roles.table.type')}</TableHead>
+                <TableHead>{t('roles.table.permissions')}</TableHead>
+                <TableHead className="text-right">{t('roles.table.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className='divide-slate-300'>
@@ -172,12 +174,12 @@ const RolesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: RolesT
                   <TableCell className="font-medium">{role.name}</TableCell>
                   <TableCell>
                     <Badge variant={role.systemRole ? "default" : "secondary"}>
-                      {role.systemRole ? 'System' : 'Custom'}
+                      {role.systemRole ? t('roles.table.system') : t('roles.table.custom')}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {role.rights?.length || 0} permissions
+                      {t('roles.table.permissionsCount', { count: role.rights?.length || 0 })}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -209,9 +211,11 @@ const RolesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: RolesT
         {pagination && pagination.totalPages > 1 && (
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-500">
-              Showing {((pagination.currentPage - 1) * pagination.pageSize) + 1} to{' '}
-              {Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)} of{' '}
-              {pagination.totalItems} entries
+              {t('roles.table.showing', {
+                from: ((pagination.currentPage - 1) * pagination.pageSize) + 1,
+                to: Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems),
+                total: pagination.totalItems
+              })}
             </div>
             
             <Pagination>
@@ -241,8 +245,8 @@ const RolesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: RolesT
         isOpen={isDeleteDialogOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        title="Delete Role"
-        description="Are you sure you want to delete this role? This will permanently remove the role and all associated permissions. Users with this role will need to be reassigned."
+        title={t('roles.table.deleteTitle')}
+        description={t('roles.table.deleteDescription')}
         itemName={roleToDelete?.name || ''}
         isLoading={isDeleting}
       />

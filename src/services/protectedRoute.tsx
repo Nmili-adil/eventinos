@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux'
 import { Navigate, useLocation } from 'react-router-dom'
 import type { RootState } from '@/store/app/rootReducer'
-import { getAuthToken, getUserData } from './localStorage'
+import { getAuthToken, getRole } from './localStorage'
 import { Loader2, ShieldAlert } from 'lucide-react'
 import { LOGIN_PAGE} from "@/constants/routerConstants"
-import { useTranslation } from 'react-i18next'
 
 
 interface ProtectedRouteProps {
@@ -14,22 +13,21 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading, role: authRole } = useSelector((state: RootState) => state.auth)
   const location = useLocation()
-  const { t } = useTranslation()
 
   // Check if token exists in localStorage as fallback
   const token = getAuthToken()
-  const userData = getUserData()
+  const storedRole = getRole()
   
   // Get role from Redux state or localStorage
-  const userRole = authRole || userData?.user?.toLowerCase()
+  const userRole = authRole || storedRole
 
-  // Show loading spinner while checking authentication
-  if (isLoading) {
+  // Show loading spinner while checking authentication or if we have token but no role yet
+  if (isLoading || (token && !userRole)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-          <p className="text-gray-600">{t('auth.verifyingAuthentication')}</p>
+          <p className="text-gray-600">Verifying authentication...</p>
         </div>
       </div>
     )
@@ -40,8 +38,9 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to={LOGIN_PAGE} state={{ from: location }} replace />
   }
 
-  // Check if user is admin or organizer
-  const isAuthorized = userRole === 'admin' || userRole === 'organizer'
+  // Check if user is admin or organizer (case-insensitive)
+  const normalizedRole = userRole?.toLowerCase()
+  const isAuthorized = normalizedRole === 'admin' || normalizedRole === 'organizer'
 
   // Show unauthorized message if user is not admin or organizer
   if (!isAuthorized) {
@@ -54,15 +53,15 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
                 <ShieldAlert className="h-12 w-12 text-red-600" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.accessDenied')}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
             <p className="text-gray-600 mb-6">
-              {t('auth.restrictedToAdminOrganizer')}
+              This application is restricted to administrators and organizers only.
             </p>
             <button
               onClick={() => window.location.href = LOGIN_PAGE}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
-              {t('auth.returnToLogin')}
+              Return to Login
             </button>
           </div>
         </div>

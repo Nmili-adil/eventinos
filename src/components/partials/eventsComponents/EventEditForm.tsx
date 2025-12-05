@@ -536,10 +536,12 @@ const EventEditForm = ({
                                   <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
+                                   
                                   >
                                     <FormControl>
-                                      <SelectTrigger>
+                                      <SelectTrigger className="truncate">
                                         <SelectValue
+                                        className="truncate"
                                           placeholder={t(
                                             "eventForm.placeholders.selectCategory"
                                           )}
@@ -648,9 +650,9 @@ const EventEditForm = ({
                             name="image"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>
+                                {/* <FormLabel>
                                   {t("eventForm.fields.image")}
-                                </FormLabel>
+                                </FormLabel> */}
                                 <FormControl>
                                   <div className="space-y-2">
                                     <FileUpload
@@ -1529,17 +1531,17 @@ const EventEditForm = ({
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {exhibitorFields.map((field, index) => (
-                                <Card key={field.id} className="p-4">
+                                <Card key={field.id} className="p-2">
                                   <div className="flex gap-3">
                                     {field.picture && (
                                       <img
                                         src={field.picture}
                                         alt={field.fullName}
-                                        className="w-16 h-16 rounded object-cover"
+                                        className="w-12 h-12 rounded object-cover"
                                       />
                                     )}
-                                    <div className="flex-1 min-w-0">
-                                      <h4 className="font-medium truncate">{field.fullName}</h4>
+                                    <div className="flex-1 flex items-center justify-between min-w-0">
+                                      <h4 className="font-medium truncate text-sm">{field.fullName}</h4>
                                       <div className="flex gap-2 mt-2">
                                         <Button
                                           type="button"
@@ -1593,17 +1595,17 @@ const EventEditForm = ({
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {sponsorFields.map((field, index) => (
-                                <Card key={field.id} className="p-4">
+                                <Card key={field.id} className="p-2">
                                   <div className="flex gap-3">
                                     {field.logo && (
                                       <img
                                         src={field.logo}
                                         alt={field.name}
-                                        className="w-16 h-16 rounded object-cover"
+                                        className="w-12 h-12 rounded object-cover"
                                       />
                                     )}
-                                    <div className="flex-1 min-w-0">
-                                      <h4 className="font-medium truncate">{field.name}</h4>
+                                    <div className="flex-1 flex items-center justify-between min-w-0">
+                                      <h4 className="font-medium truncate text-sm">{field.name}</h4>
                                       <div className="flex gap-2 mt-2">
                                         <Button
                                           type="button"

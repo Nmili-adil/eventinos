@@ -83,6 +83,7 @@ const GoogleMapsProviderImpl = ({
     mapIds: mapId ? [mapId] : undefined,
     libraries,
     preventGoogleFontsLoading: true,
+    
   })
 
   if (loadError) {
@@ -94,7 +95,7 @@ const GoogleMapsProviderImpl = ({
   }
 
   return (
-    <GoogleMapsContext.Provider value={{ isLoaded, mapId }}>
+    <GoogleMapsContext.Provider value={{ isLoaded, mapId,  }} >
       {children}
     </GoogleMapsContext.Provider>
   )
@@ -107,6 +108,8 @@ export const GoogleMapWrapper = ({
 }: GoogleMapWrapperProps) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID
+
+
 
   const requestedLibraries = useMemo<Libraries>(() => {
     // Start with default libraries
@@ -132,7 +135,7 @@ export const GoogleMapWrapper = ({
   }
 
   return (
-    <GoogleMapsProviderImpl apiKey={apiKey} mapId={mapId} libraries={requestedLibraries}>
+    <GoogleMapsProviderImpl apiKey={apiKey} mapId={mapId}  libraries={requestedLibraries}>
       {children}
     </GoogleMapsProviderImpl>
   )

@@ -14,13 +14,11 @@ import {  useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false)
     const { isLoading, error } = useSelector((state: RootState) => state.auth)
     const dispatch = useDispatch<AppDispatch>()
-    const { t } = useTranslation()
 
 
     const {
@@ -48,10 +46,10 @@ const LoginForm = () => {
                             </div>
                         </div>
                         <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {t('auth.loginTitle')}
+                            Welcome Back
                         </CardTitle>
                         <CardDescription className="text-gray-600 dark:text-gray-400">
-                            {t('auth.loginDescription')}
+                            Sign in to your account to continue
                         </CardDescription>
                     </CardHeader>
 
@@ -72,12 +70,12 @@ const LoginForm = () => {
                                     htmlFor="email"
                                     className="text-sm font-medium text-gray-900 dark:text-gray-100"
                                 >
-                                    {t('auth.email')}
+                                    Email Address
                                 </Label>
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder={t('auth.emailPlaceholder')}
+                                    placeholder="Enter your email"
                                     {...register('email')}
                                     className={`h-12 px-4 text-base ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'
                                         } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
@@ -94,20 +92,20 @@ const LoginForm = () => {
                                         htmlFor="password"
                                         className="text-sm font-medium text-gray-900 dark:text-gray-100"
                                     >
-                                        {t('auth.password')}
+                                        Password
                                     </Label>
                                     <Link
                                         to="/forgot-password"
                                         className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                                     >
-                                        {t('auth.forgotPassword')}
+                                        Forgot Password?
                                     </Link>
                                 </div>
                                 <div className="relative">
                                     <Input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
-                                        placeholder={t('auth.passwordPlaceholder')}
+                                        placeholder="Enter your password"
                                         {...register('password')}
                                         className={`h-12 px-4 pr-12 text-base ${errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'
                                             } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
@@ -140,10 +138,10 @@ const LoginForm = () => {
                                 {isLoading ? (
                                     <>
                                         <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                        {t('auth.loggingIn')}
+                                        Logging in...
                                     </>
                                 ) : (
-                                    t('auth.loginButton')
+                                    'Sign In'
                                 )}
                             </Button>
                         </form>

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Award, Calendar, FileText, Image as ImageIcon, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface Badge {
   _id: string
@@ -36,6 +37,7 @@ const BadgeDetailsPopup = ({
   onEdit, 
   onDelete 
 }: BadgeDetailsPopupProps) => {
+  const { t } = useTranslation()
   if (!badge) return null
 
   const formatDate = (dateString?: string) => {
@@ -65,10 +67,10 @@ const BadgeDetailsPopup = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Award className="h-5 w-5 text-blue-500" />
-            Badge Details
+            {t('badges.details.title')}
           </DialogTitle>
           <DialogDescription>
-            Detailed information about the badge
+            {t('badges.details.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -109,15 +111,15 @@ const BadgeDetailsPopup = ({
               <div className="space-y-3">
                 <h4 className="font-medium text-gray-900 flex items-center gap-2">
                   <FileText className="h-4 w-4 text-gray-500" />
-                  Design Information
+                  {t('badges.details.designInformation')}
                 </h4>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Design Type</label>
+                    <label className="text-sm font-medium text-gray-500">{t('badges.details.designType')}</label>
                     <p className="text-gray-900">{badge.design}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Badge ID</label>
+                    <label className="text-sm font-medium text-gray-500">{t('badges.details.badgeId')}</label>
                     <p className="text-gray-900 font-mono text-sm">{badge._id}</p>
                   </div>
                 </div>
@@ -127,12 +129,12 @@ const BadgeDetailsPopup = ({
               <div className="space-y-3">
                 <h4 className="font-medium text-gray-900 flex items-center gap-2">
                   <ImageIcon className="h-4 w-4 text-gray-500" />
-                  Image Information
+                  {t('badges.details.imageInformation')}
                 </h4>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Image URL</label>
+                  <label className="text-sm font-medium text-gray-500">{t('badges.details.imageUrl')}</label>
                   <p className="text-gray-900 text-sm break-all flex flex-wrap wrap-break-word truncate">
-                    {badge.image || 'No image URL provided'}
+                    {badge.image || t('badges.details.noImageUrl')}
                   </p>
                 </div>
               </div>
@@ -142,18 +144,18 @@ const BadgeDetailsPopup = ({
                 <div className="space-y-3">
                   <h4 className="font-medium text-gray-900 flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-gray-500" />
-                    Timestamps
+                    {t('badges.details.timestamps')}
                   </h4>
                   <div className="space-y-2">
                     {badge.createdAt && (
                       <div>
-                        <label className="text-sm font-medium text-gray-500">Created</label>
+                        <label className="text-sm font-medium text-gray-500">{t('badges.details.created')}</label>
                         <p className="text-gray-900 text-sm">{formatDate(badge.createdAt)}</p>
                       </div>
                     )}
                     {badge.updatedAt && (
                       <div>
-                        <label className="text-sm font-medium text-gray-500">Last Updated</label>
+                        <label className="text-sm font-medium text-gray-500">{t('badges.details.lastUpdated')}</label>
                         <p className="text-gray-900 text-sm">{formatDate(badge.updatedAt)}</p>
                       </div>
                     )}
@@ -164,9 +166,9 @@ const BadgeDetailsPopup = ({
 
             {/* Additional notes or custom fields can be added here */}
             <div className="border-t pt-4">
-              <h4 className="font-medium text-gray-900 mb-2">Additional Information</h4>
+              <h4 className="font-medium text-gray-900 mb-2">{t('badges.details.additionalInfo')}</h4>
               <p className="text-gray-600 text-sm">
-                This badge represents an achievement that users can earn within the platform.
+                {t('badges.details.additionalInfoText')}
               </p>
             </div>
           </div>
@@ -175,18 +177,18 @@ const BadgeDetailsPopup = ({
         {/* Actions */}
         <div className="flex justify-between items-center pt-4 border-t">
           <Button variant="outline" onClick={onClose}>
-            Close
+            {t('badges.details.close')}
           </Button>
           
           <div className="flex gap-2">
             {onEdit && (
               <Button variant="outline" onClick={handleEdit}>
-                Edit Badge
+                {t('badges.details.editBadge')}
               </Button>
             )}
             {onDelete && (
               <Button variant="destructive" onClick={handleDelete}>
-                Delete Badge
+                {t('badges.details.deleteBadge')}
               </Button>
             )}
           </div>

@@ -40,10 +40,10 @@ export default function ForgotPasswordEmailStep() {
           </div>
         </div>
         <CardTitle className="text-2xl font-bold">
-          Mot de passe oublié ?
+          Forgot Password?
         </CardTitle>
         <CardDescription>
-          Entrez votre email pour réinitialiser votre mot de passe
+          Enter your email to reset your password
         </CardDescription>
       </CardHeader>
       
@@ -51,11 +51,11 @@ export default function ForgotPasswordEmailStep() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email Field */}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email Address</Label>
             <Input
               id="email"
               type="email"
-              placeholder="votre@email.com"
+              placeholder="your@email.com"
               {...register('email')}
               className={errors.email ? 'border-red-500' : ''}
             />
@@ -80,10 +80,10 @@ export default function ForgotPasswordEmailStep() {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Envoi du code...
+                Sending code...
               </>
             ) : (
-              'Envoyer le code de réinitialisation'
+              'Send Reset Code'
             )}
           </Button>
 
@@ -95,7 +95,7 @@ export default function ForgotPasswordEmailStep() {
                 className="font-medium text-blue-600 hover:text-blue-500 underline-offset-4 hover:underline"
               >
                 <ArrowLeft className="h-4 w-4 inline mr-1" />
-                Retour à la connexion
+                Back to Login
               </Link>
             </p>
           </div>

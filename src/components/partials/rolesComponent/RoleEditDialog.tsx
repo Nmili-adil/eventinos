@@ -19,6 +19,7 @@ import { fetchRightsRequest } from "@/store/features/rights/rights.actions"
 import type { AppDispatch } from "@/store/app/store"
 import PermissionsDialog from "@/components/partials/usersComponents/PermissionsDialog"
 import { Shield } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface Role {
   _id: string
@@ -47,6 +48,7 @@ const RoleEditDialog = ({
   onSave,
   isLoading = false,
 }: RoleEditDialogProps) => {
+  const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const { rights } = useSelector((state: RootState) => state.rights)
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([])
@@ -109,20 +111,19 @@ const RoleEditDialog = ({
           <DialogHeader>
             <DialogTitle className="text-2xl">{t('roles.dialog.editTitle')}</DialogTitle>
             <DialogDescription>
-              Update role information and permissions.
+              {t('roles.dialog.editDescription')}
             </DialogDescription>
           </DialogHeader>
-
           <form onSubmit={handleSubmit(onSubmit)}>
             <ScrollArea className="max-h-[calc(90vh-200px)] pr-4 overflow-y-auto">
               <div className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Role Name *</Label>
+                    <Label htmlFor="name">{t('roles.dialog.roleName')} *</Label>
                     <Input
                       id="name"
-                      {...register('name', { required: 'Role name is required' })}
-                      placeholder="Enter role name"
+                      {...register('name', { required: t('roles.dialog.roleNameRequired') })}
+                      placeholder={t('roles.dialog.roleNamePlaceholder')}
                       disabled={role.systemRole}
                     />
                     {errors.name && (
@@ -130,7 +131,7 @@ const RoleEditDialog = ({
                     )}
                     {role.systemRole && (
                       <p className="text-xs text-muted-foreground">
-                        System roles cannot be renamed
+                        {t('roles.dialog.systemRoleWarning')}
                       </p>
                     )}
                   </div>
@@ -141,9 +142,9 @@ const RoleEditDialog = ({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label className="text-base font-semibold">Permissions</Label>
+                      <Label className="text-base font-semibold">{t('roles.dialog.permissions')}</Label>
                       <p className="text-sm text-muted-foreground">
-                        Select the permissions to assign to this role
+                        {t('roles.dialog.permissionsDescription')}
                       </p>
                     </div>
                     <Button
@@ -169,7 +170,7 @@ const RoleEditDialog = ({
                         })}
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {selectedPermissions.length} permission{selectedPermissions.length !== 1 ? 's' : ''} selected
+                        {t('roles.dialog.permissionsCount', { count: selectedPermissions.length })}
                       </p>
                     </div>
                   ) : (

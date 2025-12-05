@@ -338,6 +338,7 @@ import { RadioGroup, RadioGroupItem } from '@radix-ui/react-radio-group'
 import { MapPin, Map as MapIcon } from 'lucide-react'
 import { MapLocationSelector } from './MapLocationSelector'
 import { GoogleMapWrapper } from './GoogleMap'
+import { useTranslation } from 'react-i18next'
 
 interface Coordinates {
   lat: number
@@ -365,6 +366,7 @@ export const LocationSelector = ({
   onChange,
   defaultMode = 'map',
 }: LocationSelectorProps) => {
+  const { t } = useTranslation()
   const [mode, setMode] = useState<'manual' | 'map'>(defaultMode)
 
   const coordinates = useMemo(() => {
@@ -397,13 +399,13 @@ export const LocationSelector = ({
           <RadioGroupItem value="map" id="map-location" />
           <Label htmlFor="map-location" className="font-medium flex-1 cursor-pointer flex items-center gap-2">
             <MapIcon className="h-4 w-4" />
-            Interactive Map
+            {t('location.interactiveMap')}
           </Label>
         </div>
         <div className="flex items-center space-x-2 rounded border p-3 flex-1 bg-slate-50 hover:bg-slate-100 border-slate-200 cursor-pointer transition-all">
           <RadioGroupItem value="manual" id="manual-location" />
           <Label htmlFor="manual-location" className="font-medium flex-1 cursor-pointer">
-            Manual Entry
+            {t('location.manualEntry')}
           </Label>
         </div>
       </RadioGroup>
@@ -425,99 +427,99 @@ export const LocationSelector = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="venue-name" className="text-sm font-medium">
-                Venue Name
+                {t('location.venueName')}
               </Label>
               <Input
                 id="venue-name"
                 value={value?.name || ''}
-                placeholder="e.g., Grand Hotel Ballroom"
+                placeholder={t('location.venueNamePlaceholder')}
                 onChange={(e) => onChange({ ...value, name: e.target.value })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="address" className="text-sm font-medium">
-                Address
+                {t('location.address')}
               </Label>
               <Input
                 id="address"
                 value={value?.address || ''}
-                placeholder="e.g., 123 Main St, Suite 100"
+                placeholder={t('location.addressPlaceholder')}
                 onChange={(e) => onChange({ ...value, address: e.target.value })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="city" className="text-sm font-medium">
-                City
+                {t('location.city')}
               </Label>
               <Input
                 id="city"
                 value={value?.city || ''}
-                placeholder="e.g., New York"
+                placeholder={t('location.cityPlaceholder')}
                 onChange={(e) => onChange({ ...value, city: e.target.value })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="country" className="text-sm font-medium">
-                Country
+                {t('location.country')}
               </Label>
               <Input
                 id="country"
                 value={value?.country || ''}
-                placeholder="e.g., United States"
+                placeholder={t('location.countryPlaceholder')}
                 onChange={(e) => onChange({ ...value, country: e.target.value })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="country-code" className="text-sm font-medium">
-                Country Code
+                {t('location.countryCode')}
               </Label>
               <Input
                 id="country-code"
                 value={value?.countryCode || ''}
-                placeholder="e.g., US"
+                placeholder={t('location.countryCodePlaceholder')}
                 maxLength={2}
                 onChange={(e) => onChange({ ...value, countryCode: e.target.value.toUpperCase() })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="place-id" className="text-sm font-medium">
-                Place ID (optional)
+                {t('location.placeId')}
               </Label>
               <Input
                 id="place-id"
                 value={value?.place_id || ''}
-                placeholder="Google Place ID"
+                placeholder={t('location.placeIdPlaceholder')}
                 onChange={(e) => onChange({ ...value, place_id: e.target.value })}
               />
             </div>
           </div>
 
           <div className="border-t border-slate-200 pt-4">
-            <Label className="text-sm font-medium block mb-3">Coordinates</Label>
+            <Label className="text-sm font-medium block mb-3">{t('location.coordinates')}</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="latitude" className="text-xs text-muted-foreground">
-                  Latitude
+                  {t('location.latitude')}
                 </Label>
                 <Input
                   id="latitude"
                   type="number"
                   step="any"
                   value={coordinates?.lat ?? ''}
-                  placeholder="e.g., 40.7128"
+                  placeholder={t('location.latitudePlaceholder')}
                   onChange={(e) => handleCoordinateInput('lat', e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="longitude" className="text-xs text-muted-foreground">
-                  Longitude
+                  {t('location.longitude')}
                 </Label>
                 <Input
                   id="longitude"
                   type="number"
                   step="any"
                   value={coordinates?.lng ?? ''}
-                  placeholder="e.g., -74.0060"
+                  placeholder={t('location.longitudePlaceholder')}
                   onChange={(e) => handleCoordinateInput('lng', e.target.value)}
                 />
               </div>
@@ -528,9 +530,9 @@ export const LocationSelector = ({
             <div className="bg-blue-50 border border-blue-200 rounded p-3 flex items-start gap-2">
               <MapPin className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="text-sm text-blue-900">
-                <div className="font-medium">Coordinates set:</div>
+                <div className="font-medium">{t('location.coordinatesSet')}</div>
                 <div className="text-xs text-blue-700 mt-1">
-                  Latitude: {coordinates.lat.toFixed(5)} | Longitude: {coordinates.lng.toFixed(5)}
+                  {t('location.latitude')}: {coordinates.lat.toFixed(5)} | {t('location.longitude')}: {coordinates.lng.toFixed(5)}
                 </div>
               </div>
             </div>

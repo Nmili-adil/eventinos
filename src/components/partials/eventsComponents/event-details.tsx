@@ -88,7 +88,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
   // Safe data extraction functions
   const getOrganizerName = () => {
-    if (!event.createdBy) return "Event Organizer";
+    if (!event.createdBy) return t('events.details.eventOrganizer', 'Event Organizer');
 
     if (typeof event.createdBy === "string") {
       return event.createdBy;
@@ -106,7 +106,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
       }
     }
 
-    return "Event Organizer";
+    return t('events.details.eventOrganizer', 'Event Organizer');
   };
 
   const getOrganizerAvatar = () => {
@@ -125,7 +125,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
         day: "numeric",
       });
     } catch (error) {
-      return "Invalid date";
+      return t('events.details.invalidDate', 'Invalid date');
     }
   };
 
@@ -136,7 +136,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
         minute: "2-digit",
       });
     } catch (error) {
-      return "Invalid time";
+      return t('events.details.invalidTime', 'Invalid time');
     }
   };
 
@@ -170,8 +170,8 @@ const EventDetails = ({ event }: EventDetailsProps) => {
 
   // Safe data access with fallbacks
   const safeEvent = {
-    name: event.name || "Untitled Event",
-    description: event.description || "No description available.",
+    name: event.name || t('events.details.untitledEvent', 'Untitled Event'),
+    description: event.description || t('events.details.noDescription', 'No description available.'),
     image: event.image || "/placeholder-image.jpg",
     status: event.status || "DRAFT",
     type: event.type || "FACETOFACE",
@@ -179,7 +179,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     startDate: event.startDate || { date: "", time: "" },
     endDate: event.endDate || { date: "", time: "" },
     location: event.location || {
-      name: "Location not specified",
+      name: t('events.details.locationNotSpecified', 'Location not specified'),
       city: "",
       country: "",
     },
@@ -188,7 +188,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     exhibitors: Array.isArray(event.exhibitors) ? event.exhibitors : [],
     sponsors: Array.isArray(event.sponsors) ? event.sponsors : [],
     gallery: Array.isArray(event.gallery) ? event.gallery : [],
-    program: event.program || "No program details available.",
+    program: event.program || t('events.details.noProgramDetails', 'No program details available.'),
     isUpComingEvent: event.isUpComingEvent || false,
   };
 
@@ -278,7 +278,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 </AvatarFallback>
               </Avatar>
               <p className="text-muted-foreground text-sm">
-                Organized by {getOrganizerName()}
+                {t('events.details.organizedBy', 'Organized by')} {getOrganizerName()}
               </p>
             </div>
           </div>
@@ -292,7 +292,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Edit event</p>
+                <p>{t('events.details.editEvent', 'Edit event')}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -309,7 +309,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Delete this Event</p>
+                <p>{t('events.details.deleteEvent', 'Delete this Event')}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -333,10 +333,10 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               />
               <div className="absolute top-4 left-4 flex space-x-2">
                 <Badge className={getStatusColor(safeEvent.status)}>
-                  {safeEvent.status}
+                  {String(t(`events.status.${safeEvent.status.toLowerCase()}`, safeEvent.status))}
                 </Badge>
                 <Badge className={getTypeColor(safeEvent.type)}>
-                  {safeEvent.type.replace("FACETOFACE", "In-Person")}
+                  {String(t(`events.type.${safeEvent.type.toLowerCase()}`, safeEvent.type === "FACETOFACE" ? "In-Person" : safeEvent.type))}
                 </Badge>
                 <Badge variant="default">{safeEvent.visibility}</Badge>
               </div>
@@ -351,16 +351,16 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               className="w-full"
             >
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="speakers">Speakers</TabsTrigger>
-                <TabsTrigger value="program">Program</TabsTrigger>
-                <TabsTrigger value="gallery">Gallery</TabsTrigger>
+                <TabsTrigger value="details">{t('events.details.tabs.details', 'Details')}</TabsTrigger>
+                <TabsTrigger value="speakers">{t('events.details.tabs.speakers', 'Speakers')}</TabsTrigger>
+                <TabsTrigger value="program">{t('events.details.tabs.program', 'Program')}</TabsTrigger>
+                <TabsTrigger value="gallery">{t('events.details.tabs.gallery', 'Gallery')}</TabsTrigger>
               </TabsList>
 
               {/* Details Tab */}
               <TabsContent value="details" className="space-y-6 p-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Description</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t('events.details.description', 'Description')}</h3>
                   <div
                     className="prose prose-slate max-w-none prose-headings:font-semibold prose-p:text-slate-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-slate-900 prose-ul:list-disc prose-ol:list-decimal prose-li:text-slate-700"
                     dangerouslySetInnerHTML={{ __html: safeEvent.description }}
@@ -374,20 +374,20 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   <div className="space-y-4">
                     <h4 className="font-semibold flex items-center">
                       <Calendar className="h-4 w-4 mr-2" />
-                      Date & Time
+                      {t('events.details.dateTime', 'Date & Time')}
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Start:</span>
+                        <span className="text-muted-foreground">{t('events.details.start', 'Start')}:</span>
                         <span>
-                          {formatDate(safeEvent.startDate.date)} at{" "}
+                          {formatDate(safeEvent.startDate.date)} {t('events.details.at', 'at')}{" "}
                           {formatTime(safeEvent.startDate.time)}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">End:</span>
+                        <span className="text-muted-foreground">{t('events.details.end', 'End')}:</span>
                         <span>
-                          {formatDate(safeEvent.endDate.date)} at{" "}
+                          {formatDate(safeEvent.endDate.date)} {t('events.details.at', 'at')}{" "}
                           {formatTime(safeEvent.endDate.time)}
                         </span>
                       </div>
@@ -415,7 +415,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                       <div className="space-y-4">
                         <h4 className="font-semibold flex items-center">
                           <Globe className="h-4 w-4 mr-2" />
-                          Social Links
+                          {t('events.details.socialLinks', 'Social Links')}
                         </h4>
                         <div className="flex flex-wrap gap-2">
                           {safeEvent.socialNetworks.website && (
@@ -426,7 +426,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                                 rel="noopener noreferrer"
                               >
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                Website
+                                {t('events.details.website', 'Website')}
                               </a>
                             </Button>
                           )}
@@ -438,7 +438,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                                 rel="noopener noreferrer"
                               >
                                 <Facebook className="h-4 w-4 mr-2" />
-                                Facebook
+                                {t('events.details.facebook', 'Facebook')}
                               </a>
                             </Button>
                           )}
@@ -450,7 +450,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                                 rel="noopener noreferrer"
                               >
                                 <Twitter className="h-4 w-4 mr-2" />
-                                Twitter
+                                {t('events.details.twitter', 'Twitter')}
                               </a>
                             </Button>
                           )}
@@ -462,7 +462,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                                 rel="noopener noreferrer"
                               >
                                 <Linkedin className="h-4 w-4 mr-2" />
-                                LinkedIn
+                                {t('events.details.linkedin', 'LinkedIn')}
                               </a>
                             </Button>
                           )}
@@ -564,7 +564,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
-                    No speakers announced yet.
+                    {t('events.details.noSpeakers', 'No speakers announced yet.')}
                   </div>
                 )}
               </TabsContent>
@@ -579,7 +579,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                     />
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      No program details available.
+                      {t('events.details.noProgramDetails', 'No program details available.')}
                     </p>
                   )}
                 </div>
@@ -609,7 +609,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
-                    No gallery images available.
+                    {t('events.details.noGallery', 'No gallery images available.')}
                   </div>
                 )}
               </TabsContent>
@@ -625,13 +625,13 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           {/* Event Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Event Information</CardTitle>
+              <CardTitle>{t('events.details.eventInformation', 'Event Information')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm">
-                  <div className="font-medium">Date</div>
+                  <div className="font-medium">{t('events.details.date', 'Date')}</div>
                   <div className="text-muted-foreground">
                     {formatDate(safeEvent.startDate.date)}
                   </div>
@@ -641,7 +641,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               <div className="flex items-center space-x-3">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm">
-                  <div className="font-medium">Time</div>
+                  <div className="font-medium">{t('events.details.time', 'Time')}</div>
                   <div className="text-muted-foreground">
                     {formatTime(safeEvent.startDate.time)} -{" "}
                     {formatTime(safeEvent.endDate.time)}
@@ -652,7 +652,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm">
-                  <div className="font-medium">Venue</div>
+                  <div className="font-medium">{t('events.details.venue', 'Venue')}</div>
                   <div className="text-muted-foreground">
                     {safeEvent.location.name}
                   </div>
@@ -662,13 +662,13 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               <div className="flex items-center space-x-3">
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm">
-                  <div className="font-medium">Event Type</div>
+                  <div className="font-medium">{t('events.details.eventType', 'Event Type')}</div>
                   <div className="text-muted-foreground">
-                    {safeEvent.type === "FACETOFACE"
+                    {String(t(`events.type.${safeEvent.type.toLowerCase()}`, safeEvent.type === "FACETOFACE"
                       ? "In-Person"
                       : safeEvent.type === "ONLINE"
                       ? "Online"
-                      : "Hybrid"}
+                      : "Hybrid"))}
                   </div>
                 </div>
               </div>
@@ -679,7 +679,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           {safeEvent.exhibitors.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Exhibitors</CardTitle>
+                <CardTitle>{t('events.details.exhibitors', 'Exhibitors')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {safeEvent.exhibitors.map((exhibitor: any) => (
@@ -701,7 +701,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                     </Avatar>
                     <div className="text-sm">
                       <div className="font-medium">
-                        {exhibitor.fullName || "Exhibitor"}
+                        {exhibitor.fullName || t('events.details.exhibitor', 'Exhibitor')}
                       </div>
                     </div>
                   </div>
@@ -714,7 +714,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
           {safeEvent.sponsors.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Sponsors</CardTitle>
+                <CardTitle>{t('events.details.sponsors', 'Sponsors')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {safeEvent.sponsors.map((sponsor: any) => (
@@ -733,7 +733,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                     </Avatar>
                     <div className="text-sm">
                       <div className="font-medium">
-                        {sponsor.name || "Sponsor"}
+                        {sponsor.name || t('events.details.sponsor', 'Sponsor')}
                       </div>
                     </div>
                   </div>
@@ -780,24 +780,23 @@ const EventDetails = ({ event }: EventDetailsProps) => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Are you sure you want to delete this event?
+              {t('events.details.deleteConfirmTitle', 'Are you sure you want to delete this event?')}
             </AlertDialogTitle>
             <AlertDialogDescription className="flex flex-wrap max-w-full">
-              This action cannot be undone. The event{" "}
-              <span className="font-semibold">"{safeEvent.name}"</span> will be
-              permanently deleted from your organization.
+              {t('events.details.deleteConfirmDescription', 'This action cannot be undone. The event')}{" "}
+              <span className="font-semibold">"{safeEvent.name}"</span> {t('events.details.willBeDeleted', 'will be permanently deleted from your organization.')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancelDelete}>
-              Cancel
+              {t('common.cancel', 'Cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               className="bg-red-600 hover:bg-red-700"
               onClick={handleConfirmDelete}
               disabled={isLoading}
             >
-              {isLoading ? "Deleting..." : "Delete"}
+              {isLoading ? t('common.deleting', 'Deleting...') : t('common.delete', 'Delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -834,7 +833,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
       <Dialog open={!!selectedSpeaker} onOpenChange={closeSpeakerModal}>
         <DialogContent className="max-w-2xl border-slate-300">
           <DialogHeader>
-            <DialogTitle>Speaker Details</DialogTitle>
+            <DialogTitle>{t('events.details.speakerDetails', 'Speaker Details')}</DialogTitle>
           </DialogHeader>
           {selectedSpeaker && (
             <div className="flex flex-col sm:flex-row gap-6 items-start">
@@ -853,7 +852,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               <div className="flex-1 space-y-3">
                 <div>
                   <h3 className="text-xl font-semibold">
-                    {selectedSpeaker.fullName || "Speaker"}
+                    {selectedSpeaker.fullName || t('events.details.speaker', 'Speaker')}
                   </h3>
                   {selectedSpeaker.position && (
                     <p className="text-muted-foreground font-medium">
@@ -869,7 +868,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 
                 {selectedSpeaker.bio && (
                   <div>
-                    <h4 className="font-semibold mb-2">About</h4>
+                    <h4 className="font-semibold mb-2">{t('events.details.about', 'About')}</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {selectedSpeaker.bio}
                     </p>

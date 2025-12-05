@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   Table, 
   TableBody, 
@@ -50,6 +51,7 @@ interface BadgesTableProps {
 }
 
 const BadgesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: BadgesTableProps) => {
+  const { t } = useTranslation()
   const [badges, setBadges] = useState<Badge[]>(data)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null)
@@ -145,12 +147,12 @@ const BadgesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: Badge
           <Table className='divide-slate-300'>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Image</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Design</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t('badges.table.id')}</TableHead>
+                <TableHead>{t('badges.table.image')}</TableHead>
+                <TableHead>{t('badges.table.name')}</TableHead>
+                <TableHead>{t('badges.table.description')}</TableHead>
+                <TableHead>{t('badges.table.design')}</TableHead>
+                <TableHead className="text-right">{t('badges.table.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className='divide-slate-300'>
@@ -221,8 +223,8 @@ const BadgesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: Badge
         isOpen={isDeleteDialogOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        title="Delete Badge"
-        description="Are you sure you want to delete this badge? This will permanently remove the badge and all associated data."
+        title={t('badges.table.deleteTitle')}
+        description={t('badges.table.deleteDescription')}
         itemName={badgeToDelete?.name || ''}
         isLoading={isDeleting}
       />

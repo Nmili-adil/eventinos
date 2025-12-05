@@ -246,6 +246,71 @@
           "description": "L'événement a été fermé"
         }
       }
+    },
+    "details": {
+      "eventOrganizer": "Organisateur de l'événement",
+      "invalidDate": "Date invalide",
+      "invalidTime": "Heure invalide",
+      "untitledEvent": "Événement sans titre",
+      "noDescription": "Aucune description disponible.",
+      "locationNotSpecified": "Lieu non spécifié",
+      "noProgramDetails": "Aucun détail du programme disponible.",
+      "organizedBy": "Organisé par",
+      "editEvent": "Modifier l'événement",
+      "deleteEvent": "Supprimer cet événement",
+      "tabs": {
+        "details": "Détails",
+        "speakers": "Intervenants",
+        "program": "Programme",
+        "gallery": "Galerie"
+      },
+      "description": "Description",
+      "dateTime": "Date et heure",
+      "start": "Début",
+      "end": "Fin",
+      "at": "à",
+      "socialLinks": "Liens sociaux",
+      "website": "Site Web",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "noSpeakers": "Aucun intervenant annoncé pour le moment.",
+      "noGallery": "Aucune image de galerie disponible.",
+      "eventInformation": "Informations sur l'événement",
+      "date": "Date",
+      "time": "Heure",
+      "venue": "Lieu",
+      "eventType": "Type d'événement",
+      "exhibitors": "Exposants",
+      "exhibitor": "Exposant",
+      "sponsors": "Sponsors",
+      "sponsor": "Sponsor",
+      "deleteConfirmTitle": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+      "deleteConfirmDescription": "Cette action ne peut pas être annulée. L'événement",
+      "willBeDeleted": "sera définitivement supprimé de votre organisation.",
+      "speakerDetails": "Détails de l'intervenant",
+      "speaker": "Intervenant",
+      "about": "À propos"
+    },
+    "status": {
+      "published": "Publié",
+      "draft": "Brouillon",
+      "cancelled": "Annulé",
+      "closed": "Fermé",
+      "pending": "En attente",
+      "accepted": "Accepté",
+      "refused": "Refusé"
+    },
+    "type": {
+      "facetoface": "En personne",
+      "online": "En ligne",
+      "hybrid": "Hybride"
+    },
+    "membersCard": {
+      "title": "Membres inscrits",
+      "subtitle": "Voir tous les participants à cet événement.",
+      "totalLabel": "Total des participants",
+      "viewMembers": "Gérer les membres"
     }
   },
   "eventForm": {
@@ -363,7 +428,8 @@
       "addExhibitor": "Ajouter un exposant",
       "addSponsor": "Ajouter un sponsor",
       "uploadImage": "Télécharger l'image de l'événement",
-      "uploadGalleryImage": "Télécharger l'image de la galerie"
+      "uploadGalleryImage": "Télécharger l'image de la galerie",
+      "saveAndNext": "Enregistrer et suivant"
     },
     "labels": {
       "eventHighlights": "Points forts de l'événement",
@@ -376,6 +442,8 @@
       "noBadges": "Aucun badge disponible. Veuillez d'abord créer des badges.",
       "noImages": "Aucune image ajoutée pour le moment",
       "noImagesDescription": "Ajoutez des URL d'images pour créer votre galerie d'événement",
+      "noExhibitors": "Aucun exposant ajouté pour le moment",
+      "noSponsors": "Aucun sponsor ajouté pour le moment",
       "imageNumber": "Image {{number}}"
     },
     "validation": {
@@ -388,6 +456,48 @@
     "messages": {
       "debugLocation": "Données de localisation :",
       "notSet": "Non défini"
+    },
+    "addExhibitorDialog": {
+      "title": "Ajouter un exposant",
+      "description": "Entrez les détails de l'exposant",
+      "fields": {
+        "name": "Nom de l'exposant",
+        "picture": "URL de l'image de l'exposant"
+      },
+      "placeholders": {
+        "enterName": "Entrez le nom de l'exposant",
+        "enterPicture": "https://exemple.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "add": "Ajouter l'exposant",
+        "adding": "Ajout en cours..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidUrl": "Veuillez entrer une URL valide"
+      }
+    },
+    "addSponsorDialog": {
+      "title": "Ajouter un sponsor",
+      "description": "Entrez les détails du sponsor",
+      "fields": {
+        "name": "Nom du sponsor",
+        "logo": "URL du logo du sponsor"
+      },
+      "placeholders": {
+        "enterName": "Entrez le nom du sponsor",
+        "enterLogo": "https://exemple.com/logo.jpg"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "add": "Ajouter le sponsor",
+        "adding": "Ajout en cours..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidUrl": "Veuillez entrer une URL valide"
+      }
     }
   },
   "members": {
@@ -614,16 +724,49 @@
         "completed": "Complété",
         "pending": "En attente"
       },
+      "notAvailable": "Non disponible",
+      "notProvided": "Non fourni",
+      "status": "Statut",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "registration": "Inscription",
+      "complete": "Complété",
+      "pending": "En attente",
+      "contactInformation": "Informations de contact",
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Localisation",
+      "personalDetails": "Informations personnelles",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "gender": "Genre",
+      "birthday": "Date de naissance",
+      "accountTimeline": "Chronologie du compte",
+      "memberSince": "Membre depuis",
+      "lastUpdated": "Dernière mise à jour",
       "events": {
+        "loading": "Chargement des événements...",
+        "noEvents": "Aucun événement trouvé",
+        "noParticipation": "Ce membre n'a participé à aucun événement pour le moment",
+        "untitledEvent": "Événement sans titre",
+        "date": "Date",
+        "location": "Lieu",
+        "notSet": "Non défini",
         "loadingEvents": "Chargement des événements...",
-        "noEvents": "Aucune participation aux événements trouvée",
         "noEventsDescription": "Ce membre ne s'est inscrit à aucun événement pour le moment.",
         "unableToLoad": "Impossible de charger les événements du membre.",
-        "untitledEvent": "Événement sans titre",
         "dateNotSet": "Date non définie",
         "locationNotSet": "Lieu non défini",
         "registered": "inscrit",
         "eventsCount": "{{count}} événements"
+      },
+      "activity": {
+        "title": "Activité du compte",
+        "accountCreated": "Compte créé",
+        "lastProfileUpdate": "Dernière mise à jour du profil",
+        "eventParticipations": "Participations aux événements",
+        "event": "événement",
+        "events": "événements"
       },
       "buttons": {
         "close": "Fermer",
@@ -734,6 +877,14 @@
     "deleteDialog": {
       "title": "Supprimer la Catégorie",
       "description": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Cela supprimera définitivement la catégorie et toutes les données associées."
+    },
+    "table": {
+      "id": "ID",
+      "icon": "Icône",
+      "name": "Nom",
+      "description": "Description",
+      "actions": "Actions",
+      "showing": "Affichage de {{from}} à {{to}} sur {{total}} entrées"
     }
   },
   "badges": {
@@ -781,7 +932,35 @@
     "deletedSuccessfully": "Badge supprimé avec succès",
     "createFailed": "Échec de la création du badge",
     "updateFailed": "Échec de la mise à jour du badge",
-    "deleteFailed": "Échec de la suppression du badge"
+    "deleteFailed": "Échec de la suppression du badge",
+    "table": {
+      "id": "ID",
+      "image": "Image",
+      "name": "Nom",
+      "description": "Description",
+      "design": "Design",
+      "actions": "Actions",
+      "deleteTitle": "Supprimer le badge",
+      "deleteDescription": "Êtes-vous sûr de vouloir supprimer ce badge ? Cela supprimera définitivement le badge et toutes les données associées."
+    },
+    "details": {
+      "title": "Détails du badge",
+      "description": "Informations détaillées sur le badge",
+      "designInformation": "Informations de conception",
+      "designType": "Type de conception",
+      "badgeId": "ID du badge",
+      "imageInformation": "Informations sur l'image",
+      "imageUrl": "URL de l'image",
+      "noImageUrl": "Aucune URL d'image fournie",
+      "timestamps": "Horodatages",
+      "created": "Créé",
+      "lastUpdated": "Dernière mise à jour",
+      "additionalInfo": "Informations supplémentaires",
+      "additionalInfoText": "Ce badge représente une réalisation que les utilisateurs peuvent obtenir sur la plateforme.",
+      "close": "Fermer",
+      "editBadge": "Modifier le badge",
+      "deleteBadge": "Supprimer le badge"
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -798,7 +977,58 @@
     "deletedSuccessfully": "Rôle supprimé avec succès",
     "createFailed": "Échec de la création du rôle",
     "updateFailed": "Échec de la mise à jour du rôle",
-    "deleteFailed": "Échec de la suppression du rôle"
+    "deleteFailed": "Échec de la suppression du rôle",
+    "dialog": {
+      "editTitle": "Modifier le rôle",
+      "editDescription": "Mettre à jour les informations du rôle et gérer les permissions",
+      "roleName": "Nom du rôle",
+      "roleNamePlaceholder": "Saisissez le nom du rôle",
+      "roleNameRequired": "Le nom du rôle est requis",
+      "systemRoleWarning": "Les rôles système ne peuvent pas être renommés",
+      "permissions": "Permissions",
+      "permissionsDescription": "Sélectionnez les permissions à attribuer à ce rôle",
+      "managePermissions": "Gérer les permissions",
+      "noPermissionsSelected": "Aucune permission sélectionnée. Cliquez sur 'Gérer les permissions' pour en ajouter.",
+      "permissionsCount": "{{count}} permission sélectionnée",
+      "permissionsCount_plural": "{{count}} permissions sélectionnées",
+      "cancel": "Annuler",
+      "update": "Mettre à jour le rôle",
+      "updating": "Mise à jour..."
+    },
+    "table": {
+      "id": "ID",
+      "name": "Nom",
+      "type": "Type",
+      "permissions": "Permissions",
+      "actions": "Actions",
+      "system": "Système",
+      "custom": "Personnalisé",
+      "permissionsCount": "{{count}} permission",
+      "permissionsCount_plural": "{{count}} permissions",
+      "showing": "Affichage de {{from}} à {{to}} sur {{total}} entrées",
+      "deleteTitle": "Supprimer le rôle",
+      "deleteDescription": "Êtes-vous sûr de vouloir supprimer ce rôle ? Cela supprimera définitivement le rôle et toutes les permissions associées. Les utilisateurs ayant ce rôle devront être réassignés."
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "Gérer les permissions",
+      "description": "Sélectionnez les permissions que vous souhaitez attribuer. Vous pouvez sélectionner toutes les permissions d'un groupe ou des permissions individuelles.",
+      "selectAll": "Tout sélectionner",
+      "of": "sur",
+      "selected": "sélectionnées",
+      "noPermissions": "Aucune permission disponible",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    }
+  },
+  "footer": {
+    "tagline": "Plateforme de gestion d'événements",
+    "rights": "Tous droits réservés",
+    "madeWith": "Fait avec",
+    "by": "par",
+    "followUs": "Suivez-nous"
   },
   "profilePage": {
     "title": "Profil",
@@ -1195,6 +1425,33 @@
     "latitude": "Latitude",
     "longitude": "Longitude",
     "enterAddress": "Entrez une adresse ou un nom de lieu",
-    "selectLocation": "Sélectionnez un emplacement"
+    "selectLocation": "Sélectionnez un emplacement",
+    "searchPlaceholder": "Rechercher un lieu, une adresse ou un établissement...",
+    "currentLocation": "Position Actuelle",
+    "locating": "Localisation...",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "clear": "Effacer",
+    "selectionHint": "Cliquez sur la carte, utilisez la recherche ou activez la géolocalisation pour sélectionner un emplacement.",
+    "latitudePlaceholder": "ex., 33.5731",
+    "longitudePlaceholder": "ex., -7.5898",
+    "geolocationNotSupported": "La géolocalisation n'est pas prise en charge par votre navigateur",
+    "geolocationError": "Impossible d'obtenir votre position",
+    "interactiveMap": "Carte Interactive",
+    "manualEntry": "Saisie Manuelle",
+    "venueName": "Nom du Lieu",
+    "venueNamePlaceholder": "ex., Salle de bal du Grand Hôtel",
+    "address": "Adresse",
+    "addressPlaceholder": "ex., 123 Rue Principale, Suite 100",
+    "city": "Ville",
+    "cityPlaceholder": "ex., Paris",
+    "country": "Pays",
+    "countryPlaceholder": "ex., France",
+    "countryCode": "Code Pays",
+    "countryCodePlaceholder": "ex., FR",
+    "placeId": "ID du Lieu (optionnel)",
+    "placeIdPlaceholder": "ID Google Place",
+    "coordinates": "Coordonnées",
+    "coordinatesSet": "Coordonnées définies :"
   }
 }

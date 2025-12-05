@@ -16,6 +16,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = getAuthToken();
+  
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function LoginPage() {
   }, [isAuthenticated, user, message, error, navigate, t]);
 
   useEffect(() => {
-    if (token) {
+    if (token && (user?.role.name === 'admin' || user?.role.name === 'organizer')) {
       navigate(DASHBOARD_OVERVIEW);
     }
   }, []);

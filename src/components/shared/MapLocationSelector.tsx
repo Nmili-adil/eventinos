@@ -13,6 +13,7 @@ import {
   Compass,
 } from 'lucide-react'
 import { useGoogleMaps } from './GoogleMap'
+import { useTranslation } from 'react-i18next'
 
 interface LocationCoordinates {
   lat: number
@@ -48,10 +49,12 @@ export const MapLocationSelector = ({
   onChange,
   height = '400px',
   center,
-  zoom = 13,
+  zoom = 4,
   enableSearch = true,
   enableGeolocation = true,
+  
 }: MapLocationSelectorProps) => {
+  const { t } = useTranslation()
   const { mapId } = useGoogleMaps()
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null)
@@ -181,7 +184,7 @@ export const MapLocationSelector = ({
   // Handle geolocation
   const handleUseCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser')
+      alert(t('location.geolocationNotSupported'))
       return
     }
 
@@ -231,12 +234,12 @@ export const MapLocationSelector = ({
       },
       (error) => {
         console.error('Geolocation error:', error)
-        alert('Unable to get your location')
+        alert(t('location.geolocationError'))
         setIsGeolocating(false)
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
     )
-  }, [map, onChange, value])
+  }, [map, onChange, value, t])
 
   // Clear selection
   const handleClear = useCallback(() => {
@@ -280,7 +283,7 @@ export const MapLocationSelector = ({
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                 <Input
                   type="text"
-                  placeholder="Search for a place, address, or venue..."
+                  placeholder={t('location.searchPlaceholder')}
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   className="pl-10 pr-4"
@@ -300,7 +303,7 @@ export const MapLocationSelector = ({
               className="gap-2"
             >
               <Crosshair className="h-4 w-4" />
-              {isGeolocating ? 'Locating...' : 'Current Location'}
+              {isGeolocating ? t('location.locating') : t('location.currentLocation')}
             </Button>
           )}
 
@@ -315,12 +318,12 @@ export const MapLocationSelector = ({
                 {copied ? (
                   <>
                     <Check className="h-4 w-4" />
-                    Copied!
+                    {t('location.copied')}
                   </>
                 ) : (
                   <>
                     <Copy className="h-4 w-4" />
-                    Copy
+                    {t('location.copy')}
                   </>
                 )}
               </Button>
@@ -331,7 +334,7 @@ export const MapLocationSelector = ({
                 className="gap-2"
               >
                 <X className="h-4 w-4" />
-                Clear
+                {t('location.clear')}
               </Button>
             </>
           )}
@@ -393,37 +396,37 @@ export const MapLocationSelector = ({
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
           <Zap className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-amber-800">
-            Click on the map, use search, or enable geolocation to select a location.
+            {t('location.selectionHint')}
           </div>
         </div>
       )}
 
       {/* Manual Coordinates Input */}
-      <div className="space-y-2 border-t border-slate-200 pt-4">
+      <div className="space-y-2 border-t border-slate-200 p-4">
         <Label className="text-sm font-medium">{t('location.manualCoordinates')}</Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <Label htmlFor="lat-input" className="text-xs text-muted-foreground mb-1 block">
-              Latitude
+              {t('location.latitude')}
             </Label>
             <Input
               id="lat-input"
-              type="number"
+              type="text"
               step="any"
-              placeholder="e.g., 33.5731"
+              placeholder={t('location.latitudePlaceholder')}
               value={selectedLocation?.lat ?? ''}
               onChange={(e) => handleCoordinateInput('lat', e.target.value)}
             />
           </div>
           <div>
             <Label htmlFor="lng-input" className="text-xs text-muted-foreground mb-1 block">
-              Longitude
+              {t('location.longitude')}
             </Label>
             <Input
               id="lng-input"
-              type="number"
+              type="text"
               step="any"
-              placeholder="e.g., -7.5898"
+              placeholder={t('location.longitudePlaceholder')}
               value={selectedLocation?.lng ?? ''}
               onChange={(e) => handleCoordinateInput('lng', e.target.value)}
             />

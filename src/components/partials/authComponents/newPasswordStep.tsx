@@ -58,17 +58,17 @@ export default function NewPasswordStep() {
             className="text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Retour
+            Back
           </Button>
           <div className="bg-linear-to-r from-green-600 to-emerald-600 rounded-xl p-3">
             <Key className="h-8 w-8 text-white" />
           </div>
         </div>
         <CardTitle className="text-2xl font-bold">
-          Nouveau mot de passe
+          New Password
         </CardTitle>
         <CardDescription>
-          Créez un nouveau mot de passe sécurisé
+          Create a new secure password
         </CardDescription>
       </CardHeader>
       
@@ -85,12 +85,12 @@ export default function NewPasswordStep() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* New Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+            <Label htmlFor="newPassword">New Password</Label>
             <div className="relative">
               <Input
                 id="newPassword"
                 type={showNewPassword ? 'text' : 'password'}
-                placeholder="Votre nouveau mot de passe"
+                placeholder="Enter your new password"
                 {...register('newPassword')}
                 className={errors.newPassword ? 'border-red-500 pr-10' : 'pr-10'}
               />
@@ -115,12 +115,12 @@ export default function NewPasswordStep() {
 
           {/* Confirm Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirmez votre nouveau mot de passe"
+                placeholder="Confirm your new password"
                 {...register('confirmPassword')}
                 className={errors.confirmPassword ? 'border-red-500 pr-10' : 'pr-10'}
               />
@@ -147,13 +147,13 @@ export default function NewPasswordStep() {
           {newPassword && newPassword.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span>Force du mot de passe:</span>
+                <span>Password Strength:</span>
                 <span className={
                   newPassword.length < 8 ? 'text-red-600' :
                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'text-yellow-600' : 'text-green-600'
                 }>
-                  {newPassword.length < 8 ? 'Faible' :
-                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'Moyen' : 'Fort'}
+                  {newPassword.length < 8 ? 'Weak' :
+                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'Medium' : 'Strong'}
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -183,10 +183,10 @@ export default function NewPasswordStep() {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Réinitialisation...
+                Resetting...
               </>
             ) : (
-              'Réinitialiser le mot de passe'
+              'Reset Password'
             )}
           </Button>
         </form>

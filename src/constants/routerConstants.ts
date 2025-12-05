@@ -11,3 +11,4 @@ export const PROFILE_PAGE = (userId: string ) => `/dashboard/profile/${userId}`
 export const CONTACTS_PAGE = '/dashboard/contacts'
 export const COMPTES_PAGE = '/dashboard/comptes'
 export const NOTFOUND_PAGE = '/not-found'
+export const UNAUTHORIZED_PAGE = '/unauthorized'
