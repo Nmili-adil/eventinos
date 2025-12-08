@@ -98,18 +98,35 @@ export const isServerError = (error: any): boolean => {
 /**
  * Utility function to handle errors in async operations
  * Automatically shows toast for server errors
+ * Note: 500 errors are also handled globally by the App component
  */
 export const handleAsyncError = (error: any, customMessage?: string) => {
   console.error('Async operation error:', error)
 
   if (isServerError(error)) {
+    // 500 errors are handled globally, but we can still show a toast
     toast.error('Server Error', {
-      description: customMessage || error.message || 'An internal server error occurred. Please try again later.',
+      description: customMessage || error.response?.data?.message || error.message || 'An internal server error occurred. Please try again later.',
       duration: 5000,
+    })
+  } else if (error.response?.status === 401) {
+    toast.error('Unauthorized', {
+      description: 'Your session has expired. Please login again.',
+      duration: 3000,
+    })
+  } else if (error.response?.status === 403) {
+    toast.error('Access Denied', {
+      description: 'You do not have permission to perform this action.',
+      duration: 3000,
+    })
+  } else if (error.response?.status === 404) {
+    toast.error('Not Found', {
+      description: customMessage || 'The requested resource was not found.',
+      duration: 3000,
     })
   } else {
     toast.error('Error', {
-      description: customMessage || error.message || 'An unexpected error occurred.',
+      description: customMessage || error.response?.data?.message || error.message || 'An unexpected error occurred.',
       duration: 3000,
     })
   }

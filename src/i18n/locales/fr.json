@@ -979,6 +979,7 @@
     "updateFailed": "Échec de la mise à jour du rôle",
     "deleteFailed": "Échec de la suppression du rôle",
     "dialog": {
+      "createTitle": "Créer un Nouveau Rôle",
       "editTitle": "Modifier le rôle",
       "editDescription": "Mettre à jour les informations du rôle et gérer les permissions",
       "roleName": "Nom du rôle",
@@ -992,8 +993,13 @@
       "permissionsCount": "{{count}} permission sélectionnée",
       "permissionsCount_plural": "{{count}} permissions sélectionnées",
       "cancel": "Annuler",
+      "create": "Créer le Rôle",
+      "creating": "Création...",
       "update": "Mettre à jour le rôle",
-      "updating": "Mise à jour..."
+      "updating": "Mise à jour...",
+      "deleteTitle": "Supprimer le Rôle",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle?",
+      "deleteConfirm": "Supprimer"
     },
     "table": {
       "id": "ID",
@@ -1396,27 +1402,7 @@
       "description": "Sélectionnez les permissions à attribuer à cet utilisateur",
       "selectAll": "Tout Sélectionner",
       "of": "sur",
-      "selected": "sélectionné(s)",
-      "noPermissions": "Aucune permission disponible",
-      "cancel": "Annuler",
-      "save": "Enregistrer les Permissions",
-      "saving": "Enregistrement..."
-    }
-  },
-  "roles": {
-    "dialog": {
-      "createTitle": "Créer un Nouveau Rôle",
-      "editTitle": "Modifier le Rôle",
-      "noPermissionsSelected": "Aucune permission sélectionnée. Cliquez sur \"Gérer les Permissions\" pour ajouter des permissions.",
-      "managePermissions": "Gérer les Permissions",
-      "cancel": "Annuler",
-      "create": "Créer le Rôle",
-      "creating": "Création...",
-      "update": "Mettre à Jour le Rôle",
-      "updating": "Mise à jour...",
-      "deleteTitle": "Supprimer le Rôle",
-      "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle?",
-      "deleteConfirm": "Supprimer"
+      "selected": "sélectionné(s)"
     }
   },
   "location": {

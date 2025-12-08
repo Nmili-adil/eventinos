@@ -322,9 +322,7 @@
     "description": "Fill in the event details step by step",
     "preview": {
       "show": "Show Preview",
-      "hide": "Hide Preview",
-      "title": "Live Preview",
-      "description": "See how your event will look"
+      "hide": "Hide Preview"
     },
     "sections": {
       "basicInfo": "Basic Information",
@@ -732,7 +730,6 @@
           "noParticipation": "لم يشارك هذا العضو في أي فعاليات بعد",
           "untitledEvent": "فعالية بدون عنوان",
           "date": "التاريخ",
-          "location": "الموقع",
           "notSet": "غير محدد",
           "unableToLoad": "تعذر تحميل فعاليات العضو."
         },

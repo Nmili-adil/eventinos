@@ -335,9 +335,7 @@
     "description": "Fill in the event details step by step",
     "preview": {
       "show": "Show Preview",
-      "hide": "Hide Preview",
-      "title": "Live Preview",
-      "description": "See how your event will look"
+      "hide": "Hide Preview"
     },
     "sections": {
       "basicInfo": "Basic Information",
@@ -1468,12 +1466,31 @@
       "saving": "Saving..."
     }
   },
-  "roles": {
+   "roles": {
+    "title": "Roles",
+    "description": "Manage user roles and their permissions",
+    "noRolesFound": "No roles found",
+    "emptyDescription": "Start by creating your first role to manage permissions.",
+    "createdSuccessfully": "Role created successfully",
+    "updatedSuccessfully": "Role updated successfully",
+    "deletedSuccessfully": "Role deleted successfully",
+    "createFailed": "Failed to create role",
+    "updateFailed": "Failed to update role",
+    "deleteFailed": "Failed to delete role",
     "dialog": {
       "createTitle": "Create New Role",
       "editTitle": "Edit Role",
-      "noPermissionsSelected": "No permissions selected. Click \"Manage Permissions\" to add permissions.",
+      "editDescription": "Update role information and manage permissions",
+      "roleName": "Role Name",
+      "roleNamePlaceholder": "Enter role name",
+      "roleNameRequired": "Role name is required",
+      "systemRoleWarning": "System roles cannot be renamed",
+      "permissions": "Permissions",
+      "permissionsDescription": "Select permissions to assign to this role",
       "managePermissions": "Manage Permissions",
+      "noPermissionsSelected": "No permissions selected. Click 'Manage Permissions' to add some.",
+      "permissionsCount": "{{count}} permission selected",
+      "permissionsCount_plural": "{{count}} permissions selected",
       "cancel": "Cancel",
       "create": "Create Role",
       "creating": "Creating...",
@@ -1482,6 +1499,20 @@
       "deleteTitle": "Delete Role",
       "deleteMessage": "Are you sure you want to delete this role?",
       "deleteConfirm": "Delete"
+    },
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "permissions": "Permissions",
+      "actions": "Actions",
+      "system": "System",
+      "custom": "Custom",
+      "permissionsCount": "{{count}} permission",
+      "permissionsCount_plural": "{{count}} permissions",
+      "showing": "Showing {{from}} to {{to}} of {{total}} entries",
+      "deleteTitle": "Delete Role",
+      "deleteDescription": "Are you sure you want to delete this role? This will permanently delete the role and all associated permissions. Users with this role will need to be reassigned."
     }
   },
   "location": {

@@ -36,22 +36,22 @@ api.interceptors.response.use(
       data: error.response?.data
     });
 
-    // Handle 500 errors globally
+    // Handle 500 errors globally by dispatching a custom event
     if (error.response?.status >= 500 && error.response?.status < 600) {
-      // Create a custom error with server error flag
-      const serverError = new Error(error.response?.data?.message || 'Internal Server Error');
-      (serverError as any).isServerError = true;
-      (serverError as any).status = error.response?.status;
-      (serverError as any).originalError = error;
-      
-      // Log to console for debugging
       console.error('🚨 Server Error (500+):', {
         status: error.response?.status,
         message: error.response?.data?.message,
         url: error.config?.url,
       });
 
-      return Promise.reject(serverError);
+      // Dispatch a custom event that will be caught by the global error handler
+      window.dispatchEvent(new CustomEvent('server-error', {
+        detail: {
+          status: error.response?.status,
+          message: error.response?.data?.message || 'Internal Server Error',
+          error: error
+        }
+      }));
     }
 
     return Promise.reject(error);
