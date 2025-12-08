@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
-import { getUserData } from '@/services/localStorage'
+import { getRole, getUserData } from '@/services/localStorage'
 
 interface NavLink {
   nameKey: string
@@ -59,7 +59,7 @@ const SimpleNavBar = ({ mobile = false }: SimpleNavBarProps) => {
   const { role: authRole } = useSelector((state: RootState) => state.auth)
   const userData = getUserData()
   const userRole = authRole || userData?.user?.toLowerCase()
-  const isAdminOrOrganizer = userRole === 'admin' 
+  const isAdminOrOrganizer = getRole() === 'admin' 
   
   // Filter nav links based on user role
   const navLinks = allNavLinks.filter(link => 

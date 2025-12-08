@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom'
 import { AlertTriangle, RefreshCw, Home, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import ServerErrorPage from '@/pages/ServerErrorPage'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -71,24 +72,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (hasError) {
       if (fallback) return fallback
 
-      return (
-        <ErrorStateCard
-          message="The view failed to render. You can try again or refresh the page."
-          details={error?.message}
-          primaryAction={
-            <Button onClick={this.handleReset} className="gap-2">
-              <RefreshCw className="h-4 w-4" />
-              Try again
-            </Button>
-          }
-          secondaryAction={
-            <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
-              <RefreshCw className="h-4 w-4" />
-              Reload page
-            </Button>
-          }
-        />
-      )
+      // Use ServerErrorPage for better UX
+      return <ServerErrorPage error={error} resetError={this.handleReset} />
     }
 
     return children
@@ -99,20 +84,30 @@ export const RouteErrorElement = () => {
   const navigate = useNavigate()
   const error = useRouteError()
 
-  const { title, message, detail } = useMemo(() => {
+  const { title, message, detail, is500Error } = useMemo(() => {
     if (isRouteErrorResponse(error)) {
+      // Check if it's a 500 error
+      const is500 = error.status >= 500 && error.status < 600
+      
       return {
         title: `Oops! ${error.status}`,
         message: error.statusText || 'An unexpected routing error occurred.',
         detail: typeof error.data === 'string' ? error.data : undefined,
+        is500Error: is500,
       }
     }
 
     if (error instanceof Error) {
+      // Check if the error message indicates a server error
+      const is500 = error.message?.toLowerCase().includes('500') || 
+                    error.message?.toLowerCase().includes('server error') ||
+                    error.message?.toLowerCase().includes('internal error')
+      
       return {
         title: 'Something went wrong',
         message: 'We ran into a problem while loading this page.',
         detail: error.message,
+        is500Error: is500,
       }
     }
 
@@ -120,8 +115,14 @@ export const RouteErrorElement = () => {
       title: 'Unexpected error',
       message: 'We could not determine what happened, but the page failed to load.',
       detail: undefined,
+      is500Error: false,
     }
   }, [error])
+
+  // Use ServerErrorPage for 500 errors
+  if (is500Error) {
+    return <ServerErrorPage error={error instanceof Error ? error : undefined} />
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

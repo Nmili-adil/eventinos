@@ -23,7 +23,7 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 })
 
-// Add response interceptor for debugging
+// Add response interceptor for debugging and error handling
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -35,6 +35,25 @@ api.interceptors.response.use(
       status: error.response?.status,
       data: error.response?.data
     });
+
+    // Handle 500 errors globally
+    if (error.response?.status >= 500 && error.response?.status < 600) {
+      // Create a custom error with server error flag
+      const serverError = new Error(error.response?.data?.message || 'Internal Server Error');
+      (serverError as any).isServerError = true;
+      (serverError as any).status = error.response?.status;
+      (serverError as any).originalError = error;
+      
+      // Log to console for debugging
+      console.error('🚨 Server Error (500+):', {
+        status: error.response?.status,
+        message: error.response?.data?.message,
+        url: error.config?.url,
+      });
+
+      return Promise.reject(serverError);
+    }
+
     return Promise.reject(error);
   }
 )

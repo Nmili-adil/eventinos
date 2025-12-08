@@ -273,13 +273,7 @@ export const ProfilePage: React.FC = () => {
           gender: data.gender,
         };
         await updateUserApi(params.userId, personalData);
-        toast.success(t('profilePage.messages.profileUpdated'), {
-          style: {
-            backgroundColor: COLORS.highlight,
-            color: 'white',
-            border: 'none'
-          }
-        });
+        toast.success(t('profilePage.messages.profileUpdated'));
         setIsEditing(false);
         // Refresh user data
         dispatch(fetchUserByIdRequest(params.userId));
@@ -309,13 +303,7 @@ export const ProfilePage: React.FC = () => {
         console.log('Updating organizer professional info for ID:', organizerId);
         
         await updateOrganizerProfessionalInfoApi(organizerId as string, professionalData);
-        toast.success(t('profilePage.messages.professionalInfoUpdated', 'Professional information updated successfully'), {
-          style: {
-            backgroundColor: COLORS.highlight,
-            color: 'white',
-            border: 'none'
-          }
-        });
+        toast.success(t('profilePage.messages.professionalInfoUpdated', 'Professional information updated successfully'));
         setIsEditing(false);
         // Refresh user data
         dispatch(fetchUserByIdRequest(params.userId));
@@ -352,13 +340,7 @@ export const ProfilePage: React.FC = () => {
     try {
       if (params.userId) {
         await updateUserPasswordApi(params.userId, newPassword);
-        toast.success(t('profilePage.messages.passwordUpdated'), {
-          style: {
-            backgroundColor: COLORS.highlight,
-            color: 'white',
-            border: 'none'
-          }
-        });
+        toast.success(t('profilePage.messages.passwordUpdated'));
         setShowPasswordChange(false);
         setNewPassword('');
         setConfirmPassword('');
@@ -418,13 +400,7 @@ export const ProfilePage: React.FC = () => {
       // Update user profile with the file URL
       await updateUserApi(params.userId, { picture: fileUrl });
 
-      toast.success(t('profilePage.messages.photoUpdated'), {
-        style: {
-          backgroundColor: COLORS.highlight,
-          color: 'white',
-          border: 'none'
-        }
-      });
+      toast.success(t('profilePage.messages.photoUpdated'));
 
       setSelectedPhoto(null);
       setPhotoPreview(null);
@@ -470,14 +446,8 @@ export const ProfilePage: React.FC = () => {
       toast.success(
         t('profilePage.roles.roleActions.success', {
           role: targetRole === 'Admin' ? t('profilePage.roles.roleActions.adminLabel', 'Admin') : t('profilePage.roles.roleActions.organizerLabel', 'Organizer'),
-        }),
-        {
-          style: {
-            backgroundColor: COLORS.highlight,
-            color: 'white',
-            border: 'none'
-          }
-        }
+        })
+       
       )
       setRoleDialogOpen(false)
       dispatch(fetchUserByIdRequest(params.userId))
@@ -505,9 +475,33 @@ export const ProfilePage: React.FC = () => {
     return <ProfileNotFound userId={params.userId} />;
   }
 
-const normalizedViewedRole = user.user?.toLowerCase()
-const canManageRole = viewerRole === 'admin' && (normalizedViewedRole === 'organizer' || normalizedViewedRole === 'admin')
-const isViewerAdminOrOrganizer = viewerRole === 'admin' || viewerRole === 'organizer'  // Calculate profile completion percentage
+  // Debug logging
+  console.log('🔍 Role Check Debug:');
+  console.log('viewerRole (from localStorage):', viewerRole);
+  console.log('user.role object:', user.role);
+  console.log('role from Redux:', role);
+  
+  // Get the viewed user's role name - could be from user.role object or from Redux role state
+  const viewedUserRoleName = (typeof user.role === 'object' && user.role?.name) 
+    ? user.role.name.toLowerCase() 
+    : (typeof role === 'object' && role?.name) 
+      ? role.name.toLowerCase() 
+      : null;
+  
+  console.log('viewedUserRoleName:', viewedUserRoleName);
+  
+  // Normalize the viewed user's role for easier comparison
+  const normalizedViewedRole = viewedUserRoleName?.toLowerCase();
+  
+  // Admin can manage other admins and organizers
+  const canManageRole = viewerRole?.toLowerCase() === 'admin' && 
+    (viewedUserRoleName === 'organizer' || viewedUserRoleName === 'admin');
+  
+  console.log('canManageRole:', canManageRole);
+  
+  const isViewerAdminOrOrganizer = viewerRole?.toLowerCase() === 'admin' || viewerRole?.toLowerCase() === 'organizer';
+  
+  // Calculate profile completion percentage
   const calculateProfileCompletion = () => {
     const fields = [
       user.firstName,
