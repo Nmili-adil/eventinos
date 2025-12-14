@@ -26,7 +26,6 @@ export default function ForgotPasswordEmailStep() {
   })
 
   const onSubmit = async (data: ForgotPasswordEmailData) => {
-    console.log('Forgot password email submitted:', data.email)
     dispatch(clearForgotPasswordError())
     dispatch(requestPasswordReset(data.email) as any)
   }
@@ -39,12 +38,18 @@ export default function ForgotPasswordEmailStep() {
             <Mail className="h-8 w-8 text-white" />
           </div>
         </div>
-        <CardTitle className="text-2xl font-bold">
+        <CardTitle className="text-xl 2xl:text-2xl font-bold">
           Forgot Password?
         </CardTitle>
         <CardDescription>
           Enter your email to reset your password
         </CardDescription>
+          {/* Error Message */}
+          {error && (
+            <div className="p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
+              {error}
+            </div>
+          )}
       </CardHeader>
       
       <CardContent>
@@ -64,12 +69,7 @@ export default function ForgotPasswordEmailStep() {
             )}
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
-              {error}
-            </div>
-          )}
+        
 
           {/* Submit Button */}
           <Button 

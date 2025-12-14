@@ -10,15 +10,12 @@ import { t } from 'i18next'
 export default function ForgotPasswordPage() {
   const forgotPasswordStep = useSelector((state: RootState) => state.forgotPassword.step)
 
-  // Note: We don't reset the step here because it would clear the state
-  // when the component re-renders during the password reset flow
-  // The step is managed by Redux actions throughout the flow
 
   const steps = [
     { key: 'email', title: 'Email', component: ForgotPasswordEmailStep },
-    { key: 'otp', title: 'Vérification', component: ForgotPasswordOtpStep },
-    { key: 'new-password', title: 'Nouveau mot de passe', component: NewPasswordStep },
-    { key: 'complete', title: 'Terminé', component: ForgotPasswordCompleteStep },
+    { key: 'otp', title: 'Verification', component: ForgotPasswordOtpStep },
+    { key: 'new-password', title: 'New Password', component: NewPasswordStep },
+    { key: 'complete', title: 'Complete', component: ForgotPasswordCompleteStep },
   ]
 
   const currentStepIndex = steps.findIndex(step => step.key === forgotPasswordStep)
@@ -59,12 +56,12 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-12 text-white z-20">
-          <div className="flex items-center gap-3 mb-2">
+        <div className="absolute bottom-10 left-12 text-white z-20">
+          <div className="flex items-center gap-3">
             <Calendar className="w-6 h-6" />
-            <h2 className="text-2xl font-bold">Eventinas</h2>
+            <h2 className="text-xl 2xl:text-2xl font-bold">Eventinas</h2>
           </div>
-          <p className="text-sm text-slate-300">
+          <p className="text-xs 2xl:text-sm text-slate-300">
             Manage your events professionally
           </p>
         </div>
@@ -74,16 +71,10 @@ export default function ForgotPasswordPage() {
         
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-0 sm:p-12">
         <div className="w-full max-w-lg">
-          <div className="mb-6">
+          <div className="mb-3 2xl:mb-6">
             <div className="inline-flex items-center justify-center w-full md:w-24 md:h-24 rounded-xl bg-white mb-6">
               <img src="/Eventinas Logo.jpeg" alt="Eventinas Logo" className="w-24 h-24 object-cover" />
             </div>
-            <h1 className="text-4xl font-bold text-foreground mb-1 text-center md:text-start">
-            {t('auth.welcome')}
-            </h1>
-            <p className="text-muted-foreground text-lg text-center md:text-start">
-            {t('auth.accessAccount')} 
-            </p>
           </div>
 
           <div className=" ">

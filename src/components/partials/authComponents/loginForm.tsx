@@ -12,6 +12,7 @@ import { Label } from '@radix-ui/react-label'
 import { Calendar, Eye, EyeOff } from 'lucide-react'
 import {  useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -19,7 +20,6 @@ const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false)
     const { isLoading, error } = useSelector((state: RootState) => state.auth)
     const dispatch = useDispatch<AppDispatch>()
-
 
     const {
         register,
@@ -34,6 +34,7 @@ const LoginForm = () => {
         dispatch(authLoginRequest(data))
     }
 
+
     return (
         <div className="container mx-auto px-4">
             <div className="max-w-md mx-auto">
@@ -41,12 +42,12 @@ const LoginForm = () => {
                 <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
                     <CardHeader className="text-center pb-4">
                         <div className="flex justify-center mb-4">
-                            <div className="bg-linear-to-r from-blue-600 to-purple-600 rounded-xl p-3">
-                                <Calendar className="h-8 w-8 text-white" />
-                            </div>
+                             <div className="inline-flex items-center justify-center w-20 h-20 2xl:w-24 2xl:h-24 rounded-xl bg-white mb-3  2xl:mb-6">
+              <img src="/Eventinas Logo.jpeg" alt="Eventinas Logo" className="w-full h-full  object-cover" />
+            </div>
                         </div>
                         <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Welcome Back
+                            Welcome back
                         </CardTitle>
                         <CardDescription className="text-gray-600 dark:text-gray-400">
                             Sign in to your account to continue
