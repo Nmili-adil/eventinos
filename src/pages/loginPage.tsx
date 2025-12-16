@@ -29,7 +29,7 @@ export default function LoginPage() {
       toast.error(
         typeof error === "string"
           ? error.replace("_", " ")
-          : error?.message || t("auth.loginError")
+          : (error as any)?.message || t("auth.loginError")
       );
     }
   }, [isAuthenticated, user, message, error, navigate, t]);

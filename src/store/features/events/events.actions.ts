@@ -17,10 +17,11 @@ export const fetchEventsRequest = () => {
     };
     
 }
-export const fetchEventsSuccess = (events: any[]): FetchEventsSuccessAction => ({
+export const fetchEventsSuccess = (events: any[], pagination?: any): FetchEventsSuccessAction => ({
   type: FETCH_EVENTS_SUCCESS,
   count: events.length,
   payload: events,
+  pagination: pagination || {},
 })
 
 export const fetchEventsFailure = (error: string): FetchEventsFailureAction => ({
@@ -56,7 +57,7 @@ export const fetchEventByIdFailure = (error: string): FetchEventByIdFailureActio
   payload: error,
 })
 
-export const updateEventRequest = (eventId: string | undefined,event: any) : UpdateEventRequestAction => {
+export const updateEventRequest = (eventId: string | undefined,event: any) => {
   return async (dispatch: any) => {
     dispatch({ type: UPDATE_EVENT_REQUEST, payload: { eventId, event} })
     try {
@@ -82,7 +83,7 @@ export const updateEventFailure = (error: string): UpdateEventFailureAction => (
   payload: error,
 })
 
-export const createEventRequest = (event: any): CreateEventRequestAction => {
+export const createEventRequest = (event: any) => {
   return async (dispatch: any) => {
     dispatch({ type: CREATE_EVENT_REQUEST, payload: event })
     try {

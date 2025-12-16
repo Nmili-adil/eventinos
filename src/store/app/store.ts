@@ -4,7 +4,7 @@ import { thunk } from 'redux-thunk'
 
 const store = legacy_createStore(
     rootReducer, 
-    applyMiddleware(thunk)
+    applyMiddleware(thunk) as any
 )
 
 

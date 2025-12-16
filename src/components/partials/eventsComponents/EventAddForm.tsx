@@ -48,7 +48,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   const { badges } = useSelector((state: RootState) => state.badges);
 
   const form = useForm<EventFormData>({
-    resolver: zodResolver(eventFormSchema),
+    resolver: zodResolver(eventFormSchema) as any,
     defaultValues: {
       createdBy: "",
       name: "",

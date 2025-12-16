@@ -26,7 +26,7 @@ const LoginForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
+        resolver: zodResolver(loginSchema) as any,
     })
 
     const onSubmit = async (data: LoginFormData) => {
@@ -59,7 +59,7 @@ const LoginForm = () => {
                         {error && !isLoading && (
                             <Alert variant="destructive" className="mb-4">
                                 <AlertDescription className="text-sm capitalize font-medium">
-                                    {typeof error === 'string' ? error.replace("_", " ") : error?.message.replace("_", " ") || 'An error occurred'}
+                                    {typeof error === 'string' ? error.replace("_", " ") : (error as any)?.message?.replace("_", " ") || 'An error occurred'}
                                 </AlertDescription>
                             </Alert>
                         )}

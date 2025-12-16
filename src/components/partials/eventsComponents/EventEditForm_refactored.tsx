@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { eventFormSchema, type EventFormData } from "@/schema/eventSchema";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
-import type { date } from "zod";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -792,8 +791,8 @@ const EventEditForm = ({
                                 name="startDate.date"
                                 render={({ field }) => (
                                   <DateTimePicker
-                                    date={field.value as date}
-                                    onDateChange={field.onChange}
+                                    date={field.value ? new Date(field.value) : undefined}
+                                    onDateChange={(date) => field.onChange(date?.toISOString())}
                                     placeholder={t(
                                       "eventForm.placeholders.enterEventName"
                                     )}
@@ -812,8 +811,8 @@ const EventEditForm = ({
                                 name="endDate.date"
                                 render={({ field }) => (
                                   <DateTimePicker
-                                    date={field.value as date}
-                                    onDateChange={field.onChange}
+                                    date={field.value ? new Date(field.value) : undefined}
+                                    onDateChange={(date) => field.onChange(date?.toISOString())}
                                     placeholder={t(
                                       "eventForm.placeholders.enterEventName"
                                     )}
@@ -906,7 +905,6 @@ const EventEditForm = ({
                             value={{
                               name: form.watch("location.name"),
                               address: form.watch("location.address"),
-                              area: form.watch("location.area"),
                               city: form.watch("location.city"),
                               country: form.watch("location.country"),
                               countryCode: form.watch("location.countryCode"),

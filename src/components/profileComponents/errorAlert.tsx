@@ -6,7 +6,7 @@ import type { AppDispatch } from "@/store/app/store"
 import { fetchUserByIdRequest } from "@/store/features/users/users.actions"
 import { useTranslation } from 'react-i18next'
 
-const ErrorAlert = ({error, userId}) => {
+const ErrorAlert = ({error, userId}: {error: any, userId: any}) => {
     const dispatch = useDispatch<AppDispatch>()
     const { t } = useTranslation()
 

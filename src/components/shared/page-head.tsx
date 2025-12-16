@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface PropsType {
   title: string;
@@ -7,7 +7,7 @@ interface PropsType {
   total: number
 }
 
-const PageHead = ({ title, icon: Icon, description = "", total=0 }: PropsType) => {
+const PageHead = ({ title, icon: Icon, description = "", total = 0 }: PropsType) => {
  
 
   return (

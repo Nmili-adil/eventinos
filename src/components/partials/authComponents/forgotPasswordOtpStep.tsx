@@ -106,7 +106,7 @@ if (paste.match(/^[A-Za-z0-9]{4}$/)) {
               {[0, 1, 2, 3].map((index) => (
                 <Input
                   key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
+                  ref={(el) => { inputRefs.current[index] = el }}
                   id={`otp-${index}`}
                   type="text"
                   maxLength={1}

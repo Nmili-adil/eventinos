@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslation } from 'react-i18next'
 import {
   Dialog,
   DialogContent,
@@ -85,6 +86,8 @@ const RoleAddDialog = ({
       console.error('Failed to create role:', error)
     }
   }
+
+  const { t } = useTranslation()
 
   return (
     <>

@@ -36,11 +36,13 @@ export interface ForgotPasswordSuccessAction {
     email: string
     message: string
   }
+  [key: string]: any
 }
 
 export interface ForgotPasswordFailureAction {
   type: typeof FORGOT_PASSWORD_FAILURE
   payload: string
+  [key: string]: any
 }
 
 export interface VerifyOtpRequestAction {
@@ -53,11 +55,13 @@ export interface VerifyOtpSuccessAction {
     message: string
     verificationCode: string
   }
+  [key: string]: any
 }
 
 export interface VerifyOtpFailureAction {
   type: typeof VERIFY_OTP_FAILURE
   payload: string
+  [key: string]: any
 }
 
 export interface ResetPasswordRequestAction {
@@ -69,24 +73,29 @@ export interface ResetPasswordSuccessAction {
   payload: {
     message: string
   }
+  [key: string]: any
 }
 
 export interface ResetPasswordFailureAction {
   type: typeof RESET_PASSWORD_FAILURE
   payload: string
+  [key: string]: any
 }
 
 export interface SetForgotPasswordStepAction {
   type: typeof SET_FORGOT_PASSWORD_STEP
+  [key: string]: any
   payload: ForgotPasswordState['step']
 }
 
 export interface ClearForgotPasswordErrorAction {
   type: typeof CLEAR_FORGOT_PASSWORD_ERROR
+  [key: string]: any
 }
 
 export interface ResetForgotPasswordStateAction {
   type: typeof RESET_FORGOT_PASSWORD_STATE
+  [key: string]: any
 }
 
 // Union Action Type

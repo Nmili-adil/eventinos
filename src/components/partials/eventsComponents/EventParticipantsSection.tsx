@@ -41,7 +41,7 @@ interface EventParticipantsSectionProps {
 export const EventParticipantsSection = ({
   eventId,
   className,
-  layout = "default",
+  // layout = "default",
   onStatsChange,
 }: EventParticipantsSectionProps) => {
   const { t } = useTranslation()

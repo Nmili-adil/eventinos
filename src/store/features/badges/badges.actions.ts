@@ -33,9 +33,9 @@ export const fetchBadgesRequest = () => {
         dispatch({ type: FETCH_BADGES_REQUEST })
         try {
             const response = await fetchBadgesApi()
-            if (response.status === 200) {
+            if (response && response.status === 200) {
                 dispatch(fetchBadgesSuccess(response.data.data))
-            } else {
+            } else if (response) {
                 dispatch(fetchBadgesFailure(response.data.message))
             }
         } catch (error: any) {

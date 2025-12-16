@@ -2,11 +2,11 @@ import { User } from "lucide-react"
 import { Card, CardContent } from "../ui/card"
 import { Button } from "../ui/button"
 import { useDispatch } from "react-redux"
-import { AppDispatch } from "@/store/app/store"
+import type { AppDispatch } from "@/store/app/store"
 import { fetchUserByIdRequest } from "@/store/features/users/users.actions"
 import { useTranslation } from 'react-i18next'
 
-const ProfileNotFound = ({userId}) => {
+const ProfileNotFound = ({userId}: {userId: any}) => {
     const dispatch = useDispatch<AppDispatch>()
     const { t } = useTranslation()
   return (

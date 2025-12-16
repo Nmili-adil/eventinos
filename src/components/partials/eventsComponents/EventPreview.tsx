@@ -40,9 +40,9 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
         <div className="bg-white w-full h-full overflow-y-auto" style={{ minHeight: '670px', maxHeight: '812px' }}>
             {/* Event Image */}
             <div className="relative w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500">
-              {(formData.image?.data?.path || formData.image?.url || formData.image) ? (
+              {((typeof formData.image === "object" && (formData.image as any)?.data?.path) || (typeof formData.image === "object" && (formData.image as any)?.url) || formData.image) ? (
                 <img
-                  src={formData.image?.data?.path || formData.image?.url || formData.image || ''}
+                  src={(typeof formData.image === "object" && (formData.image as any)?.data?.path) || (typeof formData.image === "object" && (formData.image as any)?.url) || formData.image || ''}
                   alt={formData.name || 'Event'}
                   className="w-full h-full object-cover"
                   onError={(e) => {

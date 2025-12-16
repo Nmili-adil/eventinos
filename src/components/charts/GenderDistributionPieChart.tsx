@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { useTranslation } from 'react-i18next'
 
 interface GenderData {
+  [key: string]: any;
   name: string
   value: number
   percentage: number

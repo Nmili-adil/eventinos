@@ -1,7 +1,7 @@
 import { roleApi, rolesApi, createRoleApi, updateRoleApi, deleteRoleApi } from "@/api/roleApi";
-import { FETCH_ROLE_BY_ID_FAILURE, FETCH_ROLE_BY_ID_SUCCESS, FETCH_ROLES_FAILURE, FETCH_ROLES_SUCCESS, type FetchRoleByIdRequestAction, type FetchRolesRequestAction } from "./roles.types";
+import { FETCH_ROLE_BY_ID_FAILURE, FETCH_ROLE_BY_ID_SUCCESS, FETCH_ROLES_FAILURE, FETCH_ROLES_SUCCESS } from "./roles.types";
 
-export const fetchRolesRequest = () : FetchRolesRequestAction => {
+export const fetchRolesRequest = () => {
     return async (dispatch:any) => {
       dispatch({ type: 'FETCH_ROLES_REQUEST' })
         try {
@@ -26,7 +26,7 @@ export const fetchRolesRequest = () : FetchRolesRequestAction => {
     }
 }
 
-export const fetchRoleByIdRequest = (roleId:string) : FetchRoleByIdRequestAction => {
+export const fetchRoleByIdRequest = (roleId:string) => {
     return async (dispatch:any) => {
       dispatch({ type: 'FETCH_ROLE_BY_ID_REQUEST' })
         try {

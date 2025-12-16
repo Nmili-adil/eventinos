@@ -114,7 +114,7 @@ export const updateMemberStatusRequest = (memberId: string, isActive: boolean) =
                 return {success: true, data: response.data};
             }
 
-             return {success: false, message: response?.message || 'Failed to update member status'};
+             return {success: false, message: (response as any)?.message || 'Failed to update member status'};
         } catch (error) {
             dispatch({
                 type: 'UPDATE_MEMBER_STATUS_FAILURE',

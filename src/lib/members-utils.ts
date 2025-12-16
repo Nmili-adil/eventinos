@@ -54,8 +54,8 @@ export const sortMembers = (
     switch (sortField) {
       case 'createdAt':
         // Handle date objects
-        const aDate = a.createdAt?.$date?.$numberLong
-        const bDate = b.createdAt?.$date?.$numberLong
+        const aDate = typeof a.createdAt === "object" ? (a.createdAt as any)?.$date?.$numberLong : 0
+        const bDate = typeof b.createdAt === "object" ? (b.createdAt as any)?.$date?.$numberLong : 0
         aValue = aDate ? parseInt(aDate) : 0
         bValue = bDate ? parseInt(bDate) : 0
         break

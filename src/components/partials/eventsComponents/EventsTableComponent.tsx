@@ -33,7 +33,7 @@ const PAGE_SIZE = 10
 
 export function EventsTable() {
   const [viewMode, setViewMode] = useState<EventLayout>(getLayoutPreferences().eventsLayout)
-  const { events, isLoading, pagination: backendPagination } = useSelector((state: RootState) => state.events)
+  const { events, isLoading, pagination: _backendPagination } = useSelector((state: RootState) => state.events)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
