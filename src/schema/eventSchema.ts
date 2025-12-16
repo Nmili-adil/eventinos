@@ -12,21 +12,39 @@ const speakerSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Full name is required"),
   picture: z.string().url().optional().or(z.literal('')).default(''),
-  socialNetworks: socialNetworksSchema.default({}),
+  socialNetworks: socialNetworksSchema.default(() => ({
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    twitter: '',
+    website: '',
+  })),
 });
 
 const exhibitorSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Exhibitor name is required"),
   picture: z.string().url().optional().or(z.literal('')).default(''),
-  socialNetworks: socialNetworksSchema.default({}),
+  socialNetworks: socialNetworksSchema.default(() => ({
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    twitter: '',
+    website: '',
+  })),
 });
 
 const sponsorSchema = z.object({
   _id: z.string().optional(),
   name: z.string().min(1, "Sponsor name is required"),
   logo: z.string().url().optional().or(z.literal('')).default(''),
-  socialNetworks: socialNetworksSchema.default({}),
+  socialNetworks: socialNetworksSchema.default(() => ({
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    twitter: '',
+    website: '',
+  })),
 });
 
 const dateTimeSchema = z.object({
@@ -68,13 +86,13 @@ export const eventFormSchema = z.object({
     country: '',
     countryCode: '',
   }),
-  socialNetworks: socialNetworksSchema.default({
+  socialNetworks: socialNetworksSchema.default(() => ({
     facebook: '',
     instagram: '',
     linkedin: '',
     twitter: '',
     website: '',
-  }),
+  })),
   speakers: z.array(speakerSchema).default([]),
   exhibitors: z.array(exhibitorSchema).default([]),
   sponsors: z.array(sponsorSchema).default([]),

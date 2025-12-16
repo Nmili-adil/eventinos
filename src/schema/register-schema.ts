@@ -50,7 +50,7 @@ export const profileStepSchema = z.object({
   country: z.string().min(1, 'Le pays est requis'),
   city: z.string().min(1, 'La ville est requise'),
   gender: z.enum(['MALE', 'FEMALE'], {
-    errorMap: () => ({ message: 'Veuillez sélectionner votre genre' })
+    message: 'Veuillez sélectionner votre genre'
   }),
   birthday: z.string().min(1, 'La date de naissance est requise'),
 })
