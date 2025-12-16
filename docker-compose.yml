@@ -1,0 +1,35 @@
+services:
+  # Development environment
+  eventinos-dev:
+    build:
+      context: .
+      target: development
+    container_name: eventinos-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    networks:
+      - eventinos-network
+
+  # Production environment
+  eventinos-prod:
+    build:
+      context: .
+      target: production
+    container_name: eventinos-prod
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - eventinos-network
+
+networks:
+  eventinos-network:
+    driver: bridge
