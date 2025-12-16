@@ -1,4 +1,5 @@
-// store/actions/authActions.ts
+import type { User } from "@/types/usersType"
+
 export const AUTH_LOGIN_REQUEST = 'AUTH_LOGIN_REQUEST'
 export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS'
 export const AUTH_LOGIN_FAILURE = 'AUTH_LOGIN_FAILURE'
@@ -19,9 +20,10 @@ export interface LoginPayload {
 export interface LoginSuccessAction {
   type: typeof AUTH_LOGIN_SUCCESS
   payload: {
-    user: object
+    user: User
     token: string
     message: string
+    role: string
   }
 }
 
@@ -41,9 +43,20 @@ export interface ClearErrorAction {
 export interface SetCredentialsAction {
   type: typeof AUTH_SET_CREDENTIALS
   payload: {
-    user: object
+    user: User
     token: string
+    role: string  
   }
+}
+
+export interface AuthState {
+  user: null | User
+  token: string | null
+  role: string | null
+  isLoading: boolean
+  error: string | null
+  isAuthenticated: boolean
+  message: string | null
 }
 
 export type AuthActionTypes =

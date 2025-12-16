@@ -1,20 +1,15 @@
 // store/reducers/authReducer.ts
 
-import { AUTH_CLEAR_ERROR, AUTH_LOGIN_FAILURE, AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_CREDENTIALS, type AuthActionTypes } from "./auth.type"
+import { getAuthToken, getUserData, getRole } from "@/services/localStorage"
+import { AUTH_CLEAR_ERROR, AUTH_LOGIN_FAILURE, AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_CREDENTIALS, type AuthActionTypes, type AuthState } from "./auth.type"
 
 
-export interface AuthState {
-  user: null | object
-  token: string | null
-  isLoading: boolean
-  error: string | null
-  isAuthenticated: boolean
-  message: string | null
-}
+
 
 const initialState: AuthState = {
-  user: null ,
-  token: localStorage.getItem('token'),
+  user: getUserData() ,
+  token: getAuthToken(),
+  role: getRole(),
   isLoading: false,
   error: null,
   isAuthenticated: false,
@@ -38,6 +33,7 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
         user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
+        role: action.payload.role,
         error: null,
         message: action.payload.message
       }
@@ -49,7 +45,8 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
         error: action.payload,
         isAuthenticated: false,
         user: null,
-        token: null
+        token: null,
+        role: null
       }
 
     case AUTH_LOGOUT:
@@ -57,6 +54,7 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
         ...state,
         user: null,
         token: null,
+        role: null,
         isAuthenticated: false,
         error: null
       }
@@ -72,6 +70,7 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
         ...state,
         user: action.payload.user,
         token: action.payload.token,
+        role: action.payload.role,
         isAuthenticated: true
       }
 

@@ -2,17 +2,20 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Shield, ArrowLeft } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useAuthStore } from '@/store/authStore'
 import { forgotPasswordOtpSchema, type ForgotPasswordOtpData } from '@/schema/authSchemas/forget-password-schema'
+import type { RootState } from '@/store/app/rootReducer'
+import { verifyOtp, setForgotPasswordStep, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
 export default function ForgotPasswordOtpStep() {
-  const { isLoading, error, forgotPasswordEmail, verifyResetOtp, setForgotPasswordStep, clearError } = useAuthStore()
-  const [otp, setOtp] = useState(['', '', '', ''])
+  const dispatch = useDispatch()
+  const { isLoading, error, email } = useSelector((state: RootState) => state.forgotPassword)
+  const [otp, setOtpState] = useState(['', '', '', ''])
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const {
@@ -30,27 +33,23 @@ export default function ForgotPasswordOtpStep() {
 
   const onSubmit = async (data: ForgotPasswordOtpData) => {
     console.log('OTP submitted:', data.otp)
-    clearError()
-    try {
-      await verifyResetOtp(forgotPasswordEmail!, data.otp)
-    } catch (error) {
-      console.log('Error verifying OTP:', error)
-    }
+    dispatch(clearForgotPasswordError())
+    dispatch(verifyOtp(email, data.otp) as any)
   }
 
   const handleBack = () => {
-    setForgotPasswordStep('email')
-    clearError()
+    dispatch(setForgotPasswordStep('email'))
+    dispatch(clearForgotPasswordError())
   }
 
   const handleOtpChange = (value: string, index: number) => {
-    if (value && !/^\d+$/.test(value)) {
-      return
-    }
+    if (value && !/^[A-Za-z0-9]+$/.test(value)) {
+    return
+  }
 
     const newOtp = [...otp]
     newOtp[index] = value
-    setOtp(newOtp)
+    setOtpState(newOtp)
 
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus()
@@ -66,12 +65,11 @@ export default function ForgotPasswordOtpStep() {
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault()
     const paste = e.clipboardData.getData('text').trim()
-    
-    if (paste.match(/^\d{4}$/)) {
-      const pasteArray = paste.split('')
-      setOtp(pasteArray)
-      inputRefs.current[3]?.focus()
-    }
+if (paste.match(/^[A-Za-z0-9]{4}$/)) {
+  const pasteArray = paste.split('');
+  setOtpState(pasteArray);
+  inputRefs.current[3]?.focus();
+}
   }
 
   return (
@@ -85,17 +83,17 @@ export default function ForgotPasswordOtpStep() {
             className="text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Retour
+            Back
           </Button>
           <div className="bg-linear-to-r from-purple-600 to-blue-600 rounded-xl p-3">
             <Shield className="h-8 w-8 text-white" />
           </div>
         </div>
         <CardTitle className="text-2xl font-bold">
-          Vérification
+          Verification
         </CardTitle>
         <CardDescription>
-          Entrez le code à 4 chiffres envoyé à {forgotPasswordEmail}
+          Enter the 4-digit code sent to {email}
         </CardDescription>
       </CardHeader>
       
@@ -103,7 +101,7 @@ export default function ForgotPasswordOtpStep() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* OTP Input */}
           <div className="space-y-2">
-            <Label>Code de réinitialisation</Label>
+            <Label>Reset Code</Label>
             <div className="flex space-x-2 justify-center">
               {[0, 1, 2, 3].map((index) => (
                 <Input
@@ -111,7 +109,6 @@ export default function ForgotPasswordOtpStep() {
                   ref={(el) => (inputRefs.current[index] = el)}
                   id={`otp-${index}`}
                   type="text"
-                  inputMode="numeric"
                   maxLength={1}
                   value={otp[index]}
                   className="w-12 h-12 text-center text-lg font-semibold"
@@ -122,9 +119,7 @@ export default function ForgotPasswordOtpStep() {
                 />
               ))}
             </div>
-            <p className="text-sm text-gray-600 text-center">
-              Code de démonstration: <strong>1234</strong>
-            </p>
+        
           </div>
 
           {/* Error Message */}
@@ -143,10 +138,10 @@ export default function ForgotPasswordOtpStep() {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Vérification...
+                Verifying...
               </>
             ) : (
-              'Vérifier le code'
+              'Verify Code'
             )}
           </Button>
 
@@ -157,7 +152,7 @@ export default function ForgotPasswordOtpStep() {
               className="text-sm text-blue-600 hover:text-blue-500"
               onClick={() => console.log('Resend code clicked')}
             >
-              Renvoyer le code
+              Resend Code
             </button>
           </div>
         </form>

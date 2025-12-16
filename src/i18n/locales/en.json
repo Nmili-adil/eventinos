@@ -1,0 +1,1467 @@
+{
+  "common": {
+    "welcome": "Welcome back",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "time": "Time",
+    "name": "Name",
+    "description": "Description",
+    "email": "Email",
+    "password": "Password",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "myAccount": "My Account",
+    "create": "Create",
+    "creating": "Creating...",
+    "updating": "Updating...",
+    "deleting": "Deleting...",
+    "retry": "Retry",
+    "clear": "Clear",
+    "select": "Select",
+    "type": "Type",
+    "city": "City",
+    "country": "Country",
+    "phone": "Phone",
+    "view": "View",
+    "viewProfile": "View Profile",
+    "noData": "No data found",
+    "cannotUndo": "This action cannot be undone.",
+    "required": "Required",
+    "optional": "Optional",
+    "active": "Active",
+    "inactive": "Inactive",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "none": "None"
+  },
+  "auth": {
+    "login": "Login",
+    "loginTitle": "Login",
+    "loginDescription": "Enter your credentials to access your account",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Sign in",
+    "loggingIn": "Logging in...",
+    "loginSuccess": "Login successful!",
+    "loginError": "Login error",
+    "welcome": "Welcome back",
+    "accessAccount": "Sign in to your account to continue",
+    "account": "account",
+    "verifyingAuthentication": "Verifying authentication...",
+    "accessDenied": "Access Denied",
+    "restrictedToAdminOrganizer": "This application is restricted to administrators and organizers only.",
+    "returnToLogin": "Return to Login"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "events": "Events",
+    "members": "Members",
+    "accounts": "Accounts",
+    "contacts": "Contacts"
+  },
+  "header": {
+    "searchPlaceholder": "Search events, members...",
+    "searchPlaceholderMobile": "Search...",
+    "notifications": "Notifications"
+  },
+  "dashboard": {
+    "title": "Statistics",
+    "description": "Overview of your events and members",
+    "totalEvents": "Total Events",
+    "allEvents": "All events",
+    "acceptedEvents": "Accepted Events",
+    "refusedEvents": "Refused Events",
+    "pendingEvents": "Pending Events",
+    "users": "Members",
+    "eventCreators": "event creator",
+    "eventCreatorsPlural": "event creators",
+    "noEvents": "No events",
+    "noUsers": "No members",
+    "ofTotal": "of total",
+    "loadingStats": "Loading statistics...",
+    "timePeriod": "Time Period",
+    "showingEventsFor": "Showing events for",
+    "timePeriods": {
+      "all": "All Time",
+      "week": "Last Week",
+      "month": "Last Month",
+      "3months": "Last 3 Months",
+      "6months": "Last 6 Months",
+      "year": "Last Year"
+    },
+    "filters": {
+      "startDateLabel": "Start date",
+      "endDateLabel": "End date",
+      "startDatePlaceholder": "Select start date",
+      "endDatePlaceholder": "Select end date",
+      "clearDates": "Clear date range",
+      "startAny": "Beginning",
+      "endAny": "Present",
+      "currentRangeLabel": "Showing data for {{range}}"
+    },
+    "genderChart": {
+      "title": "Gender Distribution",
+      "description": "Distribution of users by gender",
+      "loading": "Loading data...",
+      "noData": "No data available",
+      "totalUsers": "Total users",
+      "genders": "Genders",
+      "users": "users",
+      "ofTotal": "% of total",
+      "genderNames": {
+        "Male": "Male",
+        "Female": "Female",
+        "Other": "Other"
+      }
+    },
+    "cityChart": {
+      "title": "City Distribution",
+      "description": "Number of users per city",
+      "loading": "Loading data...",
+      "noData": "No data available",
+      "totalUsers": "Total users",
+      "activeCities": "Active cities",
+      "averagePerCity": "Average per city",
+      "users": "Users",
+      "ofTotal": "% of total"
+    },
+    "eventsByDayChart": {
+      "title": "Number of Events",
+      "description": "Weekly overview",
+      "loading": "Loading...",
+      "events": "events",
+      "eventsThisWeek": "Events this week",
+      "days": {
+        "lu": "Monday",
+        "ma": "Tuesday",
+        "me": "Wednesday",
+        "je": "Thursday",
+        "ve": "Friday",
+        "sa": "Saturday",
+        "di": "Sunday"
+      }
+    }
+  },
+  "events": {
+    "title": "Events",
+    "addEvent": "Add Event",
+    "editEvent": "Edit Event",
+    "eventName": "Event Name",
+    "eventDescription": "Description",
+    "eventDetails": "Event Details",
+    "basicInformation": "Basic Information",
+    "enterEventName": "Enter event name",
+    "enterEventDescription": "Enter event description",
+    "loadingEvents": "Loading events...",
+    "noEventsFound": "No events found",
+    "resetFilters": "Reset filters",
+    "searchPlaceholder": "Search for an event...",
+    "mapView": "Map View",
+    "selectCity": "Select City",
+    "allCities": "All Cities",
+    "eventsFound": "events found",
+    "showEvents": "Show Events",
+    "preview": "Preview",
+    "changeStatus": "Change Status",
+    "allStatuses": "All statuses",
+    "allTypes": "All types",
+    "faceToFace": "Face to Face",
+    "virtual": "Virtual",
+    "hybrid": "Hybrid",
+    "today": "Today",
+    "inPerson": "In Person",
+    "statusAccepted": "Accepted",
+    "statusPending": "Pending",
+    "statusRejected": "Rejected",
+    "statusCancelled": "Cancelled",
+    "statusClosed": "Closed",
+    "eventStatusUpdated": "Event status updated successfully",
+    "deleteEventTitle": "Delete Event",
+    "deleteEventConfirm": "Are you sure you want to delete this event?",
+    "sections": {
+      "basicInfo": "Basic Information",
+      "dateTime": "Date & Time",
+      "location": "Location",
+      "socialNetworks": "Social Networks",
+      "program": "Program",
+      "badges": "Badges",
+      "gallery": "Gallery",
+      "exhibitorsSponsors": "Exhibitors & Sponsors"
+    },
+    "table": {
+      "title": "Title",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "location": "Location",
+      "status": "Status",
+      "actions": "Actions",
+      "visibility": "Visibility",
+      "type": "Event Type",
+      "changeStatus": "Change Status",
+      "deleteEvent": "Delete Event",
+      "previewEvent": "Preview Event",
+      "editEvent": "Edit Event",
+      "totalEvents": "Events found"
+    },
+    "view": {
+      "calendar": "Calendar View",
+      "table": "Table View",
+      "maps": "Maps View"
+    },
+    "filters": {
+      "startDatePlaceholder": "Select start date",
+      "endDatePlaceholder": "Select end date",
+      "clearDates": "Clear dates"
+    },
+    "statusChangeDialog": {
+      "title": "Change Event Status",
+      "description": "Select the new status for this event.",
+      "eventLabel": "Event:",
+      "statusLabel": "Status",
+      "selectStatus": "Select status",
+      "currentStatus": "Current status",
+      "newStatus": "New status",
+      "buttons": {
+        "cancel": "Cancel",
+        "update": "Update Status",
+        "updating": "Updating..."
+      },
+      "statusOptions": {
+        "pending": {
+          "label": "Pending",
+          "description": "Event is awaiting approval"
+        },
+        "accepted": {
+          "label": "Accepted",
+          "description": "Event has been approved"
+        },
+        "refused": {
+          "label": "Rejected",
+          "description": "Event has been rejected"
+        },
+        "closed": {
+          "label": "Closed",
+          "description": "Event has been closed"
+        }
+      }
+    },
+    "details": {
+      "eventOrganizer": "Event Organizer",
+      "invalidDate": "Invalid date",
+      "invalidTime": "Invalid time",
+      "untitledEvent": "Untitled Event",
+      "noDescription": "No description available.",
+      "locationNotSpecified": "Location not specified",
+      "noProgramDetails": "No program details available.",
+      "organizedBy": "Organized by",
+      "editEvent": "Edit event",
+      "deleteEvent": "Delete this Event",
+      "tabs": {
+        "details": "Details",
+        "speakers": "Speakers",
+        "program": "Program",
+        "gallery": "Gallery"
+      },
+      "description": "Description",
+      "dateTime": "Date & Time",
+      "start": "Start",
+      "end": "End",
+      "at": "at",
+      "socialLinks": "Social Links",
+      "website": "Website",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "noSpeakers": "No speakers announced yet.",
+      "noGallery": "No gallery images available.",
+      "eventInformation": "Event Information",
+      "date": "Date",
+      "time": "Time",
+      "venue": "Venue",
+      "eventType": "Event Type",
+      "exhibitors": "Exhibitors",
+      "exhibitor": "Exhibitor",
+      "sponsors": "Sponsors",
+      "sponsor": "Sponsor",
+      "deleteConfirmTitle": "Are you sure you want to delete this event?",
+      "deleteConfirmDescription": "This action cannot be undone. The event",
+      "willBeDeleted": "will be permanently deleted from your organization.",
+      "speakerDetails": "Speaker Details",
+      "speaker": "Speaker",
+      "about": "About"
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft",
+      "cancelled": "Cancelled",
+      "closed": "Closed",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "refused": "Refused"
+    },
+    "type": {
+      "facetoface": "In-Person",
+      "online": "Online",
+      "hybrid": "Hybrid"
+    },
+    "membersCard": {
+      "title": "Registered members",
+      "subtitle": "View everyone participating in this event.",
+      "totalLabel": "Total participants",
+      "viewMembers": "Manage members"
+    }
+  },
+  "eventForm": {
+    "title": "Create New Event",
+    "description": "Fill in the event details step by step",
+    "preview": {
+      "show": "Show Preview",
+      "hide": "Hide Preview"
+    },
+    "sections": {
+      "basicInfo": "Basic Information",
+      "dateTime": "Date & Time",
+      "location": "Location Information",
+      "socialNetworks": "Social Networks",
+      "program": "Event Program",
+      "badges": "Badges",
+      "gallery": "Event Gallery",
+      "exhibitorsSponsors": "Exhibitors & Sponsors",
+      "members": "Members"
+    },
+    "fields": {
+      "name": "Event Name",
+      "description": "Description",
+      "image": "Event Image",
+      "visibility": "Visibility",
+      "type": "Event Type",
+      "status": "Status",
+      "categories": "Category",
+      "capacity": "Event Capacity",
+      "allowRegistration": "Allow Registration",
+      "registrationDeadline": "Registration Deadline",
+      "startDate": "Start Date & Time",
+      "endDate": "End Date & Time",
+      "venueName": "Venue Name",
+      "city": "City",
+      "country": "Country",
+      "countryCode": "Country Code",
+      "placeId": "Place ID",
+      "website": "Website",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "program": "Event Program",
+      "galleryImages": "Gallery Images",
+      "exhibitors": "Exhibitors",
+      "sponsors": "Sponsors",
+      "fullName": "Full Name",
+      "picture": "Picture URL",
+      "logo": "Logo URL",
+      "sponsorName": "Sponsor Name",
+      "tags": "Tags",
+      "requirements": "Requirements"
+    },
+    "placeholders": {
+      "enterEventName": "Enter event name",
+      "enterDescription": "Enter event description",
+      "enterImageUrl": "https://example.com/image.jpg",
+      "selectVisibility": "Select visibility",
+      "selectCategory": "Select category",
+      "selectType": "Select type",
+      "selectStatus": "Select status",
+      "enterCapacity": "Maximum number of participants",
+      "enterVenueName": "Enter venue name",
+      "enterCity": "Enter city",
+      "enterCountry": "Enter country",
+      "enterCountryCode": "e.g., US, GB, FR",
+      "enterPlaceId": "Google Places ID",
+      "enterWebsite": "https://example.com",
+      "enterFacebook": "https://facebook.com/event",
+      "enterInstagram": "https://instagram.com/event",
+      "enterTwitter": "https://twitter.com/event",
+      "enterLinkedIn": "https://linkedin.com/event",
+      "enterProgram": "Enter detailed program schedule",
+      "enterImageUrlManual": "Or enter image URL manually:",
+      "enterImageUrlGallery": "Or enter image URL (https://...)",
+      "enterExhibitorName": "Enter exhibitor name",
+      "enterExhibitorPicture": "https://example.com/image.jpg",
+      "enterSponsorName": "Enter sponsor name",
+      "enterSponsorLogo": "https://example.com/logo.jpg",
+      "enterTags": "Enter tags separated by commas",
+      "enterRequirements": "Enter event requirements"
+    },
+    "options": {
+      "visibility": {
+        "public": "Public",
+        "private": "Private"
+      },
+      "type": {
+        "faceToFace": "Face to Face",
+        "virtual": "Virtual"
+      },
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "refused": "Refused",
+        "closed": "Closed"
+      }
+    },
+    "descriptions": {
+      "capacity": "Set to 0 for unlimited capacity",
+      "allowRegistration": "Enable participant registration for this event",
+      "registrationDeadline": "Last date and time for participants to register",
+      "isNearestEvent": "Show this event in nearest events section",
+      "isUpcomingEvent": "Feature this event in upcoming events section",
+      "badges": "Select badges that participants can earn at this event",
+      "gallery": "Add images to showcase your event",
+      "socialNetworks": "Social Networks",
+      "tags": "Add tags to categorize and help find the event",
+      "requirements": "Specify any special requirements for participants at this event"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "previous": "Previous",
+      "next": "Next",
+      "createEvent": "Create Event",
+      "creating": "Creating...",
+      "addUrl": "Add URL",
+      "addExhibitor": "Add Exhibitor",
+      "addSponsor": "Add Sponsor",
+      "uploadImage": "Upload Event Image",
+      "uploadGalleryImage": "Upload Gallery Image",
+      "saveAndNext": "Save & Next"
+    },
+    "labels": {
+      "eventHighlights": "Event Highlights",
+      "markAsNearestEvent": "Mark as Nearest Event",
+      "markAsUpcomingEvent": "Mark as Upcoming Event",
+      "availableBadges": "Available Badges",
+      "selected": "Selected",
+      "selectedBadges": "Selected Badges",
+      "totalImages": "Total images",
+      "noBadges": "No badges available. Please create badges first.",
+      "noImages": "No images added yet",
+      "noImagesDescription": "Add image URLs to create your event gallery",
+      "noExhibitors": "No exhibitors added yet",
+      "noSponsors": "No sponsors added yet",
+      "imageNumber": "Image {{number}}"
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidUrl": "Please enter a valid URL",
+      "invalidEmail": "Please enter a valid email address",
+      "invalidDate": "Please enter a valid date",
+      "endDateBeforeStart": "End date must be after start date"
+    },
+    "messages": {
+      "debugLocation": "Location Data:",
+      "notSet": "Not set"
+    },
+    "addExhibitorDialog": {
+      "title": "Add Exhibitor",
+      "description": "Enter exhibitor details",
+      "fields": {
+        "fullName": "Full Name",
+        "picture": "Picture URL"
+      },
+      "placeholders": {
+        "enterFullName": "Enter exhibitor name",
+        "enterPictureUrl": "https://example.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "addExhibitor": "Add Exhibitor",
+        "adding": "Adding..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidUrl": "Please enter a valid URL"
+      }
+    },
+    "addSponsorDialog": {
+      "title": "Add Sponsor",
+      "description": "Enter sponsor details",
+      "fields": {
+        "name": "Name",
+        "logo": "Logo URL"
+      },
+      "placeholders": {
+        "enterName": "Enter sponsor name",
+        "enterLogoUrl": "https://example.com/logo.jpg"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "addSponsor": "Add Sponsor",
+        "adding": "Adding..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidUrl": "Please enter a valid URL"
+      }
+    }
+  },
+  "members": {
+    "title": "Members",
+    "description": "Manage your members",
+    "addMember": "Add Member",
+    "memberSearchPlaceholder": "Search members by name, email, phone, or location",
+    "status": {
+      "all": "All Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "registration": {
+      "all": "All Registrations",
+      "completed": "Completed",
+      "pending": "Pending",
+      "status": "Registration"
+    },
+    "gender": {
+      "all": "All Genders",
+      "male": "Male",
+      "female": "Female"
+    },
+    "sort": {
+      "by": "Sort by",
+      "name": "Name",
+      "email": "Email",
+      "dateJoing": "Join Date",
+      "status": "Status"
+    },
+    "active": "Active",
+    "inActive": "Inactive",
+    "activated": "Activate",
+    "deactivated": "Deactivate",
+    "delete": "Delete",
+    "preview": "Preview",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "clearFilters": "Clear Filters",
+    "joinedOn": "Joined on",
+    "notAvailable": "Not available",
+    "deleting": "Deleting...",
+    "addFirstMember": "Add First Member",
+    "emptyState": {
+      "title": "No Members Found",
+      "noResults": "No members match your search criteria.",
+      "noMembers": "No members have been added yet."
+    },
+    "deleteDialog": {
+      "title": "Delete Member",
+      "description": "Are you sure you want to delete  This action cannot be undone."
+    },
+    "messages": {
+      "updateSuccess": "Member updated successfully",
+      "updateError": "Failed to update member",
+      "createSuccess": "Member created successfully",
+      "createError": "Failed to create member",
+      "deleteSuccess": "Member deleted successfully",
+      "deleteError": "Failed to delete member",
+      "activateSuccess": "Member activated successfully",
+      "deactivateSuccess": "Member deactivated successfully",
+      "statusUpdateError": "Failed to update member status"
+    },
+    "editDialog": {
+      "title": "Edit Member",
+      "description": "Update member information. Changes will be saved immediately.",
+      "sections": {
+        "personalInfo": "Personal Information",
+        "contactInfo": "Contact Information",
+        "locationInfo": "Location Information",
+        "accountStatus": "Account Status"
+      },
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phoneNumber": "Phone Number",
+        "city": "City",
+        "country": "Country",
+        "gender": "Gender",
+        "accountStatus": "Account Status"
+      },
+      "placeholders": {
+        "enterFirstName": "Enter first name",
+        "enterLastName": "Enter last name",
+        "enterEmail": "Enter email address",
+        "enterPhone": "Enter phone number",
+        "enterCity": "Enter city",
+        "enterCountry": "Enter country",
+        "selectGender": "Select gender",
+        "selectStatus": "Select status"
+      },
+      "genderOptions": {
+        "male": "Male",
+        "female": "Female"
+      },
+      "statusOptions": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "saving": "Saving..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Invalid email address"
+      }
+    },
+    "addDialog": {
+      "title": "Add New Member",
+      "description": "Create a new member account. All required fields must be filled.",
+      "sections": {
+        "personalInfo": "Personal Information",
+        "contactInfo": "Contact Information",
+        "locationInfo": "Location Information",
+        "accountInfo": "Account Information"
+      },
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phoneNumber": "Phone Number",
+        "city": "City",
+        "country": "Country",
+        "gender": "Gender",
+        "password": "Password",
+        "accountStatus": "Account Status"
+      },
+      "placeholders": {
+        "enterFirstName": "Enter first name",
+        "enterLastName": "Enter last name",
+        "enterEmail": "Enter email address",
+        "enterPhone": "Enter phone number",
+        "enterCity": "Enter city",
+        "enterCountry": "Enter country",
+        "enterPassword": "Enter password",
+        "selectGender": "Select gender",
+        "selectStatus": "Select status"
+      },
+      "genderOptions": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "statusOptions": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create Member",
+        "creating": "Creating..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Invalid email address",
+        "passwordMinLength": "Password must be at least 6 characters"
+      }
+    },
+    "detailsDialog": {
+      "title": "Member Details",
+      "description": "Complete information about the member",
+      "tabs": {
+        "overview": "Overview",
+        "events": "Events",
+        "activity": "Activity"
+      },
+      "sections": {
+        "contactInfo": "Contact Information",
+        "personalInfo": "Personal Details",
+        "accountInfo": "Account Timeline",
+        "timestamps": "Timestamps"
+      },
+      "labels": {
+        "accountStatus": "Account Status",
+        "registration": "Registration",
+        "emailAddress": "Email Address",
+        "phoneNumber": "Phone Number",
+        "location": "Location",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "birthday": "Birthday",
+        "memberSince": "Member since",
+        "lastUpdated": "Last updated",
+        "eventParticipation": "Event Participation",
+        "accountActivity": "Account Activity",
+        "accountCreated": "Account Created",
+        "lastProfileUpdate": "Last Profile Update",
+        "eventParticipations": "Event Participations",
+        "notProvided": "Not provided"
+      },
+      "fields": {
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "location": "Location",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "birthday": "Birthday",
+        "accountStatus": "Account Status",
+        "registrationStatus": "Registration Status",
+        "userId": "User ID",
+        "roleId": "Role ID",
+        "joinedDate": "Joined Date",
+        "lastUpdated": "Last Updated",
+        "memberId": "Member ID"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "registrationComplete": "Complete",
+        "registrationPending": "Pending",
+        "completed": "Completed",
+        "pending": "Pending"
+      },
+      "notAvailable": "Not available",
+      "notProvided": "Not provided",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "registration": "Registration",
+      "complete": "Complete",
+      "pending": "Pending",
+      "contactInformation": "Contact Information",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "personalDetails": "Personal Details",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "gender": "Gender",
+      "birthday": "Birthday",
+      "accountTimeline": "Account Timeline",
+      "memberSince": "Member since",
+      "lastUpdated": "Last updated",
+      "events": {
+        "loading": "Loading events...",
+        "noEvents": "No events found",
+        "noParticipation": "This member hasn't participated in any events yet",
+        "untitledEvent": "Untitled Event",
+        "date": "Date",
+        "location": "Location",
+        "notSet": "Not set",
+        "loadingEvents": "Loading events...",
+        "noEventsDescription": "This member hasn't registered for any events yet.",
+        "unableToLoad": "Unable to load member events.",
+        "dateNotSet": "Date not set",
+        "locationNotSet": "Location not set",
+        "registered": "registered",
+        "eventsCount": "{{count}} events"
+      },
+      "activity": {
+        "title": "Account Activity",
+        "accountCreated": "Account Created",
+        "lastProfileUpdate": "Last Profile Update",
+        "eventParticipations": "Event Participations",
+        "event": "event",
+        "events": "events"
+      },
+      "buttons": {
+        "close": "Close",
+        "editMember": "Edit Member",
+        "deleteMember": "Delete Member"
+      }
+    },
+    "events": {
+      "selectorLabel": "Current event selection",
+      "loadingParticipants": "Loading participants...",
+      "participantsCount": "{{count}} participants",
+      "noSelection": "Select an event to focus on its participants",
+      "changeEvent": "Change event",
+      "selectEvent": "Select event",
+      "clearSelection": "Clear",
+      "dialog": {
+        "title": "Select an event",
+        "description": "Choose an event to display its registered members",
+        "empty": "No events available at the moment",
+        "searchPlaceholder": "Search events by name",
+        "noResults": "No events match your search"
+      },
+      "exitConfirm": {
+        "title": "Event Selection Required",
+        "description": "You must select an event to view its participants. Would you like to return to the previous page?",
+        "stay": "Stay Here",
+        "return": "Return to Previous Page"
+      }
+    },
+     "list": {
+        "name": "Name",
+        "status": "Status",
+        "registration": "Registration",
+        "joinDate": "Join Date",
+        "tags": "Tags",
+        "actions": "Actions"
+      }
+  },
+  "categories": {
+    "title": "Categories",
+    "addCategory": "Add Category",
+    "editCategory": "Edit Category",
+    "createCategory": "Create Category",
+    "createNew": "Create New Category",
+    "categoryName": "Category Name",
+    "categoryNameRequired": "Category name is required",
+    "enterCategoryName": "Enter category name",
+    "categoryDescription": "Description",
+    "descriptionRequired": "Description is required",
+    "enterDescription": "Enter category description",
+    "icon": "Icon (Emoji)",
+    "iconRequired": "Icon is required",
+    "enterIcon": "Enter emoji icon (e.g., 📁, 🎉, ⭐)",
+    "iconHint": "Use a single emoji character to represent this category",
+    "addDescription": "Add a new category to organize your content. All fields are required.",
+    "editDescription": "Update category information. Changes will be saved immediately.",
+    "emojiPicker": {
+      "button": "Pick Emoji",
+      "hint": "Select an emoji below or paste your own.",
+      "selected": "Selected emoji"
+    },
+    "manageCategories": "Manage your categories and badges",
+    "organizeContent": "Organize your content with categories",
+    "noCategoriesFound": "No categories found",
+    "getStartedCategory": "Get started by creating your first category to organize your content.",
+    "createdSuccessfully": "Category created successfully",
+    "updatedSuccessfully": "Category updated successfully",
+    "deletedSuccessfully": "Category deleted successfully",
+    "createFailed": "Failed to create category",
+    "updateFailed": "Failed to update category",
+    "deleteFailed": "Failed to delete category",
+    "categoryDetails": {
+      "title": "Category Details",
+      "description": "Detailed information about the category",
+      "header": {
+        "name": "Category Name",
+        "description": "Description",
+        "icon": "Icon",
+        "categoryId": "Category ID"
+      },
+      "sections": {
+        "basicInfo": "Basic Information",
+        "description": "Description",
+        "timestamps": "Timestamps",
+        "usage": "Category Usage"
+      },
+      "labels": {
+        "created": "Created",
+        "lastUpdated": "Last Updated",
+        "fullDescription": "Full Description"
+      },
+      "badges": {
+        "category": "Category",
+        "id": "ID: {{id}}"
+      },
+      "usageDescription": "This category is used to organize and classify events within the platform. Events assigned to this category will be grouped together for better organization.",
+      "actions": {
+        "close": "Close",
+        "editCategory": "Edit Category",
+        "deleteCategory": "Delete Category"
+      }
+    },
+    "deleteDialog": {
+      "title": "Delete Category",
+      "description": "Are you sure you want to delete this category? This will permanently remove the category and all associated data."
+    },
+    "table": {
+      "id": "ID",
+      "icon": "Icon",
+      "name": "Name",
+      "description": "Description",
+      "actions": "Actions",
+      "showing": "Showing {{from}} to {{to}} of {{total}} entries"
+    }
+  },
+  "badges": {
+    "title": "Badges",
+    "addBadge": "Add Badge",
+    "editBadge": "Edit Badge",
+    "createBadge": "Create Badge",
+    "createNew": "Create New Badge",
+    "createDescription": "Add a new badge to reward your users. All required fields must be filled.",
+    "editDescription": "Update badge information. Changes will be saved immediately.",
+    "badgeName": "Badge Name",
+    "badgeDescription": "Description",
+    "badgeImage": "Badge Image",
+    "fields": {
+      "name": "Badge Name",
+      "namePlaceholder": "Enter badge name",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter badge description",
+      "design": "Design",
+      "designPlaceholder": "Select design",
+      "image": "Image URL",
+      "imagePlaceholder": "Enter image URL",
+      "imageHint": "Optional: URL to the badge image",
+      "uploadLabel": "Badge Image"
+    },
+    "validation": {
+      "nameRequired": "Badge name is required",
+      "descriptionRequired": "Description is required"
+    },
+    "designOptions": {
+      "gold": "Gold",
+      "silver": "Silver",
+      "bronze": "Bronze",
+      "platinum": "Platinum",
+      "diamond": "Diamond"
+    },
+    "buttons": {
+      "create": "Create Badge",
+      "creating": "Creating...",
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "noBadgesFound": "No badges found",
+    "getStartedBadge": "Start by creating your first badge to reward your users.",
+    "rewardUsers": "Reward your users with badges",
+    "createdSuccessfully": "Badge created successfully",
+    "updatedSuccessfully": "Badge updated successfully",
+    "deletedSuccessfully": "Badge deleted successfully",
+    "createFailed": "Failed to create badge",
+    "updateFailed": "Failed to update badge",
+    "deleteFailed": "Failed to delete badge",
+    "table": {
+      "id": "ID",
+      "image": "Image",
+      "name": "Name",
+      "description": "Description",
+      "design": "Design",
+      "actions": "Actions",
+      "deleteTitle": "Delete Badge",
+      "deleteDescription": "Are you sure you want to delete this badge? This will permanently remove the badge and all associated data."
+    },
+    "details": {
+      "title": "Badge Details",
+      "description": "Detailed information about the badge",
+      "designInformation": "Design Information",
+      "designType": "Design Type",
+      "badgeId": "Badge ID",
+      "imageInformation": "Image Information",
+      "imageUrl": "Image URL",
+      "noImageUrl": "No image URL provided",
+      "timestamps": "Timestamps",
+      "created": "Created",
+      "lastUpdated": "Last Updated",
+      "additionalInfo": "Additional Information",
+      "additionalInfoText": "This badge represents an achievement that users can earn within the platform.",
+      "close": "Close",
+      "editBadge": "Edit Badge",
+      "deleteBadge": "Delete Badge"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your categories and badges",
+    "navigation": "Navigation"
+  },
+  "roles": {
+    "title": "Roles",
+    "description": "Manage user roles and their permissions",
+    "noRolesFound": "No roles found",
+    "emptyDescription": "Get started by creating your first role to manage user permissions.",
+    "createdSuccessfully": "Role created successfully",
+    "updatedSuccessfully": "Role updated successfully",
+    "deletedSuccessfully": "Role deleted successfully",
+    "createFailed": "Failed to create role",
+    "updateFailed": "Failed to update role",
+    "deleteFailed": "Failed to delete role",
+    "dialog": {
+      "createTitle": "Create New Role",
+      "editTitle": "Edit Role",
+      "editDescription": "Update role information and manage permissions",
+      "roleName": "Role Name",
+      "roleNamePlaceholder": "Enter role name",
+      "roleNameRequired": "Role name is required",
+      "systemRoleWarning": "System roles cannot be renamed",
+      "permissions": "Permissions",
+      "permissionsDescription": "Select the permissions to assign to this role",
+      "managePermissions": "Manage Permissions",
+      "noPermissionsSelected": "No permissions selected. Click 'Manage Permissions' to add some.",
+      "permissionsCount": "{{count}} permission selected",
+      "permissionsCount_plural": "{{count}} permissions selected",
+      "cancel": "Cancel",
+      "create": "Create Role",
+      "creating": "Creating...",
+      "update": "Update Role",
+      "updating": "Updating...",
+      "deleteTitle": "Delete Role",
+      "deleteMessage": "Are you sure you want to delete this role?",
+      "deleteConfirm": "Delete"
+    },
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "permissions": "Permissions",
+      "actions": "Actions",
+      "system": "System",
+      "custom": "Custom",
+      "permissionsCount": "{{count}} permission",
+      "permissionsCount_plural": "{{count}} permissions",
+      "showing": "Showing {{from}} to {{to}} of {{total}} entries",
+      "deleteTitle": "Delete Role",
+      "deleteDescription": "Are you sure you want to delete this role? This will permanently remove the role and all associated permissions. Users with this role will need to be reassigned."
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "Manage Permissions",
+      "description": "Select the permissions you want to assign. You can select all permissions in a group or individual permissions.",
+      "selectAll": "Select All",
+      "of": "of",
+      "selected": "selected",
+      "noPermissions": "No permissions available",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    }
+  },
+  "footer": {
+    "tagline": "Event Management Platform",
+    "rights": "All rights reserved",
+    "madeWith": "Made with",
+    "by": "by",
+    "followUs": "Follow us"
+  },
+  "profilePage": {
+    "title": "Profile",
+    "completion": "Complete your profile",
+    "description": "Manage your account settings and personal information",
+    "buttons": {
+      "editProfile": "Edit Profile",
+      "cancelEdit": "Cancel",
+      "changePhoto": "Change Photo"
+    },
+    "tabs": {
+      "personal": "Personal Information",
+      "professional": "Professional",
+      "account": "Account Details",
+      "rolesRights": "Roles & Rights"
+    },
+    "personal": {
+      "profilePicture": {
+        "title": "Profile Picture",
+        "description": "This will be displayed on your profile"
+      },
+      "accountStatus": "Account Status",
+      "status": "Status",
+      "registration": "Registration",
+      "role": "Role",
+      "form": {
+        "title": "Personal Information",
+        "description": "Update your personal details and contact information"
+      }
+    },
+    "fields": {
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "Enter your first name"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Enter your last name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number"
+      },
+      "birthday": {
+        "label": "Birthday"
+      },
+      "gender": {
+        "label": "Gender",
+        "placeholder": "Select gender",
+        "options": {
+          "male": "Male",
+          "female": "Female"
+        }
+      },
+      "country": {
+        "label": "Country",
+        "placeholder": "Enter your country"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Enter your city"
+      }
+    },
+    "professional": {
+      "title": "Professional Information",
+      "description": "Your company and professional details",
+      "socialNetworks": "Social Networks",
+      "fields": {
+        "companyName": {
+          "label": "Company Name",
+          "placeholder": "Enter company name"
+        },
+        "jobTitle": {
+          "label": "Job Title",
+          "placeholder": "Enter your job title"
+        },
+        "industry": {
+          "label": "Industry",
+          "placeholder": "Enter industry"
+        },
+        "companySize": {
+          "label": "Company Size",
+          "placeholder": "Enter company size"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "placeholder": "https://linkedin.com/in/yourprofile"
+        },
+        "website": {
+          "label": "Website",
+          "placeholder": "https://yourwebsite.com"
+        }
+      }
+    },
+    "account": {
+      "title": "Account Information",
+      "description": "Your account details and verification status",
+      "userType": "User Type",
+      "verificationCode": "Verification Code",
+      "memberSince": "Member Since",
+      "lastUpdated": "Last Updated"
+    },
+    "security": {
+      "title": "Security",
+      "password": "Password",
+      "lastUpdated": "Last updated {{date}}",
+      "changePassword": "Change Password",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password (min 8 characters)",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "updatePassword": "Update Password"
+    },
+    "roles": {
+      "roleInfo": {
+        "title": "Role Information",
+        "description": "Current role and permissions",
+        "roleName": "Role Name",
+        "systemRole": "System Role",
+        "customRole": "Custom Role",
+        "totalRights": "Total Rights",
+        "created": "Created",
+        "noRole": "No role information available"
+      },
+      "rights": {
+        "title": "Assigned Rights",
+        "description": "Permissions granted to this role",
+        "noRights": "No rights assigned",
+        "noInfo": "No rights information available"
+      },
+      "roleActions": {
+        "changeRoleTitle": "Change user role",
+        "changeRoleButton": "Change role",
+        "description": "Choose how you want to update this organizer's role.",
+        "upgradeAdmin": "Grant admin access",
+        "downgradeOrganizer": "Set as organizer",
+        "adminLabel": "Admin",
+        "organizerLabel": "Organizer",
+        "success": "Role updated to {{role}}",
+        "error": "Unable to update role."
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "completed": "Completed",
+      "pending": "Pending"
+    },
+    "messages": {
+      "profileUpdated": "Profile updated successfully",
+      "profileUpdateFailed": "Failed to update profile",
+      "passwordUpdated": "Password updated successfully",
+      "passwordFailed": "Failed to change password. Please try again."
+    },
+    "errors": {
+      "passwordRequired": "Both password fields are required",
+      "passwordMinLength": "Password must be at least 8 characters long",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "common": {
+      "notAvailable": "N/A"
+    }
+  },
+  "accounts": {
+    "title": "Accounts",
+    "description": "Manage all users",
+    "addAccount": "Add Account",
+    "totalUsers": "{count} total users",
+    "sort": {
+      "by": "Sort by:",
+      "name": "Name",
+      "email": "Email",
+      "type": "Type",
+      "joinDate": "Join Date",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "all": "All Status"
+    },
+    "userTypes": {
+      "organizer": "Organizer",
+      "member": "Member",
+      "all": "All Types"
+    },
+    "registration": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "all": "All Registrations"
+    },
+    "actions": {
+      "viewProfile": "View Profile",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "delete": "Delete",
+      "retry": "Retry",
+      "clearFilters": "Clear Filters"
+    },
+    "fields": {
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "company": "Company",
+      "joined": "Joined",
+      "registration": "Registration",
+      "gender": "Gender"
+    },
+    "emptyState": {
+      "title": "No Users Found",
+      "noResults": "No users match your search criteria.",
+      "noUsers": "No users have been added yet."
+    },
+    "deleteDialog": {
+      "title": "Delete User",
+      "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "messages": {
+      "activateSuccess": "User activated successfully",
+      "deactivateSuccess": "User deactivated successfully",
+      "deleteSuccess": "User deleted successfully",
+      "activateError": "Failed to activate user",
+      "deactivateError": "Failed to deactivate user",
+      "deleteError": "Failed to delete user",
+      "createSuccess": "Account created successfully",
+      "createError": "Failed to create account"
+    },
+    "notAvailable": "N/A",
+    "filters": {
+      "searchPlaceholder": "Search users by name, email, phone, location, or company...",
+      "status": {
+        "placeholder": "Status",
+        "all": "All Status",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "registration": {
+        "placeholder": "Registration",
+        "all": "All Registration",
+        "completed": "Completed",
+        "pending": "Pending"
+      },
+      "gender": {
+        "placeholder": "Gender",
+        "all": "All Gender",
+        "male": "Male",
+        "female": "Female"
+      },
+      "userType": {
+        "placeholder": "User Type",
+        "all": "All Types",
+        "organizer": "Organizer",
+        "admin": "Admin"
+      }
+    }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "description": "Manage your inbox.",
+    "sidebar": {
+      "account": "Account",
+      "inbox": "Inbox",
+      "allInboxes": "All Inboxes"
+    },
+    "search": {
+      "placeholder": "Search messages, subjects, names, or emails..."
+    },
+    "filters": {
+      "start": "Start",
+      "end": "End",
+      "clear": "Clear date filters"
+    },
+    "messagesCount": "{{count}} messages",
+    "emptyState": {
+      "title": "No messages found",
+      "noMessages": "No contact messages have been received yet.",
+      "noResults": "Try adjusting your search or filters."
+    },
+    "unknownUser": "Unknown User",
+    "noEmail": "No email provided",
+    "unknownDate": "Unknown date",
+    "guestUser": "Guest user",
+    "conversation": {
+      "title": "Conversation",
+      "replyTo": "Reply-To",
+      "loading": "Loading conversation history...",
+      "errorTitle": "Conversation unavailable",
+      "errorMessage": "Unable to load full conversation history."
+    },
+    "reply": {
+      "placeholder": "Reply to this message",
+      "subject": "Subject",
+      "sending": "Sending...",
+      "send": "Send"
+    },
+    "actions": {
+      "deleteMessage": "Delete message",
+      "deleteConversation": "Delete conversation",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "delete": "Delete"
+    },
+    "messages": {
+      "deleteSuccess": "Contact deleted successfully",
+      "replySuccess": "Reply sent successfully"
+    },
+    "errors": {
+      "fetchFailed": "Failed to fetch contacts",
+      "deleteFailed": "Failed to delete contact",
+      "replyFailed": "Failed to send reply"
+    },
+    "deleteDialog": {
+      "title": "Delete Contact",
+      "description": "Are you sure you want to delete the contact message {{subject}}? This action cannot be undone."
+    }
+  },
+  "globalSearch": {
+    "error": "Unable to search right now.",
+    "noResults": "No matches found",
+    "loading": "Searching...",
+    "sections": {
+      "event": "Events",
+      "member": "Members",
+      "organizer": "Organizers",
+      "admin": "Admins"
+    }
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "restrictedArea": "Restricted Area",
+    "insufficientPermissions": "Insufficient Permissions",
+    "message": "You don't have the necessary permissions to access this page.",
+    "contactAdmin": "This area is restricted to administrators and organizers only. If you believe this is an error, please contact your system administrator.",
+    "returnToLogin": "Return to Login"
+  },
+  "profile": {
+    "notFound": {
+      "title": "No User Data",
+      "message": "Unable to load user profile. Please try again.",
+      "reload": "Reload"
+    },
+    "error": {
+      "title": "Error Loading Profile",
+      "tryAgain": "Try Again"
+    }
+  },
+  "deleteDialog": {
+    "title": "Delete Item",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "deleting": "Deleting..."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "Oops! The page you're looking for doesn't exist.",
+    "subMessage": "It may have been moved or deleted.",
+    "goHome": "Go to Home",
+    "goBack": "Go Back",
+    "usefulPages": "Useful pages:"
+  },
+  "splash": {
+    "appName": "Eventinos",
+    "tagline": "Event Management",
+    "loading": "Loading..."
+  },
+  "statusChange": {
+    "title": "Change Event Status",
+    "currentStatus": "Current Status",
+    "newStatus": "New Status",
+    "selectNewStatus": "Select new status",
+    "confirm": "Are you sure you want to change the status of",
+    "to": "to"
+  },
+  "location": {
+    "searchLocation": "Search Location",
+    "manualCoordinates": "Or Enter Coordinates Manually",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "enterAddress": "Enter address or place name",
+    "selectLocation": "Select a location",
+    "searchPlaceholder": "Search for a place, address, or venue...",
+    "currentLocation": "Current Location",
+    "locating": "Locating...",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "clear": "Clear",
+    "selectionHint": "Click on the map, use search, or enable geolocation to select a location.",
+    "latitudePlaceholder": "e.g., 33.5731",
+    "longitudePlaceholder": "e.g., -7.5898",
+    "geolocationNotSupported": "Geolocation is not supported by your browser",
+    "geolocationError": "Unable to get your location",
+    "interactiveMap": "Interactive Map",
+    "manualEntry": "Manual Entry",
+    "venueName": "Venue Name",
+    "venueNamePlaceholder": "e.g., Grand Hotel Ballroom",
+    "address": "Address",
+    "addressPlaceholder": "e.g., 123 Main St, Suite 100",
+    "city": "City",
+    "cityPlaceholder": "e.g., New York",
+    "country": "Country",
+    "countryPlaceholder": "e.g., United States",
+    "countryCode": "Country Code",
+    "countryCodePlaceholder": "e.g., US",
+    "placeId": "Place ID (optional)",
+    "placeIdPlaceholder": "Google Place ID",
+    "coordinates": "Coordinates",
+    "coordinatesSet": "Coordinates set:"
+  }
+}

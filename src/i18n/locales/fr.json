@@ -1,0 +1,1443 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "time": "Heure",
+    "name": "Nom",
+    "description": "Description",
+    "email": "Email",
+    "password": "Mot de passe",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "myAccount": "Mon Compte"
+  },
+  "auth": {
+    "login": "Connexion",
+    "loginTitle": "Connexion",
+    "loginDescription": "Entrez vos identifiants pour accéder à votre compte",
+    "email": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Votre mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "loginButton": "Se connecter",
+    "loggingIn": "Connexion...",
+    "loginSuccess": "Connexion réussie!",
+    "loginError": "Erreur de connexion",
+    "welcome": "Bienvenue",
+    "accessAccount": "Accédez à votre compte",
+    "account": "Eventify"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "events": "Événements",
+    "members": "Membres",
+    "accounts": "Comptes",
+    "contacts": "Contacts"
+  },
+  "header": {
+    "searchPlaceholder": "Rechercher des événements, membres...",
+    "searchPlaceholderMobile": "Rechercher...",
+    "notifications": "Notifications"
+  },
+  "dashboard": {
+    "title": "Statistiques",
+    "description": "Vue d'ensemble de vos événements et membres",
+    "totalEvents": "Total Événements",
+    "allEvents": "Tous les événements",
+    "acceptedEvents": "Événements Acceptés",
+    "refusedEvents": "Événements Refusés",
+    "pendingEvents": "Événements en Attente",
+    "users": "Membres",
+    "eventCreators": "créateur d'événements",
+    "eventCreatorsPlural": "créateurs d'événements",
+    "noEvents": "Aucun événement",
+    "noUsers": "Aucun membre",
+    "ofTotal": "du total",
+    "loadingStats": "Chargement des statistiques...",
+    "timePeriod": "Période",
+    "showingEventsFor": "Affichage des événements pour",
+    "timePeriods": {
+      "all": "Tout",
+      "week": "Semaine dernière",
+      "month": "Mois dernier",
+      "3months": "3 derniers mois",
+      "6months": "6 derniers mois",
+      "year": "Année dernière"
+    },
+    "filters": {
+      "startDateLabel": "Date de début",
+      "endDateLabel": "Date de fin",
+      "startDatePlaceholder": "Choisir la date de début",
+      "endDatePlaceholder": "Choisir la date de fin",
+      "clearDates": "Effacer la plage de dates",
+      "startAny": "Début",
+      "endAny": "Présent",
+      "currentRangeLabel": "Affichage des données pour {{range}}"
+    },
+    "genderChart": {
+      "title": "Répartition par genre",
+      "description": "Distribution des utilisateurs par genre",
+      "loading": "Chargement des données...",
+      "noData": "Aucune donnée disponible",
+      "totalUsers": "Total utilisateurs",
+      "genders": "Genres",
+      "users": "utilisateurs",
+      "ofTotal": "% du total",
+      "genderNames": {
+        "Homme": "Homme",
+        "Femme": "Femme",
+        "homme": "Homme",
+        "femme": "Femme",
+        "Male": "Homme",
+        "Female": "Femme",
+        "Autre": "Autre",
+        "autre": "Autre",
+        "Other": "Autre"
+      }
+    },
+    "cityChart": {
+      "title": "Répartition par ville",
+      "description": "Nombre d'utilisateurs par ville",
+      "loading": "Chargement des données...",
+      "noData": "Aucune donnée disponible",
+      "totalUsers": "Total utilisateurs",
+      "activeCities": "Villes actives",
+      "averagePerCity": "Moyenne par ville",
+      "users": "Utilisateurs",
+      "ofTotal": "% du total"
+    },
+    "eventsByDayChart": {
+      "title": "Nombre d'événements",
+      "description": "Aperçu hebdomadaire",
+      "loading": "Chargement...",
+      "events": "événements",
+      "eventsThisWeek": "Événements cette semaine",
+      "days": {
+        "lu": "Lundi",
+        "ma": "Mardi",
+        "me": "Mercredi",
+        "je": "Jeudi",
+        "ve": "Vendredi",
+        "sa": "Samedi",
+        "di": "Dimanche"
+      }
+    }
+  },
+  "events": {
+    "title": "Événements",
+    "addEvent": "Ajouter un événement",
+    "editEvent": "Modifier l'événement",
+    "eventName": "Nom de l'événement",
+    "eventDescription": "Description",
+    "eventDetails": "Détails de l'événement",
+    "basicInformation": "Informations de base",
+    "enterEventName": "Entrez le nom de l'événement",
+    "enterEventDescription": "Entrez la description de l'événement",
+    "loadingEvents": "Chargement des événements...",
+    "noEventsFound": "Aucun événement trouvé",
+    "resetFilters": "Réinitialiser les filtres",
+    "searchPlaceholder": "Rechercher un événement...",
+    "mapView": "Vue carte",
+    "selectCity": "Sélectionner une ville",
+    "allCities": "Toutes les villes",
+    "eventsFound": "événements trouvés",
+    "showEvents": "Afficher les événements",
+    "preview": "Aperçu",
+    "changeStatus": "Changer le statut",
+    "allStatuses": "Tous les statuts",
+    "allTypes": "Tous les types",
+    "faceToFace": "En présentiel",
+    "virtual": "Virtuel",
+    "hybrid": "Hybride",
+    "today": "aujourd'hui",
+    "inPerson": "En personne",
+    "statusAccepted": "Accepté",
+    "statusPending": "En attente",
+    "statusRejected": "Rejeté",
+    "statusCancelled": "Annulé",
+    "statusClosed": "Fermé",
+    "eventStatusUpdated": "Statut de l'événement mis à jour avec succès",
+    "deleteEventTitle": "Supprimer l'événement",
+    "deleteEventConfirm": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+    "sections": {
+      "basicInfo": "Informations de base",
+      "dateTime": "Date et heure",
+      "location": "Lieu",
+      "socialNetworks": "Réseaux sociaux",
+      "program": "Programme",
+      "badges": "Badges",
+      "gallery": "Galerie",
+      "exhibitorsSponsors": "Exposants et sponsors"
+    },
+    "table": {
+      "title": "Titre",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "location": "Lieu",
+      "status": "Statut",
+      "actions": "Actions",
+      "visibility": "Visibilité",
+      "type": "Type d'événement",
+      "changeStatus": "Changer le statut",
+      "deleteEvent": "Supprimer l'événement",
+      "previewEvent": "Aperçu de l'événement",
+      "editEvent": "Modifier l'événement",
+      "totalEvents": " événements trouvé"
+    },
+    "view": {
+      "calendar": "Vue calendrier",
+      "table": "Vue tableau",
+      "maps": "Vue maps"
+    },
+    "filters": {
+      "startDatePlaceholder": "Choisir la date de début",
+      "endDatePlaceholder": "Choisir la date de fin",
+      "clearDates": "Effacer les dates"
+    },
+    "statusChangeDialog": {
+      "title": "Changer le statut de l'événement",
+      "description": "Sélectionnez le nouveau statut pour cet événement.",
+      "eventLabel": "Événement :",
+      "statusLabel": "Statut",
+      "selectStatus": "Sélectionner le statut",
+      "currentStatus": "Statut actuel",
+      "newStatus": "Nouveau statut",
+      "buttons": {
+        "cancel": "Annuler",
+        "update": "Mettre à jour le statut",
+        "updating": "Mise à jour..."
+      },
+      "statusOptions": {
+        "pending": {
+          "label": "En attente",
+          "description": "L'événement est en attente d'approbation"
+        },
+        "accepted": {
+          "label": "Accepté",
+          "description": "L'événement a été approuvé"
+        },
+        "refused": {
+          "label": "Rejeté",
+          "description": "L'événement a été rejeté"
+        },
+        "closed": {
+          "label": "Fermé",
+          "description": "L'événement a été fermé"
+        }
+      }
+    },
+    "details": {
+      "eventOrganizer": "Organisateur de l'événement",
+      "invalidDate": "Date invalide",
+      "invalidTime": "Heure invalide",
+      "untitledEvent": "Événement sans titre",
+      "noDescription": "Aucune description disponible.",
+      "locationNotSpecified": "Lieu non spécifié",
+      "noProgramDetails": "Aucun détail du programme disponible.",
+      "organizedBy": "Organisé par",
+      "editEvent": "Modifier l'événement",
+      "deleteEvent": "Supprimer cet événement",
+      "tabs": {
+        "details": "Détails",
+        "speakers": "Intervenants",
+        "program": "Programme",
+        "gallery": "Galerie"
+      },
+      "description": "Description",
+      "dateTime": "Date et heure",
+      "start": "Début",
+      "end": "Fin",
+      "at": "à",
+      "socialLinks": "Liens sociaux",
+      "website": "Site Web",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "noSpeakers": "Aucun intervenant annoncé pour le moment.",
+      "noGallery": "Aucune image de galerie disponible.",
+      "eventInformation": "Informations sur l'événement",
+      "date": "Date",
+      "time": "Heure",
+      "venue": "Lieu",
+      "eventType": "Type d'événement",
+      "exhibitors": "Exposants",
+      "exhibitor": "Exposant",
+      "sponsors": "Sponsors",
+      "sponsor": "Sponsor",
+      "deleteConfirmTitle": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+      "deleteConfirmDescription": "Cette action ne peut pas être annulée. L'événement",
+      "willBeDeleted": "sera définitivement supprimé de votre organisation.",
+      "speakerDetails": "Détails de l'intervenant",
+      "speaker": "Intervenant",
+      "about": "À propos"
+    },
+    "status": {
+      "published": "Publié",
+      "draft": "Brouillon",
+      "cancelled": "Annulé",
+      "closed": "Fermé",
+      "pending": "En attente",
+      "accepted": "Accepté",
+      "refused": "Refusé"
+    },
+    "type": {
+      "facetoface": "En personne",
+      "online": "En ligne",
+      "hybrid": "Hybride"
+    },
+    "membersCard": {
+      "title": "Membres inscrits",
+      "subtitle": "Voir tous les participants à cet événement.",
+      "totalLabel": "Total des participants",
+      "viewMembers": "Gérer les membres"
+    }
+  },
+  "eventForm": {
+    "title": "Créer un nouvel événement",
+    "description": "Remplissez les détails de l'événement étape par étape",
+    "preview": {
+      "show": "Afficher l'aperçu",
+      "hide": "Masquer l'aperçu",
+      "title": "Aperçu en direct",
+      "description": "Voyez à quoi ressemblera votre événement"
+    },
+    "sections": {
+      "basicInfo": "Informations de base",
+      "dateTime": "Date et heure",
+      "location": "Informations de localisation",
+      "socialNetworks": "Réseaux sociaux",
+      "program": "Programme de l'événement",
+      "badges": "Badges",
+      "gallery": "Galerie de l'événement",
+      "exhibitorsSponsors": "Exposants et Sponsors",
+      "members": "Membres"
+    },
+    "fields": {
+      "name": "Nom de l'événement",
+      "description": "Description",
+      "image": "Image de l'événement",
+      "visibility": "Visibilité",
+      "type": "Type d'événement",
+      "status": "Statut",
+      "categories": "Catégorie",
+      "capacity": "Capacité de l'événement",
+      "allowRegistration": "Autoriser l'inscription",
+      "registrationDeadline": "Date limite d'inscription",
+      "startDate": "Date et heure de début",
+      "endDate": "Date et heure de fin",
+      "venueName": "Nom du lieu",
+      "city": "Ville",
+      "country": "Pays",
+      "countryCode": "Code pays",
+      "placeId": "ID du lieu",
+      "website": "Site web",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "program": "Programme de l'événement",
+      "galleryImages": "Images de la galerie",
+      "exhibitors": "Exposants",
+      "sponsors": "Sponsors",
+      "fullName": "Nom complet",
+      "picture": "URL de l'image",
+      "logo": "URL du logo",
+      "sponsorName": "Nom du sponsor"
+    },
+    "placeholders": {
+      "enterEventName": "Entrez le nom de l'événement",
+      "enterDescription": "Entrez la description de l'événement",
+      "enterImageUrl": "https://exemple.com/image.jpg",
+      "selectVisibility": "Sélectionnez la visibilité",
+      "selectCategory": "Sélectionnez la catégorie",
+      "selectType": "Sélectionnez le type",
+      "selectStatus": "Sélectionnez le statut",
+      "enterCapacity": "Nombre maximum de participants",
+      "enterVenueName": "Entrez le nom du lieu",
+      "enterCity": "Entrez la ville",
+      "enterCountry": "Entrez le pays",
+      "enterCountryCode": "ex. : FR, US, GB",
+      "enterPlaceId": "ID Google Places",
+      "enterWebsite": "https://exemple.com",
+      "enterFacebook": "https://facebook.com/evenement",
+      "enterInstagram": "https://instagram.com/evenement",
+      "enterTwitter": "https://twitter.com/evenement",
+      "enterLinkedIn": "https://linkedin.com/evenement",
+      "enterProgram": "Entrez le programme détaillé",
+      "enterImageUrlManual": "Ou entrez l'URL de l'image manuellement :",
+      "enterImageUrlGallery": "Ou entrez l'URL de l'image (https://...)",
+      "enterExhibitorName": "Entrez le nom de l'exposant",
+      "enterExhibitorPicture": "https://exemple.com/image.jpg",
+      "enterSponsorName": "Entrez le nom du sponsor",
+      "enterSponsorLogo": "https://exemple.com/logo.jpg"
+    },
+    "options": {
+      "visibility": {
+        "public": "Public",
+        "private": "Privé"
+      },
+      "type": {
+        "faceToFace": "En présentiel",
+        "virtual": "Virtuel"
+      },
+      "status": {
+        "pending": "En attente",
+        "accepted": "Accepté",
+        "refused": "Refusé",
+        "closed": "Fermé"
+      }
+    },
+    "descriptions": {
+      "capacity": "Mettez 0 pour une capacité illimitée",
+      "allowRegistration": "Activer l'inscription des participants pour cet événement",
+      "registrationDeadline": "Dernière date et heure pour que les participants s'inscrivent",
+      "isNearestEvent": "Afficher cet événement dans la section des événements proches",
+      "isUpcomingEvent": "Mettre en avant cet événement dans la section des événements à venir",
+      "badges": "Sélectionnez les badges que les participants peuvent gagner lors de cet événement",
+      "gallery": "Ajoutez des images pour présenter votre événement",
+      "socialNetworks": "Réseaux sociaux"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "createEvent": "Créer l'événement",
+      "creating": "Création en cours...",
+      "addUrl": "Ajouter l'URL",
+      "addExhibitor": "Ajouter un exposant",
+      "addSponsor": "Ajouter un sponsor",
+      "uploadImage": "Télécharger l'image de l'événement",
+      "uploadGalleryImage": "Télécharger l'image de la galerie",
+      "saveAndNext": "Enregistrer et suivant"
+    },
+    "labels": {
+      "eventHighlights": "Points forts de l'événement",
+      "markAsNearestEvent": "Marquer comme événement proche",
+      "markAsUpcomingEvent": "Marquer comme événement à venir",
+      "availableBadges": "Badges disponibles",
+      "selected": "Sélectionné",
+      "selectedBadges": "Badges sélectionnés",
+      "totalImages": "Total des images",
+      "noBadges": "Aucun badge disponible. Veuillez d'abord créer des badges.",
+      "noImages": "Aucune image ajoutée pour le moment",
+      "noImagesDescription": "Ajoutez des URL d'images pour créer votre galerie d'événement",
+      "noExhibitors": "Aucun exposant ajouté pour le moment",
+      "noSponsors": "Aucun sponsor ajouté pour le moment",
+      "imageNumber": "Image {{number}}"
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire",
+      "invalidUrl": "Veuillez entrer une URL valide",
+      "invalidEmail": "Veuillez entrer une adresse email valide",
+      "invalidDate": "Veuillez entrer une date valide",
+      "endDateBeforeStart": "La date de fin doit être après la date de début"
+    },
+    "messages": {
+      "debugLocation": "Données de localisation :",
+      "notSet": "Non défini"
+    },
+    "addExhibitorDialog": {
+      "title": "Ajouter un exposant",
+      "description": "Entrez les détails de l'exposant",
+      "fields": {
+        "name": "Nom de l'exposant",
+        "picture": "URL de l'image de l'exposant"
+      },
+      "placeholders": {
+        "enterName": "Entrez le nom de l'exposant",
+        "enterPicture": "https://exemple.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "add": "Ajouter l'exposant",
+        "adding": "Ajout en cours..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidUrl": "Veuillez entrer une URL valide"
+      }
+    },
+    "addSponsorDialog": {
+      "title": "Ajouter un sponsor",
+      "description": "Entrez les détails du sponsor",
+      "fields": {
+        "name": "Nom du sponsor",
+        "logo": "URL du logo du sponsor"
+      },
+      "placeholders": {
+        "enterName": "Entrez le nom du sponsor",
+        "enterLogo": "https://exemple.com/logo.jpg"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "add": "Ajouter le sponsor",
+        "adding": "Ajout en cours..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidUrl": "Veuillez entrer une URL valide"
+      }
+    }
+  },
+  "members": {
+    "title": "Membres",
+    "description": "Gérez vos membres",
+    "addMember": "Ajouter un membre",
+    "memberSearchPlaceholder": "Rechercher des membres par nom, email, téléphone ou localisation",
+    "status": {
+      "all": "Tous les statuts",
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "list": {
+        "name": "Nom",
+        "status": "Statut",
+        "registration": "Inscription",
+        "joinDate": "Date d'adhésion",
+        "tags": "Étiquettes",
+        "actions": "Actions"
+      },
+    "registration": {
+      "all": "Toutes les inscriptions",
+      "completed": "Complété",
+      "pending": "En attente",
+      "status": "Inscription"
+    },
+    "gender": {
+      "all": "Tous les genres",
+      "male": "Homme",
+      "female": "Femme"
+    },
+    "sort": {
+      "by": "Trier par",
+      "name": "Nom",
+      "email": "Email",
+      "dateJoing": "Date d'adhésion",
+      "status": "Statut"
+    },
+    "active": "Actif",
+    "inActive": "Inactif",
+    "activated": "Activer",
+    "deactivated": "Désactiver",
+    "delete": "Supprimer",
+    "preview": "Aperçu",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "clearFilters": "Effacer les filtres",
+    "joinedOn": "Rejoint le",
+    "notAvailable": "Non disponible",
+    "deleting": "Suppression en cours...",
+    "addFirstMember": "Ajouter le premier membre",
+    "emptyState": {
+      "title": "Aucun membre trouvé",
+      "noResults": "Aucun membre ne correspond à vos critères de recherche.",
+      "noMembers": "Aucun membre n'a été ajouté pour le moment."
+    },
+    "deleteDialog": {
+      "title": "Supprimer le membre",
+      "description": "Êtes-vous sûr de vouloir supprimer Cette action ne peut pas être annulée."
+    },
+    "messages": {
+      "updateSuccess": "Membre mis à jour avec succès",
+      "updateError": "Échec de la mise à jour du membre",
+      "createSuccess": "Membre créé avec succès",
+      "createError": "Échec de la création du membre",
+      "deleteSuccess": "Membre supprimé avec succès",
+      "deleteError": "Échec de la suppression du membre",
+      "activateSuccess": "Membre activé avec succès",
+      "deactivateSuccess": "Membre désactivé avec succès",
+      "statusUpdateError": "Échec de la mise à jour du statut du membre"
+    },
+    "editDialog": {
+      "title": "Modifier le membre",
+      "description": "Mettez à jour les informations du membre. Les modifications seront enregistrées immédiatement.",
+      "sections": {
+        "personalInfo": "Informations personnelles",
+        "contactInfo": "Informations de contact",
+        "locationInfo": "Informations de localisation",
+        "accountStatus": "Statut du compte"
+      },
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse email",
+        "phoneNumber": "Numéro de téléphone",
+        "city": "Ville",
+        "country": "Pays",
+        "gender": "Genre",
+        "accountStatus": "Statut du compte"
+      },
+      "placeholders": {
+        "enterFirstName": "Entrez le prénom",
+        "enterLastName": "Entrez le nom",
+        "enterEmail": "Entrez l'adresse email",
+        "enterPhone": "Entrez le numéro de téléphone",
+        "enterCity": "Entrez la ville",
+        "enterCountry": "Entrez le pays",
+        "selectGender": "Sélectionnez le genre",
+        "selectStatus": "Sélectionnez le statut"
+      },
+      "genderOptions": {
+        "male": "Homme",
+        "female": "Femme"
+      },
+      "statusOptions": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "save": "Enregistrer les modifications",
+        "saving": "Enregistrement..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidEmail": "Adresse email invalide"
+      }
+    },
+    "addDialog": {
+      "title": "Ajouter un nouveau membre",
+      "description": "Créez un nouveau compte membre. Tous les champs obligatoires doivent être remplis.",
+      "sections": {
+        "personalInfo": "Informations personnelles",
+        "contactInfo": "Informations de contact",
+        "locationInfo": "Informations de localisation",
+        "accountInfo": "Informations du compte"
+      },
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse email",
+        "phoneNumber": "Numéro de téléphone",
+        "city": "Ville",
+        "country": "Pays",
+        "gender": "Genre",
+        "password": "Mot de passe",
+        "accountStatus": "Statut du compte"
+      },
+      "placeholders": {
+        "enterFirstName": "Entrez le prénom",
+        "enterLastName": "Entrez le nom",
+        "enterEmail": "Entrez l'adresse email",
+        "enterPhone": "Entrez le numéro de téléphone",
+        "enterCity": "Entrez la ville",
+        "enterCountry": "Entrez le pays",
+        "enterPassword": "Entrez le mot de passe",
+        "selectGender": "Sélectionnez le genre",
+        "selectStatus": "Sélectionnez le statut"
+      },
+      "genderOptions": {
+        "male": "Homme",
+        "female": "Femme",
+        "other": "Autre"
+      },
+      "statusOptions": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "create": "Créer le membre",
+        "creating": "Création en cours..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidEmail": "Adresse email invalide",
+        "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères"
+      }
+    },
+    "detailsDialog": {
+      "title": "Détails du membre",
+      "description": "Informations complètes sur le membre",
+      "tabs": {
+        "overview": "Aperçu",
+        "events": "Événements",
+        "activity": "Activité"
+      },
+      "sections": {
+        "contactInfo": "Informations de contact",
+        "personalInfo": "Informations personnelles",
+        "accountInfo": "Chronologie du compte",
+        "timestamps": "Horodatages"
+      },
+      "labels": {
+        "accountStatus": "Statut du compte",
+        "registration": "Inscription",
+        "emailAddress": "Adresse email",
+        "phoneNumber": "Numéro de téléphone",
+        "location": "Localisation",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "gender": "Genre",
+        "birthday": "Date de naissance",
+        "memberSince": "Membre depuis",
+        "lastUpdated": "Dernière mise à jour",
+        "eventParticipation": "Participation aux événements",
+        "accountActivity": "Activité du compte",
+        "accountCreated": "Compte créé",
+        "lastProfileUpdate": "Dernière mise à jour du profil",
+        "eventParticipations": "Participations aux événements",
+        "notProvided": "Non fourni"
+      },
+      "fields": {
+        "email": "Adresse email",
+        "phone": "Numéro de téléphone",
+        "location": "Localisation",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "gender": "Genre",
+        "birthday": "Date de naissance",
+        "accountStatus": "Statut du compte",
+        "registrationStatus": "Statut d'inscription",
+        "userId": "ID utilisateur",
+        "roleId": "ID rôle",
+        "joinedDate": "Date d'adhésion",
+        "lastUpdated": "Dernière mise à jour",
+        "memberId": "ID membre"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif",
+        "registrationComplete": "Complété",
+        "registrationPending": "En attente",
+        "completed": "Complété",
+        "pending": "En attente"
+      },
+      "notAvailable": "Non disponible",
+      "notProvided": "Non fourni",
+      "status": "Statut",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "registration": "Inscription",
+      "complete": "Complété",
+      "pending": "En attente",
+      "contactInformation": "Informations de contact",
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Localisation",
+      "personalDetails": "Informations personnelles",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "gender": "Genre",
+      "birthday": "Date de naissance",
+      "accountTimeline": "Chronologie du compte",
+      "memberSince": "Membre depuis",
+      "lastUpdated": "Dernière mise à jour",
+      "events": {
+        "loading": "Chargement des événements...",
+        "noEvents": "Aucun événement trouvé",
+        "noParticipation": "Ce membre n'a participé à aucun événement pour le moment",
+        "untitledEvent": "Événement sans titre",
+        "date": "Date",
+        "location": "Lieu",
+        "notSet": "Non défini",
+        "loadingEvents": "Chargement des événements...",
+        "noEventsDescription": "Ce membre ne s'est inscrit à aucun événement pour le moment.",
+        "unableToLoad": "Impossible de charger les événements du membre.",
+        "dateNotSet": "Date non définie",
+        "locationNotSet": "Lieu non défini",
+        "registered": "inscrit",
+        "eventsCount": "{{count}} événements"
+      },
+      "activity": {
+        "title": "Activité du compte",
+        "accountCreated": "Compte créé",
+        "lastProfileUpdate": "Dernière mise à jour du profil",
+        "eventParticipations": "Participations aux événements",
+        "event": "événement",
+        "events": "événements"
+      },
+      "buttons": {
+        "close": "Fermer",
+        "editMember": "Modifier le membre",
+        "deleteMember": "Supprimer le membre"
+      },
+      "notAvailable": "Non disponible"
+    },
+    "events": {
+      "selectorLabel": "Sélection d'événement actuelle",
+      "loadingParticipants": "Chargement des participants...",
+      "participantsCount": "{{count}} participants",
+      "noSelection": "Sélectionnez un événement pour afficher ses participants",
+      "changeEvent": "Changer d'événement",
+      "selectEvent": "Sélectionner un événement",
+      "clearSelection": "Effacer",
+      "dialog": {
+        "title": "Sélectionner un événement",
+        "description": "Choisissez un événement pour afficher ses membres inscrits",
+        "empty": "Aucun événement disponible pour le moment",
+        "searchPlaceholder": "Rechercher des événements par nom",
+        "noResults": "Aucun événement ne correspond à votre recherche"
+      },
+      "exitConfirm": {
+        "title": "Sélection d'événement requise",
+        "description": "Vous devez sélectionner un événement pour voir ses participants. Souhaitez-vous retourner à la page précédente ?",
+        "stay": "Rester ici",
+        "return": "Retourner à la page précédente"
+      }
+    }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "message": "Oups ! La page que vous recherchez n'existe pas.",
+    "subMessage": "Elle a peut-être été déplacée ou supprimée.",
+    "goHome": "Aller à l'accueil",
+    "goBack": "Retour"
+  },
+  "splash": {
+    "appName": "Eventinos",
+    "tagline": "Gestion d'événements",
+    "loading": "Chargement en cours..."
+  },
+  "categories": {
+    "title": "Catégories",
+    "addCategory": "Ajouter une catégorie",
+    "editCategory": "Modifier la catégorie",
+    "createCategory": "Créer une catégorie",
+    "createNew": "Créer une nouvelle catégorie",
+    "categoryName": "Nom de la catégorie",
+    "categoryNameRequired": "Le nom de la catégorie est requis",
+    "enterCategoryName": "Saisissez le nom de la catégorie",
+    "categoryDescription": "Description",
+    "descriptionRequired": "La description est requise",
+    "enterDescription": "Saisissez la description de la catégorie",
+    "icon": "Icône (emoji)",
+    "iconRequired": "L'icône est obligatoire",
+    "enterIcon": "Saisissez un emoji (ex. 📁, 🎉, ⭐)",
+    "iconHint": "Utilisez un seul emoji pour représenter cette catégorie",
+    "addDescription": "Ajoutez une nouvelle catégorie pour organiser votre contenu. Tous les champs sont requis.",
+    "editDescription": "Mettez à jour les informations de la catégorie. Les modifications sont enregistrées immédiatement.",
+    "emojiPicker": {
+      "button": "Choisir un emoji",
+      "hint": "Sélectionnez un emoji ci-dessous ou collez le vôtre.",
+      "selected": "Emoji sélectionné"
+    },
+    "manageCategories": "Gérez vos catégories et vos badges",
+    "organizeContent": "Organisez votre contenu avec des catégories",
+    "noCategoriesFound": "Aucune catégorie trouvée",
+    "getStartedCategory": "Commencez par créer votre première catégorie pour organiser votre contenu.",
+    "createdSuccessfully": "Catégorie créée avec succès",
+    "updatedSuccessfully": "Catégorie mise à jour avec succès",
+    "deletedSuccessfully": "Catégorie supprimée avec succès",
+    "createFailed": "Échec de la création de la catégorie",
+    "updateFailed": "Échec de la mise à jour de la catégorie",
+    "deleteFailed": "Échec de la suppression de la catégorie",
+    "categoryDetails": {
+      "title": "Détails de la Catégorie",
+      "description": "Informations détaillées sur la catégorie",
+      "header": {
+        "name": "Nom de la Catégorie",
+        "description": "Description",
+        "icon": "Icône",
+        "categoryId": "ID de la Catégorie"
+      },
+      "sections": {
+        "basicInfo": "Informations de Base",
+        "description": "Description",
+        "timestamps": "Horodatages",
+        "usage": "Utilisation de la Catégorie"
+      },
+      "labels": {
+        "created": "Créé",
+        "lastUpdated": "Dernière Mise à Jour",
+        "fullDescription": "Description Complète"
+      },
+      "badges": {
+        "category": "Catégorie",
+        "id": "ID : {{id}}"
+      },
+      "usageDescription": "Cette catégorie est utilisée pour organiser et classer les événements sur la plateforme. Les événements attribués à cette catégorie seront regroupés pour une meilleure organisation.",
+      "actions": {
+        "close": "Fermer",
+        "editCategory": "Modifier la Catégorie",
+        "deleteCategory": "Supprimer la Catégorie"
+      }
+    },
+    "deleteDialog": {
+      "title": "Supprimer la Catégorie",
+      "description": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Cela supprimera définitivement la catégorie et toutes les données associées."
+    },
+    "table": {
+      "id": "ID",
+      "icon": "Icône",
+      "name": "Nom",
+      "description": "Description",
+      "actions": "Actions",
+      "showing": "Affichage de {{from}} à {{to}} sur {{total}} entrées"
+    }
+  },
+  "badges": {
+    "title": "Badges",
+    "addBadge": "Ajouter un badge",
+    "editBadge": "Modifier le badge",
+    "createBadge": "Créer un badge",
+    "createNew": "Créer un nouveau badge",
+    "createDescription": "Ajoutez un nouveau badge pour récompenser vos utilisateurs. Tous les champs requis doivent être remplis.",
+    "editDescription": "Mettez à jour les informations du badge. Les modifications sont enregistrées immédiatement.",
+    "fields": {
+      "name": "Nom du badge",
+      "namePlaceholder": "Saisissez le nom du badge",
+      "description": "Description",
+      "descriptionPlaceholder": "Saisissez la description du badge",
+      "design": "Design",
+      "designPlaceholder": "Choisissez un design",
+      "image": "URL de l'image",
+      "imagePlaceholder": "Saisissez l'URL de l'image",
+      "imageHint": "Optionnel : URL de l'image du badge",
+      "uploadLabel": "Image du badge"
+    },
+    "validation": {
+      "nameRequired": "Le nom du badge est requis",
+      "descriptionRequired": "La description est requise"
+    },
+    "designOptions": {
+      "gold": "Or",
+      "silver": "Argent",
+      "bronze": "Bronze",
+      "platinum": "Platine",
+      "diamond": "Diamant"
+    },
+    "buttons": {
+      "create": "Créer le badge",
+      "creating": "Création...",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement..."
+    },
+    "noBadgesFound": "Aucun badge trouvé",
+    "getStartedBadge": "Commencez par créer votre premier badge pour récompenser vos utilisateurs.",
+    "rewardUsers": "Récompensez vos utilisateurs avec des badges",
+    "createdSuccessfully": "Badge créé avec succès",
+    "updatedSuccessfully": "Badge mis à jour avec succès",
+    "deletedSuccessfully": "Badge supprimé avec succès",
+    "createFailed": "Échec de la création du badge",
+    "updateFailed": "Échec de la mise à jour du badge",
+    "deleteFailed": "Échec de la suppression du badge",
+    "table": {
+      "id": "ID",
+      "image": "Image",
+      "name": "Nom",
+      "description": "Description",
+      "design": "Design",
+      "actions": "Actions",
+      "deleteTitle": "Supprimer le badge",
+      "deleteDescription": "Êtes-vous sûr de vouloir supprimer ce badge ? Cela supprimera définitivement le badge et toutes les données associées."
+    },
+    "details": {
+      "title": "Détails du badge",
+      "description": "Informations détaillées sur le badge",
+      "designInformation": "Informations de conception",
+      "designType": "Type de conception",
+      "badgeId": "ID du badge",
+      "imageInformation": "Informations sur l'image",
+      "imageUrl": "URL de l'image",
+      "noImageUrl": "Aucune URL d'image fournie",
+      "timestamps": "Horodatages",
+      "created": "Créé",
+      "lastUpdated": "Dernière mise à jour",
+      "additionalInfo": "Informations supplémentaires",
+      "additionalInfoText": "Ce badge représente une réalisation que les utilisateurs peuvent obtenir sur la plateforme.",
+      "close": "Fermer",
+      "editBadge": "Modifier le badge",
+      "deleteBadge": "Supprimer le badge"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "description": "Gérez vos catégories et vos badges",
+    "navigation": "Navigation"
+  },
+  "roles": {
+    "title": "Rôles",
+    "description": "Gérez les rôles utilisateurs et leurs permissions",
+    "noRolesFound": "Aucun rôle trouvé",
+    "emptyDescription": "Commencez par créer votre premier rôle pour gérer les permissions.",
+    "createdSuccessfully": "Rôle créé avec succès",
+    "updatedSuccessfully": "Rôle mis à jour avec succès",
+    "deletedSuccessfully": "Rôle supprimé avec succès",
+    "createFailed": "Échec de la création du rôle",
+    "updateFailed": "Échec de la mise à jour du rôle",
+    "deleteFailed": "Échec de la suppression du rôle",
+    "dialog": {
+      "createTitle": "Créer un Nouveau Rôle",
+      "editTitle": "Modifier le rôle",
+      "editDescription": "Mettre à jour les informations du rôle et gérer les permissions",
+      "roleName": "Nom du rôle",
+      "roleNamePlaceholder": "Saisissez le nom du rôle",
+      "roleNameRequired": "Le nom du rôle est requis",
+      "systemRoleWarning": "Les rôles système ne peuvent pas être renommés",
+      "permissions": "Permissions",
+      "permissionsDescription": "Sélectionnez les permissions à attribuer à ce rôle",
+      "managePermissions": "Gérer les permissions",
+      "noPermissionsSelected": "Aucune permission sélectionnée. Cliquez sur 'Gérer les permissions' pour en ajouter.",
+      "permissionsCount": "{{count}} permission sélectionnée",
+      "permissionsCount_plural": "{{count}} permissions sélectionnées",
+      "cancel": "Annuler",
+      "create": "Créer le Rôle",
+      "creating": "Création...",
+      "update": "Mettre à jour le rôle",
+      "updating": "Mise à jour...",
+      "deleteTitle": "Supprimer le Rôle",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle?",
+      "deleteConfirm": "Supprimer"
+    },
+    "table": {
+      "id": "ID",
+      "name": "Nom",
+      "type": "Type",
+      "permissions": "Permissions",
+      "actions": "Actions",
+      "system": "Système",
+      "custom": "Personnalisé",
+      "permissionsCount": "{{count}} permission",
+      "permissionsCount_plural": "{{count}} permissions",
+      "showing": "Affichage de {{from}} à {{to}} sur {{total}} entrées",
+      "deleteTitle": "Supprimer le rôle",
+      "deleteDescription": "Êtes-vous sûr de vouloir supprimer ce rôle ? Cela supprimera définitivement le rôle et toutes les permissions associées. Les utilisateurs ayant ce rôle devront être réassignés."
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "Gérer les permissions",
+      "description": "Sélectionnez les permissions que vous souhaitez attribuer. Vous pouvez sélectionner toutes les permissions d'un groupe ou des permissions individuelles.",
+      "selectAll": "Tout sélectionner",
+      "of": "sur",
+      "selected": "sélectionnées",
+      "noPermissions": "Aucune permission disponible",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    }
+  },
+  "footer": {
+    "tagline": "Plateforme de gestion d'événements",
+    "rights": "Tous droits réservés",
+    "madeWith": "Fait avec",
+    "by": "par",
+    "followUs": "Suivez-nous"
+  },
+  "profilePage": {
+    "title": "Profil",
+    "completion": "Complétez votre profil",
+    "description": "Gérez les paramètres de votre compte et vos informations personnelles",
+    "buttons": {
+      "editProfile": "Modifier le profil",
+      "cancelEdit": "Annuler",
+      "changePhoto": "Changer de photo"
+    },
+    "tabs": {
+      "personal": "Informations personnelles",
+      "professional": "Professionnel",
+      "account": "Détails du compte",
+      "rolesRights": "Rôles et droits"
+    },
+    "personal": {
+      "profilePicture": {
+        "title": "Photo de profil",
+        "description": "Elle sera affichée sur votre profil"
+      },
+      "accountStatus": "Statut du compte",
+      "status": "Statut",
+      "registration": "Inscription",
+      "role": "Rôle",
+      "form": {
+        "title": "Informations personnelles",
+        "description": "Mettez à jour vos informations personnelles et de contact"
+      }
+    },
+    "fields": {
+      "firstName": {
+        "label": "Prénom",
+        "placeholder": "Saisissez votre prénom"
+      },
+      "lastName": {
+        "label": "Nom",
+        "placeholder": "Saisissez votre nom"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Saisissez votre email"
+      },
+      "phone": {
+        "label": "Numéro de téléphone",
+        "placeholder": "Saisissez votre numéro de téléphone"
+      },
+      "birthday": {
+        "label": "Date de naissance"
+      },
+      "gender": {
+        "label": "Genre",
+        "placeholder": "Sélectionnez un genre",
+        "options": {
+          "male": "Homme",
+          "female": "Femme"
+        }
+      },
+      "country": {
+        "label": "Pays",
+        "placeholder": "Saisissez votre pays"
+      },
+      "city": {
+        "label": "Ville",
+        "placeholder": "Saisissez votre ville"
+      }
+    },
+    "professional": {
+      "title": "Informations professionnelles",
+      "description": "Vos informations professionnelles et celles de votre entreprise",
+      "socialNetworks": "Réseaux sociaux",
+      "fields": {
+        "companyName": {
+          "label": "Nom de l'entreprise",
+          "placeholder": "Saisissez le nom de l'entreprise"
+        },
+        "jobTitle": {
+          "label": "Poste",
+          "placeholder": "Saisissez votre poste"
+        },
+        "industry": {
+          "label": "Secteur",
+          "placeholder": "Saisissez le secteur"
+        },
+        "companySize": {
+          "label": "Taille de l'entreprise",
+          "placeholder": "Saisissez la taille de l'entreprise"
+        },
+        "linkedin": {
+          "label": "LinkedIn",
+          "placeholder": "https://linkedin.com/in/votreprofil"
+        },
+        "website": {
+          "label": "Site web",
+          "placeholder": "https://votresite.com"
+        }
+      }
+    },
+    "account": {
+      "title": "Informations du compte",
+      "description": "Les détails de votre compte et votre statut de vérification",
+      "userType": "Type d'utilisateur",
+      "verificationCode": "Code de vérification",
+      "memberSince": "Membre depuis",
+      "lastUpdated": "Dernière mise à jour"
+    },
+    "security": {
+      "title": "Sécurité",
+      "password": "Mot de passe",
+      "lastUpdated": "Dernière mise à jour {{date}}",
+      "changePassword": "Changer le mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Saisissez un nouveau mot de passe (8 caractères min.)",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez le nouveau mot de passe",
+      "updatePassword": "Mettre à jour le mot de passe"
+    },
+    "roles": {
+      "roleInfo": {
+        "title": "Informations sur le rôle",
+        "description": "Rôle actuel et permissions",
+        "roleName": "Nom du rôle",
+        "systemRole": "Rôle système",
+        "customRole": "Rôle personnalisé",
+        "totalRights": "Nombre de droits",
+        "created": "Créé le",
+        "noRole": "Aucune information de rôle disponible"
+      },
+      "rights": {
+        "title": "Droits attribués",
+        "description": "Permissions accordées à ce rôle",
+        "noRights": "Aucun droit attribué",
+        "noInfo": "Aucune information sur les droits disponible"
+      },
+      "roleActions": {
+        "changeRoleTitle": "Modifier le rôle de l'utilisateur",
+        "changeRoleButton": "Modifier le rôle",
+        "description": "Choisissez comment mettre à jour le rôle de cet organisateur.",
+        "upgradeAdmin": "Accorder l'accès administrateur",
+        "downgradeOrganizer": "Définir comme organisateur",
+        "adminLabel": "Admin",
+        "organizerLabel": "Organisateur",
+        "success": "Rôle mis à jour en {{role}}",
+        "error": "Impossible de mettre à jour le rôle."
+      }
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "completed": "Terminé",
+      "pending": "En attente"
+    },
+    "messages": {
+      "profileUpdated": "Profil mis à jour avec succès",
+      "profileUpdateFailed": "Échec de la mise à jour du profil",
+      "passwordUpdated": "Mot de passe mis à jour avec succès",
+      "passwordFailed": "Échec du changement de mot de passe. Veuillez réessayer."
+    },
+    "errors": {
+      "passwordRequired": "Les deux champs de mot de passe sont requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
+    },
+    "common": {
+      "notAvailable": "N/D"
+    }
+  },
+  "accounts": {
+    "title": "Comptes",
+    "description": "Gérer tous les utilisateurs",
+    "addAccount": "Ajouter un compte",
+    "totalUsers": "{count} utilisateurs au total",
+    "sort": {
+      "by": "Trier par :",
+      "name": "Nom",
+      "email": "Email",
+      "type": "Type",
+      "joinDate": "Date d'adhésion",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "all": "Tous les statuts"
+    },
+    "userTypes": {
+      "organizer": "Organisateur",
+      "member": "Membre",
+      "all": "Tous les types"
+    },
+    "registration": {
+      "completed": "Complété",
+      "pending": "En attente",
+      "all": "Toutes les inscriptions"
+    },
+    "actions": {
+      "viewProfile": "Voir le profil",
+      "activate": "Activer",
+      "deactivate": "Désactiver",
+      "delete": "Supprimer",
+      "retry": "Réessayer",
+      "clearFilters": "Effacer les filtres"
+    },
+    "fields": {
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Localisation",
+      "company": "Entreprise",
+      "joined": "Rejoint",
+      "registration": "Inscription",
+      "gender": "Genre"
+    },
+    "emptyState": {
+      "title": "Aucun utilisateur trouvé",
+      "noResults": "Aucun utilisateur ne correspond à vos critères de recherche.",
+      "noUsers": "Aucun utilisateur n'a été ajouté pour le moment."
+    },
+    "deleteDialog": {
+      "title": "Supprimer l'utilisateur",
+      "description": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action ne peut pas être annulée.",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "deleting": "Suppression..."
+    },
+    "messages": {
+      "activateSuccess": "Utilisateur activé avec succès",
+      "deactivateSuccess": "Utilisateur désactivé avec succès",
+      "deleteSuccess": "Utilisateur supprimé avec succès",
+      "activateError": "Échec de l'activation de l'utilisateur",
+      "deactivateError": "Échec de la désactivation de l'utilisateur",
+      "deleteError": "Échec de la suppression de l'utilisateur",
+      "createSuccess": "Compte créé avec succès",
+      "createError": "Échec de la création du compte"
+    },
+    "notAvailable": "N/D",
+    "filters": {
+      "searchPlaceholder": "Rechercher des utilisateurs par nom, email, téléphone, localisation ou entreprise...",
+      "status": {
+        "placeholder": "Statut",
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "registration": {
+        "placeholder": "Inscription",
+        "all": "Toutes les inscriptions",
+        "completed": "Complété",
+        "pending": "En attente"
+      },
+      "gender": {
+        "placeholder": "Genre",
+        "all": "Tous les genres",
+        "male": "Homme",
+        "female": "Femme"
+      },
+      "userType": {
+        "placeholder": "Type d'utilisateur",
+        "all": "Tous les types",
+        "organizer": "Organisateur",
+        "member": "Membre"
+      }
+    }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "description": "Gérez votre boîte de réception.",
+    "sidebar": {
+      "account": "Compte",
+      "inbox": "Boîte de réception",
+      "allInboxes": "Toutes les boîtes"
+    },
+    "search": {
+      "placeholder": "Rechercher des messages, sujets, noms ou emails..."
+    },
+    "filters": {
+      "start": "Début",
+      "end": "Fin",
+      "clear": "Effacer les filtres de date"
+    },
+    "messagesCount": "{{count}} messages",
+    "emptyState": {
+      "title": "Aucun message trouvé",
+      "noMessages": "Aucun message de contact n'a été reçu pour le moment.",
+      "noResults": "Essayez d'ajuster votre recherche ou vos filtres."
+    },
+    "unknownUser": "Utilisateur inconnu",
+    "noEmail": "Aucun email fourni",
+    "unknownDate": "Date inconnue",
+    "guestUser": "Utilisateur invité",
+    "conversation": {
+      "title": "Conversation",
+      "replyTo": "Répondre à",
+      "loading": "Chargement de l'historique de conversation...",
+      "errorTitle": "Conversation indisponible",
+      "errorMessage": "Impossible de charger l'historique complet de la conversation."
+    },
+    "reply": {
+      "placeholder": "Répondre à ce message",
+      "subject": "Sujet",
+      "sending": "Envoi en cours...",
+      "send": "Envoyer"
+    },
+    "actions": {
+      "deleteMessage": "Supprimer le message",
+      "deleteConversation": "Supprimer la conversation",
+      "cancel": "Annuler",
+      "deleting": "Suppression...",
+      "delete": "Supprimer"
+    },
+    "messages": {
+      "deleteSuccess": "Contact supprimé avec succès",
+      "replySuccess": "Réponse envoyée avec succès"
+    },
+    "errors": {
+      "fetchFailed": "Échec de la récupération des contacts",
+      "deleteFailed": "Échec de la suppression du contact",
+      "replyFailed": "Échec de l'envoi de la réponse"
+    },
+    "deleteDialog": {
+      "title": "Supprimer le contact",
+      "description": "Êtes-vous sûr de vouloir supprimer le message de contact {{subject}} ? Cette action ne peut pas être annulée."
+    }
+  },
+  "globalSearch": {
+    "error": "Impossible d'effectuer la recherche pour le moment.",
+    "noResults": "Aucun résultat",
+    "loading": "Recherche...",
+    "sections": {
+      "event": "Événements",
+      "member": "Membres",
+      "organizer": "Organisateurs",
+      "admin": "Admins"
+    }
+  },
+  "unauthorized": {
+    "title": "Accès Refusé",
+    "restrictedArea": "Zone Restreinte",
+    "insufficientPermissions": "Permissions Insuffisantes",
+    "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+    "contactAdmin": "Cette zone est réservée aux administrateurs et organisateurs uniquement. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter votre administrateur système.",
+    "goBack": "Retour",
+    "dashboard": "Tableau de bord",
+    "needAccess": "Besoin d'accès ? Contactez votre administrateur"
+  },
+  "auth": {
+    "verifyingAuthentication": "Vérification de l'authentification...",
+    "accessDenied": "Accès Refusé",
+    "restrictedToAdminOrganizer": "Cette application est réservée aux administrateurs et organisateurs uniquement.",
+    "returnToLogin": "Retour à la connexion"
+  },
+  "profile": {
+    "notFound": {
+      "title": "Aucune Donnée Utilisateur",
+      "message": "Impossible de charger le profil utilisateur. Veuillez réessayer.",
+      "reload": "Recharger"
+    },
+    "error": {
+      "title": "Erreur de Chargement du Profil",
+      "tryAgain": "Réessayer"
+    }
+  },
+  "permissions": {
+    "dialog": {
+      "title": "Gérer les Permissions",
+      "description": "Sélectionnez les permissions à attribuer à cet utilisateur",
+      "selectAll": "Tout Sélectionner",
+      "of": "sur",
+      "selected": "sélectionné(s)"
+    }
+  },
+  "location": {
+    "searchLocation": "Rechercher un Emplacement",
+    "manualCoordinates": "Ou Entrez les Coordonnées Manuellement",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "enterAddress": "Entrez une adresse ou un nom de lieu",
+    "selectLocation": "Sélectionnez un emplacement",
+    "searchPlaceholder": "Rechercher un lieu, une adresse ou un établissement...",
+    "currentLocation": "Position Actuelle",
+    "locating": "Localisation...",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "clear": "Effacer",
+    "selectionHint": "Cliquez sur la carte, utilisez la recherche ou activez la géolocalisation pour sélectionner un emplacement.",
+    "latitudePlaceholder": "ex., 33.5731",
+    "longitudePlaceholder": "ex., -7.5898",
+    "geolocationNotSupported": "La géolocalisation n'est pas prise en charge par votre navigateur",
+    "geolocationError": "Impossible d'obtenir votre position",
+    "interactiveMap": "Carte Interactive",
+    "manualEntry": "Saisie Manuelle",
+    "venueName": "Nom du Lieu",
+    "venueNamePlaceholder": "ex., Salle de bal du Grand Hôtel",
+    "address": "Adresse",
+    "addressPlaceholder": "ex., 123 Rue Principale, Suite 100",
+    "city": "Ville",
+    "cityPlaceholder": "ex., Paris",
+    "country": "Pays",
+    "countryPlaceholder": "ex., France",
+    "countryCode": "Code Pays",
+    "countryCodePlaceholder": "ex., FR",
+    "placeId": "ID du Lieu (optionnel)",
+    "placeIdPlaceholder": "ID Google Place",
+    "coordinates": "Coordonnées",
+    "coordinatesSet": "Coordonnées définies :"
+  }
+}

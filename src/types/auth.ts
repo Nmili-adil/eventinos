@@ -27,6 +27,10 @@ export interface RegisterRequest {
 export interface ForgotPasswordRequest {
   email: string
 }
+export interface verifiedOtpRequest {
+  email: string
+  verificationCode: string
+}
 
 export interface ResetPasswordRequest {
   token: string

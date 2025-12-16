@@ -13,17 +13,21 @@ import {
   type LogoutAction,
   type SetCredentialsAction,
 } from "./auth.type";
-import { clearAuthData, setAuthToken, setUserData } from "@/services/localStorage";
+import { clearAuthData, setAuthToken, setLayoutPreferences, setRole, setUserData } from "@/services/localStorage";
+import type { User } from "@/types/usersType";
 
 export const authLoginRequest = (payload: LoginPayload) => {
   return async (dispatch: any) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
     try {
       const response = await loginApi(payload)
+      console.log(response)
       if(response.status ===200) {
         setAuthToken(response.data.token)
         setUserData(response.data.user)
-        dispatch(authLoginSuccess(response.data.user, response.data.token, response.data.message))
+        setRole(response.data.user.role.name)
+        setLayoutPreferences(null)
+        dispatch(authLoginSuccess(response.data.user, response.data.token, response.data.message, response.data.role))
       } else {
         dispatch(authLoginFailure(response.data.message))
       }
@@ -34,12 +38,13 @@ export const authLoginRequest = (payload: LoginPayload) => {
 };
 
 export const authLoginSuccess = (
-  user: object,
+  user: User,
   token: string,
-  message: string
+  message: string,
+  role: string
 ): LoginSuccessAction => ({
   type: AUTH_LOGIN_SUCCESS,
-  payload: { user, token, message },
+  payload: { user, token, message, role },
 });
 
 export const authLoginFailure = (error: string): LoginFailureAction => ({
@@ -59,11 +64,12 @@ export const authClearError = (): ClearErrorAction => ({
 });
 
 export const authSetCredentials = (
-  user: object,
-  token: string
+  user: User,
+  token: string,
+  role: string
 ): SetCredentialsAction => ({
   type: AUTH_SET_CREDENTIALS,
-  payload: { user, token },
+  payload: { user, token, role },
 });
 
 

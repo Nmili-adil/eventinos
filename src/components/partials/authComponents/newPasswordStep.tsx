@@ -2,19 +2,22 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, ArrowLeft, Key } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useAuthStore } from '@/store/authStore'
 import { resetPasswordSchema, type ResetPasswordData } from '@/schema/authSchemas/forget-password-schema'
+import type { RootState } from '@/store/app/rootReducer'
+import { resetPassword, setForgotPasswordStep, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
 export default function NewPasswordStep() {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  
-  const { isLoading, error, resetPassword, setForgotPasswordStep, clearError } = useAuthStore()
+
+  const dispatch = useDispatch()
+  const { isLoading, error, email, verificationCode } = useSelector((state: RootState) => state.forgotPassword)
 
   const {
     register,
@@ -23,21 +26,23 @@ export default function NewPasswordStep() {
     watch,
   } = useForm<ResetPasswordData>({
     resolver: zodResolver(resetPasswordSchema),
-  })
+  })  
 
   const onSubmit = async (data: ResetPasswordData) => {
-    console.log('New password submitted')
-    clearError()
-    try {
-      await resetPassword(data.newPassword, data.confirmPassword)
-    } catch (error) {
-      console.log('Error resetting password:', error)
+    dispatch(clearForgotPasswordError())
+  
+    // Ensure we have a verification code from the previous OTP step
+    if (!verificationCode) {
+      console.error('No verification code found')
+      return
     }
+  
+    dispatch(resetPassword(email, verificationCode, data.newPassword, data.confirmPassword) as any)
   }
 
   const handleBack = () => {
-    setForgotPasswordStep('otp')
-    clearError()
+    dispatch(setForgotPasswordStep('otp'))
+    dispatch(clearForgotPasswordError())
   }
 
   const newPassword = watch('newPassword')
@@ -53,30 +58,39 @@ export default function NewPasswordStep() {
             className="text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Retour
+            Back
           </Button>
           <div className="bg-linear-to-r from-green-600 to-emerald-600 rounded-xl p-3">
             <Key className="h-8 w-8 text-white" />
           </div>
         </div>
         <CardTitle className="text-2xl font-bold">
-          Nouveau mot de passe
+          New Password
         </CardTitle>
         <CardDescription>
-          Créez un nouveau mot de passe sécurisé
+          Create a new secure password
         </CardDescription>
       </CardHeader>
       
       <CardContent>
+        {/* DEBUG INFO - Remove after fixing */}
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs font-mono">
+          <div className="font-bold mb-1">🔍 Debug Info:</div>
+          <div>Email: {email || 'NOT SET'}</div>
+          <div>Verification Code: {verificationCode || 'NOT SET'}</div>
+          <div>Loading: {isLoading ? 'YES' : 'NO'}</div>
+          <div>Error: {error || 'NONE'}</div>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* New Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+            <Label htmlFor="newPassword">New Password</Label>
             <div className="relative">
               <Input
                 id="newPassword"
                 type={showNewPassword ? 'text' : 'password'}
-                placeholder="Votre nouveau mot de passe"
+                placeholder="Enter your new password"
                 {...register('newPassword')}
                 className={errors.newPassword ? 'border-red-500 pr-10' : 'pr-10'}
               />
@@ -101,12 +115,12 @@ export default function NewPasswordStep() {
 
           {/* Confirm Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirmez votre nouveau mot de passe"
+                placeholder="Confirm your new password"
                 {...register('confirmPassword')}
                 className={errors.confirmPassword ? 'border-red-500 pr-10' : 'pr-10'}
               />
@@ -133,13 +147,13 @@ export default function NewPasswordStep() {
           {newPassword && newPassword.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span>Force du mot de passe:</span>
+                <span>Password Strength:</span>
                 <span className={
                   newPassword.length < 8 ? 'text-red-600' :
                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'text-yellow-600' : 'text-green-600'
                 }>
-                  {newPassword.length < 8 ? 'Faible' :
-                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'Moyen' : 'Fort'}
+                  {newPassword.length < 8 ? 'Weak' :
+                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'Medium' : 'Strong'}
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -169,10 +183,10 @@ export default function NewPasswordStep() {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Réinitialisation...
+                Resetting...
               </>
             ) : (
-              'Réinitialiser le mot de passe'
+              'Reset Password'
             )}
           </Button>
         </form>

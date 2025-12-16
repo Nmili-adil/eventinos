@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./styles/map-location-selector.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -110,15 +111,202 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-@layer base {
+/* @layer base {
   * {
     @apply outline-none;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
 
 input {
   outline: none;
+}
+/* QuillTextEditor.css */
+.quill-editor-container {
+  border-radius: 8px;
+  overflow: auto;
+  border: 1px solid #e1e4e8;
+}
+
+.quill-editor-container .ql-container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 200px;
+}
+
+.quill-editor-container .ql-toolbar {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e1e4e8;
+  padding: 8px;
+}
+
+.quill-editor-container .ql-editor {
+  min-height: 200px;
+  line-height: 1.6;
+  padding: 16px;
+}
+
+.quill-editor-container .ql-editor.ql-blank::before {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Custom toolbar styling */
+.quill-editor-container .ql-toolbar .ql-stroke {
+  stroke: #495057;
+}
+
+.quill-editor-container .ql-toolbar .ql-fill {
+  fill: #495057;
+}
+
+.quill-editor-container .ql-toolbar .ql-picker-label {
+  color: #495057;
+}
+
+.quill-editor-container .ql-toolbar button:hover,
+.quill-editor-container .ql-toolbar button:focus,
+.quill-editor-container .ql-toolbar button.ql-active {
+  color: #007bff;
+}
+
+.quill-editor-container .ql-toolbar button:hover .ql-stroke,
+.quill-editor-container .ql-toolbar button:focus .ql-stroke,
+.quill-editor-container .ql-toolbar button.ql-active .ql-stroke {
+  stroke: #007bff;
+}
+
+.quill-editor-container .ql-toolbar button:hover .ql-fill,
+.quill-editor-container .ql-toolbar button:focus .ql-fill,
+.quill-editor-container .ql-toolbar button.ql-active .ql-fill {
+  fill: #007bff;
+}
+
+.quill-editor-container .ql-toolbar .ql-picker-options {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+.quill-editor-container .ql-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.quill-editor-container .ql-editor::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.quill-editor-container .ql-editor::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.quill-editor-container .ql-editor::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .quill-editor-container .ql-toolbar {
+    padding: 4px;
+  }
+  
+  .quill-editor-container .ql-toolbar .ql-formats {
+    margin-right: 4px;
+  }
+  
+  .quill-editor-container .ql-editor {
+    padding: 12px;
+  }
+}
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+
+[dir="rtl"] .flex {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .space-x-6 > * + * {
+  margin-right: 1.5rem;
+  margin-left: 0;
+}
+
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="password"],
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+[dir="rtl"] .absolute.left-3 {
+  left: auto;
+  right: 0.75rem;
+}
+
+[dir="rtl"] .pl-10 {
+  padding-left: 0;
+  padding-right: 2.5rem;
+}
+
+[dir="rtl"] .pr-4 {
+  padding-right: 0;
+  padding-left: 1rem;
+}
+
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .ml-6 {
+  margin-left: 0;
+  margin-right: 1.5rem;
+}
+
+/* Profile Page Tab Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Tab hover effects */
+.tab-hover-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-hover-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.tab-hover-effect:hover::before {
+  left: 100%;
 }
