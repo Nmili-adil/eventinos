@@ -2,10 +2,10 @@ import { z } from 'zod'
 
 export const loginSchema = z.object({
   email: z
-    .string()  // ← ADD THIS LINE
+    .string() 
     .min(1, 'L\'email est requis')
     .email('Format d\'email invalide')
-    .transform((val) => val.trim().toLowerCase()), // Optional: clean input
+    .transform((val) => val.trim().toLowerCase()), 
     
   password: z
     .string()
