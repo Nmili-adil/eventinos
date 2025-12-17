@@ -62,7 +62,11 @@ export const Router = createBrowserRouter([
             },
             {
                 path:MEMBERS_PAGE,
-                element: <MembersPage />
+                element: (
+                    <RoleProtectedRoute allowedRoles={['admin', 'organizer']}>
+                        <MembersPage />
+                    </RoleProtectedRoute>
+                )
             },
             {
                 path: SETTINGS_PAGE,
