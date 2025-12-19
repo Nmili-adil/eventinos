@@ -1,0 +1,1 @@
+0 3 * * * certbot renew --quiet && docker exec nginx nginx -s reload
