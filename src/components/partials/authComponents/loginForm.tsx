@@ -26,13 +26,15 @@ const LoginForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema) as any,
+        resolver: zodResolver(loginSchema) ,
         defaultValues:{
+            email: '',
+            password: '',
             is_backoffice: true
         }
     })
 
-    const onSubmit = async (data: LoginFormData) => {
+    const onSubmit = async (data: LoginFormData): Promise<void> => {
        
         dispatch(authLoginRequest(data))
     }
