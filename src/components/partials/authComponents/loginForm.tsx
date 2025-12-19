@@ -27,6 +27,9 @@ const LoginForm = () => {
         formState: { errors },
     } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema) as any,
+        defaultValues:{
+            is_backoffice: true
+        }
     })
 
     const onSubmit = async (data: LoginFormData) => {
@@ -65,6 +68,7 @@ const LoginForm = () => {
                         )}
                         
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                            <input type="hidden" {...register('is_backoffice')} value="true" />
                             {/* Email Field */}
                             <div className="space-y-2">
                                 <Label
