@@ -26,17 +26,20 @@ const LoginForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema) ,
+        resolver: zodResolver(loginSchema) as any,
         defaultValues:{
             email: '',
             password: '',
-            is_backoffice: true
+            
         }
     })
 
-    const onSubmit = async (data: LoginFormData): Promise<void> => {
-       
-        dispatch(authLoginRequest(data))
+    const onSubmit = async (data: LoginFormData) => {
+        const submitData= {
+            ...data,
+            is_backoffice: true,
+        }
+        dispatch(authLoginRequest(submitData))
     }
 
 
@@ -70,7 +73,7 @@ const LoginForm = () => {
                         )}
                         
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            <input type="hidden" {...register('is_backoffice')} value="true" />
+                           
                             {/* Email Field */}
                             <div className="space-y-2">
                                 <Label
