@@ -2,7 +2,8 @@ import { z } from 'zod'
 
 export const loginSchema = z.object({
   email: z
-    .string() 
+    .string()
+    .email("Invalid email address") 
     .min(1, "Email are required")
     .transform((val) => val.trim().toLowerCase()), 
     
