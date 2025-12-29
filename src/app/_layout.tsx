@@ -13,7 +13,7 @@ const Layout = () => {
   useScrollToTop()
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
         <Header />
         <main className="container mx-auto px-4 py-6 flex-1 ">
           <Outlet />

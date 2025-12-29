@@ -223,7 +223,8 @@
       "program": "Program",
       "badges": "Badges",
       "gallery": "Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors"
+      "exhibitorsSponsors": "Exhibitors & Sponsors",
+      "speakersExhibitorsSponsors": "Speakers, Exhibitors & Sponsors"
     },
     
    "table": {
@@ -433,6 +434,7 @@
       "createEvent": "Create Event",
       "creating": "Creating...",
       "addUrl": "Add URL",
+      "addSpeaker": "Add Speaker",
       "addExhibitor": "Add Exhibitor",
       "addSponsor": "Add Sponsor",
       "uploadImage": "Upload Event Image",

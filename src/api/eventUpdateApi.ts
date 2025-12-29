@@ -70,6 +70,15 @@ export const updateEventSpeakers = async (eventId: string, speakers: any[]) => {
   });
 };
 
+export const updateEventGallery = async (eventId: string, galleryImages: string[]) => {
+  return api.put(`/events/${eventId}/gallery`, { gallery: galleryImages }, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAuthToken()}`
+    }
+  });
+};
+
 // Update event exhibitors
 export const updateEventExhibitors = async (eventId: string, exhibitors: any[]) => {
   const formData = new FormData();

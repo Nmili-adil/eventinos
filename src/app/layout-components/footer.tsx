@@ -9,7 +9,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-gradient-to-br from-slate-50 via-white to-slate-50 border-t border-slate-200">
+    <footer className="bg-gray-100 border-t border-gray-200 mt-10">
       <div className="container mx-auto px-6 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Brand Section */}

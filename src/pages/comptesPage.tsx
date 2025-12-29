@@ -323,6 +323,8 @@ export const ComptesPage: React.FC = () => {
   const handleCreateAccount = async (data: any) => {
     setCreateLoading(true);
     try {
+      // This is only called for admin accounts now
+      // Organizer accounts are created directly via createOrganizerApi in the dialog
       const response = await createUserApi(data);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(
@@ -347,6 +349,13 @@ export const ComptesPage: React.FC = () => {
     } finally {
       setCreateLoading(false);
     }
+  };
+
+  // Handler for when dialog closes after successful organizer creation
+  const handleDialogClose = () => {
+    setAddAccountDialogOpen(false);
+    // Refresh the list in case an organizer was created
+    dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
   };
 
   // Handle dropdown actions with event propagation stopped
@@ -1113,7 +1122,7 @@ export const ComptesPage: React.FC = () => {
       {/* Add Account Dialog */}
       <AddAccountDialog
         isOpen={addAccountDialogOpen}
-        onClose={() => setAddAccountDialogOpen(false)}
+        onClose={handleDialogClose}
         onSave={handleCreateAccount}
         isLoading={createLoading}
       />

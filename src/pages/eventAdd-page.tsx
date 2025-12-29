@@ -14,7 +14,7 @@ const EventAddPage = () => {
   const navigate = useNavigate()
 
   const handleSubmit = async (data: EventFormData) => {
-    console.log("Submitting data:", data)    
+  
     try {
       toast.promise(
         async () => await dispatch(createEventRequest(data)),
@@ -24,7 +24,8 @@ const EventAddPage = () => {
           error: 'Failed to create event'
         }
       )
-      setTimeout(() => navigate(EVENT_LISTE_PAGE), 1000)
+      setTimeout(() => navigate(EVENT_LISTE_PAGE), 1500)
+      // setTimeout(() => window.location.replace(EVENT_LISTE_PAGE), 1500)
     } catch (error) {
       console.error("Failed to create event:", error)
     }

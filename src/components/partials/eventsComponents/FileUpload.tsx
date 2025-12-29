@@ -7,11 +7,12 @@ import { uploadFileApi, getFileUrlApi, deleteFileApi } from '@/api/filesApi'
 import { toast } from 'sonner'
 
 interface FileUploadProps {
-  onUploadComplete: (url: string) => void
+  onUploadComplete: (url: string, fileId?: string) => void
   currentUrl?: string
   label?: string
   accept?: string
   disabled?: boolean
+  resetAfterUpload?: boolean
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -20,6 +21,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   label = 'Upload File',
   accept = 'image/*',
   disabled = false,
+  resetAfterUpload = false,
 }) => {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentUrl || null)
@@ -29,6 +31,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
+
+    // Reset the file input value to allow selecting the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
 
     // Create preview
     const reader = new FileReader()
@@ -44,8 +51,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       const url: any = await getFileUrlApi(fileId)
       setUploadedUrl(fileId)
       console.log('url', url)
-      onUploadComplete(url.data?.path || url.url || url.data?.url || url)
+      onUploadComplete(url.data?.path || url.url || url.data?.url || url, fileId)
       toast.success('File uploaded successfully')
+      
+      // Reset after upload if requested
+      if (resetAfterUpload) {
+        setPreview(null)
+        setUploadedUrl(null)
+      }
     } catch (error: any) {
       toast.error(error.message || 'Failed to upload file')
       setPreview(null)
@@ -71,11 +84,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       setUploading(false)
       setPreview(null)
       setUploadedUrl(null)
+      
+      // Also reset the file input when removing
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
+  const handleButtonClick = () => {
+    // Clear the input before opening the file dialog
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+      fileInputRef.current.click()
     }
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 px-2">
       <Label>{label}</Label>
       <div className="flex items-center gap-4">
         <div className="flex-1">
@@ -88,32 +114,25 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             className="hidden"
             id={`file-upload-${label}`}
           />
-          <Label
-            htmlFor={`file-upload-${label}`}
-            className={`cursor-pointer ${
-              disabled || uploading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+          <Button
+            type="button"
+            variant="outline"
+            disabled={disabled || uploading}
+            className="w-full"
+            onClick={handleButtonClick}
           >
-            <Button
-              type="button"
-              variant="outline"
-              disabled={disabled || uploading}
-              className="w-full"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {uploading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <Upload className="w-4 h-4 mr-2" />
-                  {preview ? 'Change File' : 'Choose File'}
-                </>
-              )}
-            </Button>
-          </Label>
+            {uploading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4 mr-2" />
+                {preview ? 'Change File' : 'Choose File'}
+              </>
+            )}
+          </Button>
         </div>
         {preview && (
           <div className="relative">
@@ -148,4 +167,3 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     </div>
   )
 }
-

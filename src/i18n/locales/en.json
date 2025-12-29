@@ -8,6 +8,9 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
+    "editSpeaker": "Edit Speaker",
+    "editExhibitor": "Edit Exhibitor",
+    "editSponsor": "Edit Sponsor",
     "add": "Add",
     "search": "Search",
     "filter": "Filter",
@@ -52,6 +55,7 @@
     "yes": "Yes",
     "no": "No",
     "all": "All",
+    "upload": "Upload",
     "none": "None"
   },
   "auth": {
@@ -182,6 +186,7 @@
     "mapView": "Map View",
     "selectCity": "Select City",
     "allCities": "All Cities",
+    "reloadPage": "Reload Page",
     "eventsFound": "events found",
     "showEvents": "Show Events",
     "preview": "Preview",
@@ -209,7 +214,8 @@
       "program": "Program",
       "badges": "Badges",
       "gallery": "Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors"
+      "exhibitorsSponsors": "Exhibitors & Sponsors",
+      "speakersExhibitorsSponsors": "Speakers, Exhibitors & Sponsors"
     },
     "table": {
       "title": "Title",
@@ -334,6 +340,8 @@
       "viewMembers": "Manage members"
     }
   },
+  
+
   "eventForm": {
     "title": "Create New Event",
     "description": "Fill in the event details step by step",
@@ -349,7 +357,7 @@
       "program": "Event Program",
       "badges": "Badges",
       "gallery": "Event Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors",
+      "speakersExhibitorsSponsors": "Speakers, Exhibitors & Sponsors",
       "members": "Members"
     },
     "fields": {
@@ -379,6 +387,7 @@
       "galleryImages": "Gallery Images",
       "exhibitors": "Exhibitors",
       "sponsors": "Sponsors",
+      "speakers": "Speakers",
       "fullName": "Full Name",
       "picture": "Picture URL",
       "logo": "Logo URL",
@@ -450,11 +459,14 @@
       "createEvent": "Create Event",
       "creating": "Creating...",
       "addUrl": "Add URL",
+      "addSpeaker": "Add Speaker",
       "addExhibitor": "Add Exhibitor",
       "addSponsor": "Add Sponsor",
       "uploadImage": "Upload Event Image",
       "uploadGalleryImage": "Upload Gallery Image",
-      "saveAndNext": "Save & Next"
+      "saveAndNext": "Save & Next",
+      "saving": "Saving...",
+      "finish": "Finish"
     },
     "labels": {
       "eventHighlights": "Event Highlights",
@@ -490,12 +502,33 @@
         "picture": "Picture URL"
       },
       "placeholders": {
-        "enterFullName": "Enter exhibitor name",
+        "enterName": "Enter exhibitor name",
         "enterPictureUrl": "https://example.com/image.jpg"
       },
       "buttons": {
         "cancel": "Cancel",
         "addExhibitor": "Add Exhibitor",
+        "adding": "Adding..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidUrl": "Please enter a valid URL"
+      }
+    },
+    "addSpeakerDialog": {
+      "title": "Add Speaker",
+      "description": "Enter speaker details",
+      "fields": {
+        "fullName": "Full Name",
+        "picture": "Picture URL"
+      },
+      "placeholders": {
+        "enterName": "Enter speaker name",
+        "enterPictureUrl": "https://example.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "addSpeaker": "Add Speaker",
         "adding": "Adding..."
       },
       "validation": {
@@ -523,6 +556,17 @@
         "required": "This field is required",
         "invalidUrl": "Please enter a valid URL"
       }
+    },
+    "success": {
+      "eventCreated": "Event created successfully!",
+      "basicInfoUpdated": "Basic information updated successfully!",
+      "dateTimeUpdated": "Date & time updated successfully!",
+      "locationUpdated": "Location information updated successfully!",
+      "socialNetworksUpdated": "Social networks updated successfully!",
+      "programUpdated": "Event program updated successfully!",
+      "badgesUpdated": "Badges updated successfully!",
+      "galleryUpdated": "Event gallery updated successfully!",
+      "exhibitorsSponsorsUpdated": "Exhibitors & sponsors updated successfully!"
     }
   },
   "members": {

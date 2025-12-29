@@ -73,7 +73,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       if (fallback) return fallback
 
       // Use ServerErrorPage for better UX
-      return <ServerErrorPage error={error} resetError={this.handleReset} />
+      return (
+        <ServerErrorPage
+          error={error}
+          onGoHome={() => (window.location.href = '/')}
+          onGoBack={() => window.history.back()}
+          onRetry={this.handleReset}
+        />
+      )
     }
 
     return children
@@ -121,7 +128,14 @@ export const RouteErrorElement = () => {
 
   // Use ServerErrorPage for 500 errors
   if (is500Error) {
-    return <ServerErrorPage error={error instanceof Error ? error : undefined} />
+    return (
+      <ServerErrorPage
+    error={error}
+    onRetry={this.handleReset}
+    onGoHome={() => window.location.href = '/'}
+    onGoBack={() => window.history.back()}
+  />
+    )
   }
 
   return (

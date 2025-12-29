@@ -3,6 +3,19 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import type { Industry } from "@/types/usersType"
 import { rolesApi } from "@/api/roleApi"
+import { createOrganizerApi } from "@/api/organizerApi"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Eye, EyeOff } from "lucide-react"
+import { toast } from "sonner"
 
 interface Role {
   _id: string
@@ -20,6 +33,7 @@ interface AccountFormData {
   firstName: string
   lastName: string
   email: string
+  password: string
   phoneNumber: string
   city: string
   country: string
@@ -32,6 +46,12 @@ interface AccountFormData {
     size: string
     industry: Industry
   }
+  socialNetworks?: {
+    facebook: string
+    instagram: string
+    linkedin: string
+    website: string
+  }
 }
 
 const AddAccountDialog = ({
@@ -43,6 +63,8 @@ const AddAccountDialog = ({
   const { t } = useTranslation()
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
+  const [internalLoading, setInternalLoading] = useState(false)
   
   const {
     register,
@@ -56,6 +78,7 @@ const AddAccountDialog = ({
       firstName: '',
       lastName: '',
       email: '',
+      password: '',
       phoneNumber: '',
       city: '',
       country: '',
@@ -67,6 +90,12 @@ const AddAccountDialog = ({
         jobTitle: '',
         size: '',
         industry: 'IT',
+      },
+      socialNetworks: {
+        facebook: '',
+        instagram: '',
+        linkedin: '',
+        website: '',
       },
     },
   })
@@ -110,6 +139,7 @@ const AddAccountDialog = ({
         firstName: '',
         lastName: '',
         email: '',
+        password: '',
         phoneNumber: '',
         city: '',
         country: '',
@@ -122,40 +152,73 @@ const AddAccountDialog = ({
           size: '',
           industry: 'IT',
         },
+        socialNetworks: {
+          facebook: '',
+          instagram: '',
+          linkedin: '',
+          website: '',
+        },
       })
+      setShowPassword(false)
     }
   }, [isOpen, reset, roles])
 
   const onSubmit = async (data: AccountFormData) => {
-    console.log(data);
-    
     try {
+      setInternalLoading(true)
       const submitData: any = {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
+        password: data.password,
         phoneNumber: data.phoneNumber || undefined,
         city: data.city || undefined,
         country: data.country || undefined,
         gender: data.gender,
-        role: data.role,
         isActive: data.isActive,
+        registrationCompleted: true,
       }
 
-      if (isOrganizer && data.company) {
-        submitData.company = {
-          name: data.company.name || undefined,
-          jobTitle: data.company.jobTitle || undefined,
-          size: data.company.size || undefined,
-          industry: data.company.industry || undefined,
+      if (isOrganizer) {
+        // Add company info for organizers
+        if (data.company) {
+          submitData.company = {
+            name: data.company.name || undefined,
+            jobTitle: data.company.jobTitle || undefined,
+            size: data.company.size || undefined,
+            industry: data.company.industry || undefined,
+          }
         }
+        // Add social networks if provided
+        if (data.socialNetworks) {
+          const hasSocialNetworks = Object.values(data.socialNetworks).some(v => v)
+          if (hasSocialNetworks) {
+            submitData.socialNetworks = {
+              facebook: data.socialNetworks.facebook || undefined,
+              instagram: data.socialNetworks.instagram || undefined,
+              linkedin: data.socialNetworks.linkedin || undefined,
+              website: data.socialNetworks.website || undefined,
+            }
+          }
+        }
+        // Use organizer API for organizers
+        const response = await createOrganizerApi(submitData)
+        if (response?.status === 200 || response?.status === 201) {
+          toast.success(t('accounts.messages.createSuccess', 'Account created successfully'))
+        }
+      } else {
+        // Add role for admin and use existing API
+        submitData.role = data.role
+        await onSave(submitData)
       }
-
-      await onSave(submitData)
+      
       reset()
       onClose()
     } catch (error) {
       console.error('Failed to create account:', error)
+      throw error
+    } finally {
+      setInternalLoading(false)
     }
   }
 
@@ -192,42 +255,46 @@ const AddAccountDialog = ({
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label htmlFor="role" className="text-sm font-medium block">
+                      <Label htmlFor="role">
                         {t('accounts.dialog.fields.userType', 'User Type *')}
-                      </label>
-                      <select
-                        id="role"
+                      </Label>
+                      <Select
                         value={selectedRoleId}
-                        onChange={(e) => setValue('role', e.target.value)}
+                        onValueChange={(value) => setValue('role', value)}
                         disabled={rolesLoading}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
-                        <option value=""  disabled>
-                          {rolesLoading 
-                            ? t('accounts.dialog.loadingRoles', 'Loading roles...') 
-                            : t('accounts.dialog.placeholders.userType', 'Select user type')
-                          }
-                        </option>
-                        {roles.map((role) => (
-                          <option key={role._id} value={role._id}>
-                            {role.name.toLowerCase() === 'admin' ? t('accounts.dialog.options.userType.admin', 'Admin') : role.name.toLowerCase() === 'organizer' ? t('accounts.dialog.options.userType.organizer', 'Organizer') : role.name}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger>
+                          <SelectValue placeholder={
+                            rolesLoading 
+                              ? t('accounts.dialog.loadingRoles', 'Loading roles...') 
+                              : t('accounts.dialog.placeholders.userType', 'Select user type')
+                          } />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {roles.map((role) => (
+                            <SelectItem key={role._id} value={role._id}>
+                              {role.name.toLowerCase() === 'admin' ? t('accounts.dialog.options.userType.admin', 'Admin') : role.name.toLowerCase() === 'organizer' ? t('accounts.dialog.options.userType.organizer', 'Organizer') : role.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="isActive" className="text-sm font-medium block">
+                      <Label htmlFor="isActive">
                         {t('accounts.dialog.fields.status', 'Account Status')}
-                      </label>
-                      <select
-                        id="isActive"
+                      </Label>
+                      <Select
                         value={watch('isActive') ? 'active' : 'inactive'}
-                        onChange={(e) => setValue('isActive', e.target.value === 'active')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        onValueChange={(value) => setValue('isActive', value === 'active')}
                       >
-                        <option value="active">{t('accounts.dialog.options.status.active', 'Active')}</option>
-                        <option value="inactive">{t('accounts.dialog.options.status.inactive', 'Inactive')}</option>
-                      </select>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">{t('accounts.dialog.options.status.active', 'Active')}</SelectItem>
+                          <SelectItem value="inactive">{t('accounts.dialog.options.status.inactive', 'Inactive')}</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
@@ -241,52 +308,53 @@ const AddAccountDialog = ({
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label htmlFor="firstName" className="text-sm font-medium block">
+                      <Label htmlFor="firstName">
                         {t('accounts.dialog.fields.firstName', 'First Name *')}
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id="firstName"
                         type="text"
                         {...register('firstName', { 
                           required: 'This field is required' 
                         })}
                         placeholder={t('accounts.dialog.placeholders.firstName', 'Enter first name')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       {errors.firstName && (
                         <p className="text-xs text-red-600 mt-1">{errors.firstName.message}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="lastName" className="text-sm font-medium block">
+                      <Label htmlFor="lastName">
                         {t('accounts.dialog.fields.lastName', 'Last Name *')}
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id="lastName"
                         type="text"
                         {...register('lastName', { 
                           required: 'This field is required' 
                         })}
                         placeholder={t('accounts.dialog.placeholders.lastName', 'Enter last name')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       {errors.lastName && (
                         <p className="text-xs text-red-600 mt-1">{errors.lastName.message}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="gender" className="text-sm font-medium block">
+                      <Label htmlFor="gender">
                         {t('accounts.dialog.fields.gender', 'Gender')}
-                      </label>
-                      <select
-                        id="gender"
+                      </Label>
+                      <Select
                         value={watch('gender')}
-                        onChange={(e) => setValue('gender', e.target.value as 'MALE' | 'FEMALE')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        onValueChange={(value) => setValue('gender', value as 'MALE' | 'FEMALE')}
                       >
-                        <option value="MALE">{t('accounts.dialog.options.gender.male', 'Male')}</option>
-                        <option value="FEMALE">{t('accounts.dialog.options.gender.female', 'Female')}</option>
-                      </select>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MALE">{t('accounts.dialog.options.gender.male', 'Male')}</SelectItem>
+                          <SelectItem value="FEMALE">{t('accounts.dialog.options.gender.female', 'Female')}</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
@@ -300,10 +368,10 @@ const AddAccountDialog = ({
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium block">
+                      <Label htmlFor="email">
                         {t('accounts.dialog.fields.email', 'Email Address *')}
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id="email"
                         type="email"
                         {...register('email', {
@@ -314,22 +382,50 @@ const AddAccountDialog = ({
                           },
                         })}
                         placeholder={t('accounts.dialog.placeholders.email', 'Enter email address')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       {errors.email && (
                         <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="phoneNumber" className="text-sm font-medium block">
+                      <Label htmlFor="password">
+                        {t('accounts.dialog.fields.password', 'Password *')}
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="password"
+                          type={showPassword ? 'text' : 'password'}
+                          {...register('password', {
+                            required: 'This field is required',
+                            minLength: {
+                              value: 6,
+                              message: 'Password must be at least 6 characters',
+                            },
+                          })}
+                          placeholder={t('accounts.dialog.placeholders.password', 'Enter password')}
+                          className="pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                      {errors.password && (
+                        <p className="text-xs text-red-600 mt-1">{errors.password.message}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phoneNumber">
                         {t('accounts.dialog.fields.phone', 'Phone Number')}
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id="phoneNumber"
                         type="text"
                         {...register('phoneNumber')}
                         placeholder={t('accounts.dialog.placeholders.phone', 'Enter phone number')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -344,27 +440,25 @@ const AddAccountDialog = ({
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <label htmlFor="city" className="text-sm font-medium block">
+                      <Label htmlFor="city">
                         {t('accounts.dialog.fields.city', 'City')}
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id="city"
                         type="text"
                         {...register('city')}
                         placeholder={t('accounts.dialog.placeholders.city', 'Enter city')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="country" className="text-sm font-medium block">
+                      <Label htmlFor="country">
                         {t('accounts.dialog.fields.country', 'Country')}
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id="country"
                         type="text"
                         {...register('country')}
                         placeholder={t('accounts.dialog.placeholders.country', 'Enter country')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -380,58 +474,112 @@ const AddAccountDialog = ({
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
-                          <label htmlFor="companyName" className="text-sm font-medium block">
+                          <Label htmlFor="companyName">
                             {t('accounts.dialog.fields.companyName', 'Company Name')}
-                          </label>
-                          <input
+                          </Label>
+                          <Input
                             id="companyName"
                             type="text"
                             {...register('company.name')}
                             placeholder={t('accounts.dialog.placeholders.companyName', 'Enter company name')}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label htmlFor="jobTitle" className="text-sm font-medium block">
+                          <Label htmlFor="jobTitle">
                             {t('accounts.dialog.fields.jobTitle', 'Job Title')}
-                          </label>
-                          <input
+                          </Label>
+                          <Input
                             id="jobTitle"
                             type="text"
                             {...register('company.jobTitle')}
                             placeholder={t('accounts.dialog.placeholders.jobTitle', 'Enter job title')}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label htmlFor="companySize" className="text-sm font-medium block">
+                          <Label htmlFor="companySize">
                             {t('accounts.dialog.fields.companySize', 'Company Size')}
-                          </label>
-                          <select
-                            id="companySize"
+                          </Label>
+                          <Select
                             value={watch('company.size')}
-                            onChange={(e) => setValue('company.size', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            onValueChange={(value) => setValue('company.size', value)}
                           >
-                            <option value="">{t('accounts.dialog.placeholders.companySize', 'Select company size')}</option>
-                            <option value="1-10">1-10</option>
-                            <option value="11-50">11-50</option>
-                            <option value="51-200">51-200</option>
-                            <option value="201-500">201-500</option>
-                            <option value="501-1000">501-1000</option>
-                            <option value="1000+">1000+</option>
-                          </select>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('accounts.dialog.placeholders.companySize', 'Select company size')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-10">1-10</SelectItem>
+                              <SelectItem value="11-50">11-50</SelectItem>
+                              <SelectItem value="51-200">51-200</SelectItem>
+                              <SelectItem value="201-500">201-500</SelectItem>
+                              <SelectItem value="501-1000">501-1000</SelectItem>
+                              <SelectItem value="1000+">1000+</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2">
-                          <label htmlFor="industry" className="text-sm font-medium block">
+                          <Label htmlFor="industry">
                             {t('accounts.dialog.fields.industry', 'Industry')}
-                          </label>
-                          <input
+                          </Label>
+                          <Input
                             id="industry"
                             type="text"
                             {...register('company.industry')}
                             placeholder={t('accounts.dialog.placeholders.industry', 'Enter industry')}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-gray-200"></div>
+
+                    {/* Social Networks Section */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-base">
+                        {t('accounts.dialog.sections.socialNetworks', 'Social Networks')}
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="facebook">
+                            {t('accounts.dialog.fields.facebook', 'Facebook')}
+                          </Label>
+                          <Input
+                            id="facebook"
+                            type="url"
+                            {...register('socialNetworks.facebook')}
+                            placeholder={t('accounts.dialog.placeholders.facebook', 'https://facebook.com/...')}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="instagram">
+                            {t('accounts.dialog.fields.instagram', 'Instagram')}
+                          </Label>
+                          <Input
+                            id="instagram"
+                            type="url"
+                            {...register('socialNetworks.instagram')}
+                            placeholder={t('accounts.dialog.placeholders.instagram', 'https://instagram.com/...')}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="linkedin">
+                            {t('accounts.dialog.fields.linkedin', 'LinkedIn')}
+                          </Label>
+                          <Input
+                            id="linkedin"
+                            type="url"
+                            {...register('socialNetworks.linkedin')}
+                            placeholder={t('accounts.dialog.placeholders.linkedin', 'https://linkedin.com/in/...')}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="website">
+                            {t('accounts.dialog.fields.website', 'Website')}
+                          </Label>
+                          <Input
+                            id="website"
+                            type="url"
+                            {...register('socialNetworks.website')}
+                            placeholder={t('accounts.dialog.placeholders.website', 'https://...')}
                           />
                         </div>
                       </div>
@@ -443,20 +591,19 @@ const AddAccountDialog = ({
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 px-6 pb-6">
-              <button 
+              <Button 
                 type="button" 
                 onClick={onClose} 
-                disabled={isLoading}
-                className="min-w-24 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                disabled={isLoading || internalLoading}
+                variant="outline"
               >
                 {t('common.cancel', 'Cancel')}
-              </button>
-              <button 
+              </Button>
+              <Button 
                 type="submit" 
-                disabled={isLoading}
-                className="min-w-32 px-4 py-2 bg-slate-800 text-white rounded-md hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center"
+                disabled={isLoading || internalLoading}
               >
-                {isLoading ? (
+                {(isLoading || internalLoading) ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                     {t('accounts.dialog.buttons.creating', 'Creating...')}
@@ -464,7 +611,7 @@ const AddAccountDialog = ({
                 ) : (
                   t('accounts.dialog.buttons.create', 'Create Account')
                 )}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

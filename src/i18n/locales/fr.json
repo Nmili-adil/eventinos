@@ -8,6 +8,9 @@
     "save": "Enregistrer",
     "delete": "Supprimer",
     "edit": "Modifier",
+    "editSpeaker": "Modifier l'intervenant",
+    "editExhibitor": "Modifier l'exposant",
+    "editSponsor": "Modifier le sponsor",
     "add": "Ajouter",
     "search": "Rechercher",
     "filter": "Filtrer",
@@ -29,6 +32,7 @@
     "profile": "Profil",
     "settings": "Paramètres",
     "logout": "Déconnexion",
+    "upload": "Télécharger",
     "myAccount": "Mon Compte"
   },
   "auth": {
@@ -164,6 +168,7 @@
     "eventsFound": "événements trouvés",
     "showEvents": "Afficher les événements",
     "preview": "Aperçu",
+    "reloadPage": "Recharger la page",
     "changeStatus": "Changer le statut",
     "allStatuses": "Tous les statuts",
     "allTypes": "Tous les types",
@@ -188,7 +193,8 @@
       "program": "Programme",
       "badges": "Badges",
       "gallery": "Galerie",
-      "exhibitorsSponsors": "Exposants et sponsors"
+      "exhibitorsSponsors": "Exposants et sponsors",
+      "speakersExhibitorsSponsors": "Intervenants, Exposants et Sponsors"
     },
     "table": {
       "title": "Titre",
@@ -330,7 +336,7 @@
       "program": "Programme de l'événement",
       "badges": "Badges",
       "gallery": "Galerie de l'événement",
-      "exhibitorsSponsors": "Exposants et Sponsors",
+      "speakersExhibitorsSponsors": "Intervenants, Exposants et Sponsors",
       "members": "Membres"
     },
     "fields": {
@@ -360,6 +366,7 @@
       "galleryImages": "Images de la galerie",
       "exhibitors": "Exposants",
       "sponsors": "Sponsors",
+      "speakers": "Intervenants",
       "fullName": "Nom complet",
       "picture": "URL de l'image",
       "logo": "URL du logo",
@@ -425,11 +432,14 @@
       "createEvent": "Créer l'événement",
       "creating": "Création en cours...",
       "addUrl": "Ajouter l'URL",
+      "addSpeaker": "Ajouter un intervenant",
       "addExhibitor": "Ajouter un exposant",
       "addSponsor": "Ajouter un sponsor",
       "uploadImage": "Télécharger l'image de l'événement",
       "uploadGalleryImage": "Télécharger l'image de la galerie",
-      "saveAndNext": "Enregistrer et suivant"
+      "saveAndNext": "Enregistrer et suivant",
+      "saving": "Enregistrement...",
+      "finish": "Terminer"
     },
     "labels": {
       "eventHighlights": "Points forts de l'événement",
@@ -478,6 +488,27 @@
         "invalidUrl": "Veuillez entrer une URL valide"
       }
     },
+    "addSpeakerDialog": {
+      "title": "Ajouter un intervenant",
+      "description": "Entrez les détails de l'intervenant",
+      "fields": {
+        "fullName": "Nom complet",
+        "picture": "URL de l'image"
+      },
+      "placeholders": {
+        "enterName": "Entrez le nom de l'intervenant",
+        "enterPicture": "https://exemple.com/image.jpg"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "addSpeaker": "Ajouter l'intervenant",
+        "adding": "Ajout en cours..."
+      },
+      "validation": {
+        "required": "Ce champ est obligatoire",
+        "invalidUrl": "Veuillez entrer une URL valide"
+      }
+    },
     "addSponsorDialog": {
       "title": "Ajouter un sponsor",
       "description": "Entrez les détails du sponsor",
@@ -498,6 +529,17 @@
         "required": "Ce champ est obligatoire",
         "invalidUrl": "Veuillez entrer une URL valide"
       }
+    },
+    "success": {
+      "eventCreated": "Événement créé avec succès!",
+      "basicInfoUpdated": "Informations de base mises à jour avec succès!",
+      "dateTimeUpdated": "Date et heure mises à jour avec succès!",
+      "locationUpdated": "Informations de localisation mises à jour avec succès!",
+      "socialNetworksUpdated": "Réseaux sociaux mis à jour avec succès!",
+      "programUpdated": "Programme de l'événement mis à jour avec succès!",
+      "badgesUpdated": "Badges mis à jour avec succès!",
+      "galleryUpdated": "Galerie de l'événement mise à jour avec succès!",
+      "exhibitorsSponsorsUpdated": "Exposants et sponsors mis à jour avec succès!"
     }
   },
   "members": {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ interface PersonDialogProps {
   onOpenChange: (open: boolean) => void;
   person: any;
   onSave: (person: any) => void;
-  type: "exhibitor" | "sponsor";
+  type: "speaker" | "exhibitor" | "sponsor";
 }
 
 export const PersonDialog = ({
@@ -32,9 +32,9 @@ export const PersonDialog = ({
   const [formData, setFormData] = useState(
     person || {
       _id: undefined,
-      fullName: type === "exhibitor" ? "" : undefined,
+      fullName: type === "sponsor" ? undefined : "",
       name: type === "sponsor" ? "" : undefined,
-      picture: type === "exhibitor" ? "" : undefined,
+      picture: type === "sponsor" ? undefined : "",
       logo: type === "sponsor" ? "" : undefined,
       socialNetworks: {
         facebook: "",
@@ -67,13 +67,34 @@ export const PersonDialog = ({
     }
   }, [person, type]);
 
+useEffect(() => {
+    if (!open) {
+      setFormData(
+        person || {
+          _id: undefined,
+          fullName: type === "sponsor" ? undefined : "",
+          name: type === "sponsor" ? "" : undefined,
+          picture: type === "sponsor" ? undefined : "",
+          logo: type === "sponsor" ? "" : undefined,
+          socialNetworks: {
+            facebook: "",
+            instagram: "",
+            linkedin: "",
+            twitter: "",
+            website: "",
+          },
+        }
+      );
+    }
+  }, [open]);
+
   const handleSave = () => {
     if (type === "sponsor" && !formData.name) {
       toast.error(t("eventForm.addSponsorDialog.validation.required") || "Sponsor name is required");
       return;
     }
-    if (type === "exhibitor" && !formData.fullName) {
-      toast.error(t("eventForm.addExhibitorDialog.validation.required") || "Exhibitor name is required");
+    if ((type === "exhibitor" || type === "speaker") && !formData.fullName) {
+      toast.error(t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.validation.required`) || `${type} name is required`);
       return;
     }
     onSave(formData);
@@ -86,13 +107,13 @@ export const PersonDialog = ({
         <DialogHeader>
           <DialogTitle>
             {person?._id
-              ? t(`eventForm.edit${type === "sponsor" ? "Sponsor" : "Exhibitor"}`) ||
+              ? t(`eventForm.edit${type.charAt(0).toUpperCase() + type.slice(1)}`) ||
                 `Edit ${type}`
-              : t(`eventForm.add${type === "exhibitor" ? "ExhibitorDialog.title" : "SponsorDialog.title"}`) ||
+              : t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.title`) ||
                 `Add ${type}`}
           </DialogTitle>
           <DialogDescription>
-            {t(`eventForm.${type === "exhibitor" ? "addExhibitorDialog.description" : "addSponsorDialog.description"}`) ||
+            {t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.description`) ||
               `Enter ${type} details`}
           </DialogDescription>
         </DialogHeader>
@@ -133,28 +154,32 @@ export const PersonDialog = ({
                 : t("eventForm.addExhibitorDialog.fields.picture") || "Picture"}
             </label>
             <FileUpload
-              onUploadComplete={(url: string | null) => {
-                if (url) {
-                  setFormData({
-                    ...formData,
-                    [type === "sponsor" ? "logo" : "picture"]: url,
-                  });
-                }
-              }}
-              label={
-                ' ' 
-              }
-              accept="image/*"
-            />
-            {(type === "sponsor" ? formData.logo : formData.picture) && (
-              <div className="mt-2">
-                <img
-                  src={type === "sponsor" ? formData.logo : formData.picture}
-                  alt="Preview"
-                  className="w-20 h-20 object-cover rounded"
-                />
-              </div>
-            )}
+  onUploadComplete={(url: string | null) => {
+    // ALWAYS update, even with empty string
+    setFormData((prev: any) => ({
+      ...prev,
+      [type === "sponsor" ? "logo" : "picture"]: url || "",
+    }));
+  }}
+  currentUrl={type === "sponsor" ? formData.logo : formData.picture}
+  label={' '}
+  accept="image/*"
+/>
+            {/* Add a more explicit check */}
+{(type === "sponsor" ? formData.logo : formData.picture) && 
+ (type === "sponsor" ? formData.logo : formData.picture).trim() !== "" && (
+  <div className="mt-2">
+    <img
+      src={type === "sponsor" ? formData.logo : formData.picture}
+      alt="Preview"
+      className="w-20 h-20 object-cover rounded"
+      onError={(e) => {
+        // Hide the image if it fails to load
+        e.currentTarget.style.display = 'none';
+      }}
+    />
+  </div>
+)}
           </div>
 
           <div>

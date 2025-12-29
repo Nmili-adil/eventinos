@@ -38,9 +38,9 @@ const ErrorHandlingTestPage = () => {
       addResult(`Caught error: ${error.message}`)
       
       if (isServerError(error)) {
-        addResult('✅ Correctly identified as server error')
+        addResult('Correctly identified as server error')
       } else {
-        addResult('ℹ️ Not a server error (404 or other)')
+        addResult('Not a server error (404 or other)')
       }
       
       handleAsyncError(error, 'Test 500 error triggered')

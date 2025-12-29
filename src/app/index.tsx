@@ -31,8 +31,10 @@ const AppContent = () => {
   if (serverError) {
     return (
       <ServerErrorPage 
-        error={new Error(serverError.message)}
-        resetError={() => setServerError(null)}
+        error={new Error(serverError.message || 'Internal Server Error')}
+        onGoHome={() => (window.location.href = '/')}
+        onGoBack={() => window.history.back()}
+        onRetry={() => setServerError(null)}
       />
     )
   }

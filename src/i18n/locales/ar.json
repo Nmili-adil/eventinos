@@ -29,6 +29,7 @@
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
+    "upload": "رفع",
     "myAccount": "حسابي"
   },
   "auth": {
@@ -158,6 +159,7 @@
     "eventsFound": "فعالية تم العثور عليها",
     "showEvents": "عرض الفعاليات",
     "preview": "معاينة",
+    "reloadPage": "إعادة تحميل الصفحة",
     "changeStatus": "تغيير الحالة",
     "allStatuses": "جميع الحالات",
     "allTypes": "جميع الأنواع",
@@ -182,7 +184,8 @@
       "program": "البرنامج",
       "badges": "الشارات",
       "gallery": "المعرض",
-      "exhibitorsSponsors": "العارضون والرعاة"
+      "exhibitorsSponsors": "العارضون والرعاة",
+      "speakersExhibitorsSponsors": "المتحدثون والعارضون والرعاة"
     },
     "table": {
       "title": "العنوان",
@@ -324,7 +327,7 @@
       "program": "برنامج الحدث",
       "badges": "الشارات",
       "gallery": "معرض الصور",
-      "exhibitorsSponsors": "العارضون والرعاة",
+      "speakersExhibitorsSponsors": "المتحدثون، العارضون والرعاة",
       "members": "الأعضاء"
     },
     "fields": {
@@ -352,6 +355,7 @@
       "linkedin": "لينكدإن",
       "program": "برنامج الحدث",
       "galleryImages": "صور المعرض",
+      "speakers": "المتحدثون",
       "exhibitors": "العارضون",
       "sponsors": "الرعاة",
       "fullName": "الاسم الكامل",
@@ -406,6 +410,17 @@
         "closed": "مغلق"
       }
     },
+     "success": {
+      "eventCreated": "تم إنشاء الحدث بنجاح!",
+      "basicInfoUpdated": "تم تحديث المعلومات الأساسية بنجاح!",
+      "dateTimeUpdated": "تم تحديث التاريخ والوقت بنجاح!",
+      "locationUpdated": "تم تحديث معلومات الموقع بنجاح!",
+      "socialNetworksUpdated": "تم تحديث الشبكات الاجتماعية بنجاح!",
+      "programUpdated": "تم تحديث برنامج الحدث بنجاح!",
+      "badgesUpdated": "تم تحديث الشارات بنجاح!",
+      "galleryUpdated": "تم تحديث معرض الصور بنجاح!",
+      "exhibitorsSponsorsUpdated": "تم تحديث العارضين والرعاة بنجاح!"
+    },
     "descriptions": {
       "capacity": "اضبط على 0 لسعة غير محدودة",
       "allowRegistration": "تمكين تسجيل المشاركين لهذا الحدث",
@@ -425,11 +440,14 @@
       "createEvent": "إنشاء الحدث",
       "creating": "جاري الإنشاء...",
       "addUrl": "إضافة الرابط",
+      "addSpeaker": "إضافة متحدث",
       "addExhibitor": "إضافة عارض",
       "addSponsor": "إضافة راعي",
       "uploadImage": "رفع صورة الحدث",
       "uploadGalleryImage": "رفع صورة المعرض",
-      "saveAndNext": "حفظ والمتابعة"
+      "saveAndNext": "حفظ والمتابعة",
+      "saving": "جاري الحفظ...",
+      "finish": "إنهاء"
     },
     "labels": {
       "eventHighlights": "أبرز الأحداث",

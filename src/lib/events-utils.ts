@@ -66,6 +66,9 @@ export const filterEvents = (
   filters: { search: string; status: string; type: string; startDate?: string | null; endDate?: string | null }
 ): Event[] => {
   return events.filter(event => {
+    // Skip events with missing required properties
+    if (!event || !event.name || !event.location || !event.location.city || !event.location.country || !event.startDate || !event.startDate.date) return false
+
     const matchesSearch = event.name.toLowerCase().includes(filters.search.toLowerCase()) ||
                          event.location.city.toLowerCase().includes(filters.search.toLowerCase()) ||
                          event.location.country.toLowerCase().includes(filters.search.toLowerCase())
@@ -88,18 +91,18 @@ export const sortEvents = (events: Event[], sortField: SortField, sortDirection:
       case 'startDate':
       case 'endDate':
         // Handle date objects
-        aValue = new Date(a[sortField].date)
-        bValue = new Date(b[sortField].date)
+        aValue = a[sortField]?.date ? new Date(a[sortField].date) : new Date(0)
+        bValue = b[sortField]?.date ? new Date(b[sortField].date) : new Date(0)
         break
       case 'location':
         // Sort by city name
-        aValue = a.location.city
-        bValue = b.location.city
+        aValue = a.location?.city || ''
+        bValue = b.location?.city || ''
         break
       default:
         // For other fields, use the value directly
-        aValue = a[sortField]
-        bValue = b[sortField]
+        aValue = a[sortField] || ''
+        bValue = b[sortField] || ''
     }
 
     if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
@@ -117,13 +120,13 @@ export const paginateEvents = (events: Event[], currentPage: number, pageSize: n
 export const transformEventForTable = (event: Event) => {
   return {
     id: event._id,
-    name: event.name,
-    type: event.type,
-    website: event.visibility,
-    location: `${event.location.city}, ${event.location.country}`,
-    startDate: formatDate(event.startDate.date),
-    endDate: formatDate(event.endDate.date),
-    status: event.status,
+    name: event.name || '',
+    type: event.type || '',
+    website: event.visibility || '',
+    location: event.location ? `${event.location.city || ''}, ${event.location.country || ''}` : '',
+    startDate: event.startDate?.date ? formatDate(event.startDate.date) : '',
+    endDate: event.endDate?.date ? formatDate(event.endDate.date) : '',
+    status: event.status || '',
     rawEvent: event // Keep the original event data for details
   }
 }

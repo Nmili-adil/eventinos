@@ -144,7 +144,7 @@ const BadgeAddDialog = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="image">{t('badges.fields.image')}</Label>
+                  {/* <Label htmlFor="image">{t('badges.fields.image')}</Label> */}
                   <FileUpload
                     onUploadComplete={(url) => setValue('image', url, { shouldDirty: true })}
                     currentUrl={watch('image')}

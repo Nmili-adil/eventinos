@@ -44,6 +44,7 @@ import {
   ChevronRight,
   Save,
   Pencil,
+  Check,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -62,6 +63,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import EventParticipantsSection from "./EventParticipantsSection";
 import { PersonDialog } from "./dialogs/PersonDialog";
 import { useEventTabSave } from "./hooks/useEventTabSave";
+import { deleteFileApi } from "@/api/filesApi";
+import { toast } from "sonner";
+import { set } from "date-fns";
 
 interface EventEditFormProps {
   event?: any | null;
@@ -83,15 +87,29 @@ const EventEditForm = ({
   const [activeTab, setActiveTab] = useState("basic");
   const [newImageUrl, setNewImageUrl] = useState("");
   const [showPreview, setShowPreview] = useState(true);
-  const [exhibitorDialog, setExhibitorDialog] = useState<{ open: boolean; person: any }>({
+  const [isFiniching, setIsFiniching] = useState(false);
+  const [speakerDialog, setSpeakerDialog] = useState<{
+    open: boolean;
+    person: any;
+  }>({
     open: false,
     person: null,
   });
-  const [sponsorDialog, setSponsorDialog] = useState<{ open: boolean; person: any }>({
+  const [exhibitorDialog, setExhibitorDialog] = useState<{
+    open: boolean;
+    person: any;
+  }>({
     open: false,
     person: null,
   });
-  
+  const [sponsorDialog, setSponsorDialog] = useState<{
+    open: boolean;
+    person: any;
+  }>({
+    open: false,
+    person: null,
+  });
+
   const { t } = useTranslation();
   const eventIdentifier =
     typeof event._id === "string" ? event._id : event?._id?.$oid || "";
@@ -99,7 +117,7 @@ const EventEditForm = ({
   const dispatch = useDispatch<AppDispatch>();
   const { categories } = useSelector((state: RootState) => state.categories);
   const { badges } = useSelector((state: RootState) => state.badges);
-  
+
   // Use the custom hook for tab saving
   const {
     isSaving,
@@ -110,7 +128,7 @@ const EventEditForm = ({
     saveProgram,
     saveBadges,
     saveGallery,
-    // saveSpeakers, // Not used yet
+    saveSpeakers,
     saveExhibitorsSponsors,
   } = useEventTabSave(eventIdentifier);
 
@@ -151,46 +169,52 @@ const EventEditForm = ({
         website: "",
       },
       // Fix speakers - ensure socialNetworks structure
-      speakers: Array.isArray(event.speakers) ? event.speakers.map((speaker: any) => ({
-        _id: speaker._id || "",
-        fullName: speaker.fullName || "",
-        picture: speaker.picture || "",
-        socialNetworks: {
-          facebook: speaker.socialNetworks?.facebook || "",
-          instagram: speaker.socialNetworks?.instagram || "",
-          linkedin: speaker.socialNetworks?.linkedin || "",
-          twitter: speaker.socialNetworks?.twitter || "",
-          website: speaker.socialNetworks?.website || "",
-        },
-      })) : [],
+      speakers: Array.isArray(event.speakers)
+        ? event.speakers.map((speaker: any) => ({
+            _id: speaker._id || "",
+            fullName: speaker.fullName || "",
+            picture: speaker.picture || "",
+            socialNetworks: {
+              facebook: speaker.socialNetworks?.facebook || "",
+              instagram: speaker.socialNetworks?.instagram || "",
+              linkedin: speaker.socialNetworks?.linkedin || "",
+              twitter: speaker.socialNetworks?.twitter || "",
+              website: speaker.socialNetworks?.website || "",
+            },
+          }))
+        : [],
 
       // Fix exhibitors - ensure socialNetworks structure
-      exhibitors: Array.isArray(event.exhibitors) ? event.exhibitors.map((exhibitor: any) => ({
-        _id: exhibitor._id || "",
-        fullName: exhibitor.fullName || "",
-        picture: exhibitor.picture || "",
-        socialNetworks: {
-          facebook: exhibitor.socialNetworks?.facebook || "",
-          instagram: exhibitor.socialNetworks?.instagram || "",
-          linkedin: exhibitor.socialNetworks?.linkedin || "",
-          twitter: exhibitor.socialNetworks?.twitter || "",
-          website: exhibitor.socialNetworks?.website || "",
-        },
-      })) : [],
+      exhibitors: Array.isArray(event.exhibitors)
+        ? event.exhibitors.map((exhibitor: any) => ({
+            _id: exhibitor._id || "",
+            fullName: exhibitor.fullName || "",
+            picture: exhibitor.picture || "",
+            socialNetworks: {
+              facebook: exhibitor.socialNetworks?.facebook || "",
+              instagram: exhibitor.socialNetworks?.instagram || "",
+              linkedin: exhibitor.socialNetworks?.linkedin || "",
+              twitter: exhibitor.socialNetworks?.twitter || "",
+              website: exhibitor.socialNetworks?.website || "",
+            },
+          }))
+        : [],
 
       // Fix sponsors - ensure socialNetworks structure
-      sponsors: Array.isArray(event.sponsors) ? event.sponsors.map((sponsor: any) => ({
-        _id: sponsor._id || "",
-        name: sponsor.name || "",
-        logo: sponsor.logo || "",
-        socialNetworks: {
-          facebook: sponsor.socialNetworks?.facebook || "",
-          instagram: sponsor.socialNetworks?.instagram || "",
-          linkedin: sponsor.socialNetworks?.linkedin || "",
-          twitter: sponsor.socialNetworks?.twitter || "",
-          website: sponsor.socialNetworks?.website || "",
-        },
-      })) : [],
+      sponsors: Array.isArray(event.sponsors)
+        ? event.sponsors.map((sponsor: any) => ({
+            _id: sponsor._id || "",
+            name: sponsor.name || "",
+            logo: sponsor.logo || "",
+            socialNetworks: {
+              facebook: sponsor.socialNetworks?.facebook || "",
+              instagram: sponsor.socialNetworks?.instagram || "",
+              linkedin: sponsor.socialNetworks?.linkedin || "",
+              twitter: sponsor.socialNetworks?.twitter || "",
+              website: sponsor.socialNetworks?.website || "",
+            },
+          }))
+        : [],
 
       gallery: Array.isArray(event.gallery) ? event.gallery : [],
       badges: Array.isArray(event.badges)
@@ -205,15 +229,14 @@ const EventEditForm = ({
   const navigate = useNavigate();
 
   // Field arrays for dynamic fields
-  // Speaker fields - not used yet, keeping for future
-  // const {
-  //   fields: speakerFields,
-  //   append: appendSpeaker,
-  //   remove: removeSpeaker,
-  // } = useFieldArray({
-  //   control: form.control,
-  //   name: "speakers",
-  // });
+  const {
+    fields: speakerFields,
+    append: appendSpeaker,
+    remove: removeSpeaker,
+  } = useFieldArray({
+    control: form.control,
+    name: "speakers",
+  });
 
   const {
     fields: exhibitorFields,
@@ -232,7 +255,6 @@ const EventEditForm = ({
     control: form.control,
     name: "sponsors",
   });
-
 
   // Old submit handler - no longer used with tab-based saving
   // const handleSubmitSend = (data: EventFormData) => {
@@ -281,9 +303,9 @@ const EventEditForm = ({
         place_id: updated.place_id ?? current.place_id,
         location: updated.location
           ? {
-            lat: Number((updated.location as any).lat) || 0,
-            lng: Number((updated.location as any).lng) || 0,
-          }
+              lat: Number((updated.location as any).lat) || 0,
+              lng: Number((updated.location as any).lng) || 0,
+            }
           : current.location,
       },
       { shouldDirty: true }
@@ -342,7 +364,7 @@ const EventEditForm = ({
     },
     {
       value: "exhibitors",
-      label: t("eventForm.sections.exhibitorsSponsors"),
+      label: t("eventForm.sections.speakersExhibitorsSponsors"),
       icon: Users,
       color: "text-indigo-500",
       bgColor: "bg-indigo-500",
@@ -357,13 +379,14 @@ const EventEditForm = ({
   ];
 
   return (
-    <div className="container mx-auto p-4 md:p-6 max-w-full h-[calc(100vh-12rem)]">
-      <div className="flex flex-col lg:flex-row gap-6 h-full">
+    <div className="container mx-auto p-4 md:p-6 max-w-full min-h-screen">
+      <div className="flex flex-col lg:flex-row gap-6">
         <div
-          className={`flex-1 transition-all ${showPreview ? "lg:w-2/3" : "lg:w-full"
-            }`}
+          className={`flex-1 transition-all ${
+            showPreview ? "lg:w-2/3" : "lg:w-full"
+          }`}
         >
-          <Card className="border-slate-300 h-full overflow-hidden">
+          <Card className="border-slate-300 relative">
             <CardHeader className="flex flex-row items-center justify-between">
               <div className="flex items-start gap-4">
                 <Button
@@ -406,15 +429,15 @@ const EventEditForm = ({
                 )}
               </Button>
             </CardHeader>
-            <CardContent className="flex flex-col " style={{ height: 'calc(100vh - 22rem)' }}>
+            <CardContent className="flex flex-col max-h-[60vh] sm:max-h-[70vh] lg:max-h-[75vh] ">
               <Form {...form}>
-                <form className="flex flex-col h-full">
+                <form className="flex flex-col gap-6">
                   <Tabs
                     value={activeTab}
                     onValueChange={setActiveTab}
-                    className="flex flex-col md:flex-row gap-6 w-full flex-1 overflow-hidden"
+                    className="flex flex-col md:flex-row gap-6 w-full"
                   >
-                    <aside className="flex-none w-full h-12 md:h-fit md:w-64">
+                    <aside className="flex-none w-full h-12 md:h-fit md:w-64 overflow-hidden ">
                       <TabsList className="flex h-fit flex-row md:flex-col justify-start h-auto bg-transparent p-0 gap-2 overflow-hidden md:overflow-visible w-full">
                         {tabsConfig.map((tab) => (
                           <TabsTrigger
@@ -423,10 +446,11 @@ const EventEditForm = ({
                             className="flex items-center h-12 justify-start gap-3 px-4 py-3 w-full whitespace-nowrap rounded-lg transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted text-muted-foreground"
                           >
                             <tab.icon
-                              className={`w-4 h-4 ${activeTab === tab.value
-                                ? "text-current"
-                                : tab.color
-                                }`}
+                              className={`w-4 h-4 ${
+                                activeTab === tab.value
+                                  ? "text-current"
+                                  : tab.color
+                              }`}
                             />
                             <span className="font-medium">{tab.label}</span>
                           </TabsTrigger>
@@ -434,10 +458,9 @@ const EventEditForm = ({
                       </TabsList>
                     </aside>
 
-                    <div className="flex-1 min-w-0 overflow-y-auto">
-
+                    <div className="flex-1 min-w-0  overflow-hidden">
                       {/* Basic Information Tab */}
-                      <TabsContent value="basic" className="space-y-6 mt-0 p-2">
+                      <TabsContent value="basic" className="space-y-6 mt-0 p-2 overflow-y-auto ">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.basicInfo")}
@@ -511,7 +534,9 @@ const EventEditForm = ({
                                     </FormControl>
                                     <SelectContent>
                                       <SelectItem value="PUBLIC">
-                                        {t("eventForm.options.visibility.public")}
+                                        {t(
+                                          "eventForm.options.visibility.public"
+                                        )}
                                       </SelectItem>
                                       <SelectItem value="PRIVATE">
                                         {t(
@@ -536,12 +561,11 @@ const EventEditForm = ({
                                   <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
-                                   
                                   >
                                     <FormControl>
                                       <SelectTrigger className="truncate">
                                         <SelectValue
-                                        className="truncate"
+                                          className="truncate"
                                           placeholder={t(
                                             "eventForm.placeholders.selectCategory"
                                           )}
@@ -722,11 +746,19 @@ const EventEditForm = ({
                             name="tags"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{t("eventForm.fields.tags")}</FormLabel>
+                                <FormLabel>
+                                  {t("eventForm.fields.tags")}
+                                </FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder={t("eventForm.placeholders.enterTags")}
-                                    value={Array.isArray(field.value) ? field.value.join(", ") : ""}
+                                    placeholder={t(
+                                      "eventForm.placeholders.enterTags"
+                                    )}
+                                    value={
+                                      Array.isArray(field.value)
+                                        ? field.value.join(", ")
+                                        : ""
+                                    }
                                     onChange={(e) => {
                                       const tags = e.target.value
                                         .split(",")
@@ -750,11 +782,19 @@ const EventEditForm = ({
                             name="requirements"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{t("eventForm.fields.requirements")}</FormLabel>
+                                <FormLabel>
+                                  {t("eventForm.fields.requirements")}
+                                </FormLabel>
                                 <FormControl>
                                   <Textarea
-                                    placeholder={t("eventForm.placeholders.enterRequirements")}
-                                    value={Array.isArray(field.value) ? field.value.join("\n") : ""}
+                                    placeholder={t(
+                                      "eventForm.placeholders.enterRequirements"
+                                    )}
+                                    value={
+                                      Array.isArray(field.value)
+                                        ? field.value.join("\n")
+                                        : ""
+                                    }
                                     onChange={(e) => {
                                       const requirements = e.target.value
                                         .split("\n")
@@ -791,7 +831,9 @@ const EventEditForm = ({
                                     </FormControl>
                                     <div className="space-y-1 leading-none">
                                       <FormLabel>
-                                        {t("eventForm.labels.markAsNearestEvent")}
+                                        {t(
+                                          "eventForm.labels.markAsNearestEvent"
+                                        )}
                                       </FormLabel>
                                       <FormDescription>
                                         {t(
@@ -836,7 +878,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveBasicInfo(form.getValues(), () => setActiveTab("datetime"))}
+                            onClick={() =>
+                              saveBasicInfo(form.getValues(), () =>
+                                setActiveTab("datetime")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -854,7 +900,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Date & Time Tab */}
-                      <TabsContent value="datetime" className="space-y-4 flex flex-col justify-between h-full">
+                      <TabsContent value="datetime" className="space-y-4">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.dateTime")}
@@ -932,7 +978,9 @@ const EventEditForm = ({
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormLabel>
-                                      {t("eventForm.fields.registrationDeadline")}
+                                      {t(
+                                        "eventForm.fields.registrationDeadline"
+                                      )}
                                     </FormLabel>
                                     <FormControl>
                                       <Input
@@ -957,7 +1005,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveDateTime(form.getValues(), () => setActiveTab("location"))}
+                            onClick={() =>
+                              saveDateTime(form.getValues(), () =>
+                                setActiveTab("location")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -975,7 +1027,10 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Location Tab */}
-                      <TabsContent value="location" className="space-y-4 flex flex-col h-full justify-between pb-4">
+                      <TabsContent
+                        value="location"
+                        className="space-y-4 flex flex-col h-full justify-between pb-4"
+                      >
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.location")}
@@ -999,7 +1054,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveLocation(form.getValues(), () => setActiveTab("social"))}
+                            onClick={() =>
+                              saveLocation(form.getValues(), () =>
+                                setActiveTab("social")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1017,7 +1076,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Social Networks Tab */}
-                      <TabsContent value="social" className="space-y-4 flex flex-col h-full justify-between">
+                      <TabsContent value="social" className="space-y-4">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.socialNetworks")}
@@ -1136,7 +1195,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveSocialNetworks(form.getValues(), () => setActiveTab("program"))}
+                            onClick={() =>
+                              saveSocialNetworks(form.getValues(), () =>
+                                setActiveTab("program")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1154,7 +1217,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Program Tab */}
-                      <TabsContent value="program" className="space-y-4 flex flex-col h-full justify-between">
+                      <TabsContent value="program" className="space-y-4">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.program")}
@@ -1187,7 +1250,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveProgram(form.getValues(), () => setActiveTab("badges"))}
+                            onClick={() =>
+                              saveProgram(form.getValues(), () =>
+                                setActiveTab("badges")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1205,7 +1272,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Badges Tab */}
-                      <TabsContent value="badges" className="space-y-4 flex flex-col h-full justify-between">
+                      <TabsContent value="badges" className="space-y-4">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.badges")}
@@ -1227,15 +1294,19 @@ const EventEditForm = ({
                                     badges.map((badge: any) => (
                                       <div
                                         key={badge._id}
-                                        className={`border rounded-lg p-4 cursor-pointer transition-all ${field.value?.includes(badge._id)
-                                          ? "border-red-500 bg-red-50"
-                                          : "border-gray-200 hover:border-gray-300"
-                                          }`}
+                                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                                          field.value?.includes(badge._id)
+                                            ? "border-red-500 bg-red-50"
+                                            : "border-gray-200 hover:border-gray-300"
+                                        }`}
                                         onClick={(e) => {
                                           e.preventDefault();
                                           e.stopPropagation();
-                                          const currentBadges = field.value || [];
-                                          if (currentBadges.includes(badge._id)) {
+                                          const currentBadges =
+                                            field.value || [];
+                                          if (
+                                            currentBadges.includes(badge._id)
+                                          ) {
                                             field.onChange(
                                               currentBadges.filter(
                                                 (id: string) => id !== badge._id
@@ -1274,9 +1345,12 @@ const EventEditForm = ({
                                                 {badge.description}
                                               </p>
                                             )}
-                                            {field.value?.includes(badge._id) && (
+                                            {field.value?.includes(
+                                              badge._id
+                                            ) && (
                                               <div className="mt-2 text-xs text-red-600 font-medium">
-                                                ✓ {t("eventForm.labels.selected")}
+                                                ✓{" "}
+                                                {t("eventForm.labels.selected")}
                                               </div>
                                             )}
                                           </div>
@@ -1307,7 +1381,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveBadges(form.getValues(), () => setActiveTab("gallery"))}
+                            onClick={() =>
+                              saveBadges(form.getValues(), () =>
+                                setActiveTab("gallery")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1325,7 +1403,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Gallery Tab */}
-                      <TabsContent value="gallery" className="space-y-4 flex flex-col h-full justify-between">
+                      <TabsContent value="gallery" className="space-y-4">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.gallery")}
@@ -1345,12 +1423,28 @@ const EventEditForm = ({
                                 <div className="space-y-4">
                                   {/* File Upload Option */}
                                   <FileUpload
-                                    onUploadComplete={(url) => {
+                                    onUploadComplete={(url, fileId) => {
                                       if (url) {
-                                        const currentGallery = field.value || [];
-                                        field.onChange([...currentGallery, url]);
+                                        const currentGallery =
+                                          field.value || [];
+                                        const updatedGallery = [
+                                          ...currentGallery,
+                                          url,
+                                        ];
+                                        field.onChange(updatedGallery);
+
+                                        // Auto-save the gallery changes
+                                        saveGallery({
+                                          gallery: updatedGallery,
+                                        }).catch(() => {
+                                          toast.error(
+                                            "Image uploaded locally but failed to save changes"
+                                          );
+                                        });
                                       }
                                     }}
+                                    resetAfterUpload={true}
+                                    currentUrl={""}
                                     label={t(
                                       "eventForm.buttons.uploadGalleryImage"
                                     )}
@@ -1375,11 +1469,21 @@ const EventEditForm = ({
                                           if (newImageUrl.trim()) {
                                             const currentGallery =
                                               field.value || [];
-                                            field.onChange([
+                                            const updatedGallery = [
                                               ...currentGallery,
                                               newImageUrl.trim(),
-                                            ]);
+                                            ];
+                                            field.onChange(updatedGallery);
                                             setNewImageUrl("");
+
+                                            // Auto-save the gallery changes
+                                            saveGallery({
+                                              gallery: updatedGallery,
+                                            }).catch(() => {
+                                              toast.error(
+                                                "Image added locally but failed to save changes"
+                                              );
+                                            });
                                           }
                                         }
                                       }}
@@ -1392,11 +1496,21 @@ const EventEditForm = ({
                                         if (newImageUrl.trim()) {
                                           const currentGallery =
                                             field.value || [];
-                                          field.onChange([
+                                          const updatedGallery = [
                                             ...currentGallery,
                                             newImageUrl.trim(),
-                                          ]);
+                                          ];
+                                          field.onChange(updatedGallery);
                                           setNewImageUrl("");
+
+                                          // Auto-save the gallery changes
+                                          saveGallery({
+                                            gallery: updatedGallery,
+                                          }).catch(() => {
+                                            toast.error(
+                                              "Image added locally but failed to save changes"
+                                            );
+                                          });
                                         }
                                       }}
                                     >
@@ -1435,16 +1549,81 @@ const EventEditForm = ({
                                                 variant="destructive"
                                                 size="sm"
                                                 className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                                onClick={(e) => {
+                                                onClick={async (e) => {
                                                   e.preventDefault();
-                                                  const currentGallery =
-                                                    field.value || [];
-                                                  field.onChange(
-                                                    currentGallery.filter(
-                                                      (_: string, i: number) =>
-                                                        i !== index
-                                                    )
-                                                  );
+                                                  e.stopPropagation();
+
+                                                  try {
+                                                    // Extract fileId from URL
+                                                    const extractFileIdFromUrl =
+                                                      (
+                                                        url: string
+                                                      ): string | null => {
+                                                        const match = url.match(
+                                                          /\/uploads\/([a-fA-F0-9]{24})/
+                                                        );
+                                                        return match
+                                                          ? match[1]
+                                                          : null;
+                                                      };
+
+                                                    const extractedFileId =
+                                                      extractFileIdFromUrl(
+                                                        imageUrl
+                                                      );
+                                                    if (extractedFileId) {
+                                                      await deleteFileApi(
+                                                        extractedFileId
+                                                      );
+                                                      toast.success(
+                                                        "Image deleted successfully"
+                                                      );
+                                                    } else {
+                                                      // If we can't extract fileId, try with URL (may fail)
+                                                      try {
+                                                        await deleteFileApi(
+                                                          imageUrl
+                                                        );
+                                                        toast.success(
+                                                          "Image deleted successfully"
+                                                        );
+                                                      } catch (urlError: any) {
+                                                        toast.error(
+                                                          "Image removed locally but could not delete from server"
+                                                        );
+                                                      }
+                                                    }
+
+                                                    // Remove from UI
+                                                    const currentGallery =
+                                                      field.value || [];
+                                                    const updatedGallery =
+                                                      currentGallery.filter(
+                                                        (
+                                                          _: string,
+                                                          i: number
+                                                        ) => i !== index
+                                                      );
+                                                    field.onChange(
+                                                      updatedGallery
+                                                    );
+
+                                                    // Auto-save the gallery changes
+                                                    try {
+                                                      await saveGallery({
+                                                        gallery: updatedGallery,
+                                                      });
+                                                    } catch (saveError: any) {
+                                                      toast.error(
+                                                        "Image removed locally but failed to save changes"
+                                                      );
+                                                    }
+                                                  } catch (error: any) {
+                                                    toast.error(
+                                                      error.message ||
+                                                        "Failed to delete image"
+                                                    );
+                                                  }
                                                 }}
                                               >
                                                 <Trash2 className="w-4 h-4" />
@@ -1489,7 +1668,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveGallery(form.getValues(), () => setActiveTab("exhibitors"))}
+                            onClick={() =>
+                              saveGallery(form.getValues(), () =>
+                                setActiveTab("exhibitors")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1507,11 +1690,83 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Exhibitors & Sponsors Tab */}
-                      <TabsContent value="exhibitors" className="space-y-4 flex flex-col h-full justify-between pb-2">
+                      <TabsContent
+                        value="exhibitors"
+                        className="space-y-4 pb-2"
+                      >
                         <div className="space-y-6">
                           <h3 className="text-lg font-semibold">
-                            {t("eventForm.sections.exhibitorsSponsors")}
+                            {t("eventForm.sections.speakersExhibitorsSponsors")}
                           </h3>
+
+                          {/* Speakers Section */}
+                          <div>
+                            <div className="flex justify-between items-center mb-4">
+                              <h4 className="text-md font-medium">
+                                {t("eventForm.fields.speakers")}
+                              </h4>
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() =>
+                                  setSpeakerDialog({ open: true, person: null })
+                                }
+                              >
+                                <Plus className="w-4 h-4 mr-2" />
+                                {t("eventForm.buttons.addSpeaker")}
+                              </Button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {speakerFields.map((field, index) => (
+                                <Card key={field.id} className="p-2">
+                                  <div className="flex gap-3">
+                                    {field.picture && (
+                                      <img
+                                        src={field.picture}
+                                        alt={field.fullName}
+                                        className="w-12 h-12 rounded object-cover"
+                                      />
+                                    )}
+                                    <div className="flex-1 flex items-center justify-between min-w-0">
+                                      <h4 className="font-medium truncate text-sm">
+                                        {field.fullName}
+                                      </h4>
+                                      <div className="flex gap-2 mt-2">
+                                        <Button
+                                          type="button"
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() =>
+                                            setSpeakerDialog({
+                                              open: true,
+                                              person: { ...field, index },
+                                            })
+                                          }
+                                        >
+                                          <Pencil className="w-3 h-3" />
+                                        </Button>
+                                        <Button
+                                          type="button"
+                                          size="sm"
+                                          variant="destructive"
+                                          onClick={() => removeSpeaker(index)}
+                                        >
+                                          <Trash2 className="w-3 h-3" />
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Card>
+                              ))}
+                              {speakerFields.length === 0 && (
+                                <div className="col-span-full text-center py-8 text-gray-500">
+                                  {t("eventForm.labels.noSpeakers") ||
+                                    "No speakers added yet"}
+                                </div>
+                              )}
+                            </div>
+                          </div>
 
                           {/* Exhibitors Section */}
                           <div>
@@ -1522,7 +1777,12 @@ const EventEditForm = ({
                               <Button
                                 type="button"
                                 size="sm"
-                                onClick={() => setExhibitorDialog({ open: true, person: null })}
+                                onClick={() =>
+                                  setExhibitorDialog({
+                                    open: true,
+                                    person: null,
+                                  })
+                                }
                               >
                                 <Plus className="w-4 h-4 mr-2" />
                                 {t("eventForm.buttons.addExhibitor")}
@@ -1541,7 +1801,9 @@ const EventEditForm = ({
                                       />
                                     )}
                                     <div className="flex-1 flex items-center justify-between min-w-0">
-                                      <h4 className="font-medium truncate text-sm">{field.fullName}</h4>
+                                      <h4 className="font-medium truncate text-sm">
+                                        {field.fullName}
+                                      </h4>
                                       <div className="flex gap-2 mt-2">
                                         <Button
                                           type="button"
@@ -1571,7 +1833,8 @@ const EventEditForm = ({
                               ))}
                               {exhibitorFields.length === 0 && (
                                 <div className="col-span-full text-center py-8 text-gray-500">
-                                  {t("eventForm.labels.noExhibitors") || "No exhibitors added yet"}
+                                  {t("eventForm.labels.noExhibitors") ||
+                                    "No exhibitors added yet"}
                                 </div>
                               )}
                             </div>
@@ -1586,7 +1849,9 @@ const EventEditForm = ({
                               <Button
                                 type="button"
                                 size="sm"
-                                onClick={() => setSponsorDialog({ open: true, person: null })}
+                                onClick={() =>
+                                  setSponsorDialog({ open: true, person: null })
+                                }
                               >
                                 <Plus className="w-4 h-4 mr-2" />
                                 {t("eventForm.buttons.addSponsor")}
@@ -1605,7 +1870,9 @@ const EventEditForm = ({
                                       />
                                     )}
                                     <div className="flex-1 flex items-center justify-between min-w-0">
-                                      <h4 className="font-medium truncate text-sm">{field.name}</h4>
+                                      <h4 className="font-medium truncate text-sm">
+                                        {field.name}
+                                      </h4>
                                       <div className="flex gap-2 mt-2">
                                         <Button
                                           type="button"
@@ -1635,7 +1902,8 @@ const EventEditForm = ({
                               ))}
                               {sponsorFields.length === 0 && (
                                 <div className="col-span-full text-center py-8 text-gray-500">
-                                  {t("eventForm.labels.noSponsors") || "No sponsors added yet"}
+                                  {t("eventForm.labels.noSponsors") ||
+                                    "No sponsors added yet"}
                                 </div>
                               )}
                             </div>
@@ -1645,7 +1913,11 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() => saveExhibitorsSponsors(form.getValues(), () => setActiveTab("members"))}
+                            onClick={() =>
+                              saveExhibitorsSponsors(form.getValues(), () =>
+                                setActiveTab("members")
+                              )
+                            }
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1663,7 +1935,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Members Tab  */}
-                      <TabsContent value="members" className="space-y-4 flex flex-col h-full justify-between">
+                      <TabsContent value="members" className="space-y-4">
                         <div className="mt-6">
                           <EventParticipantsSection
                             eventId={eventIdentifier}
@@ -1677,7 +1949,34 @@ const EventEditForm = ({
                             onClick={() => setActiveTab("exhibitors")}
                           >
                             {t("eventForm.buttons.previous")}:{" "}
-                            {t("eventForm.sections.exhibitorsSponsors")}
+                            {t("eventForm.sections.speakersExhibitorsSponsors")}
+                          </Button>
+                          <Button
+                            type="button"
+                            disabled={isSaving}
+                            onClick={() => {
+                              setIsFiniching(true);
+                              toast.success(
+                                t(
+                                  "eventForm.success.basicInfoUpdated",
+                                  "Event updated successfully"
+                                )
+                              );
+                              setTimeout(() => {
+                                setIsFiniching(false);
+                                navigate(-1);
+                              }, 1000);
+                            }}
+                            className="gap-2"
+                          >
+                            {isFiniching ? (
+                              t("eventForm.buttons.saving")
+                            ) : (
+                              <>
+                                <Check className="w-4 h-4" />
+                                {t("eventForm.buttons.finish")}
+                              </>
+                            )}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1692,7 +1991,7 @@ const EventEditForm = ({
         {/* Preview Section */}
         {showPreview && (
           <div className="w-full lg:w-1/3 lg:sticky lg:top-6 h-fit order-first lg:order-last ">
-            <Card className="border-slate-300 p-0">
+            <Card className="border-slate-300 p-0 overflow-hidden">
               <CardContent className="overflow-x-auto p-0 ">
                 <EventPreview formData={formData} />
               </CardContent>
@@ -1700,6 +1999,34 @@ const EventEditForm = ({
           </div>
         )}
       </div>
+
+      {/* Speaker Dialog */}
+      <PersonDialog
+        open={speakerDialog.open}
+        onOpenChange={(open) => setSpeakerDialog({ open, person: null })}
+        person={speakerDialog.person}
+        onSave={(person) => {
+          if (person.index !== undefined) {
+            // Edit existing
+            const current = form.getValues("speakers");
+            current[person.index] = {
+              _id: person._id,
+              fullName: person.fullName,
+              picture: person.picture,
+              socialNetworks: person.socialNetworks,
+            };
+            form.setValue("speakers", current);
+          } else {
+            // Add new
+            appendSpeaker({
+              fullName: person.fullName,
+              picture: person.picture,
+              socialNetworks: person.socialNetworks,
+            } as any);
+          }
+        }}
+        type="speaker"
+      />
 
       {/* Exhibitor Dialog */}
       <PersonDialog

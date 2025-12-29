@@ -40,10 +40,34 @@ export const updateEventApi = async (id: string | undefined, event: any) => {
 }
 
 export const createEventApi = async (event: any) => {
+  const formData = new FormData();
+
+  // Add all fields to FormData
+  Object.keys(event).forEach(key => {
+    if (key === 'image' && event[key] instanceof File) {
+      formData.append('image', event[key]);
+    } else if (Array.isArray(event[key])) {
+      // Handle arrays - send as JSON string for complex arrays, or individual values for simple arrays
+      if (key === 'badges' || key === 'gallery' || key === 'tags' || key === 'requirements') {
+        // Simple string arrays - send as individual values
+        event[key].forEach((item: any, index: number) => {
+          formData.append(`${key}[${index}]`, item);
+        });
+      } else {
+        // Complex object arrays - send as JSON string
+        formData.append(key, JSON.stringify(event[key]));
+      }
+    } else if (typeof event[key] === 'object' && event[key] !== null) {
+      formData.append(key, JSON.stringify(event[key]));
+    } else if (event[key] !== undefined && event[key] !== null) {
+      formData.append(key, event[key]);
+    }
+  });
+
   try {
-    const response = await api.post('/events', event, {
+    const response = await api.post('/events', formData, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${getAuthToken()}`
       }
     });

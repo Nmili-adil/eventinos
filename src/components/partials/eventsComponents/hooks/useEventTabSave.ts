@@ -11,6 +11,7 @@ import {
   updateEventExhibitors,
   updateEventSponsors,
   updateEventBadge,
+  updateEventGallery,
 } from "@/api/eventUpdateApi";
 
 export const useEventTabSave = (eventId: string) => {
@@ -145,7 +146,7 @@ export const useEventTabSave = (eventId: string) => {
   const saveGallery = async (data: any, onSuccess?: () => void) => {
     try {
       setIsSaving(true);
-      await updateEventInfos(eventId, { gallery: data.gallery });
+      await updateEventGallery(eventId, data.gallery);
       toast.success(t("eventForm.success.galleryUpdated") || "Gallery updated successfully");
       onSuccess?.();
     } catch (error: any) {
@@ -178,12 +179,13 @@ export const useEventTabSave = (eventId: string) => {
     try {
       setIsSaving(true);
       await Promise.all([
+        updateEventSpeakers(eventId, data.speakers),
         updateEventExhibitors(eventId, data.exhibitors),
         updateEventSponsors(eventId, data.sponsors),
       ]);
       toast.success(
         t("eventForm.success.exhibitorsSponsorsUpdated") ||
-          "Exhibitors and sponsors updated successfully"
+          "Speakers, exhibitors and sponsors updated successfully"
       );
       onSuccess?.();
     } catch (error: any) {

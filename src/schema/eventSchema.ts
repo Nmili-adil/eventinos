@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 const socialNetworksSchema = z.object({
-  facebook: z.string().url().optional().or(z.literal('')).default(''),
-  instagram: z.string().url().optional().or(z.literal('')).default(''),
-  linkedin: z.string().url().optional().or(z.literal('')).default(''),
-  twitter: z.string().url().optional().or(z.literal('')).default(''),
-  website: z.string().url().optional().or(z.literal('')).default(''),
+  facebook: z.string().optional().or(z.literal('')).default(''),
+  instagram: z.string().optional().or(z.literal('')).default(''),
+  linkedin: z.string().optional().or(z.literal('')).default(''),
+  twitter: z.string().optional().or(z.literal('')).default(''),
+  website: z.string().optional().or(z.literal('')).default(''),
 });
 
 const speakerSchema = z.object({
@@ -98,16 +98,15 @@ export const eventFormSchema = z.object({
   sponsors: z.array(sponsorSchema).default([]),
   category: z.string().optional().or(z.literal('')).default(''),
   badges: z.array(z.string()).default([]),
-  gallery: z.array(z.string().url().optional().or(z.literal(''))).default([]), // Made URL optional
+  gallery: z.array(z.string().url()).default([]),
   program: z.string().default(''),
   requirements: z.array(z.string()).default([]),
   capacity: z.number().min(0).default(0),
   allowRegistration: z.boolean().default(false),
-  registrationDeadline: dateTimeSchema.optional().default({ date: '', time: '' }), // Made optional
+  registrationDeadline: dateTimeSchema.optional().default({ date: '', time: '' }), 
   tags: z.array(z.string()).default([]),
 })
 .refine((data) => {
-  // Only validate if both dates are provided
   if (data.startDate.date && data.endDate.date) {
     const startDate = new Date(data.startDate.date);
     const endDate = new Date(data.endDate.date);

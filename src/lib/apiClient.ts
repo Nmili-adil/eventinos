@@ -19,7 +19,7 @@ api.interceptors.request.use((config) => {
   }
   return config
 }, (error) => {
-  console.error('❌ Request Error:', error);
+  console.error(' Request Error:', error);
   return Promise.reject(error);
 })
 
@@ -29,7 +29,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('❌ API Error:', {
+    console.error(' API Error:', {
       message: error.message,
       url: error.config?.url,
       status: error.response?.status,
@@ -38,7 +38,7 @@ api.interceptors.response.use(
 
     // Handle 500 errors globally by dispatching a custom event
     if (error.response?.status >= 500 && error.response?.status < 600) {
-      console.error('🚨 Server Error (500+):', {
+      console.error('Server Error (500+):', {
         status: error.response?.status,
         message: error.response?.data?.message,
         url: error.config?.url,
