@@ -142,7 +142,7 @@ useEffect(() => {
               placeholder={
                 type === "sponsor"
                   ? t("eventForm.addSponsorDialog.placeholders.enterName") || "Enter sponsor name"
-                  : t("eventForm.addExhibitorDialog.placeholders.enterName") || "Enter full name"
+                  : type === "exhibitor" ? t("eventForm.addExhibitorDialog.placeholders.enterName") || "Enter full name" : t("eventForm.addSpeakerDialog.placeholders.enterName") || "Enter full name"
               }
             />
           </div>
@@ -228,7 +228,7 @@ useEffect(() => {
             {
                 type === "sponsor"
                   ? t("eventForm.addSponsorDialog.buttons.addSponsor") || "Add Sponsor"
-                  : t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor"
+                  :type ==="exhibitor" ? t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor" : t("eventForm.addSpeakerDialog.buttons.addSpeaker") || "Add Speaker"
               }
           </Button>
         </DialogFooter>

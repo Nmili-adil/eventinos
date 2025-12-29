@@ -454,6 +454,7 @@
       "noImagesDescription": "Ajoutez des URL d'images pour créer votre galerie d'événement",
       "noExhibitors": "Aucun exposant ajouté pour le moment",
       "noSponsors": "Aucun sponsor ajouté pour le moment",
+      "noSpeakers": "Aucun intervenant ajouté pour le moment",
       "imageNumber": "Image {{number}}"
     },
     "validation": {
@@ -846,6 +847,23 @@
     "subMessage": "Elle a peut-être été déplacée ou supprimée.",
     "goHome": "Aller à l'accueil",
     "goBack": "Retour"
+  },
+  "error": {
+    "serverError": {
+      "title": "Oops! Une erreur est survenue",
+      "message": "Nous rencontrons des difficultés techniques. Veuillez réessayer dans quelques instants.",
+      "contactSupport": "Si le problème persiste, veuillez contacter le support."
+    },
+    "generic": {
+      "title": "Une erreur est survenue",
+      "message": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    },
+    "actions": {
+      "goBack": "Retour",
+      "retry": "Réessayer",
+      "home": "Accueil",
+      "reload": "Recharger la page"
+    }
   },
   "splash": {
     "appName": "Eventinos",

@@ -163,10 +163,6 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
     dispatch(fetchBadgesRequest());
   }, []);
 
-  useEffect(() => {
-    console.log(categories);
-    console.log(badges);
-  }, [categories, badges]);
 
   const sections = [
     { id: 0, title: t("eventForm.sections.basicInfo"), color: "blue" },
@@ -239,16 +235,12 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   };
 
   const handleSubmit = (data: EventFormData) => {
-    console.log("Form submitted:", data);
-    console.log("Current section:", currentSection);
-    console.log("Last section:", sections.length - 1);
+
 
     if (currentSection !== sections.length - 1) {
       console.log("Not on last section, preventing submission");
       return;
     }
-
-    console.log("Processing submission...");
 
     const extractTime = (isoString: string): string => {
       if (!isoString) return "";
@@ -290,7 +282,6 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       sponsors: data.sponsors || [],
     } as EventFormData;
 
-    console.log("Cleaned payload:", cleaned);
     onSubmit(cleaned);
   };
 

@@ -2,6 +2,9 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
+// Check environment - use VITE_APP_ENV from .env file, fallback to MODE
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
+
 interface UseGlobalErrorHandlerOptions {
   onServerError?: (error: Error) => void
   showToast?: boolean
@@ -101,32 +104,40 @@ export const isServerError = (error: any): boolean => {
  * Note: 500 errors are also handled globally by the App component
  */
 export const handleAsyncError = (error: any, customMessage?: string) => {
-  console.error('Async operation error:', error)
+  // Only log in development
+  if (isDevelopment) {
+    console.error('Async operation error:', error)
+  }
 
+  // In production, show generic messages without technical details
   if (isServerError(error)) {
     // 500 errors are handled globally, but we can still show a toast
-    toast.error('Server Error', {
-      description: customMessage || error.response?.data?.message || error.message || 'An internal server error occurred. Please try again later.',
+    toast.error('Erreur serveur', {
+      description: isDevelopment 
+        ? (customMessage || error.response?.data?.message || error.message || 'An internal server error occurred. Please try again later.')
+        : 'Une erreur est survenue. Veuillez réessayer plus tard.',
       duration: 5000,
     })
   } else if (error.response?.status === 401) {
-    toast.error('Unauthorized', {
-      description: 'Your session has expired. Please login again.',
+    toast.error('Session expirée', {
+      description: 'Votre session a expiré. Veuillez vous reconnecter.',
       duration: 3000,
     })
   } else if (error.response?.status === 403) {
-    toast.error('Access Denied', {
-      description: 'You do not have permission to perform this action.',
+    toast.error('Accès refusé', {
+      description: 'Vous n\'avez pas la permission d\'effectuer cette action.',
       duration: 3000,
     })
   } else if (error.response?.status === 404) {
-    toast.error('Not Found', {
-      description: customMessage || 'The requested resource was not found.',
+    toast.error('Non trouvé', {
+      description: customMessage || 'La ressource demandée n\'a pas été trouvée.',
       duration: 3000,
     })
   } else {
-    toast.error('Error', {
-      description: customMessage || error.response?.data?.message || error.message || 'An unexpected error occurred.',
+    toast.error('Erreur', {
+      description: isDevelopment
+        ? (customMessage || error.response?.data?.message || error.message || 'An unexpected error occurred.')
+        : 'Une erreur inattendue est survenue.',
       duration: 3000,
     })
   }

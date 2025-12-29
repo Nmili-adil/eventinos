@@ -462,6 +462,7 @@
       "noImagesDescription": "أضف روابط الصور لإنشاء معرض الأحداث الخاص بك",
       "noExhibitors": "لم تتم إضافة أي عارضين بعد",
       "noSponsors": "لم تتم إضافة أي رعاة بعد",
+      "noSpeakers": "لم تتم إضافة أي متحدثين بعد",
       "imageNumber": "الصورة {{number}}"
     },
     "validation": {

@@ -7,7 +7,10 @@ import { LoadingProvider } from "@/contexts/LoadingContext"
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary"
 import { useEffect, useState } from 'react'
 import ServerErrorPage from '@/pages/ServerErrorPage'
+import ProductionErrorPage from '@/pages/ProductionErrorPage'
 
+// Check environment - use VITE_APP_ENV from .env file, fallback to MODE
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
 
 const AppContent = () => {
   const [serverError, setServerError] = useState<{ status: number; message: string; error: any } | null>(null)
@@ -16,7 +19,10 @@ const AppContent = () => {
     // Listen for server errors from API interceptor
     const handleServerError = (event: Event) => {
       const customEvent = event as CustomEvent
-      console.log('🎯 Caught server error event:', customEvent.detail)
+      // Only log in development
+      if (isDevelopment) {
+        console.log('Caught server error event:', customEvent.detail)
+      }
       setServerError(customEvent.detail)
     }
 
@@ -27,8 +33,19 @@ const AppContent = () => {
     }
   }, [])
 
-  // Show server error page if we caught a 500 error
+  // Show error page if we caught a 500 error
   if (serverError) {
+    // In production, show simple error page with no details
+    if (!isDevelopment) {
+      return (
+        <ProductionErrorPage 
+          onGoHome={() => (window.location.href = '/')}
+          onRetry={() => setServerError(null)}
+        />
+      )
+    }
+
+    // In development, show detailed error page
     return (
       <ServerErrorPage 
         error={new Error(serverError.message || 'Internal Server Error')}

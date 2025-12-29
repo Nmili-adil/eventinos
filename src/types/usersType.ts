@@ -1,4 +1,8 @@
-export type Industry = 'IT' | 'FINANCE' | 'EDUCATION' | 'HEALTH' | 'MANUFACTURING' | 'RETAIL' | 'OTHER' | 'COMPANY' | 'STARTUP' | 'ASSOCIATION' | 'SCHOOL' | 'COMMUNICATION_AGENCY';
+// Industry types - these must match the backend enum values exactly
+export type Industry = 'COMPANY' | 'STARTUP' | 'ASSOCIATION' | 'SCHOOL' | 'COMMUNICATION AGENCY' | '';
+
+// Company size types - these must match the backend enum values exactly
+export type CompanySize = '1-10' | 'OTHER' | '';
 
 export interface User {
   _id: { $oid: string };
@@ -8,7 +12,7 @@ export interface User {
   company?: {
     name?: string;
     jobTitle?: string;
-    size?: string;
+    size?: CompanySize;
     industry?: Industry;
   };
   socialNetworks?: {

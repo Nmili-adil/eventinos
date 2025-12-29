@@ -481,6 +481,7 @@
       "noImagesDescription": "Add image URLs to create your event gallery",
       "noExhibitors": "No exhibitors added yet",
       "noSponsors": "No sponsors added yet",
+      "noSpeakers": "No speakers added yet",
       "imageNumber": "Image {{number}}"
     },
     "validation": {
@@ -1459,6 +1460,23 @@
     "goHome": "Go to Home",
     "goBack": "Go Back",
     "usefulPages": "Useful pages:"
+  },
+  "error": {
+    "serverError": {
+      "title": "Oops! Something went wrong",
+      "message": "We're experiencing technical difficulties. Please try again in a few moments.",
+      "contactSupport": "If the problem persists, please contact support."
+    },
+    "generic": {
+      "title": "Something went wrong",
+      "message": "An unexpected error occurred. Please try again."
+    },
+    "actions": {
+      "goBack": "Go Back",
+      "retry": "Try Again",
+      "home": "Home",
+      "reload": "Reload Page"
+    }
   },
   "splash": {
     "appName": "Eventinos",

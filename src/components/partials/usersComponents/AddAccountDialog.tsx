@@ -89,7 +89,7 @@ const AddAccountDialog = ({
         name: '',
         jobTitle: '',
         size: '',
-        industry: 'IT',
+        industry: '' as Industry,
       },
       socialNetworks: {
         facebook: '',
@@ -106,7 +106,7 @@ const AddAccountDialog = ({
       try {
         setRolesLoading(true)
         const response = await rolesApi()
-        console.log('Roles API response:', response)
+     
         const rolesData = Array.isArray(response?.data) 
           ? response.data 
           : Array.isArray(response?.data?.data) 
@@ -150,7 +150,7 @@ const AddAccountDialog = ({
           name: '',
           jobTitle: '',
           size: '',
-          industry: 'IT',
+          industry: '' as Industry,
         },
         socialNetworks: {
           facebook: '',
@@ -508,11 +508,7 @@ const AddAccountDialog = ({
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="1-10">1-10</SelectItem>
-                              <SelectItem value="11-50">11-50</SelectItem>
-                              <SelectItem value="51-200">51-200</SelectItem>
-                              <SelectItem value="201-500">201-500</SelectItem>
-                              <SelectItem value="501-1000">501-1000</SelectItem>
-                              <SelectItem value="1000+">1000+</SelectItem>
+                              <SelectItem value="OTHER">{t('accounts.companySize.other', 'Other')}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -520,12 +516,21 @@ const AddAccountDialog = ({
                           <Label htmlFor="industry">
                             {t('accounts.dialog.fields.industry', 'Industry')}
                           </Label>
-                          <Input
-                            id="industry"
-                            type="text"
-                            {...register('company.industry')}
-                            placeholder={t('accounts.dialog.placeholders.industry', 'Enter industry')}
-                          />
+                          <Select
+                            value={watch('company.industry')}
+                            onValueChange={(value) => setValue('company.industry', value as Industry)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('accounts.dialog.placeholders.industry', 'Select industry')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="COMPANY">{t('accounts.industries.company', 'Company')}</SelectItem>
+                              <SelectItem value="STARTUP">{t('accounts.industries.startup', 'Startup')}</SelectItem>
+                              <SelectItem value="ASSOCIATION">{t('accounts.industries.association', 'Association')}</SelectItem>
+                              <SelectItem value="SCHOOL">{t('accounts.industries.school', 'School')}</SelectItem>
+                              <SelectItem value="COMMUNICATION AGENCY">{t('accounts.industries.communicationAgency', 'Communication Agency')}</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </div>
