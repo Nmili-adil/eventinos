@@ -66,17 +66,26 @@ export const filterEvents = (
   filters: { search: string; status: string; type: string; startDate?: string | null; endDate?: string | null }
 ): Event[] => {
   return events.filter(event => {
-    // Skip events with missing required properties
-    if (!event || !event.name || !event.location || !event.location.city || !event.location.country || !event.startDate || !event.startDate.date) return false
+    // Skip only completely invalid events
+    if (!event) return false
 
-    const matchesSearch = event.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         event.location.city.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         event.location.country.toLowerCase().includes(filters.search.toLowerCase())
+    // Safely get searchable values with fallbacks
+    const eventName = event.name || ''
+    const eventCity = event.location?.city || ''
+    const eventCountry = event.location?.country || ''
+    const searchTerm = filters.search.toLowerCase()
+
+    const matchesSearch = !filters.search || 
+                         eventName.toLowerCase().includes(searchTerm) ||
+                         eventCity.toLowerCase().includes(searchTerm) ||
+                         eventCountry.toLowerCase().includes(searchTerm)
     const matchesStatus = filters.status === 'all' || event.status === filters.status
     const matchesType = filters.type === 'all' || event.type === filters.type
-    const eventStartDate = new Date(event.startDate.date)
-    const matchesStartDate = !filters.startDate || eventStartDate >= new Date(filters.startDate)
-    const matchesEndDate = !filters.endDate || eventStartDate <= new Date(filters.endDate)
+    
+    // Safely handle date filtering
+    const eventStartDate = event.startDate?.date ? new Date(event.startDate.date) : null
+    const matchesStartDate = !filters.startDate || (eventStartDate && eventStartDate >= new Date(filters.startDate))
+    const matchesEndDate = !filters.endDate || (eventStartDate && eventStartDate <= new Date(filters.endDate))
     
     return matchesSearch && matchesStatus && matchesType && matchesStartDate && matchesEndDate
   })
@@ -86,13 +95,24 @@ export const sortEvents = (events: Event[], sortField: SortField, sortDirection:
   return [...events].sort((a, b) => {
     let aValue: any
     let bValue: any
+    let aHasValue = true
+    let bHasValue = true
 
     switch (sortField) {
       case 'startDate':
       case 'endDate':
-        // Handle date objects
-        aValue = a[sortField]?.date ? new Date(a[sortField].date) : new Date(0)
-        bValue = b[sortField]?.date ? new Date(b[sortField].date) : new Date(0)
+        // Handle date objects - events without dates go to the end
+        aHasValue = !!a[sortField]?.date
+        bHasValue = !!b[sortField]?.date
+        aValue = aHasValue ? new Date(a[sortField].date) : null
+        bValue = bHasValue ? new Date(b[sortField].date) : null
+        break
+      case 'createdAt':
+        // Handle createdAt field (ISO string)
+        aHasValue = !!(a as any).createdAt
+        bHasValue = !!(b as any).createdAt
+        aValue = aHasValue ? new Date((a as any).createdAt) : null
+        bValue = bHasValue ? new Date((b as any).createdAt) : null
         break
       case 'location':
         // Sort by city name
@@ -104,6 +124,11 @@ export const sortEvents = (events: Event[], sortField: SortField, sortDirection:
         aValue = a[sortField] || ''
         bValue = b[sortField] || ''
     }
+
+    // Push items without values to the end
+    if (!aHasValue && bHasValue) return 1
+    if (aHasValue && !bHasValue) return -1
+    if (!aHasValue && !bHasValue) return 0
 
     if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
     if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1

@@ -56,7 +56,7 @@ export interface Event {
   favorite: boolean
 }
 
-export type SortField = 'name' | 'type' | 'visibility' | 'location' | 'startDate' | 'endDate' | 'status'
+export type SortField = 'name' | 'type' | 'visibility' | 'location' | 'startDate' | 'endDate' | 'status' | 'createdAt'
 export type SortDirection = 'asc' | 'desc'
 
 export interface EventsFilters {
