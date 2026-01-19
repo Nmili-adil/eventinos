@@ -111,9 +111,9 @@ const Header = () => {
     }
 
     return (
-        <div className="flex flex-col bg-white border-b border-gray-200/60 shadow-sm sticky top-0 z-40 w-full">
+        <div className="flex flex-col  border-b border-gray-200/60 shadow-sm sticky top-0 z-40 w-full bg-white">
             {/* Top Header Section */}
-            <div className="flex items-center justify-between h-20 py-3 container mx-auto px-4 sm:px-6 ">
+            <div className="flex items-center justify-between h-20 w-full py-3  mx-auto px-4 sm:px-6 ">
                 {/* Left Section - Brand & Mobile Menu */}
                 <div className="flex items-center gap-4">
                     {/* Mobile Menu Button */}
@@ -132,19 +132,20 @@ const Header = () => {
                     <div className="flex items-center gap-3">
                         <img
                             src="/Eventinas Logo.jpeg"
-                            className="w-16 h-16 sm:w-20 sm:h-20 object-cover"
+                            className="w-14 h-14  object-cover"
                             alt="Eventinas Logo"
                         />
                     </div>
 
                     {/* Search Bar - Desktop */}
-                    <div className="hidden md:block relative w-60 lg:w-80 relative ">
-                        <GlobalSearchInput placeholder={t('header.searchPlaceholder')} />
-                    </div>
+                    
                 </div>
 
                 {/* Navigation Bar - Desktop */}
-                <div className="hidden lg:flex flex-1 mx-8">
+                <div className="hidden lg:flex flex-1 justify-evenly mx-8">
+                    <div className="hidden md:block relative w-60 lg:w-80  ">
+                        <GlobalSearchInput placeholder={t('header.searchPlaceholder')} />
+                    </div>
                     <NavBar />
                 </div>
 

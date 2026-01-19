@@ -64,12 +64,14 @@ const EventEditPage = () => {
   }
 
   return (
+    <div className="min-h-screen ">
     <EventEditForm
       event={event}
       onSubmit={handleSubmit}
       isLoading={isUpdating}
       isFetching={isFetching}
     />
+    </div>
   );
 };
 

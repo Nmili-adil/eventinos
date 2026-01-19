@@ -2,6 +2,19 @@
 @import "tw-animate-css";
 @import "./styles/map-location-selector.css";
 
+html {
+  font-family:
+    Poppins,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI Emoji",
+    "Apple Color Emoji",
+    "Noto Color Emoji",
+    sans-serif;
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

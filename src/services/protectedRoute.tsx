@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading, role: authRole } = useSelector((state: RootState) => state.auth)
+  const { isAuthenticated, isInitializing, role: authRole } = useSelector((state: RootState) => state.auth)
   const location = useLocation()
 
   // Check if token exists in localStorage as fallback
@@ -21,8 +21,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   // Get role from Redux state or localStorage
   const userRole = authRole || storedRole
 
-  // Show loading spinner while checking authentication or if we have token but no role yet
-  if (isLoading || (token && !userRole)) {
+  // Show loading spinner while initializing authentication or if we have token but no role yet
+  if (isInitializing || (token && !userRole)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">

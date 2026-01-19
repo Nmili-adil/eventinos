@@ -16,6 +16,30 @@ import {
 import { clearAuthData, setAuthToken, setLayoutPreferences, setRole, setUserData } from "@/services/localStorage";
 import type { User } from "@/types/usersType";
 
+export const authInitialize = () => {
+  return async (dispatch: any) => {
+    const token = localStorage.getItem('auth-token');
+    const userData = localStorage.getItem('auth-user');
+    const role = localStorage.getItem('auth-role');
+
+    if (token && userData && role) {
+      try {
+        // Parse user data
+        const user = JSON.parse(userData);
+        // Set authenticated state with existing credentials
+        dispatch(authSetCredentials(user, token, role));
+      } catch (error) {
+        // If parsing fails, clear invalid data
+        clearAuthData();
+        dispatch({ type: 'AUTH_INITIALIZE' });
+      }
+    } else {
+      // No stored credentials, just mark initialization as complete
+      dispatch({ type: 'AUTH_INITIALIZE' });
+    }
+  };
+};
+
 export const authLoginRequest = (payload: LoginPayload) => {
   return async (dispatch: any) => {
     dispatch({ type: AUTH_LOGIN_REQUEST });
@@ -27,7 +51,7 @@ export const authLoginRequest = (payload: LoginPayload) => {
         setUserData(response.data.user)
         setRole(response.data.user.role.name)
         setLayoutPreferences(null)
-        dispatch(authLoginSuccess(response.data.user, response.data.token, response.data.message, response.data.role))
+        dispatch(authLoginSuccess(response.data.user, response.data.token, response.data.message, response.data.user.role.name))
       } else {
         dispatch(authLoginFailure(response.data.message))
       }

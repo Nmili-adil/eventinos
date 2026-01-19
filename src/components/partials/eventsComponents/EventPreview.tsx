@@ -10,7 +10,7 @@ import { GoogleMapWrapper, SingleMarkerMap } from '@/components/shared/GoogleMap
 
 interface EventPreviewProps {
   formData: EventFormData
-}
+} 
 
 export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
   const formatDate = (dateString: string) => {

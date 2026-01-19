@@ -382,7 +382,7 @@ const ContactsPage: React.FC = () => {
           total={0}
         />
       </div>
-      <div className="mx-auto max-w-full bg-background border border-slate-300 rounded-2xl shadow-sm flex min-h-[700px] overflow-hidden">
+      <div className="mx-auto max-w-full bg-background border border-slate-300 rounded-2xl shadow-sm flex min-h-175 overflow-hidden">
         {/* Sidebar with user info */}
         <aside className="w-60 border-r border-slate-300 bg-white/70 dark:bg-background p-6 flex flex-col justify-between">
           <div className="space-y-6">
@@ -508,7 +508,7 @@ const ContactsPage: React.FC = () => {
             </div>
 
             {/* All Inboxes List */}
-            <ScrollArea className="flex-1 overflow-y-auto max-h-[calc(100vh-400px)] ">
+            <ScrollArea className="flex-1 overflow-y-auto max-h-[calc(100vh-200px)] ">
               <div className="divide-y divide-slate-300">
                 {filteredContacts.length === 0 && (
                   <div className="p-8 text-center text-muted-foreground">

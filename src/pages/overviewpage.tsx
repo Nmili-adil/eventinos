@@ -283,19 +283,19 @@ const Overviewpage = () => {
 
       {/* Time Period & Date Filters */}
       <Card className="p-4 space-y-4">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-3 flex-1">
+        <div className="flex flex-col gap-6">
+          {/* Time Period Section */}
+          <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Filter className="w-5 h-5 text-gray-600" />
               <span className="text-sm font-medium text-gray-700">{t('dashboard.timePeriod')}:</span>
             </div>
-          <div className="flex  justify-between gap-4">
-              <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
               <Button
                 variant={timePeriod === 'all' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimePeriod('all')}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm w-full"
               >
                 {t('dashboard.timePeriods.all')}
               </Button>
@@ -303,7 +303,7 @@ const Overviewpage = () => {
                 variant={timePeriod === 'week' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimePeriod('week')}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm w-full"
               >
                 {t('dashboard.timePeriods.week')}
               </Button>
@@ -311,7 +311,7 @@ const Overviewpage = () => {
                 variant={timePeriod === 'month' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimePeriod('month')}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm w-full"
               >
                 {t('dashboard.timePeriods.month')}
               </Button>
@@ -319,7 +319,7 @@ const Overviewpage = () => {
                 variant={timePeriod === '3months' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimePeriod('3months')}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm w-full"
               >
                 {t('dashboard.timePeriods.3months')}
               </Button>
@@ -327,7 +327,7 @@ const Overviewpage = () => {
                 variant={timePeriod === '6months' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimePeriod('6months')}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm w-full"
               >
                 {t('dashboard.timePeriods.6months')}
               </Button>
@@ -335,87 +335,90 @@ const Overviewpage = () => {
                 variant={timePeriod === 'year' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimePeriod('year')}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm w-full"
               >
                 {t('dashboard.timePeriods.year')}
               </Button>
             </div>
+          </div>
 
-            <div className="flex-1 grid grid-cols-2 gap-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "justify-start text-left font-normal min-w-[200px]",
-                      !customStartDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {customStartDate ? format(customStartDate, "PPP") : t('dashboard.filters.startDatePlaceholder', 'Select start date')}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={customStartDate}
-                    onSelect={setCustomStartDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+          {/* Custom Date Range Section */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Calendar1Icon className="w-4 h-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-700">{t('dashboard.filters.customRange', 'Custom Date Range')}:</span>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !customStartDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {customStartDate ? format(customStartDate, "PPP") : t('dashboard.filters.startDatePlaceholder', 'Select start date')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={customStartDate}
+                      onSelect={setCustomStartDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "justify-start text-left font-normal min-w-[200px]",
-                      !customEndDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {customEndDate ? format(customEndDate, "PPP") : t('dashboard.filters.endDatePlaceholder', 'Select end date')}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={customEndDate}
-                    onSelect={setCustomEndDate}
-                    disabled={(date) => (customStartDate ? date < customStartDate : false)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <div className="flex-1">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !customEndDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {customEndDate ? format(customEndDate, "PPP") : t('dashboard.filters.endDatePlaceholder', 'Select end date')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={customEndDate}
+                      onSelect={setCustomEndDate}
+                      disabled={(date) => (customStartDate ? date < customStartDate : false)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
               {(customStartDate || customEndDate) && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-2"
+                  className="shrink-0 gap-2"
                   onClick={() => {
                     setCustomStartDate(undefined)
                     setCustomEndDate(undefined)
                   }}
                 >
-                  <X className="h-3.5 w-3.5" />
-                  {t('dashboard.filters.clearDates', 'Clear date range')}
+                  <X className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t('dashboard.filters.clearDates', 'Clear')}</span>
                 </Button>
               )}
+            </div>
           </div>
-          </div>
-   
-            
-
-
-
-          </div>
-
-          
         </div>
 
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-gray-500 pt-2 border-t">
           {t('dashboard.filters.currentRangeLabel', { range: dateRangeLabel, defaultValue: `Showing data for ${dateRangeLabel}` })}
         </div>
       </Card>

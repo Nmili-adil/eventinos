@@ -119,19 +119,19 @@ const SimpleNavBar = ({ mobile = false }: SimpleNavBarProps) => {
               key={link.nameKey}
               to={link.path}
               className={cn(
-                "relative flex items-center gap-2 px-3 lg:px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group",
+                "relative flex items-center gap-2 px-3 lg:px-1 py-2 text-sm font-medium transition-colors duration-200  group",
                 isActive(link.path)
-                  ? "text-blue-600 bg-blue-50"
+                  ? "text-blue-600 "
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               )}
             >
               {/* Icon for tablet and mobile view */}
-              <IconComponent className={cn(
+              {/* <IconComponent className={cn(
                 "w-4 h-4 lg:w-4 lg:h-4",
                 isActive(link.path) 
                   ? "text-blue-600" 
                   : "text-gray-500 group-hover:text-gray-700"
-              )} />
+              )} /> */}
               {/* Text hidden on mobile, visible on tablet and up */}
               <span className="hidden sm:block">{t(link.nameKey)}</span>
               {isActive(link.path) && (

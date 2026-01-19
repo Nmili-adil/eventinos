@@ -176,7 +176,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
           className={cn(
             'absolute top-0 left-0 z-10 h-full bg-white shadow-xl transition-all duration-300 ease-in-out overflow-hidden flex flex-col',
             isSidebarOpen 
-              ? 'w-full md:w-96 lg:w-[420px]' 
+              ? 'w-full md:w-96 lg:w-105' 
               : 'w-0'
           )}
         >
@@ -191,7 +191,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsSidebarOpen(false)}
-                className="text-white hover:bg-white/20 md:hidden"
+                className="text-white hover:bg-white/20 z-50 relative"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -243,25 +243,27 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
           </div>
 
           {/* Events List */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4">
             {filteredEvents.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <MapPin className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                 <p className="text-sm">{t('events.noEventsFound')}</p>
               </div>
             ) : (
-              filteredEvents.map(event => (
-                <EventCard
-                  key={event._id}
-                  event={event}
-                  isSelected={selectedEventId === event._id}
-                  onClick={() => handleEventCardClick(event)}
-                  onPreview={() => onEventClick?.(event)}
-                  onEdit={() => onEdit?.(event._id)}
-                  onChangeStatus={() => onChangeStatus?.(event._id)}
-                  onDelete={() => onDelete?.(event._id, event.name || event.title)}
-                />
-              ))
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
+                {filteredEvents.map(event => (
+                  <EventCard
+                    key={event._id}
+                    event={event}
+                    isSelected={selectedEventId === event._id}
+                    onClick={() => handleEventCardClick(event)}
+                    onPreview={() => onEventClick?.(event)}
+                    onEdit={() => onEdit?.(event._id)}
+                    onChangeStatus={() => onChangeStatus?.(event._id)}
+                    onDelete={() => onDelete?.(event._id, event.name || event.title)}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -272,7 +274,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
             variant="default"
             size="sm"
             onClick={() => setIsSidebarOpen(true)}
-            className="absolute top-4 left-4 z-20 shadow-lg"
+            className="absolute top-4 left-4 z-50 shadow-lg"
           >
             <FilterIcon className="h-4 w-4 mr-2" />
             {t('events.showEvents')}
@@ -343,106 +345,115 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <Card
       className={cn(
-        'cursor-pointer transition-all hover:shadow-lg border-2 py-0',
+        'cursor-pointer transition-all hover:shadow-lg border-2 py-0 relative',
+        // Responsive sizing for small screens
+        'sm:h-auto h-32', // Smaller height on mobile
         isSelected
           ? 'border-blue-500 shadow-lg ring-2 ring-blue-200'
           : 'border-gray-200 hover:border-blue-300'
       )}
       onClick={onClick}
     >
-      <CardContent className="p-0">
-        {/* Event Image */}
-        {event.image && (
-          <div className="relative h-48 w-full overflow-hidden rounded-t-lg">
-            <img
-              src={event.image}
-              alt={event.name || event.title}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement
-                target.src = 'https://via.placeholder.com/400x200?text=No+Image'
-              }}
-            />
-            <div className="absolute top-2 right-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="h-8 w-8 rounded-full bg-white/90 hover:bg-white shadow-md"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onPreview() }}>
-                    <Eye className="h-4 w-4 mr-2" />
-                    {t('events.preview')}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit() }}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    {t('common.edit')}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onChangeStatus() }}>
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {t('events.changeStatus')}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={(e) => { e.stopPropagation(); onDelete() }}
-                    className="text-red-600"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    {t('common.delete')}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+      <CardContent className="p-0 h-full">
+        <div className="flex sm:flex-col h-full">
+          {/* Event Image - Hidden on small screens */}
+          {event.image && (
+            <div className="relative sm:h-48 h-full w-24 sm:w-full shrink-0 overflow-hidden sm:rounded-t-lg rounded-l-lg">
+              <img
+                src={event.image}
+                alt={event.name || event.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.src = 'https://via.placeholder.com/400x200?text=No+Image'
+                }}
+              />
             </div>
-          </div>
-        )}
-
-        {/* Event Details */}
-        <div className="p-4 space-y-3">
-          {/* Title */}
-          <h3 className="font-semibold text-lg line-clamp-2 text-gray-900">
-            {event.name || event.title}
-          </h3>
-
-          {/* Status Badge */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Badge className={cn('text-xs', getStatusColor(event.status))}>
-              {event.status}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {event.visibility}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {event.type}
-            </Badge>
-          </div>
-
-          {/* Description */}
-          {event.description && (
-            <p className="text-sm text-gray-600 line-clamp-2">
-              {event.description}
-            </p>
           )}
 
-          {/* Location and Date */}
-          <div className="space-y-1 text-xs text-gray-500">
-            {event.location?.city && (
-              <div className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                <span>{event.location.city}, {event.location.country}</span>
+          {/* Event Details - Compact on small screens */}
+          <div className="flex-1 p-2 sm:p-4 sm:space-y-3 space-y-1 min-w-0">
+            {/* Title - Smaller on mobile */}
+            <h3 className="font-semibold sm:text-lg text-sm line-clamp-1 sm:line-clamp-2 text-gray-900">
+              {event.name || event.title}
+            </h3>
+
+            {/* Status Badge - Only show status on mobile, all badges on larger screens */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+              <Badge className={cn('text-xs', getStatusColor(event.status))}>
+                {event.status}
+              </Badge>
+              {/* Hide additional badges on small screens */}
+              <div className="hidden sm:flex gap-2">
+                <Badge variant="outline" className="text-xs">
+                  {event.visibility}
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {event.type}
+                </Badge>
               </div>
+            </div>
+
+            {/* Description - Hidden on small screens */}
+            {event.description && (
+              <p className="hidden sm:block text-sm text-gray-600 line-clamp-2">
+                {event.description}
+              </p>
             )}
-            {event.startDate?.date && (
-              <div className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                <span>{formatDate(event.startDate.date)}</span>
-              </div>
-            )}
+
+            {/* Location and Date - Compact on small screens */}
+            <div className="space-y-1 text-xs text-gray-500">
+              {event.location?.city && (
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">{event.location.city}, {event.location.country}</span>
+                </div>
+              )}
+              {event.startDate?.date && (
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3 flex-shrink-0" />
+                  <span>{formatDate(event.startDate.date)}</span>
+                </div>
+              )}
+            </div>
           </div>
+        </div>
+
+        {/* Dropdown Menu - Positioned to avoid sidebar header */}
+        <div className="absolute top-2 right-2 sm:top-2 sm:right-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-white/90 hover:bg-white shadow-md"
+              >
+                <MoreVertical className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onPreview() }}>
+                <Eye className="h-4 w-4 mr-2" />
+                {t('events.preview')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit() }}>
+                <Edit className="h-4 w-4 mr-2" />
+                {t('common.edit')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onChangeStatus() }}>
+                <Calendar className="h-4 w-4 mr-2" />
+                {t('events.changeStatus')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => { e.stopPropagation(); onDelete() }}
+                className="text-red-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                {t('common.delete')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardContent>
     </Card>

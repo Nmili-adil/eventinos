@@ -1,5 +1,6 @@
 import LoginForm from "@/components/partials/authComponents/loginForm";
 import { DASHBOARD_OVERVIEW } from "@/constants/routerConstants";
+import { PRIVACY_PAGE } from "@/constants/routerConstants";
 import { getAuthToken } from "@/services/localStorage";
 import type { RootState } from "@/store/app/rootReducer";
 import { useEffect } from "react";
@@ -89,6 +90,8 @@ export default function LoginPage() {
           <LoginForm />
         </div>
       </div>
+
+    
     </div>
   );
 }

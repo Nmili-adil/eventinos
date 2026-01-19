@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { PRIVACY_PAGE } from '@/constants/routerConstants'
 import { loginSchema, type LoginFormData } from '@/schema/authSchemas/login-schema'
 import type { RootState } from '@/store/app/rootReducer'
 import type { AppDispatch } from '@/store/app/store'
@@ -44,7 +45,7 @@ const LoginForm = () => {
 
 
     return (
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative">
             <div className="max-w-md mx-auto">
                 {/* Login Card */}
                 <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
@@ -158,6 +159,18 @@ const LoginForm = () => {
                     </CardContent>
                 </Card>
             </div>
+              {/* Footer Links */}
+      <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+        <div className="flex items-center gap-6 text-sm text-slate-400">
+          <Link
+            to={PRIVACY_PAGE}
+            className="hover:text-slate-200 transition-colors"
+          >
+            Privacy Policy
+          </Link>
+         
+        </div>
+      </div>
         </div>
     )
 }

@@ -429,16 +429,22 @@ const EventEditForm = ({
                 )}
               </Button>
             </CardHeader>
-            <CardContent className="flex flex-col max-h-[60vh] sm:max-h-[70vh] lg:max-h-[75vh] ">
+            <CardContent className="flex-1 overflow-hidden min-h-0 relative">
               <Form {...form}>
-                <form className="flex flex-col gap-6">
+                <form className="flex flex-col gap-6 pb-6 h-full">
                   <Tabs
                     value={activeTab}
                     onValueChange={setActiveTab}
-                    className="flex flex-col md:flex-row gap-6 w-full"
+                    className="flex flex-col md:flex-row gap-0 w-full flex-1 min-h-0"
                   >
-                    <aside className="flex-none w-full h-12 md:h-fit md:w-64 overflow-hidden ">
-                      <TabsList className="flex h-fit flex-row md:flex-col justify-start h-auto bg-transparent p-0 gap-2 overflow-hidden md:overflow-visible w-full">
+                    <aside className="flex-none w-full md:w-64 md:sticky md:top-0 md:self-start border-r md:border-r-slate-200 pr-4 md:pr-6 overflow-x-auto md:overflow-x-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent hover:scrollbar-thumb-slate-400" style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#cbd5e1 transparent'
+                    }}>
+                      <TabsList className="flex flex-row md:flex-col justify-start h-auto bg-transparent p-0 gap-2 w-full overflow-x-auto md:overflow-x-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent hover:scrollbar-thumb-slate-400" style={{
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: '#cbd5e1 transparent'
+                      }}>
                         {tabsConfig.map((tab) => (
                           <TabsTrigger
                             key={tab.value}
@@ -458,9 +464,12 @@ const EventEditForm = ({
                       </TabsList>
                     </aside>
 
-                    <div className="flex-1 min-w-0  overflow-hidden">
+                    <div className="flex-1 min-w-0 overflow-y-auto md:pl-6 h-full scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent hover:scrollbar-thumb-slate-400" style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#cbd5e1 transparent'
+                    }}>
                       {/* Basic Information Tab */}
-                      <TabsContent value="basic" className="space-y-6 mt-0 p-2 overflow-y-auto ">
+                      <TabsContent value="basic" className="space-y-6 mt-0 p-2">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.basicInfo")}

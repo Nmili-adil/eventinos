@@ -174,7 +174,7 @@
     "addEvent": "Add Event",
     "editEvent": "Edit Event",
     "eventName": "Event Name",
-    "eventDescription": "Description",
+    "eventDescription": "Short summary: highlights, date and who should attend.",
     "eventDetails": "Event Details",
     "basicInformation": "Basic Information",
     "enterEventName": "Enter event name",

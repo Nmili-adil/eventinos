@@ -8,6 +8,7 @@ import { ErrorBoundary } from "@/components/shared/ErrorBoundary"
 import { useEffect, useState } from 'react'
 import ServerErrorPage from '@/pages/ServerErrorPage'
 import ProductionErrorPage from '@/pages/ProductionErrorPage'
+import { authInitialize } from "@/store/features/auth/auth.actions"
 
 // Check environment - use VITE_APP_ENV from .env file, fallback to MODE
 const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
@@ -16,6 +17,9 @@ const AppContent = () => {
   const [serverError, setServerError] = useState<{ status: number; message: string; error: any } | null>(null)
 
   useEffect(() => {
+    // Initialize authentication state
+    store.dispatch(authInitialize());
+
     // Listen for server errors from API interceptor
     const handleServerError = (event: Event) => {
       const customEvent = event as CustomEvent

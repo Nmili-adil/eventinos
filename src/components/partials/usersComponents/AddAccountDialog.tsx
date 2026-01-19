@@ -231,8 +231,8 @@ const AddAccountDialog = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-hidden border border-gray-300">
+    <div className="fixed inset-0 px-10 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg shadow-lg  lg:max-w-3xl w-full max-h-[90vh] overflow-hidden border border-gray-300">
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="px-6 pt-6 pb-3 border-b border-gray-200">

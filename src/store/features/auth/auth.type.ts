@@ -6,6 +6,7 @@ export const AUTH_LOGIN_FAILURE = 'AUTH_LOGIN_FAILURE'
 export const AUTH_LOGOUT = 'AUTH_LOGOUT'
 export const AUTH_CLEAR_ERROR = 'AUTH_CLEAR_ERROR'
 export const AUTH_SET_CREDENTIALS = 'AUTH_SET_CREDENTIALS'
+export const AUTH_INITIALIZE = 'AUTH_INITIALIZE'
 
 export interface LoginRequestAction {
   type: typeof AUTH_LOGIN_REQUEST
@@ -49,11 +50,16 @@ export interface SetCredentialsAction {
   }
 }
 
+export interface InitializeAction {
+  type: typeof AUTH_INITIALIZE
+}
+
 export interface AuthState {
   user: null | User
   token: string | null
   role: string | null
   isLoading: boolean
+  isInitializing: boolean
   error: string | null
   isAuthenticated: boolean
   message: string | null
@@ -66,3 +72,4 @@ export type AuthActionTypes =
   | LogoutAction
   | ClearErrorAction
   | SetCredentialsAction
+  | InitializeAction

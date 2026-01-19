@@ -57,7 +57,7 @@ const ProfileDropDown = () => {
         <DropdownMenuLabel className="" >{t('common.myAccount')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900">
+          <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900" asChild>
             <Link className="w-full flex items-center gap-2" to={PROFILE_PAGE(getUserData()._id)}>
             <User className="w-4 h-4" />
             {t('common.profile')}
@@ -65,7 +65,7 @@ const ProfileDropDown = () => {
           </DropdownMenuItem>
 
           {isAdminOrOrganizer && (
-            <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900">
+            <DropdownMenuItem className="hover:bg-gray-100 hover:text-gray-900" asChild>
               <Link to={SETTINGS_PAGE} className="w-full flex items-center gap-2" >
               <Settings className="w-4 h-4" />
               {t('common.settings')}

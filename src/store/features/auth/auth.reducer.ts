@@ -1,16 +1,17 @@
 // store/reducers/authReducer.ts
 
 import { getAuthToken, getUserData, getRole } from "@/services/localStorage"
-import { AUTH_CLEAR_ERROR, AUTH_LOGIN_FAILURE, AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_CREDENTIALS, type AuthActionTypes, type AuthState } from "./auth.type"
+import { AUTH_CLEAR_ERROR, AUTH_INITIALIZE, AUTH_LOGIN_FAILURE, AUTH_LOGIN_REQUEST, AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_CREDENTIALS, type AuthActionTypes, type AuthState } from "./auth.type"
 
 
 
 
 const initialState: AuthState = {
-  user: getUserData() ,
-  token: getAuthToken(),
-  role: getRole(),
-  isLoading: false,
+  user: null,
+  token: null,
+  role: null,
+  isLoading: false, // Login button should be enabled initially
+  isInitializing: true, // App is initializing auth state
   error: null,
   isAuthenticated: false,
   message: null
@@ -71,7 +72,14 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
         user: action.payload.user,
         token: action.payload.token,
         role: action.payload.role,
-        isAuthenticated: true
+        isAuthenticated: true,
+        isInitializing: false
+      }
+
+    case AUTH_INITIALIZE:
+      return {
+        ...state,
+        isInitializing: false
       }
 
     default:
