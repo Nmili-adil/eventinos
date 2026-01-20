@@ -137,7 +137,7 @@ const PermissionsDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl border-slate-300 max-h-[90vh]">
+      <DialogContent className="lg:max-w-4xl border-slate-300 max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {t('permissions.dialog.title')}

@@ -1,5 +1,5 @@
 import Layout from '@/app/_layout'
-import { DASHBOARD_OVERVIEW, EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBERS_PAGE, PROFILE_PAGE, SETTINGS_PAGE, CONTACTS_PAGE, COMPTES_PAGE, PRIVACY_PAGE  } from '@/constants/routerConstants'
+import { DASHBOARD_OVERVIEW, EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE,LOGIN_PAGE, MEMBERS_PAGE, PROFILE_PAGE, SETTINGS_PAGE, CONTACTS_PAGE, COMPTES_PAGE, PRIVACY_PAGE, DELETE_ACCOUNT_PAGE  } from '@/constants/routerConstants'
 import EventAddPage from '@/pages/eventAdd-page'
 import EventDetailsPage from '@/pages/eventDetailsPage'
 import EventEditPage from '@/pages/eventEdit-page'
@@ -18,6 +18,7 @@ import ProfilePage from '@/pages/profilePage'
 import ContactsPage from '@/pages/contactsPage'
 import ComptesPage from '@/pages/comptesPage'
 import { RouteErrorElement } from '@/components/shared/ErrorBoundary'
+import DeleteAccount from '@/pages/deleteAccount'
 
 
 export const Router = createBrowserRouter([
@@ -34,6 +35,11 @@ export const Router = createBrowserRouter([
     {
         path: PRIVACY_PAGE,
         element: <PrivacyPage />,
+        errorElement: <RouteErrorElement />
+    },
+    {
+        path: DELETE_ACCOUNT_PAGE,
+        element: <DeleteAccount />,
         errorElement: <RouteErrorElement />
     },
     {

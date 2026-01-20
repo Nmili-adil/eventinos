@@ -3,7 +3,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { PRIVACY_PAGE } from '@/constants/routerConstants'
+import { DELETE_ACCOUNT_PAGE, PRIVACY_PAGE } from '@/constants/routerConstants'
 import { loginSchema, type LoginFormData } from '@/schema/authSchemas/login-schema'
 import type { RootState } from '@/store/app/rootReducer'
 import type { AppDispatch } from '@/store/app/store'
@@ -168,7 +168,7 @@ const LoginForm = () => {
           >
             Privacy Policy
           </Link>
-         
+         <Link to={DELETE_ACCOUNT_PAGE}>Delete Account</Link>
         </div>
       </div>
         </div>

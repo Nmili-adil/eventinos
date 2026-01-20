@@ -1,6 +1,7 @@
 export const LOGIN_PAGE = '/'
 export const FORGOTPASSWORD_PAGE = '/forgot-password'
 export const PRIVACY_PAGE = '/privacy'
+export const DELETE_ACCOUNT_PAGE = '/account-deletion'
 export const  DASHBOARD_OVERVIEW = '/dashboard'
 export const MEMBERS_PAGE = '/dashboard/members-page'
 export const EVENT_LISTE_PAGE = '/dashboard/event-page'

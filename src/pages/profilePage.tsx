@@ -475,11 +475,6 @@ export const ProfilePage: React.FC = () => {
     return <ProfileNotFound userId={params.userId} />;
   }
 
-  // Debug logging
-  console.log('🔍 Role Check Debug:');
-  console.log('viewerRole (from localStorage):', viewerRole);
-  console.log('user.role object:', user.role);
-  console.log('role from Redux:', role);
   
   // Get the viewed user's role name - could be from user.role object or from Redux role state
   const viewedUserRoleName = (typeof user.role === 'object' && user.role?.name) 
@@ -487,8 +482,7 @@ export const ProfilePage: React.FC = () => {
     : (typeof role === 'object' && role?.name) 
       ? role.name.toLowerCase() 
       : null;
-  
-  console.log('viewedUserRoleName:', viewedUserRoleName);
+
   
   // Normalize the viewed user's role for easier comparison
   const normalizedViewedRole = viewedUserRoleName?.toLowerCase();
@@ -497,7 +491,7 @@ export const ProfilePage: React.FC = () => {
   const canManageRole = viewerRole?.toLowerCase() === 'admin' && 
     (viewedUserRoleName === 'organizer' || viewedUserRoleName === 'admin');
   
-  console.log('canManageRole:', canManageRole);
+  
   
   const isViewerAdminOrOrganizer = viewerRole?.toLowerCase() === 'admin' || viewerRole?.toLowerCase() === 'organizer';
   
@@ -523,10 +517,10 @@ export const ProfilePage: React.FC = () => {
   const profileCompletion = calculateProfileCompletion();
 
   return (
-    <div className="min-h-screen p-4" style={{ background: 'linear-gradient(to bottom, #f8fafc, #e2e8f0)' }}>
+    <div className="min-h-screen p-4 md:p-6 lg:p-8">
       {/* Header */}
       <div className="mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" style={{ 
+        <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6 shadow-lg" style={{ 
           background: 'linear-gradient(135deg, rgba(163, 201, 217, 0.1) 0%, rgba(255, 255, 255, 1) 100%)'
         }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -540,7 +534,7 @@ export const ProfilePage: React.FC = () => {
               
             </div>
             <div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Button
                 type="button"
                 variant={"outline"}
@@ -602,11 +596,11 @@ export const ProfilePage: React.FC = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 py-1">
         {/* Tabs */}
-        <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl p-3 shadow-xl">
-          <TabsList className="bg-transparent w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 h-auto">
+        <div className="bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl p-2 md:p-3 shadow-xl">
+          <TabsList className="bg-transparent w-full grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-3 h-auto">
             <TabsTrigger
               value="personal"
-              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              className="rounded-xl px-4 md:px-6 py-3 md:py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
               style={{
                 background: activeTab === 'personal'
                   ? `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.secondary})`
@@ -625,7 +619,7 @@ export const ProfilePage: React.FC = () => {
                 >
                   <User className="w-5 h-5" />
                 </div>
-                <span className="text-base">{t('profilePage.tabs.personal')}</span>
+                <span className="text-base hidden md:inline">{t('profilePage.tabs.personal')}</span>
               </div>
               {activeTab === 'personal' && (
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
@@ -634,7 +628,7 @@ export const ProfilePage: React.FC = () => {
 
             <TabsTrigger
               value="professional"
-              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              className="rounded-xl px-4 md:px-6 py-3 md:py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
               style={{
                 background: activeTab === 'professional'
                   ? `linear-gradient(135deg, ${COLORS.secondary}, ${COLORS.highlight})`
@@ -653,7 +647,7 @@ export const ProfilePage: React.FC = () => {
                 >
                   <Briefcase className="w-5 h-5" />
                 </div>
-                <span className="text-base">{t('profilePage.tabs.professional')}</span>
+                <span className="text-base hidden md:inline">{t('profilePage.tabs.professional')}</span>
               </div>
               {activeTab === 'professional' && (
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
@@ -663,7 +657,7 @@ export const ProfilePage: React.FC = () => {
             {isViewerAdminOrOrganizer && (
               <TabsTrigger
                 value="account"
-                className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+                className="rounded-xl px-4 md:px-6 py-3 md:py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
                 style={{
                   background: activeTab === 'account'
                     ? `linear-gradient(135deg, ${COLORS.highlight}, ${COLORS.accent})`
@@ -682,7 +676,7 @@ export const ProfilePage: React.FC = () => {
                   >
                     <Shield className="w-5 h-5" />
                   </div>
-                  <span className="text-base">{t('profilePage.tabs.account')}</span>
+                  <span className="text-base hidden md:inline">{t('profilePage.tabs.account')}</span>
                 </div>
                 {activeTab === 'account' && (
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
@@ -692,7 +686,7 @@ export const ProfilePage: React.FC = () => {
 
             <TabsTrigger
               value="roles-rights"
-              className="rounded-xl px-6 py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+              className="rounded-xl px-4 md:px-6 py-3 md:py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
               style={{
                 background: activeTab === 'roles-rights'
                   ? `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.dark})`
@@ -711,7 +705,7 @@ export const ProfilePage: React.FC = () => {
                 >
                   <Award className="w-5 h-5" />
                 </div>
-                <span className="text-base">{t('profilePage.tabs.rolesRights')}</span>
+                <span className="text-base hidden md:inline">{t('profilePage.tabs.rolesRights')}</span>
               </div>
               {activeTab === 'roles-rights' && (
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
@@ -937,7 +931,7 @@ export const ProfilePage: React.FC = () => {
                   {t('profilePage.personal.form.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="py-8 px-8">
+              <CardContent className="py-6 md:py-8 px-4 md:px-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1442,7 +1436,7 @@ export const ProfilePage: React.FC = () => {
                     backgroundColor: COLORS.lightBg,
                     borderColor: COLORS.gray[200]
                   }}>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-2 md:flex-row items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.accent }}>
                           <Key className="w-5 h-5 text-white" />
@@ -1743,7 +1737,7 @@ export const ProfilePage: React.FC = () => {
                             <div className="flex items-center gap-3">
                               <div className="w-1 h-6 rounded-full" style={{ backgroundColor: COLORS.primary }} />
                               <h4 className="text-lg font-bold" style={{ color: COLORS.dark }}>
-                                {group}
+                                {group.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                               </h4>
                               <Badge className="rounded-full border" style={{ 
                                 backgroundColor: '#e0f2fe',
@@ -1761,7 +1755,7 @@ export const ProfilePage: React.FC = () => {
                                   borderColor: COLORS.gray[200]
                                 }}
                               >
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-col gap-2 md:flex-row items-start md:items-center md:justify-between">
                                   <div className="flex items-center gap-3">
                                     <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
                                       <CheckCircle className="w-4 h-4 text-white" />
@@ -1770,14 +1764,14 @@ export const ProfilePage: React.FC = () => {
                                       <p className="text-sm font-medium text-gray-900">
                                         {right.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                       </p>
-                                      <p className="text-xs text-gray-500">{right.group}</p>
+                                      <p className="text-xs text-gray-500">{right.group.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
                                     </div>
                                   </div>
-                                  <Badge variant="outline" className="rounded-full border" style={{ 
+                                  <Badge variant="outline" className="rounded-full border self-end " style={{ 
                                     borderColor: COLORS.secondary,
                                     color: COLORS.highlight
                                   }}>
-                                    {right.name}
+                                    {right.name.replaceAll('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                   </Badge>
                                 </div>
                               </div>

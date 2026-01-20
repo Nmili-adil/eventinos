@@ -111,7 +111,7 @@ const MemberEditDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] border-slate-300">
+      <DialogContent className=" sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[90vh] border-slate-300">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {t("members.editDialog.title", "Edit Member")}
@@ -125,7 +125,7 @@ const MemberEditDialog = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <ScrollArea className="max-h-[calc(90vh-200px)] pr-4">
+          <ScrollArea className="max-h-[50vh] md:max-h-[calc(90vh-200px)] pr-4 overflow-y-auto">
             <div className="space-y-6">
               {/* Personal Information */}
               <div className="space-y-4">
@@ -362,7 +362,7 @@ const MemberEditDialog = ({
           </ScrollArea>
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-4 border-t mt-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4 border-t mt-4">
             <Button
               type="button"
               variant="outline"

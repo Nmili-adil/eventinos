@@ -49,7 +49,7 @@ export default function Footer() {
           <Separator className="md:hidden w-full" />
 
           {/* Social Links */}
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <span className="text-xs text-slate-500 mr-1 hidden sm:inline">
               {t('footer.followUs', 'Follow us')}:
             </span>
@@ -81,7 +81,7 @@ export default function Footer() {
             >
               <Mail size={14} className="text-slate-600 group-hover:text-green-600 transition-colors" />
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

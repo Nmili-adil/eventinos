@@ -23,8 +23,7 @@ export const fetchUsers = async (page = 1, limit = 10, role: 'all' | 'organizer'
 
 
 export const getUserById = async (userId: string) => {
-  console.log("Fetching user with ID:", userId);
-  console.log("Using auth token:", getAuthToken());
+
   return api.get(`/users/${userId}`, {
     headers: {
       'Content-Type': 'application/json',

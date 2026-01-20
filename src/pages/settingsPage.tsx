@@ -373,9 +373,9 @@ const SettingsPage = () => {
         />
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Navigation */}
-        <aside className="w-64 shrink-0">
+        <aside className="w-full md:w-64 shrink-0">
           <Card className="sticky top-6">
             <CardHeader>
               <CardTitle className="text-lg">{t('settings.navigation')}</CardTitle>

@@ -49,11 +49,11 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
           </div>
 
           {/* Filter Options */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* STATUS FILTER */}
-            <div className="flex-1">
+            <div className=" col-span-1 lg:col-span-1">
               <Select value={filters.status} onValueChange={handleStatusChange}>
-                <SelectTrigger className="pl-10 relative" >
+                <SelectTrigger className="pl-10 relative w-full" >
                   <Filter className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                   <SelectValue placeholder={t('accounts.filters.status.all', 'All Status')} />
                 </SelectTrigger>
@@ -72,9 +72,9 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             </div>
 
             {/* REGISTRATION STATUS FILTER */}
-            <div className="flex-1">
+            <div className=" col-span-1 lg:col-span-1">
               <Select value={filters.registrationStatus} onValueChange={handleRegistrationChange}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={t('accounts.filters.registration.all', 'All Registration')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -92,9 +92,9 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             </div>
 
             {/* GENDER FILTER */}
-            <div className="flex-1">
+            <div className=" col-span-1 lg:col-span-1">
               <Select value={filters.gender} onValueChange={handleGenderChange}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={t('accounts.filters.gender.all', 'All Gender')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -112,9 +112,9 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             </div>
 
             {/* USER TYPE FILTER */}
-            <div className="flex-1">
+            <div className=" col-span-1 grid lg:col-span-1">
               <Select value={filters.userType} onValueChange={handleUserTypeChange}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={t('accounts.filters.userType.all', 'All Types')} />
                 </SelectTrigger>
                 <SelectContent>

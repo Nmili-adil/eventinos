@@ -384,7 +384,7 @@ const ContactsPage: React.FC = () => {
       </div>
       <div className="mx-auto max-w-full bg-background border border-slate-300 rounded-2xl shadow-sm flex min-h-175 overflow-hidden">
         {/* Sidebar with user info */}
-        <aside className="w-60 border-r border-slate-300 bg-white/70 dark:bg-background p-6 flex flex-col justify-between">
+        <aside className="hidden md:flex md:flex-col md:justify-between w-60 border-r border-slate-300 bg-white/70 dark:bg-background p-6">
           <div className="space-y-6">
             <div>
               <p className="text-xs uppercase text-muted-foreground">
@@ -413,7 +413,7 @@ const ContactsPage: React.FC = () => {
         </aside>
 
         {/* Main content area */}
-        <section className="flex-1 flex divide-x divide-slate-300">
+        <section className="flex flex-1 flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-300">
           {/* Contacts list sidebar */}
           <div className="flex-1 flex flex-col">
             <div className="border-b border-slate-300 px-6 py-5 space-y-4">
@@ -616,9 +616,21 @@ const ContactsPage: React.FC = () => {
 
           {/* Conversation view - Only show when a contact is selected */}
           {selectedContact && (
-            <div className="hidden lg:flex lg:w-[600px] xl:w-[700px] shrink-0 flex-col border-l border-slate-300">
+            <div className="flex w-full lg:w-[600px] xl:w-[700px] shrink-0 flex-col border-t md:border-t-0 md:border-l border-slate-300">
               {/* Conversation header */}
               <div className="border-b border-slate-300 px-6 py-4 flex flex-col gap-4">
+                {/* Mobile back button */}
+                <div className="md:hidden">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedContact(null)}
+                    className="justify-start gap-2"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    {t('contacts.actions.back', 'Back to messages')}
+                  </Button>
+                </div>
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">

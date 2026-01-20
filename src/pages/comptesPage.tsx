@@ -1101,7 +1101,7 @@ export const ComptesPage: React.FC = () => {
             <AlertDialogAction
               onClick={() => selectedUser && handleDelete(selectedUser)}
               disabled={actionLoading === selectedUser?._id?.toString()}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive  hover:bg-destructive/90"
             >
               {actionLoading === selectedUser?._id?.toString() ? (
                 <>

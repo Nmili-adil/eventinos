@@ -361,7 +361,12 @@ export default function PrivacyPage() {
             />
             <span className="text-sm text-gray-700">J'ai lu et compris la politique de confidentialité</span>
           </div>
-          
+         <div className="gap-2 flex justify-center">
+           <Button
+           variant={'link'}
+           className="cursor-pointer"
+           onClick={() => navigate(-1)}
+           >Retour</Button>
           {!hasAccepted ? (
             <Button
               ref={acceptButtonRef}
@@ -381,6 +386,7 @@ export default function PrivacyPage() {
             </Button>
           )}
           
+         </div>
           <p className="text-sm text-gray-500 mt-4">
             En utilisant Eventinas, vous acceptez les termes de cette politique
             de confidentialité.

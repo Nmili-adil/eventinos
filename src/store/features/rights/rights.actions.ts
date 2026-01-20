@@ -6,7 +6,6 @@ export const fetchRightsRequest = () => {
     dispatch({ type: 'FETCH_RIGHTS_REQUEST' });
     try {
       const response = await fetchRightsApi();
-      console.log(response);
       if (response && response.status === 200) {
         dispatch({
           type: FETCH_RIGHTS_SUCCESS,

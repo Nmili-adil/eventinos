@@ -1091,7 +1091,7 @@ export const MembersPage: React.FC = () => {
       />
 
       <Dialog open={eventSelectorOpen} onOpenChange={handleEventDialogOpenChange}>
-        <DialogContent className="max-w-3xl border-slate-300">
+        <DialogContent className="lg:max-w-3xl  md:max-w-xl  border-slate-300">
           <DialogHeader className='relative'>
             <DialogTitle>{t('members.events.dialog.title', 'Select an event')}</DialogTitle>
             <DialogDescription>
