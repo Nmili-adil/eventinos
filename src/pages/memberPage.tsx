@@ -23,7 +23,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -72,6 +81,7 @@ import {
   Search,
   Grid3x3,
   List,
+  PinIcon,
 } from 'lucide-react';
 import {
   fetchMembersRequest,
@@ -93,10 +103,11 @@ import { MembersPagination } from '@/components/partials/membersComponents/Membe
 import { filterMembers, sortMembers, type MembersFilters as MembersFiltersType, type MemberSortField, type MemberSortDirection } from '@/lib/members-utils';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '@/lib/helperFunctions';
-import { fetchEventParticipantsApi } from '@/api/guestsApi';
+import { fetchEventParticipantsApi, updateGuestInvitationStatusApi } from '@/api/guestsApi';
 import { fetchEvents } from '@/api/eventsApi';
 import { cn } from '@/lib/utils';
 import { getLayout, getLayoutPreferences, setLayoutPreferences } from '@/services/localStorage';
+import { BA } from 'country-flag-icons/string/3x2';
 
 const createPlaceholderDate = (): { $date: { $numberLong: string } } => ({
   $date: { $numberLong: `${Date.now()}` },
@@ -136,16 +147,19 @@ const normalizeParticipantToMember = (record: any): Member => {
   const normalizeStatus = (status: any): Member["status"] => {
     if (!status) return 'Unspecified';
     const statusStr = status.toString().toUpperCase();
-    if (['PENDING', 'CONFIRMED', 'EXPIRED'].includes(statusStr)) {
+    // Handle event participant statuses
+    if (['PENDING', 'ACCEPTED', 'REFUSED', 'EXPIRED', 'CONFIRMED'].includes(statusStr)) {
       return statusStr as Member["status"];
     }
+    // Handle member account statuses
     if (statusStr === 'ACTIVE') return 'Active';
     if (statusStr === 'INACTIVE') return 'Inactive';
     return 'Unspecified';
   };
 
   return {
-    _id: ensureObjectId(source?._id || record?.member || record?.memberId),
+    // Use the outer record._id (guest/participant ID) when it exists, otherwise fallback to member._id
+    _id: ensureObjectId(record?._id || source?._id || record?.memberId),
     phoneNumber: source?.phoneNumber || '',
     birthday: source?.birthday || (source?.createdAt ? source.createdAt : createPlaceholderDate()),
     country: source?.country || source?.location?.country || '',
@@ -172,6 +186,8 @@ const normalizeParticipantToMember = (record: any): Member => {
     verified: record?.verified ?? source?.verified,
     event: record?.event,
     invitedBy: source?.invitedBy,
+    // Store the actual member profile ID for editing purposes
+    memberId: record?.member?._id ? (typeof record.member._id === 'string' ? record.member._id : record.member._id.$oid) : undefined,
   };
 };
 
@@ -219,6 +235,10 @@ export const MembersPage: React.FC = () => {
   const [eventsError, setEventsError] = useState<string | null>(null);
   const [eventSearchTerm, setEventSearchTerm] = useState('');
   const [exitConfirmOpen, setExitConfirmOpen] = useState<boolean>(false);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const [statusMember, setStatusMember] = useState<Member | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [statusUpdating, setStatusUpdating] = useState(false);
   const navigate = useNavigate()
 
 
@@ -385,7 +405,12 @@ export const MembersPage: React.FC = () => {
   };
 
   const handleEdit = (member: Member) => {
-    setSelectedMember(member);
+    // For event participants, use the actual member profile ID if available
+    // Otherwise use the regular _id
+    const editableMember = member.memberId 
+      ? { ...member, _id: member.memberId } 
+      : member;
+    setSelectedMember(editableMember);
     setEditDialogOpen(true);
   };
 
@@ -487,6 +512,39 @@ export const MembersPage: React.FC = () => {
     setDeleteDialogOpen(true);
   };
 
+  const openStatusDialog = (member: Member) => {
+    setStatusMember(member);
+    setSelectedStatus(member.status || 'PENDING');
+    setStatusDialogOpen(true);
+  };
+
+  const handleStatusUpdate = async () => {
+    if (!statusMember || !statusMember.event) {
+      toast.error(t('members.messages.notEventParticipant', 'This member is not an event participant'));
+      return;
+    }
+
+    const guestId = typeof statusMember._id === 'string' ? statusMember._id : statusMember._id.$oid;
+    
+    setStatusUpdating(true);
+    try {
+      await updateGuestInvitationStatusApi(guestId, selectedStatus as "PENDING" | "ACCEPTED" | "REFUSED" | "EXPIRED");
+      toast.success(t('members.messages.statusUpdateSuccess', 'Participant status updated successfully'));
+      setStatusDialogOpen(false);
+      setStatusMember(null);
+      
+      // Refresh the event members list
+      if (selectedEvent) {
+        await loadMembersByEvent(selectedEvent.id);
+      }
+    } catch (error: any) {
+      console.error('Failed to update status:', error);
+      toast.error(error?.response?.data?.message || error?.message || t('members.messages.statusUpdateError', 'Failed to update participant status'));
+    } finally {
+      setStatusUpdating(false);
+    }
+  };
+
   const handleSort = (field: MemberSortField) => {
     setSort(prev => ({
       field,
@@ -580,16 +638,18 @@ export const MembersPage: React.FC = () => {
             <h3 className="font-semibold text-base">
               {member.firstName} {member.lastName}
             </h3>
-            <Badge
-              className={cn(
-                'text-xs',
-                member.isActive 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-100' 
-                  : 'bg-red-100 text-red-800 hover:bg-red-100'
-              )}
-            >
-              {member.isActive ? t('members.active') : t('members.inActive')}
-            </Badge>
+            {!selectedEvent && (
+              <Badge
+                className={cn(
+                  'text-xs',
+                  member.isActive 
+                    ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                    : 'bg-red-100 text-red-800 hover:bg-red-100'
+                )}
+              >
+                {member.isActive ? t('members.active') : t('members.inActive')}
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -647,27 +707,27 @@ export const MembersPage: React.FC = () => {
                     ? 'border-green-300 text-green-700' 
                     : 'border-gray-300 text-gray-700'
                 )}>
-                  {member.verified ? '✓ Verified' : 'Unverified'}
+                  {member.verified ? t('members.verified', 'Verified') : t('members.unverified', 'Unverified')}
                 </Badge>
               )}
               {member.isOrganizator && (
                 <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-                  👑 Organizer
+                  👑 {t('members.organizer', 'Organizer')}
                 </Badge>
               )}
-              {member.status && ['PENDING', 'CONFIRMED', 'EXPIRED'].includes(member.status) && (
+              {member.status && ['PENDING','REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) && (
                 <Badge
                   variant="outline"
                   className={cn(
                     'text-xs',
-                    member.status === 'CONFIRMED' 
+                    member.status === 'ACCEPTED' 
                       ? 'border-green-300 text-green-700' 
                       : member.status === 'PENDING' 
                         ? 'border-orange-300 text-orange-700' 
                         : 'border-red-300 text-red-700'
                   )}
                 >
-                  {member.status}
+                  {t(`members.status.${member.status.toLowerCase()}`, member.status)}
                 </Badge>
               )}
             </div>
@@ -700,23 +760,38 @@ export const MembersPage: React.FC = () => {
                 <Edit className="w-4 h-4 mr-2" />
                 {t('members.edit')}
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
-                disabled={actionLoading === getMemberId(member._id)}
-              >
-                {member.isActive ? (
-                  <>
-                    <UserX className="w-4 h-4 mr-2" />
-                    {t('members.deactivated')}
-                  </>
-                ) : (
-                  <>
-                    <UserCheck className="w-4 h-4 mr-2" />
-                    {t('members.activated')}
-                  </>
-                )}
-              </DropdownMenuItem>
+              {!selectedEvent && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
+                    disabled={actionLoading === getMemberId(member._id)}
+                  >
+                    {member.isActive ? (
+                      <>
+                        <UserX className="w-4 h-4 mr-2" />
+                        {t('members.deactivated')}
+                      </>
+                    ) : (
+                      <>
+                        <UserCheck className="w-4 h-4 mr-2" />
+                        {t('members.activated')}
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                </>
+              )}
+              {member.event && member.status && ['PENDING', 'REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={(e) => handleDropdownAction(e, () => openStatusDialog(member))}
+                  >
+                    <PinIcon className="w-4 h-4 mr-2" />
+                    {t('members.participantStatus', 'Participant status')}
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
@@ -758,44 +833,106 @@ export const MembersPage: React.FC = () => {
           </div>
         </div>
       </TableCell>
-      <TableCell className="py-3">
-        <Badge
-          className={cn(
-            member.isActive 
-              ? 'bg-green-100 text-green-800 hover:bg-green-100' 
-              : 'bg-red-100 text-red-800 hover:bg-red-100'
-          )}
-        >
-          {member.isActive ? t('members.active') : t('members.inActive')}
+<TableCell className="py-3">
+  <div className="flex items-center gap-2">
+    {!selectedEvent && (
+      <Badge
+        className={cn(
+          member.isActive 
+            ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+            : 'bg-red-100 text-red-800 hover:bg-red-100'
+        )}
+      >
+        {member.isActive ? t('members.active') : t('members.inActive')}
+      </Badge>
+    )}
+    
+    {selectedEvent && (
+      member.isOrganizator ? (
+        <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">
+          👑 {t('members.organizer', 'Organizer')}
         </Badge>
-      </TableCell>
+      ) : (
+        <Badge variant="outline" className="capitalize bg-blue-100 text-blue-800 hover:bg-blue-100">
+          {t('members.member', 'Member')}
+        </Badge>
+      )
+    )}
+  </div>
+</TableCell>
+      {selectedEvent && (
+        <TableCell className="py-3">
+          {member.status && ['PENDING', 'REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) ? (
+            <Badge
+              className={cn(
+                'font-medium',
+                member.status === 'ACCEPTED' 
+                  ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                  : member.status === 'PENDING' 
+                    ? 'bg-orange-100 text-orange-800 hover:bg-orange-100'
+                    : member.status === 'EXPIRED'
+                      ? 'bg-red-100 text-red-800 hover:bg-red-100'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
+              )}
+            >
+              {t(`members.status.${member.status.toLowerCase()}`, member.status)}
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground text-sm">{t('members.notAvailable', 'N/A')}</span>
+          )}
+        </TableCell>
+      )}
+
+
       <TableCell className="py-3">
         <div className="flex items-center gap-1">
           {member.registrationCompleted ? (
             <>
               <CheckIcon className="w-4 h-4 text-green-500" />
-              <span className="text-green-600 font-medium">
+              <span className="text-green-600 font-medium text-sm">
                 {t('members.registration.completed')}
               </span>
             </>
           ) : (
             <>
               <XIcon className="w-4 h-4 text-red-500" />
-              <span className="text-red-600 font-medium">
+              <span className="text-red-600 font-medium text-sm">
                 {t('members.registration.pending')}
               </span>
             </>
           )}
         </div>
       </TableCell>
+      {selectedEvent && (
+        <TableCell className="py-3">
+          {member.verified !== undefined ? (
+            <div className="flex items-center gap-1">
+              {member.verified ? (
+                <>
+                  <CheckIcon className="w-4 h-4 text-green-500" />
+                  <span className="text-green-600 font-medium text-sm">
+                    {t('members.verified', 'Verified')}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <XIcon className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-600 font-medium text-sm">
+                    {t('members.unverified', 'Unverified')}
+                  </span>
+                </>
+              )}
+            </div>
+          ) : (
+            <span className="text-muted-foreground text-sm">{t('members.notAvailable', 'N/A')}</span>
+          )}
+        </TableCell>
+      )}
       <TableCell className="py-3">
-        {formatDate(member.createdAt)}
+        <span className="text-sm">{formatDate(member.createdAt)}</span>
       </TableCell>
       <TableCell className="py-3">
-       
-          {member.gender }
-          
-       
+        <span className="text-sm capitalize">{t(`members.gender.${member.gender?.toLowerCase() || 'unspecified'}`, member.gender || 'Unspecified')}</span>
       </TableCell>
       <TableCell className="py-3 text-right">
         <DropdownMenu>
@@ -823,22 +960,35 @@ export const MembersPage: React.FC = () => {
               {t('members.edit')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
-              disabled={actionLoading === getMemberId(member._id)}
-            >
-              {member.isActive ? (
-                <>
-                  <UserX className="w-4 h-4 mr-2" />
-                  {t('members.deactivated')}
-                </>
-              ) : (
-                <>
-                  <UserCheck className="w-4 h-4 mr-2" />
-                  {t('members.activated')}
-                </>
-              )}
-            </DropdownMenuItem>
+            {!selectedEvent && (
+              <DropdownMenuItem
+                onClick={(e) => handleDropdownAction(e, () => handleToggleStatus(member))}
+                disabled={actionLoading === getMemberId(member._id)}
+              >
+                {member.isActive ? (
+                  <>
+                    <UserX className="w-4 h-4 mr-2" />
+                    {t('members.deactivated')}
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    {t('members.activated')}
+                  </>
+                )}
+              </DropdownMenuItem>
+            )}
+            {member.event && member.status && ['PENDING', 'REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={(e) => handleDropdownAction(e, () => openStatusDialog(member))}
+                >
+                  <PinIcon className="w-4 h-4 mr-2" />
+                  {t('members.participantStatus', 'Participant status')}
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={(e) => handleDropdownAction(e, () => openDeleteDialog(member))}
@@ -1000,25 +1150,38 @@ export const MembersPage: React.FC = () => {
               ))}
             </div>
           ) : (
-            <Card className="p-0">
+            <Card className="p-0 overflow-hidden">
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="">
-                      <TableHead>{t('members.list.name', 'Name')}</TableHead>
-                      <TableHead>{t('members.list.status', 'Status')}</TableHead>
-                      <TableHead>{t('members.list.registration', 'Registration')}</TableHead>
-                      <TableHead>{t('members.list.joinDate', 'Join Date')}</TableHead>
-                      <TableHead>{t('members.list.gender', 'Gender')}</TableHead>
-                      <TableHead className="text-right">{t('members.list.actions', 'Actions')}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody className="divide-y divide-gray-200">
-                    {processedMembers.map((member) => (
-                      <ListRow key={getMemberId(member._id)} member={member} />
-                    ))}
-                  </TableBody>
-                </Table>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="font-semibold">{t('members.list.name', 'Name')}</TableHead>
+
+                        {
+                          !selectedEvent ? (
+                            <TableHead className="font-semibold">{t('members.list.status', 'Status')}</TableHead>
+                          ) : (
+                             <TableHead className="font-semibold">{t('members.list.type', 'Member Type')}</TableHead>
+                          )
+                        }
+
+
+                        {selectedEvent && <TableHead className="font-semibold">{t('members.list.participantStatus', 'Participant Status')}</TableHead>}
+                        <TableHead className="font-semibold">{t('members.list.registration', 'Registration')}</TableHead>
+                        {selectedEvent && <TableHead className="font-semibold">{t('members.list.verified', 'Verified')}</TableHead>}
+                        <TableHead className="font-semibold">{t('members.list.joinDate', 'Join Date')}</TableHead>
+                        <TableHead className="font-semibold">{t('members.list.gender', 'Gender')}</TableHead>
+                        <TableHead className="text-right font-semibold">{t('members.list.actions', 'Actions')}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-gray-200">
+                      {processedMembers.map((member) => (
+                        <ListRow key={getMemberId(member._id)} member={member} />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -1049,10 +1212,11 @@ export const MembersPage: React.FC = () => {
                 {t('members.clearFilters', 'Clear Filters')}
               </Button>
             ) : (
-              <Button onClick={() => setAddDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                {t('members.addFirstMember', 'Add First Member')}
-              </Button>
+              // <Button onClick={() => setAddDialogOpen(true)}>
+              //   <Plus className="w-4 h-4 mr-2" />
+              //   {t('members.addFirstMember', 'Add First Member')}
+              // </Button>
+              null
             )}
           </CardContent>
         </Card>
@@ -1181,6 +1345,108 @@ export const MembersPage: React.FC = () => {
           onPageChange={handlePageChange}
         />
       )}
+
+      {/* Participant Status Change Dialog */}
+      <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
+        <DialogContent className="md:max-w-lg border-slate-300">
+          <DialogHeader>
+            <DialogTitle>
+              {t('members.statusDialog.title', 'Change Participant Status')}
+            </DialogTitle>
+            <DialogDescription>
+              {t(
+                'members.statusDialog.description',
+                'Update the invitation status for {{name}}',
+                { name: `${statusMember?.firstName} ${statusMember?.lastName}` }
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="status-select">
+                {t('members.statusDialog.statusLabel', 'Invitation Status')}
+              </Label>
+              <Select
+                value={selectedStatus}
+                onValueChange={setSelectedStatus}
+                disabled={statusUpdating}
+              >
+                <SelectTrigger id="status-select" className="w-full">
+                  <SelectValue>
+                    {statusUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin inline" />}
+                    {selectedStatus ? t(`members.status.${selectedStatus.toLowerCase()}`, selectedStatus) : t('members.statusDialog.selectStatus', 'Select Status')}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PENDING">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">
+                        {t('members.statusDialog.pending', 'PENDING')}
+                      </Badge>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ACCEPTED">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                        {t('members.statusDialog.accepted', 'ACCEPTED')}
+                      </Badge>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="REFUSED">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                        {t('members.statusDialog.refused', 'REFUSED')}
+                      </Badge>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="EXPIRED">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                        {t('members.statusDialog.expired', 'EXPIRED')}
+                      </Badge>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {statusMember?.qrCode && (
+              <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
+                <strong>{t('members.statusDialog.qrCode', 'QR Code')}:</strong> {statusMember.qrCode}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setStatusDialogOpen(false);
+                setStatusMember(null);
+              }}
+              disabled={statusUpdating}
+            >
+              {t('members.cancel', 'Cancel')}
+            </Button>
+            <Button
+              type="button"
+              onClick={handleStatusUpdate}
+              disabled={statusUpdating || !selectedStatus}
+            >
+              {statusUpdating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {t('members.statusDialog.updating', 'Updating...')}
+                </>
+              ) : (
+                t('members.statusDialog.update', 'Update Status')
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

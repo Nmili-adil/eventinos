@@ -539,7 +539,15 @@
     "status": {
       "all": "كل الحالة",
       "active": "نشط",
-      "inactive": "غير نشط"
+      "inactive": "غير نشط",
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "refused": "مرفوض",
+      "expired": "منتهي الصلاحية",
+      "verified": "مُتحقق",
+      "unverified": "غير مُتحقق",
+      "organizer": "منظم",
+      "member": "عضو"
     },
     "registration": {
       "all": "جميع التسجيلات",
@@ -571,6 +579,8 @@
     "joinedOn": "انضم في",
     "notAvailable": "غير متوفر",
     "deleting": "جاري الحذف...",
+    "verified": "مُتحقق",
+    "unverified": "غير مُتحقق",
     "addFirstMember": "إضافة أول عضو",
     "emptyState": {
       "title": "لم يتم العثور على أعضاء",
@@ -811,7 +821,8 @@
         "title": "اختر الفعالية",
         "description": "اختر الفعالية لعرض عضوين مسجلين",
         "empty": "لا يوجد فعاليات",
-        "searchPlaceholder": "ابحث عن الفعالية حسب الاسم أو الموقع أو الشركة أو الحالة أو التاريخ"
+        "searchPlaceholder": "ابحث عن الفعالية حسب الاسم أو الموقع أو الشركة أو الحالة أو التاريخ",
+        "noResults": "لا توجد فعاليات تطابق بحثك"
       },
       "exitConfirm": {
         "title": "مطلوب اختيار فعالية",
@@ -823,6 +834,7 @@
     "list": {
         "name": "الاسم",
         "status": "الحالة",
+        "type": " النوع",
         "registration": "التسجيل",
         "joinDate": "تاريخ الانضمام",
         "tags": "الوسوم",

@@ -29,3 +29,15 @@ export const fetchMemberParticipationsApi = async (memberId: string) => {
   })
 }
 
+export const updateGuestInvitationStatusApi = async (guestId: string, status: "PENDING" | "ACCEPTED" | "REFUSED" | "EXPIRED") => {
+  return api.put(`/guests/invitation`, {
+    guest: guestId,
+    status: status
+  }, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getAuthToken()}`,
+    },
+  })
+}
+

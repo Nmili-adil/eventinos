@@ -14,7 +14,7 @@ export interface Member {
   gender?: 'MALE' | 'FEMALE' | 'Unspecified';
   picture?: string;
   password?: string;
-  status?: 'Active' | 'Inactive' | 'PENDING' | 'CONFIRMED' | 'EXPIRED' | 'Unspecified';
+  status?: 'Active' | 'Inactive' | 'PENDING' | 'ACCEPTED' | 'EXPIRED' | 'Unspecified';
   verificationCode?: {
     code: string;
     createdAt: { $numberDouble: string };
@@ -37,6 +37,7 @@ export interface Member {
   verified?: boolean;
   event?: string;
   invitedBy?: string;
+  memberId?: string; // The actual member profile ID (used for editing when _id is the guest ID)
 }
 
 export interface MembersResponse {

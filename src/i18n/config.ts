@@ -28,7 +28,7 @@ i18n
         translation: egTranslations,
       },
     },
-    fallbackLng: 'en',
+    fallbackLng: 'fr',
     supportedLngs: ['en', 'fr', 'ar', 'eg'],
     interpolation: {
       escapeValue: false, // React already escapes values

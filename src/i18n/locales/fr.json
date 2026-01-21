@@ -551,12 +551,19 @@
     "status": {
       "all": "Tous les statuts",
       "active": "Actif",
-      "inactive": "Inactif"
+      "inactive": "Inactif",
+      "pending": "En attente",
+      "accepted": "Accepté",
+      "refused": "Refusé",
+      "expired": "Expiré"
     },
     "list": {
         "name": "Nom",
         "status": "Statut",
+        "type": "Type de membre",
+        "participantStatus": "Statut du participant",
         "registration": "Inscription",
+        "verified": "Vérifié",
         "joinDate": "Date d'adhésion",
         "tags": "Étiquettes",
         "actions": "Actions"
@@ -583,6 +590,10 @@
     "inActive": "Inactif",
     "activated": "Activer",
     "deactivated": "Désactiver",
+    "verified": "Vérifié",
+    "unverified": "Non vérifié",
+    "organizer": "Organisateur",
+    "member": "Membre",
     "delete": "Supprimer",
     "preview": "Aperçu",
     "edit": "Modifier",
@@ -591,6 +602,8 @@
     "joinedOn": "Rejoint le",
     "notAvailable": "Non disponible",
     "deleting": "Suppression en cours...",
+    "verified": "Vérifié",
+    "unverified": "Non vérifié",
     "addFirstMember": "Ajouter le premier membre",
     "emptyState": {
       "title": "Aucun membre trouvé",
@@ -818,7 +831,25 @@
       },
       "notAvailable": "Non disponible"
     },
+    "statusDialog": {
+      "title": "Changer le statut du participant",
+      "description": "Mettre à jour le statut d'invitation pour {{name}}",
+      "statusLabel": "Statut d'invitation",
+      "selectStatus": "Sélectionner le statut",
+      "pending": "EN ATTENTE",
+      "accepted": "ACCEPTÉ",
+      "refused": "REFUSÉ",
+      "expired": "EXPIRÉ",
+      "updating": "Mise à jour...",
+      "update": "Mettre à jour le statut",
+      "qrCode": "Code QR"
+    },
+    "participantStatus": "Statut du participant",
+    "notEventParticipant": "Ce membre n'est pas un participant d'événement",
+    "statusUpdateSuccess": "Statut du participant mis à jour avec succès",
+    "statusUpdateError": "Échec de la mise à jour du statut du participant",
     "events": {
+      "error": "Impossible de charger les membres de l'événement",
       "selectorLabel": "Sélection d'événement actuelle",
       "loadingParticipants": "Chargement des participants...",
       "participantsCount": "{{count}} participants",

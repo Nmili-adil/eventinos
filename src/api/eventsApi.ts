@@ -192,3 +192,18 @@ export const updateEventStatusApi = async (id: string, status: string) => {
     throw error; // Re-throw to handle in the component
   }
 }
+
+export const deleteEventMemberApi = async (eventId: string, memberId: string) => {
+  try {
+    const response = await api.delete(`/events/${eventId}/members/${memberId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getAuthToken()}`
+      }
+    });
+    return response.data; // Return only the data part
+  } catch (error) {
+    console.error(`Error deleting member ${memberId} from event ${eventId}:`, error);
+    throw error; // Re-throw to handle in the component
+  }
+}

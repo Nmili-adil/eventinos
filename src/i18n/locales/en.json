@@ -578,7 +578,15 @@
     "status": {
       "all": "All Status",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "refused": "Refused",
+      "expired": "Expired",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "organizer": "Organizer",
+      "member": "Member"
     },
     "registration": {
       "all": "All Registrations",
@@ -610,6 +618,8 @@
     "joinedOn": "Joined on",
     "notAvailable": "Not available",
     "deleting": "Deleting...",
+    "verified": "Verified",
+    "unverified": "Unverified",
     "addFirstMember": "Add First Member",
     "emptyState": {
       "title": "No Members Found",
@@ -861,6 +871,7 @@
      "list": {
         "name": "Name",
         "status": "Status",
+        "type": "Member Type",
         "registration": "Registration",
         "joinDate": "Join Date",
         "tags": "Tags",

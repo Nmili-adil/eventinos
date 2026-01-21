@@ -458,18 +458,18 @@ const EventEditForm = ({
                                   : tab.color
                               }`}
                             />
-                            <span className="font-medium">{tab.label}</span>
+                            <span className="font-medium truncate">{tab.label}</span>
                           </TabsTrigger>
                         ))}
                       </TabsList>
                     </aside>
 
-                    <div className="flex-1 min-w-0 overflow-y-auto md:pl-6 h-full scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent hover:scrollbar-thumb-slate-400" style={{
+                    <div className="flex-1  min-w-0  overflow-y-auto md:pl-6 min-h-full scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent hover:scrollbar-thumb-slate-400" style={{
                       scrollbarWidth: 'thin',
                       scrollbarColor: '#cbd5e1 transparent'
                     }}>
                       {/* Basic Information Tab */}
-                      <TabsContent value="basic" className="space-y-6 mt-0 p-2">
+                      <TabsContent value="basic" className="space-y-6 mt-0 p-2 min-h-full flex flex-col justify-between ">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.basicInfo")}
@@ -909,7 +909,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Date & Time Tab */}
-                      <TabsContent value="datetime" className="space-y-4">
+                      <TabsContent value="datetime" className="space-y-4 flex flex-col h-full justify-between pb-4">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.dateTime")}
@@ -1085,7 +1085,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Social Networks Tab */}
-                      <TabsContent value="social" className="space-y-4">
+                      <TabsContent value="social" className="space-y-4 flex flex-col h-full justify-between ">
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.socialNetworks")}
@@ -1226,8 +1226,8 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Program Tab */}
-                      <TabsContent value="program" className="space-y-4">
-                        <div className="space-y-4">
+                      <TabsContent value="program" className="space-y-4 flex flex-col h-full justify-between ">
+                        <div className="space-y-4 ">
                           <h3 className="text-lg font-semibold">
                             {t("eventForm.sections.program")}
                           </h3>
@@ -1944,7 +1944,7 @@ const EventEditForm = ({
                       </TabsContent>
 
                       {/* Members Tab  */}
-                      <TabsContent value="members" className="space-y-4">
+                      <TabsContent value="members" className="space-y-4 flex flex-col h-full justify-between ">
                         <div className="mt-6">
                           <EventParticipantsSection
                             eventId={eventIdentifier}

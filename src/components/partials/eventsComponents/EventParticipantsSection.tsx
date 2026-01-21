@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { fetchEventParticipantsApi } from "@/api/guestsApi"
-import { deleteMemberApi } from "@/api/membersApi"
+import { deleteEventMemberApi } from "@/api/eventsApi"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
 import { Trash2, Mail, Phone, MapPin, User } from "lucide-react"
@@ -29,6 +29,16 @@ interface EventParticipant {
   city?: string
   gender?: string
   status?: string
+  member?: {
+    _id?: string
+    firstName?: string
+    lastName?: string
+    email?: string
+    phoneNumber?: string
+    city?: string
+    gender?: string
+    picture?: string
+  }
 }
 
 interface EventParticipantsSectionProps {
@@ -89,11 +99,15 @@ export const EventParticipantsSection = ({
   }
 
   const handleDeleteConfirm = async () => {
-    if (!selectedMember?._id) return
+    if (!selectedMember || !eventId) return
+
+    // The backend expects the member._id, not the guest record _id
+    const memberId = selectedMember.member?._id || selectedMember._id
+    if (!memberId) return
 
     setIsDeleting(true)
     try {
-      await deleteMemberApi(selectedMember._id)
+      await deleteEventMemberApi(eventId, memberId)
       toast.success(t('members.messages.deleteSuccess', 'Member deleted successfully'))
       setDeleteDialogOpen(false)
       setSelectedMember(null)
@@ -169,6 +183,7 @@ export const EventParticipantsSection = ({
                   </div>
                 </div>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 absolute top-2 right-2"

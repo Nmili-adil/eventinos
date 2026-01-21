@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import type { Member } from "@/types/membersType"
 import { useTranslation } from "react-i18next"
-import { fetchMemberParticipationsApi } from "@/api/guestsApi"
+import { fetchMemberParticipationsApi, updateGuestInvitationStatusApi } from "@/api/guestsApi"
 import { useNavigate } from "react-router-dom"
 import { EVENT_DETAILS_PAGE } from "@/constants/routerConstants"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,9 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
 
 interface MemberDetailsDialogProps {
   member: Member | null
@@ -61,6 +65,8 @@ const MemberDetailsDialog = ({
   const [memberEvents, setMemberEvents] = useState<any[]>([])
   const [eventsLoading, setEventsLoading] = useState(false)
   const [eventsError, setEventsError] = useState<string | null>(null)
+  const [statusUpdating, setStatusUpdating] = useState(false)
+  const [currentStatus, setCurrentStatus] = useState<string | undefined>(undefined)
 
   const handleViewEventDetails = (eventRecord: any) => {
     navigate(EVENT_DETAILS_PAGE(eventRecord._id))
@@ -147,8 +153,31 @@ const MemberDetailsDialog = ({
 
     if (member && isOpen) {
       loadMemberEvents()
+      // Initialize status if member has status field (for event participants)
+      setCurrentStatus(member.status)
     }
   }, [member, isOpen, t])
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!member?._id || !member?.event) {
+      toast.error(t('members.detailsDialog.status.notParticipant', 'Cannot change status: Not an event participant'))
+      return
+    }
+
+    const guestId = typeof member._id === 'string' ? member._id : member._id.$oid
+    
+    setStatusUpdating(true)
+    try {
+      await updateGuestInvitationStatusApi(guestId, newStatus as "PENDING" | "ACCEPTED" | "REFUSED" | "EXPIRED")
+      setCurrentStatus(newStatus)
+      toast.success(t('members.detailsDialog.status.updateSuccess', 'Status updated successfully'))
+    } catch (error: any) {
+      console.error('Failed to update status:', error)
+      toast.error(error?.response?.data?.message || error?.message || t('members.detailsDialog.status.updateError', 'Failed to update status'))
+    } finally {
+      setStatusUpdating(false)
+    }
+  }
 
   if (!member || !isOpen) return null
 
@@ -202,6 +231,73 @@ const MemberDetailsDialog = ({
                   </Badge>
                 </Card>
               </div>
+
+              {/* Event Participant Status */}
+              {member.event && currentStatus && ['PENDING', 'ACCEPTED', 'REFUSED', 'EXPIRED'].includes(currentStatus) && (
+                <Card className="p-4 mb-4">
+                  <h3 className="text-lg font-semibold mb-4">
+                    {t('members.detailsDialog.participationStatus', 'Event Participation Status')}
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      {member.verified !== undefined && (
+                        <Badge variant="outline" className={member.verified ? 'border-green-300 text-green-700' : 'border-gray-300 text-gray-700'}>
+                          {member.verified ? '✓ Verified' : 'Unverified'}
+                        </Badge>
+                      )}
+                      {member.isOrganizator && (
+                        <Badge variant="outline" className="border-purple-300 text-purple-700">
+                          👑 Organizer
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="participant-status">
+                        {t('members.detailsDialog.invitationStatus', 'Invitation Status')}
+                      </Label>
+                      <Select
+                        value={currentStatus}
+                        onValueChange={handleStatusChange}
+                        disabled={statusUpdating}
+                      >
+                        <SelectTrigger id="participant-status" className="w-full">
+                          <SelectValue>
+                            {statusUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin inline" />}
+                            {currentStatus}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="PENDING">
+                            <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">
+                              {t('members.detailsDialog.statusOptions.pending', 'PENDING')}
+                            </Badge>
+                          </SelectItem>
+                          <SelectItem value="ACCEPTED">
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                              {t('members.detailsDialog.statusOptions.accepted', 'ACCEPTED')}
+                            </Badge>
+                          </SelectItem>
+                          <SelectItem value="REFUSED">
+                            <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                              {t('members.detailsDialog.statusOptions.refused', 'REFUSED')}
+                            </Badge>
+                          </SelectItem>
+                          <SelectItem value="EXPIRED">
+                            <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                              {t('members.detailsDialog.statusOptions.expired', 'EXPIRED')}
+                            </Badge>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {member.qrCode && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {t('members.detailsDialog.qrCode', 'QR Code')}: {member.qrCode}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              )}
 
               {/* Contact Information */}
               <Card className="p-4 mb-4">
@@ -397,7 +493,7 @@ const MemberDetailsDialog = ({
             </Button>
           )}
           {onDelete && (
-            <Button variant="destructive" onClick={handleDelete}>
+            <Button type="button" variant="destructive" onClick={handleDelete}>
               {t('common.delete', 'Delete')}
             </Button>
           )}

@@ -518,7 +518,15 @@
       "status": {
         "all": "All Status",
         "active": "Active",
-        "inactive": "Inactive"
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "refused": "Refused",
+        "expired": "Expired",
+        "verified": "Verified",
+        "unverified": "Unverified",
+        "organizer": "Organizer",
+        "member": "Member"
       },
       "registration": {
         "all": "All Registrations",
@@ -550,6 +558,8 @@
       "joinedOn": "Joined on",
       "notAvailable": "Not available",
       "deleting": "Deleting...",
+      "verified": "Verified",
+      "unverified": "Unverified",
       "addFirstMember": "Add First Member",
       "emptyState": {
         "title": "No Members Found",
@@ -748,6 +758,37 @@
           "editMember": "تعديل العضو",
           "deleteMember": "حذف العضو"
         }
+      },
+      "events": {
+        "selectorLabel": "Current event selection",
+        "loadingParticipants": "Loading participants...",
+        "participantsCount": "{{count}} participants",
+        "noSelection": "Select an event to focus on its participants",
+        "changeEvent": "Change event",
+        "selectEvent": "Select event",
+        "clearSelection": "Clear",
+        "dialog": {
+          "title": "Select an event",
+          "description": "Choose an event to display its registered members",
+          "empty": "No events available at the moment",
+          "searchPlaceholder": "Search events by name",
+          "noResults": "No events match your search"
+        },
+        "exitConfirm": {
+          "title": "Event Selection Required",
+          "description": "You must select an event to view its participants. Would you like to return to the previous page?",
+          "stay": "Stay Here",
+          "return": "Return to Previous Page"
+        }
+      },
+      "list": {
+        "name": "Name",
+        "status": "Status",
+        "type": "Member Type",
+        "registration": "Registration",
+        "joinDate": "Join Date",
+        "tags": "Tags",
+        "actions": "Actions"
       }
     },
   "categories": {
