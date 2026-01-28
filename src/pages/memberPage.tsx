@@ -98,6 +98,7 @@ import ErrorState from '@/components/partials/membersComponents/errorState';
 import MemberDetailsDialog from '@/components/partials/membersComponents/MemberDetailsDialog';
 import MemberEditDialog from '@/components/partials/membersComponents/MemberEditDialog';
 import MemberAddDialog from '@/components/partials/membersComponents/MemberAddDialog';
+import { handleAsyncError } from '@/hooks/useGlobalErrorHandler';
 import { MembersFilters } from '@/components/partials/membersComponents/MembersFilters';
 import { MembersPagination } from '@/components/partials/membersComponents/MembersPagination';
 import { filterMembers, sortMembers, type MembersFilters as MembersFiltersType, type MemberSortField, type MemberSortDirection } from '@/lib/members-utils';
@@ -108,6 +109,9 @@ import { fetchEvents } from '@/api/eventsApi';
 import { cn } from '@/lib/utils';
 import { getLayout, getLayoutPreferences, setLayoutPreferences } from '@/services/localStorage';
 import { BA } from 'country-flag-icons/string/3x2';
+
+// Check environment
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
 
 const createPlaceholderDate = (): { $date: { $numberLong: string } } => ({
   $date: { $numberLong: `${Date.now()}` },
@@ -309,6 +313,18 @@ export const MembersPage: React.FC = () => {
     dispatch(fetchMembersRequest(currentPage, pageSize));
   }, [dispatch, currentPage, pageSize, selectedEvent]);
 
+  // Show global error dialog in production when error occurs
+  useEffect(() => {
+    if (error && !isDevelopment) {
+      window.dispatchEvent(new CustomEvent('global-error-dialog', {
+        detail: {
+          title: t('globalErrors.loadingError', 'Loading Error'),
+          message: t('globalErrors.loadingErrorMembers', 'Unable to load members. Please try again later.')
+        }
+      }))
+    }
+  }, [error, t]);
+
   useEffect(() => {
     const loadEvents = async () => {
       setEventsLoading(true)
@@ -423,7 +439,7 @@ export const MembersPage: React.FC = () => {
       setSelectedMember(null);
       refreshMemberSources();
     } catch (error: any) {
-      toast.error(error?.message || t('members.messages.updateError', 'Failed to update member'));
+      handleAsyncError(error, t('members.messages.updateError', 'Failed to update member'));
     } finally {
       setActionLoading(null);
     }
@@ -441,7 +457,7 @@ export const MembersPage: React.FC = () => {
         refreshMemberSources();
       }
     } catch (error: any) {
-      toast.error(error?.message || t('members.messages.createError', 'Failed to create member'));
+      handleAsyncError(error, t('members.messages.createError', 'Failed to create member'));
     } finally {
       setActionLoading(null);
     }
@@ -471,7 +487,7 @@ export const MembersPage: React.FC = () => {
         void loadMembersByEvent(selectedEvent.id);
       }
     } catch (error: any) {
-      toast.error(error?.message || t('members.messages.deleteError', 'Failed to delete member'));
+      handleAsyncError(error, t('members.messages.deleteError', 'Failed to delete member'));
     } finally {
       setActionLoading(null);
     }
@@ -498,10 +514,10 @@ export const MembersPage: React.FC = () => {
           dispatch(fetchMembersRequest(currentPage, pageSize));
         }
       } else {
-        toast.error(response?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
+        handleAsyncError(response, t('members.messages.statusUpdateError', 'Failed to update member status'));
       }
     } catch (error: any) {
-      toast.error(error?.message || t('members.messages.statusUpdateError', 'Failed to update member status'));
+      handleAsyncError(error, t('members.messages.statusUpdateError', 'Failed to update member status'));
     } finally {
       setActionLoading(null);
     }
@@ -520,7 +536,7 @@ export const MembersPage: React.FC = () => {
 
   const handleStatusUpdate = async () => {
     if (!statusMember || !statusMember.event) {
-      toast.error(t('members.messages.notEventParticipant', 'This member is not an event participant'));
+      handleAsyncError({ response: { status: 400 } }, t('members.messages.notEventParticipant', 'This member is not an event participant'));
       return;
     }
 
@@ -539,7 +555,7 @@ export const MembersPage: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Failed to update status:', error);
-      toast.error(error?.response?.data?.message || error?.message || t('members.messages.statusUpdateError', 'Failed to update participant status'));
+      handleAsyncError(error, t('members.messages.statusUpdateError', 'Failed to update participant status'));
     } finally {
       setStatusUpdating(false);
     }
@@ -1082,7 +1098,7 @@ export const MembersPage: React.FC = () => {
               )}
             </div>
           </div>
-          {eventMembersError && (
+          {eventMembersError && isDevelopment && (
             <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
               {eventMembersError}
             </div>
@@ -1268,7 +1284,7 @@ export const MembersPage: React.FC = () => {
                 <Skeleton key={index} className="h-16 w-full" />
               ))}
             </div>
-          ) : eventsError ? (
+          ) : (eventsError && isDevelopment) ? (
             <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
               {eventsError}
             </div>

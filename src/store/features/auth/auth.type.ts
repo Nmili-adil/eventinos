@@ -30,7 +30,7 @@ export interface LoginSuccessAction {
 
 export interface LoginFailureAction {
   type: typeof AUTH_LOGIN_FAILURE
-  payload: string
+  payload: string | { message: string; details?: string }
 }
 
 export interface LogoutAction {
@@ -60,7 +60,7 @@ export interface AuthState {
   role: string | null
   isLoading: boolean
   isInitializing: boolean
-  error: string | null
+  error: string | { message: string; details?: string } | null
   isAuthenticated: boolean
   message: string | null
 }

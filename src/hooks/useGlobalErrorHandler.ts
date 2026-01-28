@@ -1,9 +1,13 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import i18n from '@/i18n/config'
 
 // Check environment - use VITE_APP_ENV from .env file, fallback to MODE
 const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
+
+// Helper to get translation
+const t = (key: string, fallback: string) => i18n.t(key, fallback)
 
 interface UseGlobalErrorHandlerOptions {
   onServerError?: (error: Error) => void
@@ -109,35 +113,86 @@ export const handleAsyncError = (error: any, customMessage?: string) => {
     console.error('Async operation error:', error)
   }
 
-  // In production, show generic messages without technical details
-  if (isServerError(error)) {
-    // 500 errors are handled globally, but we can still show a toast
-    toast.error('Erreur serveur', {
-      description: isDevelopment 
-        ? (customMessage || error.response?.data?.message || error.message || 'An internal server error occurred. Please try again later.')
-        : 'Une erreur est survenue. Veuillez réessayer plus tard.',
+  // Extract error data - handle both direct error objects and axios response errors
+  const errorData = error?.response?.data || error?.data || error
+  const errorMessage = errorData?.message || error?.message
+  const errorDetails = errorData?.details
+  
+  // Check if we have a response from the server (error has response data)
+  const hasResponse = !!(error?.response?.data || error?.data || (error && typeof error === 'object' && error.message && error.details))
+
+  // Get the display message - prioritize details from API response
+  const displayMessage = errorDetails || errorMessage || customMessage
+
+  // In production mode
+  if (!isDevelopment) {
+    // If NO response from server (network error, server unreachable), show error dialog
+    if (!hasResponse) {
+      const title = t('globalErrors.connectionError', 'Erreur de connexion');
+      const message = t('globalErrors.connectionErrorMessage', 'Impossible de contacter le serveur. Veuillez vérifier votre connexion internet et réessayer.');
+      
+      window.dispatchEvent(new CustomEvent('global-error-dialog', {
+        detail: { title, message }
+      }));
+      return;
+    }
+    
+    // If we have a response, show toast with the error details
+    let title = t('globalErrors.error', 'Erreur');
+    
+    // Handle specific error messages from backend
+    if (errorMessage === 'account_inactive') {
+      title = t('globalErrors.accountInactive', 'Compte désactivé');
+    } else if (isServerError(error)) {
+      title = t('globalErrors.serverError', 'Erreur serveur');
+    } else if (error.response?.status === 401) {
+      title = t('globalErrors.sessionExpired', 'Session expirée');
+    } else if (error.response?.status === 403) {
+      title = t('globalErrors.accessDenied', 'Accès refusé');
+    } else if (error.response?.status === 404) {
+      title = t('globalErrors.notFound', 'Non trouvé');
+    } else if (error.response?.status === 400) {
+      title = t('globalErrors.invalidRequest', 'Requête invalide');
+    }
+    
+    // Show toast with the error details for better UX
+    toast.error(title, {
+      description: displayMessage || t('globalErrors.genericError', 'Une erreur inattendue s\'est produite.'),
+      duration: 5000,
+    })
+    return;
+  }
+
+  // In development, show toasts for all errors
+  // Handle specific error messages from backend
+  if (errorMessage === 'account_inactive') {
+    toast.error(t('globalErrors.accountInactive', 'Compte désactivé'), {
+      description: displayMessage || t('globalErrors.accountInactiveMessage', 'Votre compte a été désactivé. Veuillez contacter le support.'),
+      duration: 5000,
+    })
+  } else if (isServerError(error)) {
+    toast.error(t('globalErrors.serverError', 'Erreur serveur'), {
+      description: displayMessage || t('globalErrors.serverErrorMessage', 'Une erreur est survenue. Veuillez réessayer plus tard.'),
       duration: 5000,
     })
   } else if (error.response?.status === 401) {
-    toast.error('Session expirée', {
-      description: 'Votre session a expiré. Veuillez vous reconnecter.',
+    toast.error(t('globalErrors.sessionExpired', 'Session expirée'), {
+      description: t('globalErrors.sessionExpiredMessage', 'Votre session a expiré. Veuillez vous reconnecter.'),
       duration: 3000,
     })
   } else if (error.response?.status === 403) {
-    toast.error('Accès refusé', {
-      description: 'Vous n\'avez pas la permission d\'effectuer cette action.',
+    toast.error(t('globalErrors.accessDenied', 'Accès refusé'), {
+      description: t('globalErrors.accessDeniedMessage', 'Vous n\'avez pas la permission d\'effectuer cette action.'),
       duration: 3000,
     })
   } else if (error.response?.status === 404) {
-    toast.error('Non trouvé', {
-      description: customMessage || 'La ressource demandée n\'a pas été trouvée.',
+    toast.error(t('globalErrors.notFound', 'Non trouvé'), {
+      description: customMessage || t('globalErrors.notFoundMessage', 'La ressource demandée n\'a pas été trouvée.'),
       duration: 3000,
     })
   } else {
-    toast.error('Erreur', {
-      description: isDevelopment
-        ? (customMessage || error.response?.data?.message || error.message || 'An unexpected error occurred.')
-        : 'Une erreur inattendue est survenue.',
+    toast.error(t('globalErrors.error', 'Erreur'), {
+      description: displayMessage || t('globalErrors.genericError', 'Une erreur inattendue s\'est produite.'),
       duration: 3000,
     })
   }

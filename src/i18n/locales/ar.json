@@ -1,4 +1,34 @@
 {
+  "globalErrors": {
+    "error": "خطأ",
+    "serverError": "خطأ في الخادم",
+    "serverErrorMessage": "حدث خطأ. يرجى المحاولة مرة أخرى لاحقاً.",
+    "sessionExpired": "انتهت الجلسة",
+    "sessionExpiredMessage": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
+    "accessDenied": "تم رفض الوصول",
+    "accessDeniedMessage": "ليس لديك الصلاحية للقيام بهذا الإجراء. يرجى التواصل مع المسؤول للحصول على التفويض.",
+    "notFound": "غير موجود",
+    "notFoundMessage": "المورد المطلوب غير موجود.",
+    "invalidRequest": "طلب غير صالح",
+    "invalidRequestMessage": "الطلب المرسل غير صالح.",
+    "genericError": "حدث خطأ غير متوقع.",
+    "ok": "موافق",
+    "loadingError": "خطأ في التحميل",
+    "loadingErrorAccounts": "تعذر تحميل الحسابات. يرجى المحاولة مرة أخرى لاحقاً.",
+    "loadingErrorMembers": "تعذر تحميل الأعضاء. يرجى المحاولة مرة أخرى لاحقاً.",
+    "loadingErrorData": "تعذر تحميل البيانات. يرجى المحاولة مرة أخرى لاحقاً."
+  },
+  "unauthorized": {
+    "title": "401",
+    "subtitle": "وصول غير مصرح",
+    "restrictedArea": "منطقة محظورة",
+    "insufficientPermissions": "صلاحيات غير كافية",
+    "noPermissions": "ليس لديك الصلاحيات اللازمة للوصول إلى هذه الصفحة. هذه المنطقة مقيدة للمستخدمين المصرح لهم فقط.",
+    "contactAdmin": "إذا كنت تعتقد أن هذا خطأ، يرجى التواصل مع مسؤول النظام.",
+    "goBack": "رجوع",
+    "dashboard": "لوحة التحكم",
+    "needAccess": "تحتاج وصولاً؟ تواصل مع المسؤول لطلب الصلاحيات."
+  },
   "common": {
     "welcome": "مرحباً",
     "loading": "جاري التحميل...",
@@ -63,6 +93,7 @@
   },
   "dashboard": {
     "title": "الإحصائيات",
+    "pendingUsers": "الأعضاء المعلقون",
     "description": "نظرة عامة على الفعاليات والأعضاء ",
     "totalEvents": "إجمالي الفعاليات",
     "allEvents": "جميع الفعاليات",
@@ -200,7 +231,9 @@
       "deleteEvent": "حذف الحدث",
       "previewEvent": "معاينة الحدث",
       "editEvent": "تعديل الحدث",
-      "totalEvents": "إجمالي الأحداث"
+      "totalEvents": "إجمالي الأحداث",
+      "totalParticipants": "إجمالي المشاركين",
+      "pendingParticipants": "المشاركون المعلقون"
     },
     "view": {
       "calendar": "عرض التقويم",
@@ -1321,6 +1354,86 @@
         "organizer": "منظم",
         "member": "عضو"
       }
+    },
+    "addFirstAccount": "إنشاء أول حساب",
+    "dialog": {
+      "title": "إضافة حساب جديد",
+      "description": "إنشاء حساب مستخدم جديد. يجب ملء جميع الحقول المطلوبة. سيتم تعيين كلمة مرور افتراضية تلقائيًا.",
+      "sections": {
+        "accountType": "نوع الحساب",
+        "personalInfo": "المعلومات الشخصية",
+        "contactInfo": "معلومات الاتصال",
+        "locationInfo": "معلومات الموقع",
+        "companyInfo": "معلومات الشركة",
+        "socialNetworks": "الشبكات الاجتماعية"
+      },
+      "fields": {
+        "userType": "نوع المستخدم *",
+        "status": "حالة الحساب",
+        "firstName": "الاسم الأول *",
+        "lastName": "الاسم الأخير *",
+        "gender": "الجنس",
+        "email": "البريد الإلكتروني *",
+        "password": "كلمة المرور *",
+        "phone": "رقم الهاتف",
+        "city": "المدينة",
+        "country": "الدولة",
+        "companyName": "اسم الشركة",
+        "jobTitle": "المسمى الوظيفي",
+        "companySize": "حجم الشركة",
+        "industry": "القطاع",
+        "facebook": "فيسبوك",
+        "instagram": "إنستغرام",
+        "linkedin": "لينكدإن",
+        "website": "الموقع الإلكتروني"
+      },
+      "placeholders": {
+        "userType": "اختر نوع المستخدم",
+        "firstName": "أدخل الاسم الأول",
+        "lastName": "أدخل الاسم الأخير",
+        "email": "أدخل البريد الإلكتروني",
+        "password": "أدخل كلمة المرور",
+        "phone": "أدخل رقم الهاتف",
+        "city": "أدخل المدينة",
+        "country": "أدخل الدولة",
+        "companyName": "أدخل اسم الشركة",
+        "jobTitle": "أدخل المسمى الوظيفي",
+        "companySize": "اختر حجم الشركة",
+        "industry": "اختر القطاع",
+        "facebook": "https://facebook.com/...",
+        "instagram": "https://instagram.com/...",
+        "linkedin": "https://linkedin.com/in/...",
+        "website": "https://..."
+      },
+      "options": {
+        "userType": {
+          "admin": "مدير",
+          "organizer": "منظم"
+        },
+        "status": {
+          "active": "نشط",
+          "inactive": "غير نشط"
+        },
+        "gender": {
+          "male": "ذكر",
+          "female": "أنثى"
+        }
+      },
+      "loadingRoles": "جاري تحميل الأدوار...",
+      "buttons": {
+        "create": "إنشاء الحساب",
+        "creating": "جاري الإنشاء..."
+      }
+    },
+    "industries": {
+      "company": "شركة",
+      "startup": "شركة ناشئة",
+      "association": "جمعية",
+      "school": "مدرسة",
+      "communicationAgency": "وكالة اتصالات"
+    },
+    "companySize": {
+      "other": "أخرى"
     }
   },
   "contacts": {
@@ -1428,5 +1541,12 @@
     "placeIdPlaceholder": "معرّف Google Place",
     "coordinates": "الإحداثيات",
     "coordinatesSet": "تم تعيين الإحداثيات:"
+  },
+  "maps": {
+    "configRequired": "يتطلب تكوين الخرائط",
+    "setApiKey": "يرجى تعيين VITE_GOOGLE_MAPS_API_KEY في ملف البيئة الخاص بك.",
+    "unableToLoad": "تعذر تحميل خرائط جوجل",
+    "loading": "جاري تحميل خرائط جوجل...",
+    "error": "خطأ في تحميل الخرائط"
   }
 }

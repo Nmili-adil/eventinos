@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getAuthToken } from '@/services/localStorage'
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -13,9 +14,9 @@ export const api = axios.create({
   },
 })
 
-// Add auth token to requests if available
+// Add auth token to requests if available (includes expiration check)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth-token')
+  const token = getAuthToken() // Uses expiration check
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

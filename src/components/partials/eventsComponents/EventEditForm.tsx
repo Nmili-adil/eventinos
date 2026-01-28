@@ -65,6 +65,7 @@ import { PersonDialog } from "./dialogs/PersonDialog";
 import { useEventTabSave } from "./hooks/useEventTabSave";
 import { deleteFileApi } from "@/api/filesApi";
 import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import { set } from "date-fns";
 
 interface EventEditFormProps {
@@ -1445,8 +1446,9 @@ const EventEditForm = ({
                                         // Auto-save the gallery changes
                                         saveGallery({
                                           gallery: updatedGallery,
-                                        }).catch(() => {
-                                          toast.error(
+                                        }).catch((error) => {
+                                          handleAsyncError(
+                                            error,
                                             "Image uploaded locally but failed to save changes"
                                           );
                                         });
@@ -1488,8 +1490,9 @@ const EventEditForm = ({
                                             // Auto-save the gallery changes
                                             saveGallery({
                                               gallery: updatedGallery,
-                                            }).catch(() => {
-                                              toast.error(
+                                            }).catch((error) => {
+                                              handleAsyncError(
+                                                error,
                                                 "Image added locally but failed to save changes"
                                               );
                                             });
@@ -1515,8 +1518,9 @@ const EventEditForm = ({
                                           // Auto-save the gallery changes
                                           saveGallery({
                                             gallery: updatedGallery,
-                                          }).catch(() => {
-                                            toast.error(
+                                          }).catch((error) => {
+                                            handleAsyncError(
+                                              error,
                                               "Image added locally but failed to save changes"
                                             );
                                           });
@@ -1597,7 +1601,8 @@ const EventEditForm = ({
                                                           "Image deleted successfully"
                                                         );
                                                       } catch (urlError: any) {
-                                                        toast.error(
+                                                        handleAsyncError(
+                                                          urlError,
                                                           "Image removed locally but could not delete from server"
                                                         );
                                                       }
@@ -1623,14 +1628,15 @@ const EventEditForm = ({
                                                         gallery: updatedGallery,
                                                       });
                                                     } catch (saveError: any) {
-                                                      toast.error(
+                                                      handleAsyncError(
+                                                        saveError,
                                                         "Image removed locally but failed to save changes"
                                                       );
                                                     }
                                                   } catch (error: any) {
-                                                    toast.error(
-                                                      error.message ||
-                                                        "Failed to delete image"
+                                                    handleAsyncError(
+                                                      error,
+                                                      "Failed to delete image"
                                                     );
                                                   }
                                                 }}

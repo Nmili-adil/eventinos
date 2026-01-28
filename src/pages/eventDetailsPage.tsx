@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchEventByIdRequest } from "@/store/features/events/events.actions";
 import EventDetails from "@/components/partials/eventsComponents/event-details";
-import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import { EVENT_LISTE_PAGE } from "@/constants/routerConstants";
 
 const EventDetailsPage = () => {
@@ -26,7 +26,7 @@ const EventDetailsPage = () => {
           await dispatch(fetchEventByIdRequest(eventId));
         } catch (error) {
           console.error("Failed to fetch event:", error);
-          toast.error("Faild to load event details. Please try again later.")
+          handleAsyncError(error, "Impossible de charger les détails de l'événement. Veuillez réessayer plus tard.");
           setNotFound(true);
         }
       }

@@ -28,6 +28,7 @@ import {
 import { SlidersHorizontal, Plus, FolderOpen, Award, Folder, Shield } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import CategoryEditDialog from "@/components/partials/categoriesComponent/CategoryEditDialog";
 import CategoryAddDialog from "@/components/partials/categoriesComponent/CategoryAddDialog";
 import BadgeEditDialog from "@/components/partials/badgesComponent/BadgeEditDialog";
@@ -144,9 +145,8 @@ const SettingsPage = () => {
       setCategoryEditDialogOpen(false);
       setSelectedCategory(null);
     } catch (error: any) {
-      // Revert optimistic update on error
       setOptimisticCategories(categories);
-      toast.error(error?.message || t('categories.updateFailed'));
+      handleAsyncError(error, t('categories.updateFailed'));
     } finally {
       setActionLoading(null);
     }
@@ -164,7 +164,7 @@ const SettingsPage = () => {
       setCategoryAddDialogOpen(false);
     } catch (error: any) {
       setOptimisticCategories(categories);
-      toast.error(error?.message || t('categories.createFailed'));
+      handleAsyncError(error, t('categories.createFailed'));
     } finally {
       setActionLoading(null);
     }
@@ -182,9 +182,8 @@ const SettingsPage = () => {
       await dispatch(fetchCategoriesRequest());
       toast.success(t('categories.deletedSuccessfully'));
     } catch (error: any) {
-      // Revert on error
       setOptimisticCategories(categories);
-      toast.error(error?.message || t('categories.deleteFailed'));
+      handleAsyncError(error, t('categories.deleteFailed'));
     }
   };
 
@@ -210,9 +209,8 @@ const SettingsPage = () => {
       setBadgeEditDialogOpen(false);
       setSelectedBadge(null);
     } catch (error: any) {
-      // Revert on error
       setOptimisticBadges(badges);
-      toast.error(error?.message || t('badges.updateFailed'));
+      handleAsyncError(error, t('badges.updateFailed'));
     } finally {
       setActionLoading(null);
     }
@@ -230,7 +228,7 @@ const SettingsPage = () => {
       setBadgeAddDialogOpen(false);
     } catch (error: any) {
       setOptimisticBadges(badges);
-      toast.error(error?.message || t('badges.createFailed'));
+      handleAsyncError(error, t('badges.createFailed'));
     } finally {
       setActionLoading(null);
     }
@@ -248,9 +246,8 @@ const SettingsPage = () => {
       await dispatch(fetchBadgesRequest());
       toast.success(t('badges.deletedSuccessfully'));
     } catch (error: any) {
-      // Revert on error
       setOptimisticBadges(badges);
-      toast.error(error?.message || t('badges.deleteFailed'));
+      handleAsyncError(error, t('badges.deleteFailed'));
     }
   };
 
@@ -279,9 +276,8 @@ const SettingsPage = () => {
       setRoleEditDialogOpen(false);
       setSelectedRole(null);
     } catch (error: any) {
-      // Revert on error
       setOptimisticRoles(roles);
-      toast.error(error?.message || t('roles.updateFailed'));
+      handleAsyncError(error, t('roles.updateFailed'));
     } finally {
       setActionLoading(null);
     }
@@ -300,9 +296,8 @@ const SettingsPage = () => {
       setRolesUpdateTimestamp(Date.now());
       toast.success(t('roles.deletedSuccessfully'));
     } catch (error: any) {
-      // Revert on error
       setOptimisticRoles(roles);
-      toast.error(error?.message || t('roles.deleteFailed'));
+      handleAsyncError(error, t('roles.deleteFailed'));
     }
   };
 

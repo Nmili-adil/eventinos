@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 
 import { cn } from '@/lib/utils';
+import { handleAsyncError } from '@/hooks/useGlobalErrorHandler';
 
 import {
   fetchContactsApi,
@@ -156,7 +157,7 @@ const ContactsPage: React.FC = () => {
         error?.message ||
         t('contacts.conversation.errorMessage', 'Unable to load full conversation history.')
       setUserConversationsError(message)
-      toast.error(message)
+      handleAsyncError(error, message)
     } finally {
       setUserConversationsLoading(false)
     }
@@ -187,7 +188,7 @@ const ContactsPage: React.FC = () => {
         setConversationMap(initialConversations);
       } catch (err: any) {
         console.error('Error fetching contacts:', err);
-        toast.error(err?.response?.data?.message || t('contacts.errors.fetchFailed', 'Failed to load contacts'));
+        handleAsyncError(err, t('contacts.errors.fetchFailed', 'Failed to load contacts'));
       } finally {
         setLoading(false);
       }
@@ -285,7 +286,7 @@ const ContactsPage: React.FC = () => {
       
       setContacts((prev) => prev.filter((c) => c._id !== contact._id));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || t('contacts.errors.deleteFailed', 'Failed to delete contact'));
+      handleAsyncError(error, t('contacts.errors.deleteFailed', 'Failed to delete contact'));
     } finally {
       setActionLoading(null);
     }
@@ -330,7 +331,7 @@ const ContactsPage: React.FC = () => {
       setReplyMessage('');
       toast.success(t('contacts.messages.replySuccess', 'Reply sent successfully'));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || t('contacts.errors.replyFailed', 'Failed to send reply'));
+      handleAsyncError(error, t('contacts.errors.replyFailed', 'Failed to send reply'));
     } finally {
       setSendingReply(false);
     }

@@ -50,6 +50,7 @@ import { useTranslation } from 'react-i18next';
 import { getRole } from '@/services/localStorage';
 import { UNAUTHORIZED_PAGE } from '@/constants/routerConstants';
 import UnauthorizedPage from './UnauthorizedPage';
+import { handleAsyncError } from '@/hooks/useGlobalErrorHandler';
 
 // Color palette
 const COLORS = {
@@ -279,7 +280,7 @@ export const ProfilePage: React.FC = () => {
         dispatch(fetchUserByIdRequest(params.userId));
       }
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || error?.message || t('profilePage.messages.profileUpdateFailed'));
+      handleAsyncError(error, t('profilePage.messages.profileUpdateFailed'));
       console.error('Failed to update profile:', error);
     } finally {
       setIsLoading(false);
@@ -311,7 +312,7 @@ export const ProfilePage: React.FC = () => {
     } catch (error: any) {
       console.error('Failed to update professional info:', error);
       console.error('Error details:', error?.response?.data);
-      toast.error(error?.response?.data?.message || error?.message || t('profilePage.messages.professionalInfoUpdateFailed', 'Failed to update professional information'));
+      handleAsyncError(error, t('profilePage.messages.professionalInfoUpdateFailed', 'Failed to update professional information'));
     } finally {
       setIsLoading(false);
     }
@@ -364,13 +365,13 @@ export const ProfilePage: React.FC = () => {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        toast.error(t('profilePage.messages.invalidFileType'));
+        handleAsyncError({ response: { status: 400 } }, t('profilePage.messages.invalidFileType'));
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(t('profilePage.messages.fileTooLarge'));
+        handleAsyncError({ response: { status: 400 } }, t('profilePage.messages.fileTooLarge'));
         return;
       }
 
@@ -409,7 +410,7 @@ export const ProfilePage: React.FC = () => {
       }
       dispatch(fetchUserByIdRequest(params.userId));
     } catch (error: any) {
-      toast.error(error?.message || t('profilePage.messages.photoUploadFailed'));
+      handleAsyncError(error, t('profilePage.messages.photoUploadFailed'));
       console.error('Failed to upload photo:', error);
     } finally {
       setIsUploadingPhoto(false);
@@ -435,7 +436,7 @@ export const ProfilePage: React.FC = () => {
     if (!roleObject || !roleObject._id) {
       console.error('Role not found. Available roles:', roles)
       console.error('Looking for role:', targetRole)
-      toast.error(`Role "${targetRole}" not found in system roles`)
+      handleAsyncError({ response: { status: 404 } }, `Le rôle "${targetRole}" n'a pas été trouvé`)
       return
     }
     
@@ -452,7 +453,7 @@ export const ProfilePage: React.FC = () => {
       setRoleDialogOpen(false)
       dispatch(fetchUserByIdRequest(params.userId))
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || t('profilePage.roles.roleActions.error', 'Unable to update role.'))
+      handleAsyncError(error, t('profilePage.roles.roleActions.error', 'Unable to update role.'))
     } finally {
       setRoleChangeLoading(false)
       setRoleChangeTarget(null)

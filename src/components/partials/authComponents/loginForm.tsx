@@ -7,15 +7,17 @@ import { DELETE_ACCOUNT_PAGE, PRIVACY_PAGE } from '@/constants/routerConstants'
 import { loginSchema, type LoginFormData } from '@/schema/authSchemas/login-schema'
 import type { RootState } from '@/store/app/rootReducer'
 import type { AppDispatch } from '@/store/app/store'
-import { authLoginRequest } from '@/store/features/auth/auth.actions' // Import clear error action
+import { authLoginRequest } from '@/store/features/auth/auth.actions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Label } from '@radix-ui/react-label'
-import { Calendar, Eye, EyeOff } from 'lucide-react'
-import {  useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+
+// Check if we're in development mode
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
 
 const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false)
@@ -56,19 +58,31 @@ const LoginForm = () => {
             </div>
                         </div>
                         <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Welcome back
+                            Bienvenue
                         </CardTitle>
                         <CardDescription className="text-gray-600 dark:text-gray-400">
-                            Sign in to your account to continue
+                            Connectez-vous à votre compte pour continuer
                         </CardDescription>
                     </CardHeader>
 
                     <CardContent>
-                        {/* Error Alert - only show when there's an error and not loading */}
-                        {error && !isLoading && (
+                        {/* Error Alert - only show in development mode */}
+                        {isDevelopment && error && !isLoading && (
                             <Alert variant="destructive" className="mb-4">
                                 <AlertDescription className="text-sm capitalize font-medium">
-                                    {typeof error === 'string' ? error.replace("_", " ") : (error as any)?.message?.replace("_", " ") || 'An error occurred'}
+                                    {typeof error === 'string' 
+                                      ? error.replace("_", " ") 
+                                      : (
+                                          <>
+                                            {(error as any)?.message?.replace("_", " ") || 'Une erreur est survenue'}
+                                            {(error as any)?.details && (
+                                              <span className="block mt-1 text-xs normal-case">
+                                                {(error as any).details}
+                                              </span>
+                                            )}
+                                          </>
+                                        )
+                                    }
                                 </AlertDescription>
                             </Alert>
                         )}
@@ -81,12 +95,12 @@ const LoginForm = () => {
                                     htmlFor="email"
                                     className="text-sm font-medium text-gray-900 dark:text-gray-100"
                                 >
-                                    Email Address
+                                    Adresse email
                                 </Label>
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="Enter your email"
+                                    placeholder="Entrez votre email"
                                     {...register('email')}
                                     className={`h-12 px-4 text-base ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'
                                         } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
@@ -103,20 +117,20 @@ const LoginForm = () => {
                                         htmlFor="password"
                                         className="text-sm font-medium text-gray-900 dark:text-gray-100"
                                     >
-                                        Password
+                                        Mot de passe
                                     </Label>
                                     <Link
                                         to="/forgot-password"
                                         className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                                     >
-                                        Forgot Password?
+                                        Mot de passe oublié ?
                                     </Link>
                                 </div>
                                 <div className="relative">
                                     <Input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
-                                        placeholder="Enter your password"
+                                        placeholder="Entrez votre mot de passe"
                                         {...register('password')}
                                         className={`h-12 px-4 pr-12 text-base ${errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600'
                                             } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
@@ -149,10 +163,10 @@ const LoginForm = () => {
                                 {isLoading ? (
                                     <>
                                         <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                        Logging in...
+                                        Connexion en cours...
                                     </>
                                 ) : (
-                                    'Sign In'
+                                    'Se connecter'
                                 )}
                             </Button>
                         </form>
@@ -160,15 +174,15 @@ const LoginForm = () => {
                 </Card>
             </div>
               {/* Footer Links */}
-      <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+      <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2  w-full flex -items-center justify-center p-4">
         <div className="flex items-center gap-6 text-sm text-slate-400">
           <Link
             to={PRIVACY_PAGE}
             className="hover:text-slate-200 transition-colors"
           >
-            Privacy Policy
+            Politique de confidentialité
           </Link>
-         <Link to={DELETE_ACCOUNT_PAGE}>Delete Account</Link>
+         <Link to={DELETE_ACCOUNT_PAGE}>Supprimer le compte</Link>
         </div>
       </div>
         </div>

@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { MapPin } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Libraries } from '@react-google-maps/api'
 import { useJsApiLoader } from '@react-google-maps/api'
 import { SingleMarkerMap } from './SingleMarkerMap'
@@ -42,27 +43,33 @@ const LoadingState = () => (
   </div>
 )
 
-const MissingKeyState = () => (
-  <div className="flex items-center justify-center bg-gray-100 rounded-lg border p-8">
-    <div className="text-center">
-      <MapPin className="mx-auto mb-3 h-12 w-12 text-gray-400" />
-      <p className="mb-2 font-semibold text-red-500">Maps configuration required</p>
-      <p className="text-sm text-muted-foreground">
-        Please set VITE_GOOGLE_MAPS_API_KEY in your environment file.
-      </p>
+const MissingKeyState = () => {
+  const { t } = useTranslation()
+  return (
+    <div className="flex items-center justify-center bg-gray-100 rounded-lg border p-8">
+      <div className="text-center">
+        <MapPin className="mx-auto mb-3 h-12 w-12 text-gray-400" />
+        <p className="mb-2 font-semibold text-red-500">{t('maps.configRequired', 'Maps configuration required')}</p>
+        <p className="text-sm text-muted-foreground">
+          {t('maps.setApiKey', 'Please set VITE_GOOGLE_MAPS_API_KEY in your environment file.')}
+        </p>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
-const ErrorState = ({ message }: { message: string }) => (
-  <div className="flex items-center justify-center bg-red-50 rounded-lg border border-red-200 p-6">
-    <div className="text-center">
-      <MapPin className="mx-auto mb-3 h-10 w-10 text-red-400" />
-      <p className="font-semibold text-red-600">Unable to load Google Maps</p>
-      <p className="mt-1 text-sm text-red-500">{message}</p>
+const ErrorState = ({ message }: { message: string }) => {
+  const { t } = useTranslation()
+  return (
+    <div className="flex items-center justify-center bg-red-50 rounded-lg border border-red-200 p-6">
+      <div className="text-center">
+        <MapPin className="mx-auto mb-3 h-10 w-10 text-red-400" />
+        <p className="font-semibold text-red-600">{t('maps.unableToLoad', 'Unable to load Google Maps')}</p>
+        <p className="mt-1 text-sm text-red-500">{message}</p>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 interface GoogleMapsProviderImplProps {
   children: ReactNode

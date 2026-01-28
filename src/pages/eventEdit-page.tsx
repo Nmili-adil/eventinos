@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 
 
 const EventEditPage = () => {
@@ -24,7 +25,7 @@ const EventEditPage = () => {
           await dispatch(fetchEventByIdRequest(eventId));
         } catch (error) {
           console.error("Error fetching event:", error);
-          toast.error("Failed to load event");
+          handleAsyncError(error, "Impossible de charger l'événement");
         }
       }
     };
@@ -35,7 +36,7 @@ const EventEditPage = () => {
     console.log("Submitting data:", data);
 
     if (!eventId) {
-      toast.error("Event ID is missing");
+      handleAsyncError({ response: { status: 400 } }, "L'identifiant de l'événement est manquant");
       return;
     }
 
@@ -45,7 +46,7 @@ const EventEditPage = () => {
       setTimeout(() => navigate(EVENT_LISTE_PAGE), 1000);
     } catch (error) {
       console.error("Failed to update event:", error);
-      toast.error('Failed to update event');
+      handleAsyncError(error, "Impossible de mettre à jour l'événement");
     }
   };
 

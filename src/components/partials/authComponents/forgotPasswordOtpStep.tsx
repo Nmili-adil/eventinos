@@ -12,6 +12,9 @@ import { forgotPasswordOtpSchema, type ForgotPasswordOtpData } from '@/schema/au
 import type { RootState } from '@/store/app/rootReducer'
 import { verifyOtp, setForgotPasswordStep, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
+// Check if we're in development mode
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
+
 export default function ForgotPasswordOtpStep() {
   const dispatch = useDispatch()
   const { isLoading, error, email } = useSelector((state: RootState) => state.forgotPassword)
@@ -83,17 +86,17 @@ if (paste.match(/^[A-Za-z0-9]{4}$/)) {
             className="text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
+            Retour
           </Button>
           <div className="bg-linear-to-r from-purple-600 to-blue-600 rounded-xl p-3">
             <Shield className="h-8 w-8 text-white" />
           </div>
         </div>
         <CardTitle className="text-2xl font-bold">
-          Verification
+          Vérification
         </CardTitle>
         <CardDescription>
-          Enter the 4-digit code sent to {email}
+          Entrez le code à 4 chiffres envoyé à {email}
         </CardDescription>
       </CardHeader>
       
@@ -101,7 +104,7 @@ if (paste.match(/^[A-Za-z0-9]{4}$/)) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* OTP Input */}
           <div className="space-y-2">
-            <Label>Reset Code</Label>
+            <Label>Code de réinitialisation</Label>
             <div className="flex space-x-2 justify-center">
               {[0, 1, 2, 3].map((index) => (
                 <Input
@@ -122,8 +125,8 @@ if (paste.match(/^[A-Za-z0-9]{4}$/)) {
         
           </div>
 
-          {/* Error Message */}
-          {error && (
+          {/* Error Message - only show in development mode */}
+          {isDevelopment && error && (
             <div className="p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
               {error}
             </div>
@@ -138,10 +141,10 @@ if (paste.match(/^[A-Za-z0-9]{4}$/)) {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Verifying...
+                Vérification...
               </>
             ) : (
-              'Verify Code'
+              'Vérifier le code'
             )}
           </Button>
 
@@ -152,7 +155,7 @@ if (paste.match(/^[A-Za-z0-9]{4}$/)) {
               className="text-sm text-blue-600 hover:text-blue-500"
               onClick={() => console.log('Resend code clicked')}
             >
-              Resend Code
+              Renvoyer le code
             </button>
           </div>
         </form>

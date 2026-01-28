@@ -22,6 +22,8 @@ export function TableHeader({ sortField, sortDirection, onSort }: TableHeaderPro
     { key: 'startDate', label: t('events.table.startDate')  },
     { key: 'endDate', label: t('events.table.endDate')  },
     { key: 'status', label: t('events.table.status')  },
+    { key: 'totalParticipants', label: t('events.table.totalParticipants' )  },
+    { key: 'pendingParticipants', label: t('events.table.pendingParticipants' )  },
   ]
 
   const getSortIcon = (field: SortField) => {

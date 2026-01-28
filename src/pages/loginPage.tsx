@@ -1,39 +1,37 @@
 import LoginForm from "@/components/partials/authComponents/loginForm";
 import { DASHBOARD_OVERVIEW } from "@/constants/routerConstants";
-import { PRIVACY_PAGE } from "@/constants/routerConstants";
 import { getAuthToken } from "@/services/localStorage";
 import type { RootState } from "@/store/app/rootReducer";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import { Calendar } from "lucide-react";
+import { getVersionDisplay } from "@/config/version";
+
+// Check if we're in development mode
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
 
 export default function LoginPage() {
   const { message, isAuthenticated, user, isLoading, error } = useSelector(
     (state: RootState) => state.auth
   );
   const navigate = useNavigate();
-  const location = useLocation();
   const token = getAuthToken();
-  
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      toast.success(message?.replace("_", " ") || t("auth.loginSuccess"));
+      if (isDevelopment) {
+        toast.success(message?.replace("_", " ") || "Connexion réussie");
+      }
       navigate(DASHBOARD_OVERVIEW);
     }
 
     if (error) {
-      toast.error(
-        typeof error === "string"
-          ? error.replace("_", " ")
-          : (error as any)?.message || t("auth.loginError")
-      );
+      handleAsyncError(error, "Erreur de connexion");
     }
-  }, [isAuthenticated, user, message, error, navigate, t]);
+  }, [isAuthenticated, user, message, error, navigate]);
 
   useEffect(() => {
     if (token && (user?.role.name === 'admin' || user?.role.name === 'organizer')) {
@@ -81,7 +79,10 @@ export default function LoginPage() {
             <h2 className="text-xl 2xl:text-2xl font-bold">Eventinas</h2>
           </div>
           <p className="text-xs text-slate-300">
-            Manage your events professionally
+            Gérez vos événements professionnellement
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            {getVersionDisplay()}
           </p>
         </div>
       </div>

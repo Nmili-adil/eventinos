@@ -31,6 +31,8 @@ export interface Event {
   type: EventType
   status: EventStatus
   location: Location
+  totalParticipants?: number
+  pendingParticipants?: number
   category: {
     _id: string
     name: string
@@ -56,7 +58,7 @@ export interface Event {
   favorite: boolean
 }
 
-export type SortField = 'name' | 'type' | 'visibility' | 'location' | 'startDate' | 'endDate' | 'status' | 'createdAt'
+export type SortField = 'name' | 'type' | 'visibility' | 'location' | 'startDate' | 'endDate' | 'status' | 'createdAt' | 'totalParticipants' | 'pendingParticipants'
 export type SortDirection = 'asc' | 'desc'
 
 export interface EventsFilters {

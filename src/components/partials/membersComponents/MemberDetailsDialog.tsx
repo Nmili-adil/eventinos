@@ -5,6 +5,7 @@ import { fetchMemberParticipationsApi, updateGuestInvitationStatusApi } from "@/
 import { useNavigate } from "react-router-dom"
 import { EVENT_DETAILS_PAGE } from "@/constants/routerConstants"
 import { toast } from "sonner"
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler"
 import {
   Dialog,
   DialogContent,
@@ -160,7 +161,7 @@ const MemberDetailsDialog = ({
 
   const handleStatusChange = async (newStatus: string) => {
     if (!member?._id || !member?.event) {
-      toast.error(t('members.detailsDialog.status.notParticipant', 'Cannot change status: Not an event participant'))
+      handleAsyncError({ response: { status: 400 } }, t('members.detailsDialog.status.notParticipant', 'Cannot change status: Not an event participant'))
       return
     }
 
@@ -173,7 +174,7 @@ const MemberDetailsDialog = ({
       toast.success(t('members.detailsDialog.status.updateSuccess', 'Status updated successfully'))
     } catch (error: any) {
       console.error('Failed to update status:', error)
-      toast.error(error?.response?.data?.message || error?.message || t('members.detailsDialog.status.updateError', 'Failed to update status'))
+      handleAsyncError(error, t('members.detailsDialog.status.updateError', 'Failed to update status'))
     } finally {
       setStatusUpdating(false)
     }
@@ -183,7 +184,7 @@ const MemberDetailsDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="lg:max-w-5xl max-h-[90vh]">
+      <DialogContent className="lg:max-w-3xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <Avatar className="h-12 w-12">

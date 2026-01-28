@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Upload, X, Loader2, CheckCircle2 } from 'lucide-react'
 import { uploadFileApi, getFileUrlApi, deleteFileApi } from '@/api/filesApi'
 import { toast } from 'sonner'
+import { handleAsyncError } from '@/hooks/useGlobalErrorHandler'
 
 interface FileUploadProps {
   onUploadComplete: (url: string, fileId?: string) => void
@@ -60,7 +61,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         setUploadedUrl(null)
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to upload file')
+      handleAsyncError(error, 'Failed to upload file')
       setPreview(null)
     } finally {
       setUploading(false)
@@ -79,7 +80,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         onUploadComplete('')
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete file')
+      handleAsyncError(error, 'Failed to delete file')
     } finally {
       setUploading(false)
       setPreview(null)

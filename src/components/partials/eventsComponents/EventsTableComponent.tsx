@@ -21,6 +21,7 @@ import { deleteEventRequest, fetchEventsRequest, updateEventStatusRequest } from
 import { DeleteDialog } from '@/components/shared/alert-dialog-reusable'
 import { toast } from 'sonner'
 import PageHead from '@/components/shared/page-head'
+import { handleAsyncError } from '@/hooks/useGlobalErrorHandler'
 import { StatusChangeDialog } from './StatusChangeDialog'
 import { EventsCalendarView } from './EventsCalendarView'
  import { EventsMapView } from './EventsMapView'
@@ -156,7 +157,7 @@ export function EventsTable() {
       toast.success('Event status updated successfully')
       setStatusDialog({ open: false, eventId: null, currentStatus: null })
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update event status')
+      handleAsyncError(error, 'Failed to update event status')
     } finally {
       setStatusLoading(false)
     }
@@ -180,7 +181,7 @@ export function EventsTable() {
       // The toast is handled by the promise in the dispatch
     } catch (error) {
       console.error('Failed to delete event:', error)
-      toast.error(t('events.deleteError'))
+      handleAsyncError(error, t('events.deleteError'))
     } finally {
       setDeleteLoading(false)
     }

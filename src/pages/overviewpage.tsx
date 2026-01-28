@@ -1,6 +1,6 @@
 import StatCard from "@/components/partials/dashboardComponents/StatCard";
 import { fetchEventsRequest } from "@/store/features/events/events.actions";
-import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Users, LayoutDashboard, Filter, X, Calendar1Icon } from "lucide-react";
+import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Users, LayoutDashboard, Filter, X, Calendar1Icon, ShieldQuestionMark } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -143,6 +143,7 @@ const Overviewpage = () => {
         refusedEvents: countsData.canceled || 0,
         pendingEvents: countsData.pending || 0,
         totalUsers: countsData.members || usersCount,
+        pending_users: countsData.pending_users || 0,
       };
     }
 
@@ -163,6 +164,7 @@ const Overviewpage = () => {
       refusedEvents,
       pendingEvents,
       totalUsers: usersCount,
+      pending_users: 0,
     };
   }, [filteredEvents, usersCount, countsData]);
 
@@ -424,9 +426,9 @@ const Overviewpage = () => {
       </Card>
 
       {/* Statistics Cards Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {isLoadingStats ? (
-          Array.from({ length: 5 }).map((_, index) => <StatSkeleton key={index} />)
+          Array.from({ length: 6 }).map((_, index) => <StatSkeleton key={index} />)
         ) : (
           <>
             <StatCard
@@ -477,6 +479,19 @@ const Overviewpage = () => {
                 stats.totalUsers > 0
                   ? `${stats.totalUsers} ${
                       stats.totalUsers > 1 ? t('dashboard.eventCreatorsPlural') : t('dashboard.eventCreators')
+                    }`
+                  : t('dashboard.noUsers')
+              }
+              variant="info"
+            />
+            <StatCard
+              title={t('dashboard.pendingUsers')}
+              value={stats.pending_users}
+              icon={ShieldQuestionMark}
+              description={
+                stats.totalUsers > 0
+                  ? `${stats.pending_users} ${
+                      stats.pending_users > 1 ? t('dashboard.pendingUsers') : t('dashboard.pendingUsers')
                     }`
                   : t('dashboard.noUsers')
               }

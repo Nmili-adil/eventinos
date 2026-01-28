@@ -1,4 +1,38 @@
 {
+  "globalErrors": {
+    "error": "Erreur",
+    "serverError": "Erreur serveur",
+    "serverErrorMessage": "Une erreur est survenue. Veuillez réessayer plus tard.",
+    "sessionExpired": "Session expirée",
+    "sessionExpiredMessage": "Votre session a expiré. Veuillez vous reconnecter.",
+    "accessDenied": "Accès refusé",
+    "accessDeniedMessage": "Vous n'avez pas la permission d'effectuer cette action. Veuillez contacter le responsable pour obtenir l'autorisation.",
+    "notFound": "Non trouvé",
+    "notFoundMessage": "La ressource demandée n'a pas été trouvée.",
+    "invalidRequest": "Requête invalide",
+    "invalidRequestMessage": "La requête envoyée est invalide.",
+    "genericError": "Une erreur inattendue s'est produite.",
+    "ok": "OK",
+    "loadingError": "Erreur de chargement",
+    "loadingErrorAccounts": "Impossible de charger les comptes. Veuillez réessayer plus tard.",
+    "loadingErrorMembers": "Impossible de charger les membres. Veuillez réessayer plus tard.",
+    "loadingErrorData": "Impossible de charger les données. Veuillez réessayer plus tard.",
+    "accountInactive": "Compte désactivé",
+    "accountInactiveMessage": "Votre compte a été désactivé. Veuillez contacter le support.",
+    "connectionError": "Erreur de connexion",
+    "connectionErrorMessage": "Impossible de contacter le serveur. Veuillez vérifier votre connexion internet et réessayer."
+  },
+  "unauthorized": {
+    "title": "401",
+    "subtitle": "Accès non autorisé",
+    "restrictedArea": "Zone restreinte",
+    "insufficientPermissions": "Permissions insuffisantes",
+    "noPermissions": "Vous n'avez pas les permissions nécessaires pour accéder à cette page. Cette zone est réservée aux utilisateurs autorisés uniquement.",
+    "contactAdmin": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter votre administrateur système.",
+    "goBack": "Retour",
+    "dashboard": "Tableau de bord",
+    "needAccess": "Besoin d'accès ? Contactez votre administrateur pour demander les permissions."
+  },
   "common": {
     "welcome": "Bienvenue",
     "loading": "Chargement...",
@@ -68,6 +102,7 @@
     "title": "Statistiques",
     "description": "Vue d'ensemble de vos événements et membres",
     "totalEvents": "Total Événements",
+    "pendingUsers": "Membres en Attente",
     "allEvents": "Tous les événements",
     "acceptedEvents": "Événements Acceptés",
     "refusedEvents": "Événements Refusés",
@@ -209,7 +244,9 @@
       "deleteEvent": "Supprimer l'événement",
       "previewEvent": "Aperçu de l'événement",
       "editEvent": "Modifier l'événement",
-      "totalEvents": " événements trouvé"
+      "totalEvents": " événements trouvé",
+      "totalParticipants": "Participants",
+      "pendingParticipants": "Participants en attente"
     },
     "view": {
       "calendar": "Vue calendrier",
@@ -1387,6 +1424,86 @@
         "organizer": "Organisateur",
         "member": "Membre"
       }
+    },
+    "addFirstAccount": "Créer le premier compte",
+    "dialog": {
+      "title": "Ajouter un nouveau compte",
+      "description": "Créer un nouveau compte utilisateur. Tous les champs obligatoires doivent être remplis. Un mot de passe par défaut sera défini automatiquement.",
+      "sections": {
+        "accountType": "Type de compte",
+        "personalInfo": "Informations personnelles",
+        "contactInfo": "Coordonnées",
+        "locationInfo": "Informations de localisation",
+        "companyInfo": "Informations sur l'entreprise",
+        "socialNetworks": "Réseaux sociaux"
+      },
+      "fields": {
+        "userType": "Type d'utilisateur *",
+        "status": "Statut du compte",
+        "firstName": "Prénom *",
+        "lastName": "Nom *",
+        "gender": "Genre",
+        "email": "Adresse email *",
+        "password": "Mot de passe *",
+        "phone": "Numéro de téléphone",
+        "city": "Ville",
+        "country": "Pays",
+        "companyName": "Nom de l'entreprise",
+        "jobTitle": "Poste",
+        "companySize": "Taille de l'entreprise",
+        "industry": "Secteur d'activité",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn",
+        "website": "Site web"
+      },
+      "placeholders": {
+        "userType": "Sélectionner le type d'utilisateur",
+        "firstName": "Entrer le prénom",
+        "lastName": "Entrer le nom",
+        "email": "Entrer l'adresse email",
+        "password": "Entrer le mot de passe",
+        "phone": "Entrer le numéro de téléphone",
+        "city": "Entrer la ville",
+        "country": "Entrer le pays",
+        "companyName": "Entrer le nom de l'entreprise",
+        "jobTitle": "Entrer le poste",
+        "companySize": "Sélectionner la taille de l'entreprise",
+        "industry": "Sélectionner le secteur d'activité",
+        "facebook": "https://facebook.com/...",
+        "instagram": "https://instagram.com/...",
+        "linkedin": "https://linkedin.com/in/...",
+        "website": "https://..."
+      },
+      "options": {
+        "userType": {
+          "admin": "Admin",
+          "organizer": "Organisateur"
+        },
+        "status": {
+          "active": "Actif",
+          "inactive": "Inactif"
+        },
+        "gender": {
+          "male": "Homme",
+          "female": "Femme"
+        }
+      },
+      "loadingRoles": "Chargement des rôles...",
+      "buttons": {
+        "create": "Créer le compte",
+        "creating": "Création en cours..."
+      }
+    },
+    "industries": {
+      "company": "Entreprise",
+      "startup": "Startup",
+      "association": "Association",
+      "school": "École",
+      "communicationAgency": "Agence de communication"
+    },
+    "companySize": {
+      "other": "Autre"
     }
   },
   "contacts": {
@@ -1530,5 +1647,12 @@
     "placeIdPlaceholder": "ID Google Place",
     "coordinates": "Coordonnées",
     "coordinatesSet": "Coordonnées définies :"
+  },
+  "maps": {
+    "configRequired": "Configuration des cartes requise",
+    "setApiKey": "Veuillez définir VITE_GOOGLE_MAPS_API_KEY dans votre fichier d'environnement.",
+    "unableToLoad": "Impossible de charger Google Maps",
+    "loading": "Chargement de Google Maps...",
+    "error": "Erreur de chargement des cartes"
   }
 }

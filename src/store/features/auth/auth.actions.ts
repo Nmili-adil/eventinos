@@ -13,12 +13,12 @@ import {
   type LogoutAction,
   type SetCredentialsAction,
 } from "./auth.type";
-import { clearAuthData, setAuthToken, setLayoutPreferences, setRole, setUserData } from "@/services/localStorage";
+import { clearAuthData, getAuthToken, setAuthToken, setLayoutPreferences, setRole, setUserData } from "@/services/localStorage";
 import type { User } from "@/types/usersType";
 
 export const authInitialize = () => {
   return async (dispatch: any) => {
-    const token = localStorage.getItem('auth-token');
+    const token = getAuthToken(); // Uses expiration check
     const userData = localStorage.getItem('auth-user');
     const role = localStorage.getItem('auth-role');
 
@@ -56,7 +56,9 @@ export const authLoginRequest = (payload: LoginPayload) => {
         dispatch(authLoginFailure(response.data.message))
       }
     } catch (error: any) {
-      dispatch(authLoginFailure(error.response?.data?.message || error.message || 'Login failed'))
+      // Pass the full error response data to preserve message and details
+      const errorData = error.response?.data || { message: error.message || 'Login failed' }
+      dispatch(authLoginFailure(errorData))
     }
   };
 };
@@ -71,7 +73,7 @@ export const authLoginSuccess = (
   payload: { user, token, message, role },
 });
 
-export const authLoginFailure = (error: string): LoginFailureAction => ({
+export const authLoginFailure = (error: string | { message: string; details?: string }): LoginFailureAction => ({
   type: AUTH_LOGIN_FAILURE,
   payload: error,
 });

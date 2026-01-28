@@ -44,6 +44,7 @@ import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { CustomSelect } from "@/components/shared/custom-select";
 import { PersonDialog } from "./dialogs/PersonDialog";
 import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import { deleteFileApi } from "@/api/filesApi";
 
 interface EventAddFormProps {
@@ -1393,7 +1394,8 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                                               "Image deleted successfully"
                                                             );
                                                           } catch (urlError: any) {
-                                                            toast.error(
+                                                            handleAsyncError(
+                                                              urlError,
                                                               "Image removed locally but could not delete from server"
                                                             );
                                                           }
@@ -1411,9 +1413,9 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                                           )
                                                         );
                                                       } catch (error: any) {
-                                                        toast.error(
-                                                          error.message ||
-                                                            "Failed to delete image"
+                                                        handleAsyncError(
+                                                          error,
+                                                          "Failed to delete image"
                                                         );
                                                       }
                                                     }}

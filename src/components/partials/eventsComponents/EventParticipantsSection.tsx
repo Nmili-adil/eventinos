@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
 import { Trash2, Mail, Phone, MapPin, User } from "lucide-react"
 import { toast } from "sonner"
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -114,7 +115,7 @@ export const EventParticipantsSection = ({
       // Reload participants
       await loadParticipants()
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || t('members.messages.deleteError', 'Failed to delete member'))
+      handleAsyncError(error, t('members.messages.deleteError', 'Failed to delete member'))
     } finally {
       setIsDeleting(false)
     }

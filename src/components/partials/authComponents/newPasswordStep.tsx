@@ -12,6 +12,9 @@ import { resetPasswordSchema, type ResetPasswordData } from '@/schema/authSchema
 import type { RootState } from '@/store/app/rootReducer'
 import { resetPassword, setForgotPasswordStep, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
+// Check if we're in development mode
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
+
 export default function NewPasswordStep() {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -58,39 +61,30 @@ export default function NewPasswordStep() {
             className="text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
+            Retour
           </Button>
           <div className="bg-linear-to-r from-green-600 to-emerald-600 rounded-xl p-3">
             <Key className="h-8 w-8 text-white" />
           </div>
         </div>
         <CardTitle className="text-2xl font-bold">
-          New Password
+          Nouveau mot de passe
         </CardTitle>
         <CardDescription>
-          Create a new secure password
+          Créez un nouveau mot de passe sécurisé
         </CardDescription>
       </CardHeader>
       
       <CardContent>
-        {/* DEBUG INFO - Remove after fixing */}
-        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs font-mono">
-          <div className="font-bold mb-1">🔍 Debug Info:</div>
-          <div>Email: {email || 'NOT SET'}</div>
-          <div>Verification Code: {verificationCode || 'NOT SET'}</div>
-          <div>Loading: {isLoading ? 'YES' : 'NO'}</div>
-          <div>Error: {error || 'NONE'}</div>
-        </div>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* New Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="newPassword">New Password</Label>
+            <Label htmlFor="newPassword">Nouveau mot de passe</Label>
             <div className="relative">
               <Input
                 id="newPassword"
                 type={showNewPassword ? 'text' : 'password'}
-                placeholder="Enter your new password"
+                placeholder="Entrez votre nouveau mot de passe"
                 {...register('newPassword')}
                 className={errors.newPassword ? 'border-red-500 pr-10' : 'pr-10'}
               />
@@ -115,12 +109,12 @@ export default function NewPasswordStep() {
 
           {/* Confirm Password Field */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm your new password"
+                placeholder="Confirmez votre nouveau mot de passe"
                 {...register('confirmPassword')}
                 className={errors.confirmPassword ? 'border-red-500 pr-10' : 'pr-10'}
               />
@@ -147,13 +141,13 @@ export default function NewPasswordStep() {
           {newPassword && newPassword.length > 0 && (
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span>Password Strength:</span>
+                <span>Force du mot de passe :</span>
                 <span className={
                   newPassword.length < 8 ? 'text-red-600' :
                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'text-yellow-600' : 'text-green-600'
                 }>
-                  {newPassword.length < 8 ? 'Weak' :
-                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'Medium' : 'Strong'}
+                  {newPassword.length < 8 ? 'Faible' :
+                   !newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/) ? 'Moyen' : 'Fort'}
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -167,8 +161,8 @@ export default function NewPasswordStep() {
             </div>
           )}
 
-          {/* Error Message */}
-          {error && (
+          {/* Error Message - only show in development mode */}
+          {isDevelopment && error && (
             <div className="p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
               {error}
             </div>
@@ -183,10 +177,10 @@ export default function NewPasswordStep() {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Resetting...
+                Réinitialisation...
               </>
             ) : (
-              'Reset Password'
+              'Réinitialiser le mot de passe'
             )}
           </Button>
         </form>

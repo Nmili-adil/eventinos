@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store/app/rootReducer";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
+
+// Check environment
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
 
 // Shadcn Components
 import { Button } from "@/components/ui/button";
@@ -178,6 +182,18 @@ export const ComptesPage: React.FC = () => {
     dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
   }, [dispatch, currentPage, role]);
 
+  // Show global error dialog in production when error occurs
+  useEffect(() => {
+    if (error && !isDevelopment) {
+      window.dispatchEvent(new CustomEvent('global-error-dialog', {
+        detail: {
+          title: t('globalErrors.loadingError', 'Loading Error'),
+          message: t('globalErrors.loadingErrorAccounts', 'Unable to load accounts. Please try again later.')
+        }
+      }))
+    }
+  }, [error, t]);
+
   useEffect(() => {
     if (
       pagination &&
@@ -257,19 +273,18 @@ export const ComptesPage: React.FC = () => {
         );
         dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
       } else {
-        toast.error(
+        handleAsyncError(
+          { response: { status: 400 } },
           t(
-            `accounts.messages.${
-              !user.isActive ? "activateError" : "deactivateError"
-            }`,
+            `accounts.messages.${!user.isActive ? "activateError" : "deactivateError"}`,
             `User ${!user.isActive ? "activated" : "deactivated"} failed`
           )
         );
       }
     } catch (error: any) {
-      toast.error(
-        error?.message ||
-          t("accounts.messages.activateError", "Failed to update user status")
+      handleAsyncError(
+        error,
+        t("accounts.messages.activateError", "Failed to update user status")
       );
     } finally {
       setActionLoading(null);
@@ -287,9 +302,9 @@ export const ComptesPage: React.FC = () => {
       setSelectedUser(null);
       dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
     } catch (error: any) {
-      toast.error(
-        error?.message ||
-          t("accounts.messages.deleteError", "Failed to delete user")
+      handleAsyncError(
+        error,
+        t("accounts.messages.deleteError", "Failed to delete user")
       );
     } finally {
       setActionLoading(null);
@@ -334,16 +349,16 @@ export const ComptesPage: React.FC = () => {
         setCurrentPage(1);
         dispatch(fetchUsersRequest(1, PAGE_SIZE, role));
       } else {
-        toast.error(
+        handleAsyncError(
+          { response: { status: 400 } },
           response?.data?.message ||
             t("accounts.messages.createError", "Failed to create account")
         );
       }
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          t("accounts.messages.createError", "Failed to create account")
+      handleAsyncError(
+        error,
+        t("accounts.messages.createError", "Failed to create account")
       );
       throw error;
     } finally {
@@ -945,8 +960,8 @@ export const ComptesPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Error State */}
-      {error && (
+      {/* Error State - Only show in development */}
+      {error && isDevelopment && (
         <Card className="border-destructive/50">
           <CardContent className="pt-6 text-center">
             <div className="text-destructive mb-2">{error}</div>
@@ -1001,9 +1016,9 @@ export const ComptesPage: React.FC = () => {
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <Shield className="h-10 w-10 text-blue-600" />
-                    <Crown className="h-8 w-8 text-purple-600 relative -left-4" />
+                  <div className="flex items-center justify-center gap-1">
+                    <Shield className="h-8 w-8 text-blue-600" />
+                    <Crown className="h-8 w-8 text-purple-600 " />
                   </div>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import {
   updateEventInfos,
   updateEventCategory,
@@ -47,8 +48,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.basicInfoUpdated") || "Basic info updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -68,8 +69,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.datesUpdated") || "Dates updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -84,8 +85,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.locationUpdated") || "Location updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -102,8 +103,8 @@ export const useEventTabSave = (eventId: string) => {
       );
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -118,8 +119,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.programUpdated") || "Program updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -134,8 +135,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.badgesUpdated") || "Badges updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -150,8 +151,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.galleryUpdated") || "Gallery updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -166,8 +167,8 @@ export const useEventTabSave = (eventId: string) => {
       toast.success(t("eventForm.success.speakersUpdated") || "Speakers updated successfully");
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {
@@ -189,8 +190,8 @@ export const useEventTabSave = (eventId: string) => {
       );
       onSuccess?.();
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || t("eventForm.errors.updateFailed") || "Update failed"
+      handleAsyncError(
+        error, t("eventForm.errors.updateFailed") || "Update failed"
       );
       throw error;
     } finally {

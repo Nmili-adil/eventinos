@@ -1,8 +1,12 @@
 export const storageKeys = {
   TOKEN: 'auth-token',
+  TOKEN_EXPIRY: 'auth-token-expiry',
   USER: 'auth-user',
   ROLE: 'auth-role'
 }
+
+// Token expiration time: 24 hours in milliseconds
+const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000
 export type LayoutType = 'grid' | 'list';
 export type EventLayout = 'table' | 'calender' | 'maps';
 
@@ -48,11 +52,39 @@ export const clearLayoutPreferences = () => {
 };
 
 export const setAuthToken = (token: string) => {
+  const expiryTime = Date.now() + TOKEN_EXPIRATION_MS
   localStorage.setItem(storageKeys.TOKEN, token)
+  localStorage.setItem(storageKeys.TOKEN_EXPIRY, expiryTime.toString())
 }
 
 export const getAuthToken = (): string | null => {
-  return localStorage.getItem(storageKeys.TOKEN)
+  const token = localStorage.getItem(storageKeys.TOKEN)
+  const expiry = localStorage.getItem(storageKeys.TOKEN_EXPIRY)
+  
+  if (!token || !expiry) {
+    return null
+  }
+  
+  // Check if token has expired
+  if (Date.now() > parseInt(expiry, 10)) {
+    // Token expired, clear auth data
+    clearAuthData()
+    return null
+  }
+  
+  return token
+}
+
+export const isTokenExpired = (): boolean => {
+  const expiry = localStorage.getItem(storageKeys.TOKEN_EXPIRY)
+  if (!expiry) return true
+  return Date.now() > parseInt(expiry, 10)
+}
+
+export const getTokenExpiryTime = (): Date | null => {
+  const expiry = localStorage.getItem(storageKeys.TOKEN_EXPIRY)
+  if (!expiry) return null
+  return new Date(parseInt(expiry, 10))
 }
 
 export const setUserData = (user: object) => {
@@ -66,6 +98,7 @@ export const getUserData = () => {
 
 export const clearAuthData = () => {
   localStorage.removeItem(storageKeys.TOKEN)
+  localStorage.removeItem(storageKeys.TOKEN_EXPIRY)
   localStorage.removeItem(storageKeys.USER)
   localStorage.removeItem(storageKeys.ROLE)
 }

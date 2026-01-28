@@ -13,6 +13,9 @@ import { LOGIN_PAGE } from '@/constants/routerConstants'
 import type { RootState } from '@/store/app/rootReducer'
 import { requestPasswordReset, clearForgotPasswordError } from '@/store/features/forgotpassword/forgotpassword.actions'
 
+// Check if we're in development mode
+const isDevelopment = (import.meta.env.VITE_APP_ENV || import.meta.env.MODE) === 'development'
+
 export default function ForgotPasswordEmailStep() {
   const dispatch = useDispatch()
   const { isLoading, error } = useSelector((state: RootState) => state.forgotPassword)
@@ -39,13 +42,13 @@ export default function ForgotPasswordEmailStep() {
           </div>
         </div>
         <CardTitle className="text-xl 2xl:text-2xl font-bold">
-          Forgot Password?
+          Mot de passe oublié ?
         </CardTitle>
         <CardDescription>
-          Enter your email to reset your password
+          Entrez votre email pour réinitialiser votre mot de passe
         </CardDescription>
-          {/* Error Message */}
-          {error && (
+          {/* Error Message - only show in development mode */}
+          {isDevelopment && error && (
             <div className="p-3 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
               {error}
             </div>
@@ -56,11 +59,11 @@ export default function ForgotPasswordEmailStep() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email Field */}
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">Adresse email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="your@email.com"
+              placeholder="votre@email.com"
               {...register('email')}
               className={errors.email ? 'border-red-500' : ''}
             />
@@ -80,10 +83,10 @@ export default function ForgotPasswordEmailStep() {
             {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Sending code...
+                Envoi du code...
               </>
             ) : (
-              'Send Reset Code'
+              'Envoyer le code'
             )}
           </Button>
 
@@ -95,7 +98,7 @@ export default function ForgotPasswordEmailStep() {
                 className="font-medium text-blue-600 hover:text-blue-500 underline-offset-4 hover:underline"
               >
                 <ArrowLeft className="h-4 w-4 inline mr-1" />
-                Back to Login
+                Retour à la connexion
               </Link>
             </p>
           </div>

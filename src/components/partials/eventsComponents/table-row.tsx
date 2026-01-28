@@ -51,11 +51,14 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
         <TableCell className="text-slate-700">{tableEvent.location}</TableCell>
         <TableCell className="text-slate-600">{tableEvent.startDate}</TableCell>
         <TableCell className="text-slate-600">{tableEvent.endDate}</TableCell>
-        <TableCell>
+         <TableCell>
           <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} font-medium`}>
             {tableEvent.status}
           </Badge>
         </TableCell>
+        <TableCell className="text-slate-600 text-center">{event.totalParticipants ?? 0}</TableCell>
+        <TableCell className="text-slate-600 text-center">{event.pendingParticipants ?? 0}</TableCell>
+       
         <TableCell className="text-right">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

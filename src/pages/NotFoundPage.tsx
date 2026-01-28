@@ -68,25 +68,25 @@ const NotFoundPage = () => {
 
         {/* Helpful Links */}
         <div className="mt-12 pt-8 border-t border-gray-200">
-          <p className="text-sm text-gray-500 mb-4">Pages utiles :</p>
+          <p className="text-sm text-gray-500 mb-4">{t('notFound.usefulPages', 'Useful pages:')}</p>
           <div className="flex flex-wrap gap-4 justify-center">
             <button
               onClick={() => navigate(EVENT_LISTE_PAGE)}
               className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium"
             >
-              Événements
+              {t('nav.events', 'Events')}
             </button>
             <button
               onClick={() => navigate(DASHBOARD_OVERVIEW)}
               className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium"
             >
-              Statistiques
+              {t('nav.statistics', 'Statistics')}
             </button>
             <button
               onClick={() => navigate(MEMBERS_PAGE)}
               className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium"
             >
-              Membres
+              {t('nav.members', 'Members')}
             </button>
           </div>
         </div>

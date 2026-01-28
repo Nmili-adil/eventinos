@@ -1,4 +1,5 @@
 import { AlertTriangle, RefreshCw, XCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -154,18 +155,21 @@ export const ErrorDisplay = ({
 /**
  * Simple loading error state for data fetching
  */
-export const LoadingError = ({ onRetry }: { onRetry?: () => void }) => (
-  <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-6">
-    <XCircle className="h-12 w-12 text-red-500 mb-4" />
-    <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load Data</h3>
-    <p className="text-sm text-gray-600 mb-4">
-      We couldn't load the data. Please try again.
-    </p>
-    {onRetry && (
-      <Button onClick={onRetry} variant="outline" className="gap-2">
-        <RefreshCw className="h-4 w-4" />
-        Retry
-      </Button>
-    )}
-  </div>
-)
+export const LoadingError = ({ onRetry }: { onRetry?: () => void }) => {
+  const { t } = useTranslation()
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[300px] text-center p-6">
+      <XCircle className="h-12 w-12 text-red-500 mb-4" />
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('globalErrors.loadingError', 'Failed to Load Data')}</h3>
+      <p className="text-sm text-gray-600 mb-4">
+        {t('globalErrors.loadingErrorData', "We couldn't load the data. Please try again.")}
+      </p>
+      {onRetry && (
+        <Button onClick={onRetry} variant="outline" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          {t('common.retry', 'Retry')}
+        </Button>
+      )}
+    </div>
+  )
+}

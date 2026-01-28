@@ -1,4 +1,34 @@
 {
+  "globalErrors": {
+    "error": "Error",
+    "serverError": "Server Error",
+    "serverErrorMessage": "An error occurred. Please try again later.",
+    "sessionExpired": "Session Expired",
+    "sessionExpiredMessage": "Your session has expired. Please log in again.",
+    "accessDenied": "Access Denied",
+    "accessDeniedMessage": "You do not have permission to perform this action. Please contact the administrator for authorization.",
+    "notFound": "Not Found",
+    "notFoundMessage": "The requested resource was not found.",
+    "invalidRequest": "Invalid Request",
+    "invalidRequestMessage": "The request sent is invalid.",
+    "genericError": "An unexpected error occurred.",
+    "ok": "OK",
+    "loadingError": "Loading Error",
+    "loadingErrorAccounts": "Unable to load accounts. Please try again later.",
+    "loadingErrorMembers": "Unable to load members. Please try again later.",
+    "loadingErrorData": "Unable to load data. Please try again later."
+  },
+  "unauthorized": {
+    "title": "401",
+    "subtitle": "Unauthorized Access",
+    "restrictedArea": "Restricted Area",
+    "insufficientPermissions": "Insufficient Permissions",
+    "noPermissions": "You don't have the necessary permissions to access this page. This area is restricted to authorized users only.",
+    "contactAdmin": "If you believe this is an error, please contact your system administrator.",
+    "goBack": "Go Back",
+    "dashboard": "Dashboard",
+    "needAccess": "Need access? Contact your administrator to request permissions."
+  },
   "common": {
     "welcome": "Welcome back",
     "loading": "Loading...",
@@ -94,6 +124,7 @@
   "dashboard": {
     "title": "Statistics",
     "description": "Overview of your events and members",
+    "pendingUsers": "Pending Members",
     "totalEvents": "Total Events",
     "allEvents": "All events",
     "acceptedEvents": "Accepted Events",
@@ -230,7 +261,9 @@
       "deleteEvent": "Delete Event",
       "previewEvent": "Preview Event",
       "editEvent": "Edit Event",
-      "totalEvents": "Events found"
+      "totalEvents": "Events found",
+      "totalParticipants": "Total Participants",
+      "pendingParticipants": "Pending Participants"
     },
     "view": {
       "calendar": "Calendar View",
@@ -1367,6 +1400,86 @@
         "organizer": "Organizer",
         "admin": "Admin"
       }
+    },
+    "addFirstAccount": "Create First Account",
+    "dialog": {
+      "title": "Add New Account",
+      "description": "Create a new user account. All required fields must be filled. A default password will be set automatically.",
+      "sections": {
+        "accountType": "Account Type",
+        "personalInfo": "Personal Information",
+        "contactInfo": "Contact Information",
+        "locationInfo": "Location Information",
+        "companyInfo": "Company Information",
+        "socialNetworks": "Social Networks"
+      },
+      "fields": {
+        "userType": "User Type *",
+        "status": "Account Status",
+        "firstName": "First Name *",
+        "lastName": "Last Name *",
+        "gender": "Gender",
+        "email": "Email Address *",
+        "password": "Password *",
+        "phone": "Phone Number",
+        "city": "City",
+        "country": "Country",
+        "companyName": "Company Name",
+        "jobTitle": "Job Title",
+        "companySize": "Company Size",
+        "industry": "Industry",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn",
+        "website": "Website"
+      },
+      "placeholders": {
+        "userType": "Select user type",
+        "firstName": "Enter first name",
+        "lastName": "Enter last name",
+        "email": "Enter email address",
+        "password": "Enter password",
+        "phone": "Enter phone number",
+        "city": "Enter city",
+        "country": "Enter country",
+        "companyName": "Enter company name",
+        "jobTitle": "Enter job title",
+        "companySize": "Select company size",
+        "industry": "Select industry",
+        "facebook": "https://facebook.com/...",
+        "instagram": "https://instagram.com/...",
+        "linkedin": "https://linkedin.com/in/...",
+        "website": "https://..."
+      },
+      "options": {
+        "userType": {
+          "admin": "Admin",
+          "organizer": "Organizer"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "gender": {
+          "male": "Male",
+          "female": "Female"
+        }
+      },
+      "loadingRoles": "Loading roles...",
+      "buttons": {
+        "create": "Create Account",
+        "creating": "Creating..."
+      }
+    },
+    "industries": {
+      "company": "Company",
+      "startup": "Startup",
+      "association": "Association",
+      "school": "School",
+      "communicationAgency": "Communication Agency"
+    },
+    "companySize": {
+      "other": "Other"
     }
   },
   "contacts": {
@@ -1536,5 +1649,12 @@
     "placeIdPlaceholder": "Google Place ID",
     "coordinates": "Coordinates",
     "coordinatesSet": "Coordinates set:"
+  },
+  "maps": {
+    "configRequired": "Maps configuration required",
+    "setApiKey": "Please set VITE_GOOGLE_MAPS_API_KEY in your environment file.",
+    "unableToLoad": "Unable to load Google Maps",
+    "loading": "Loading Google Maps…",
+    "error": "Error loading maps"
   }
 }

@@ -31,10 +31,10 @@ export default function ForgotPasswordCompleteStep() {
           </div>
         </div>
         <CardTitle className="text-2xl font-bold text-green-600">
-          Password Reset!
+          Mot de passe réinitialisé !
         </CardTitle>
         <CardDescription className="text-lg">
-          Your password has been successfully changed
+          Votre mot de passe a été modifié avec succès
         </CardDescription>
       </CardHeader>
       
@@ -42,28 +42,28 @@ export default function ForgotPasswordCompleteStep() {
         {/* Success Message */}
         <div className="space-y-2">
           <h3 className="text-xl font-semibold">
-            Congratulations
+            Félicitations
           </h3>
           <p className="text-gray-600">
-            You can now sign in with your new password
+            Vous pouvez maintenant vous connecter avec votre nouveau mot de passe
           </p>
         </div>
 
         {/* Security Tips */}
         <div className="bg-blue-50 rounded-lg p-4 text-left">
-          <h4 className="font-semibold text-blue-900 mb-2">💡 Security Tips:</h4>
+          <h4 className="font-semibold text-blue-900 mb-2">💡 Conseils de sécurité :</h4>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• Use a unique password for each account</li>
-            <li>• Avoid personal information in your passwords</li>
-            <li>• Change your passwords regularly</li>
+            <li>• Utilisez un mot de passe unique pour chaque compte</li>
+            <li>• Évitez les informations personnelles dans vos mots de passe</li>
+            <li>• Changez vos mots de passe régulièrement</li>
           </ul>
         </div>
 
         {/* Countdown */}
         <div className="bg-gray-50 rounded-lg p-4">
           <p className="text-sm text-gray-600">
-            Automatically redirecting to login in{' '}
-            <span className="font-semibold text-blue-600">5 seconds</span>
+            Redirection automatique vers la connexion dans{' '}
+            <span className="font-semibold text-blue-600">5 secondes</span>
           </p>
         </div>
 
@@ -73,15 +73,15 @@ export default function ForgotPasswordCompleteStep() {
           onClick={handleGoToLogin}
         >
           <LogIn className="h-4 w-4 mr-2" />
-          Sign In
+          Se connecter
         </Button>
 
         {/* Quick Links */}
         <div className="border-t pt-4">
           <p className="text-sm text-gray-600">
-            Need help?{' '}
+            Besoin d'aide ?{' '}
             <Link to="/contact" className="text-blue-600 hover:text-blue-500 underline">
-              Contact Support
+              Contacter le support
             </Link>
           </p>
         </div>

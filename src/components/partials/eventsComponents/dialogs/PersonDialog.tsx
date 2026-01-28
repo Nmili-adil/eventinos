@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { FileUpload } from "../FileUpload";
 import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 
 interface PersonDialogProps {
   open: boolean;
@@ -90,11 +91,11 @@ useEffect(() => {
 
   const handleSave = () => {
     if (type === "sponsor" && !formData.name) {
-      toast.error(t("eventForm.addSponsorDialog.validation.required") || "Sponsor name is required");
+      handleAsyncError(new Error("Validation error"), t("eventForm.addSponsorDialog.validation.required") || "Sponsor name is required");
       return;
     }
     if ((type === "exhibitor" || type === "speaker") && !formData.fullName) {
-      toast.error(t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.validation.required`) || `${type} name is required`);
+      handleAsyncError(new Error("Validation error"), t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.validation.required`) || `${type} name is required`);
       return;
     }
     onSave(formData);

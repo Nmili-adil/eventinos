@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { handleAsyncError } from '@/hooks/useGlobalErrorHandler';
 
 const DeleteAccount = () => {
   const [formData, setFormData] = useState({
@@ -34,11 +35,11 @@ const DeleteAccount = () => {
         setSubmitted(true);
         toast.success('Demande soumise avec succès. Vous recevrez un email de confirmation sous 24 à 48 heures.');
       } else {
-        toast.error('Échec de la soumission de la demande. Veuillez réessayer.');
+        handleAsyncError({ response: { status: 400 } }, 'Échec de la soumission de la demande. Veuillez réessayer.');
       }
     } catch (error) {
       console.error('Failed to send request:', error);
-      toast.error('Une erreur s\'est produite. Veuillez réessayer.');
+      handleAsyncError(error, 'Une erreur s\'est produite. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }

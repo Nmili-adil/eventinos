@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { Facebook, Instagram, Github, Mail, Heart } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Separator } from "@/components/ui/separator"
+import { getVersionDisplay } from "@/config/version"
 
 
 export default function Footer() {
@@ -42,6 +43,9 @@ export default function Footer() {
             </p>
             <p className="text-xs text-slate-500 flex items-center gap-1">
               {t('footer.madeWith', 'Made with')} <Heart className="h-3 w-3 text-red-500 fill-red-500" /> {t('footer.by', 'by')} <span className="font-medium text-slate-700">ARTECREA Team</span>
+            </p>
+            <p className="text-xs text-slate-400">
+              {getVersionDisplay()}
             </p>
           </div>
 

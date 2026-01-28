@@ -1,6 +1,7 @@
 // Update the imports at the top
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api'
+import { useTranslation } from 'react-i18next'
 import type { LocationCoordinates, MapMarker, BaseMapProps, MultiMarkerMapProps } from './types'
 import { useGoogleMaps } from './index'
 
@@ -19,6 +20,7 @@ export const MultiMarkerMap = ({
   onMapReady,
 }: MultiMarkerMapProps) => {
   const { isLoaded, loadError } = useGoogleMaps()
+  const { t } = useTranslation()
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [mapCenter, setMapCenter] = useState<LocationCoordinates>(center || defaultCenter)
   const [mapZoom, setMapZoom] = useState(zoom)
@@ -112,11 +114,11 @@ export const MultiMarkerMap = ({
   }), [showControls])
 
   if (loadError) {
-    return <div>Error loading maps</div>
+    return <div>{t('maps.error', 'Error loading maps')}</div>
   }
 
   if (!isLoaded) {
-    return <div>Loading maps...</div>
+    return <div>{t('maps.loading', 'Loading maps...')}</div>
   }
 
   return (

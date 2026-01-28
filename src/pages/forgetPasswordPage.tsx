@@ -5,7 +5,7 @@ import ForgotPasswordOtpStep from '@/components/partials/authComponents/forgotPa
 import NewPasswordStep from '@/components/partials/authComponents/newPasswordStep'
 import ForgotPasswordCompleteStep from '@/components/partials/authComponents/forgotPasswordCompleteStep'
 import { Calendar } from 'lucide-react'
-import { t } from 'i18next'
+import { getVersionDisplay } from '@/config/version'
 
 export default function ForgotPasswordPage() {
   const forgotPasswordStep = useSelector((state: RootState) => state.forgotPassword.step)
@@ -13,9 +13,9 @@ export default function ForgotPasswordPage() {
 
   const steps = [
     { key: 'email', title: 'Email', component: ForgotPasswordEmailStep },
-    { key: 'otp', title: 'Verification', component: ForgotPasswordOtpStep },
-    { key: 'new-password', title: 'New Password', component: NewPasswordStep },
-    { key: 'complete', title: 'Complete', component: ForgotPasswordCompleteStep },
+    { key: 'otp', title: 'Vérification', component: ForgotPasswordOtpStep },
+    { key: 'new-password', title: 'Nouveau mot de passe', component: NewPasswordStep },
+    { key: 'complete', title: 'Terminé', component: ForgotPasswordCompleteStep },
   ]
 
   const currentStepIndex = steps.findIndex(step => step.key === forgotPasswordStep)
@@ -62,7 +62,10 @@ export default function ForgotPasswordPage() {
             <h2 className="text-xl 2xl:text-2xl font-bold">Eventinas</h2>
           </div>
           <p className="text-xs 2xl:text-sm text-slate-300">
-            Manage your events professionally
+            Gérez vos événements professionnellement
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            {getVersionDisplay()}
           </p>
         </div>
       </div>
