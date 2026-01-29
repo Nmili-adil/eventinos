@@ -82,6 +82,7 @@ import {
   Grid3x3,
   List,
   PinIcon,
+  Link2,
 } from 'lucide-react';
 import {
   fetchMembersRequest,
@@ -688,9 +689,10 @@ export const MembersPage: React.FC = () => {
 
         <Separator className="my-3" />
 
-        {/* Additional Info */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-xs">
+        {/* Status List */}
+        <div className="space-y-2 text-xs">
+          {/* Registration Status - Always first */}
+          <div className="flex justify-between items-center">
             <span className="text-muted-foreground">
               {t('members.registration.status', 'Registration')}
             </span>
@@ -713,39 +715,77 @@ export const MembersPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Status badges if present */}
-          {(member.verified !== undefined || member.isOrganizator || member.status) && (
-            <div className="flex flex-wrap gap-1 pt-2">
-              {member.verified !== undefined && (
-                <Badge variant="outline" className={cn(
-                  'text-xs',
-                  member.verified 
-                    ? 'border-green-300 text-green-700' 
-                    : 'border-gray-300 text-gray-700'
+          {/* Verified Status */}
+          {member.verified !== undefined && (
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">
+                {t('members.verificationStatus', 'Verification')}
+              </span>
+              <div className="flex items-center gap-1">
+                {member.verified ? (
+                  <>
+                    <CheckIcon className="w-3 h-3 text-green-500" />
+                    <span className="text-green-600 font-medium">
+                      {t('members.verified', 'Verified')}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <XIcon className="w-3 h-3 text-gray-500" />
+                    <span className="text-gray-600 font-medium">
+                      {t('members.unverified', 'Unverified')}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Organizer Status */}
+          {member.isOrganizator && (
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">
+                {t('members.role', 'Role')}
+              </span>
+              <span className="text-purple-700 font-medium">
+                👑 {t('members.organizer', 'Organizer')}
+              </span>
+            </div>
+          )}
+
+          {/* Participant Status */}
+          {member.status && ['PENDING','REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) && (
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">
+                {t('members.participantStatusLabel', 'Participant Status')}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className={cn(
+                  'font-medium',
+                  member.status === 'ACCEPTED' 
+                    ? 'text-green-700' 
+                    : member.status === 'PENDING' 
+                      ? 'text-orange-700' 
+                      : member.status === 'EXPIRED'
+                        ? 'text-red-700'
+                        : 'text-gray-700'
                 )}>
-                  {member.verified ? t('members.verified', 'Verified') : t('members.unverified', 'Unverified')}
-                </Badge>
-              )}
-              {member.isOrganizator && (
-                <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-                  👑 {t('members.organizer', 'Organizer')}
-                </Badge>
-              )}
-              {member.status && ['PENDING','REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) && (
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    'text-xs',
-                    member.status === 'ACCEPTED' 
-                      ? 'border-green-300 text-green-700' 
-                      : member.status === 'PENDING' 
-                        ? 'border-orange-300 text-orange-700' 
-                        : 'border-red-300 text-red-700'
-                  )}
-                >
                   {t(`members.status.${member.status.toLowerCase()}`, member.status)}
-                </Badge>
-              )}
+                </span>
+                {member.status === 'PENDING' && member.event && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-5 w-5 p-0 hover:bg-orange-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openStatusDialog(member);
+                    }}
+                  >
+                    <Link2 className="w-3.5 h-3.5 text-orange-600" />
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -879,20 +919,35 @@ export const MembersPage: React.FC = () => {
       {selectedEvent && (
         <TableCell className="py-3">
           {member.status && ['PENDING', 'REFUSED', 'ACCEPTED', 'EXPIRED'].includes(member.status) ? (
-            <Badge
-              className={cn(
-                'font-medium',
-                member.status === 'ACCEPTED' 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-100' 
-                  : member.status === 'PENDING' 
-                    ? 'bg-orange-100 text-orange-800 hover:bg-orange-100'
-                    : member.status === 'EXPIRED'
-                      ? 'bg-red-100 text-red-800 hover:bg-red-100'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
+            <div className="flex items-center gap-2">
+              <Badge
+                className={cn(
+                  'font-medium',
+                  member.status === 'ACCEPTED' 
+                    ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                    : member.status === 'PENDING' 
+                      ? 'bg-orange-100 text-orange-800 hover:bg-orange-100'
+                      : member.status === 'EXPIRED'
+                        ? 'bg-red-100 text-red-800 hover:bg-red-100'
+                        : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
+                )}
+              >
+                {t(`members.status.${member.status.toLowerCase()}`, member.status)}
+              </Badge>
+              {member.status === 'PENDING' && member.event && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 hover:bg-orange-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openStatusDialog(member);
+                  }}
+                >
+                  <Link2 className="w-4 h-4 text-orange-600" />
+                </Button>
               )}
-            >
-              {t(`members.status.${member.status.toLowerCase()}`, member.status)}
-            </Badge>
+            </div>
           ) : (
             <span className="text-muted-foreground text-sm">{t('members.notAvailable', 'N/A')}</span>
           )}
@@ -1389,37 +1444,39 @@ export const MembersPage: React.FC = () => {
                 disabled={statusUpdating}
               >
                 <SelectTrigger id="status-select" className="w-full">
-                  <SelectValue>
-                    {statusUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin inline" />}
-                    {selectedStatus ? t(`members.status.${selectedStatus.toLowerCase()}`, selectedStatus) : t('members.statusDialog.selectStatus', 'Select Status')}
+                  <SelectValue placeholder={t('members.statusDialog.selectStatus', 'Select Status')}>
+                    <div className="flex items-center">
+                      {statusUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                      {selectedStatus && t(`members.status.${selectedStatus.toLowerCase()}`, selectedStatus)}
+                    </div>
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="PENDING">
                     <div className="flex items-center gap-2">
                       <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">
-                        {t('members.statusDialog.pending', 'PENDING')}
+                        {t('members.status.pending', 'Pending')}
                       </Badge>
                     </div>
                   </SelectItem>
                   <SelectItem value="ACCEPTED">
                     <div className="flex items-center gap-2">
                       <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                        {t('members.statusDialog.accepted', 'ACCEPTED')}
+                        {t('members.status.accepted', 'Accepted')}
                       </Badge>
                     </div>
                   </SelectItem>
                   <SelectItem value="REFUSED">
                     <div className="flex items-center gap-2">
                       <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-                        {t('members.statusDialog.refused', 'REFUSED')}
+                        {t('members.status.refused', 'Refused')}
                       </Badge>
                     </div>
                   </SelectItem>
                   <SelectItem value="EXPIRED">
                     <div className="flex items-center gap-2">
                       <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
-                        {t('members.statusDialog.expired', 'EXPIRED')}
+                        {t('members.status.expired', 'Expired')}
                       </Badge>
                     </div>
                   </SelectItem>

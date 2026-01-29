@@ -607,6 +607,13 @@
     "title": "Members",
     "description": "Manage your members",
     "addMember": "Add Member",
+     "participantStatus": "Participant Status",
+     "verificationStatus": "Verification Status",
+    "organizer":"Organizer",
+    "unverified": "Unverified",
+    "participantStatusLabel": "Participant Status",
+    "role": "Role",
+    "member":"Member",
     "memberSearchPlaceholder": "Search members by name, email, phone, or location",
     "status": {
       "all": "All Status",
@@ -905,10 +912,40 @@
         "name": "Name",
         "status": "Status",
         "type": "Member Type",
+        "participantStatus": "Participant Status",
+        "verified": "Verified",
+        "gender": "Gender",
         "registration": "Registration",
         "joinDate": "Join Date",
         "tags": "Tags",
         "actions": "Actions"
+      },
+       "statusDialog": {
+        "title": "Change Participant Status",
+        "description": "Select the new status for this participant.",
+        "memberLabel": "Participant:",
+        "statusLabel": "Status",
+        "qrCode": "QR Code",
+        "updating": "Updating...",
+        "update": "Update",
+        "selectStatus": "Select Status",
+        "currentStatus": "Current Status",
+        "newStatus": "New Status",
+        "buttons": {
+          "cancel": "Cancel",
+          "update": "Update Status",
+          "updating": "Updating..."
+        },
+        "statusOptions": {
+          "active": {
+            "label": "Active",
+            "description": "The participant is active"
+          },
+          "inactive": {
+            "label": "Inactive",
+            "description": "The participant is inactive"
+          }
+        }
       }
   },
   "categories": {

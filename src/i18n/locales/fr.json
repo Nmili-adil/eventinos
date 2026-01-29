@@ -583,7 +583,14 @@
   "members": {
     "title": "Membres",
     "description": "Gérez vos membres",
+    "unverified": "Non vérifié",
+    "participantStatusLabel": "Statut du participant",
+    "role": "Rôle",
     "addMember": "Ajouter un membre",
+     "participantStatus": "Statut du participant",
+    "organizer":"Organisateur",
+    "verificationStatus": "Statut de vérification",
+    "member":"Membre",
     "memberSearchPlaceholder": "Rechercher des membres par nom, email, téléphone ou localisation",
     "status": {
       "all": "Tous les statuts",
@@ -600,10 +607,39 @@
         "type": "Type de membre",
         "participantStatus": "Statut du participant",
         "registration": "Inscription",
+        "verifiedStatus": "Statut vérifié",
         "verified": "Vérifié",
         "joinDate": "Date d'adhésion",
+        "gender": "Genre",
         "tags": "Étiquettes",
         "actions": "Actions"
+      },
+       "statusDialog": {
+        "title": "Changer le statut du participant",
+        "description": "Sélectionnez le nouveau statut pour ce participant.",
+        "memberLabel": "Participant :",
+        "statusLabel": "Statut",
+        "qrCode": "Code QR",
+        "updating": "Mise à jour en cours...",
+        "update": "Mettre à jour",
+        "selectStatus": "Sélectionnez le statut",
+        "currentStatus": "Statut actuel",
+        "newStatus": "Nouveau statut",
+        "buttons": {
+          "cancel": "Annuler",
+          "update": "Mettre à jour",
+          "updating": "Mise à jour en cours..."
+        },
+        "statusOptions": {
+          "active": {
+            "label": "Actif",
+            "description": "Le participant est actif"
+          },
+          "inactive": {
+            "label": "Inactif",
+            "description": "Le participant est inactif"
+          }
+        }
       },
     "registration": {
       "all": "Toutes les inscriptions",

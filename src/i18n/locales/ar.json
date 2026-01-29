@@ -568,6 +568,13 @@
     "title": "أعضاء",
     "description": "إدارة أعضائك",
     "addMember": "إضافة أعضاء",
+    "participantStatus": "حالة المشارك",
+    "organizer":"منظم",
+    "verificationStatus": "حالة التحقق",
+    "unverified": "غير مُتحقق",
+    "participantStatusLabel": "حالة المشارك",
+    "role": "الدور",
+    "member":"عضو",
     "memberSearchPlaceholder": "ابحث عن الأعضاء حسب الاسم أو البريد الإلكتروني أو الهاتف أو الموقع",
     "status": {
       "all": "كل الحالة",
@@ -868,10 +875,40 @@
         "name": "الاسم",
         "status": "الحالة",
         "type": " النوع",
+        "participantStatus": "حالة المشارك",
         "registration": "التسجيل",
+        "verified": "مُتحقق ",
+        "gender": "الجنس",
         "joinDate": "تاريخ الانضمام",
         "tags": "الوسوم",
         "actions": "الإجراءات"
+      },
+      "statusDialog": {
+        "title": "تغيير حالة المشارك",
+        "description": "اختر الحالة الجديدة لهذا المشارك.",
+        "memberLabel": "المشارك:",
+        "statusLabel": "الحالة",
+        "qrCode": "رمز الاستجابة السريعة",
+        "updating": "جاري التحديث...",
+        "update": "تحديث",
+        "selectStatus": "اختر الحالة",
+        "currentStatus": "الحالة الحالية",
+        "newStatus": "الحالة الجديدة",
+        "buttons": {
+          "cancel": "إلغاء",
+          "update": "تحديث الحالة",
+          "updating": "جاري التحديث..."
+        },
+        "statusOptions": {
+          "active": {
+            "label": "نشط",
+            "description": "المشارك نشط"
+          },
+          "inactive": {
+            "label": "غير نشط",
+            "description": "المشارك غير نشط"
+          }
+        }
       }
   },
   "categories": {
