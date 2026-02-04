@@ -298,6 +298,7 @@ const EventEditForm = ({
       {
         ...current,
         name: updated.name ?? current.name,
+        address: updated.address ?? current.address,
         city: updated.city ?? current.city,
         country: updated.country ?? current.country,
         countryCode: updated.countryCode ?? current.countryCode,
@@ -520,8 +521,9 @@ const EventEditForm = ({
                             )}
                           />
 
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div className="flex flex-wrap gap-4">
                             <FormField
+                            
                               control={form.control as any}
                               name="visibility"
                               render={({ field }) => (
@@ -1053,6 +1055,7 @@ const EventEditForm = ({
                               countryCode: form.watch("location.countryCode"),
                               place_id: form.watch("location.place_id"),
                               location: form.watch("location.location"),
+                              address: form.watch("location.address"),
                             }}
                             onChange={handleLocationChange}
                             defaultMode={

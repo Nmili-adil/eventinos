@@ -848,7 +848,7 @@ export const ComptesPage: React.FC = () => {
           <CardContent className="">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Accounts</p>
+                <p className="text-sm font-medium text-gray-600">{t("accounts.totalAccounts", "Total Accounts")}</p>
                 <p className="text-2xl font-bold text-gray-900">{totalUsers}</p>
               </div>
               <div className="p-2 bg-blue-100 rounded-lg">
@@ -862,7 +862,7 @@ export const ComptesPage: React.FC = () => {
           <CardContent className="">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Admins</p>
+                <p className="text-sm font-medium text-gray-600">{t("accounts.admins", "Admins")}</p>
                 <p className="text-2xl font-bold text-gray-900">{adminCount}</p>
               </div>
               <div className="p-2 bg-red-100 rounded-lg">
@@ -876,7 +876,7 @@ export const ComptesPage: React.FC = () => {
           <CardContent className="">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Organizers</p>
+                <p className="text-sm font-medium text-gray-600">{t("accounts.organizers", "Organizers")}</p>
                 <p className="text-2xl font-bold text-gray-900">{organizerCount}</p>
               </div>
               <div className="p-2 bg-purple-100 rounded-lg">
@@ -890,7 +890,7 @@ export const ComptesPage: React.FC = () => {
           <CardContent className="">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Users</p>
+                <p className="text-sm font-medium text-gray-600">{t("accounts.activeUsers", "Active Users")}</p>
                 <p className="text-2xl font-bold text-gray-900">{activeCount}</p>
               </div>
               <div className="p-2 bg-green-100 rounded-lg">

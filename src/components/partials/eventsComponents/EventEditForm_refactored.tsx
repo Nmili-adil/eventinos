@@ -317,7 +317,7 @@ const EventEditForm = ({
     },
     {
       value: "gallery",
-      label: t("eventForm.sections.gallery"),
+      label: t("eventForm.sections.galley"),
       icon: Image,
       color: "text-pink-500",
       bgColor: "bg-pink-500",

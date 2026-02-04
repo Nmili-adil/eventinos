@@ -1301,6 +1301,10 @@
     "title": "الحسابات",
     "description": "إدارة جميع المستخدمين",
     "addAccount": "إضافة حساب",
+    "activeUsers": "المستخدمون النشطون",
+    "organizers": "المنظمون",
+    "admins": "المديرون",
+    "totalAccounts": " إجمالي الحسابات",
     "totalUsers": "{count} مستخدم إجمالاً",
     "sort": {
       "by": "فرز حسب:",

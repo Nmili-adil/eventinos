@@ -151,18 +151,22 @@ export const updateEventSponsors = async (eventId: string, sponsors: any[]) => {
 
 // Update event location
 export const updateEventLocation = async (eventId: string, location: any) => {
-  // Ensure location has the correct structure for the backend
-  const formattedLocation = {
+  // Backend expects: { location: { coordinates: { latitude, longitude }, name } }
+  // The backend uses geocoder to get city, country, countryCode from coordinates
+  const lat = location?.coordinates?.latitude ?? location?.location?.lat ?? 0;
+  const lng = location?.coordinates?.longitude ?? location?.location?.lng ?? 0;
+  
+  const payload = {
     location: {
       coordinates: {
-        latitude: location?.coordinates?.latitude || location?.location?.lat || 0,
-        longitude: location?.coordinates?.longitude || location?.location?.lng || 0
+        latitude: Number(lat) || 0,
+        longitude: Number(lng) || 0
       },
       name: location?.name || ""
     }
   };
   
-  return api.put(`/events/${eventId}/location`, formattedLocation, {
+  return api.put(`/events/${eventId}/location`, payload, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getAuthToken()}`

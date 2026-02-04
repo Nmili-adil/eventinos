@@ -1347,6 +1347,10 @@
     "title": "Accounts",
     "description": "Manage all users",
     "addAccount": "Add Account",
+    "activeUsers": "Active Users",
+    "organizers": "Organizers",
+    "admins": "Admins",
+    "totalAccounts": " total accounts",
     "totalUsers": "{count} total users",
     "sort": {
       "by": "Sort by:",

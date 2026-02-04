@@ -192,6 +192,19 @@ export const ProfilePage: React.FC = () => {
     return value !== null && value !== undefined && value !== '';
   };
 
+  // Helper function to check if professional data exists
+  const hasProfessionalData = (): boolean => {
+    if (!user) return false;
+    return !!(
+      user.company?.name ||
+      user.company?.jobTitle ||
+      user.company?.industry ||
+      user.company?.size ||
+      user.socialNetworks?.linkedin ||
+      user.socialNetworks?.website
+    );
+  };
+
   const form = useForm({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -627,33 +640,35 @@ export const ProfilePage: React.FC = () => {
               )}
             </TabsTrigger>
 
-            <TabsTrigger
-              value="professional"
-              className="rounded-xl px-4 md:px-6 py-3 md:py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
-              style={{
-                background: activeTab === 'professional'
-                  ? `linear-gradient(135deg, ${COLORS.secondary}, ${COLORS.highlight})`
-                  : 'linear-gradient(135deg, rgba(106, 155, 166, 0.15), rgba(106, 155, 166, 0.05))',
-                color: activeTab === 'professional' ? 'white' : '#4b5563',
-                borderColor: activeTab === 'professional' ? COLORS.secondary : 'transparent',
-                boxShadow: activeTab === 'professional' ? '0 10px 25px rgba(106, 155, 166, 0.3)' : 'none'
-              }}
-            >
-              <div className="flex items-center gap-3 relative z-10">
-                <div 
-                  className="p-2 rounded-lg transition-all duration-300"
-                  style={{
-                    backgroundColor: activeTab === 'professional' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(106, 155, 166, 0.2)'
-                  }}
-                >
-                  <Briefcase className="w-5 h-5" />
+            {hasProfessionalData() && (
+              <TabsTrigger
+                value="professional"
+                className="rounded-xl px-4 md:px-6 py-3 md:py-4 font-semibold transition-all duration-300 border-2 hover:scale-105 relative overflow-hidden group"
+                style={{
+                  background: activeTab === 'professional'
+                    ? `linear-gradient(135deg, ${COLORS.secondary}, ${COLORS.highlight})`
+                    : 'linear-gradient(135deg, rgba(106, 155, 166, 0.15), rgba(106, 155, 166, 0.05))',
+                  color: activeTab === 'professional' ? 'white' : '#4b5563',
+                  borderColor: activeTab === 'professional' ? COLORS.secondary : 'transparent',
+                  boxShadow: activeTab === 'professional' ? '0 10px 25px rgba(106, 155, 166, 0.3)' : 'none'
+                }}
+              >
+                <div className="flex items-center gap-3 relative z-10">
+                  <div 
+                    className="p-2 rounded-lg transition-all duration-300"
+                    style={{
+                      backgroundColor: activeTab === 'professional' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(106, 155, 166, 0.2)'
+                    }}
+                  >
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <span className="text-base hidden md:inline">{t('profilePage.tabs.professional')}</span>
                 </div>
-                <span className="text-base hidden md:inline">{t('profilePage.tabs.professional')}</span>
-              </div>
-              {activeTab === 'professional' && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
-              )}
-            </TabsTrigger>
+                {activeTab === 'professional' && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                )}
+              </TabsTrigger>
+            )}
 
             {isViewerAdminOrOrganizer && (
               <TabsTrigger
@@ -1125,9 +1140,10 @@ export const ProfilePage: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="professional" className="space-y-6">
-          <Card className="border border-gray-200 bg-white shadow-sm">
-            <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
+        {hasProfessionalData() && (
+          <TabsContent value="professional" className="space-y-6">
+            <Card className="border border-gray-200 bg-white shadow-sm">
+              <CardHeader className="border-b border-gray-100" style={{ backgroundColor: COLORS.lightBg }}>
               <CardTitle className="flex items-center gap-3 text-xl font-bold" style={{ color: COLORS.dark }}>
                 <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.secondary }}>
                   <Briefcase className="h-5 w-5 text-white" />
@@ -1334,6 +1350,7 @@ export const ProfilePage: React.FC = () => {
             </CardContent>
           </Card>
         </TabsContent>
+        )}
 
         <TabsContent value="account" className="space-y-6">
           <Card className="border border-gray-200 bg-white shadow-sm">

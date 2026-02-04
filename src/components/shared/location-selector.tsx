@@ -444,7 +444,10 @@ export const LocationSelector = ({
                 id="address"
                 value={value?.address || ''}
                 placeholder={t('location.addressPlaceholder')}
-                onChange={(e) => onChange({ ...value, address: e.target.value })}
+                onChange={(e) => {
+                  const newValue = { ...value, address: e.target.value };
+                  onChange(newValue);
+                }}
               />
             </div>
             <div className="space-y-2">
