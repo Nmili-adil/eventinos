@@ -1654,6 +1654,8 @@
     "dialog": {
       "title": "Gérer les Permissions",
       "description": "Sélectionnez les permissions à attribuer à cet utilisateur",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
       "selectAll": "Tout Sélectionner",
       "of": "sur",
       "selected": "sélectionné(s)"
