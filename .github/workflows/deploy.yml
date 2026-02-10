@@ -19,5 +19,5 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
-          cd /home/deploy/apps/app1
-          ./deploy.sh
+          cd /home/ubuntu/eventinasprod/scripts
+          bash ./deploy_frontend.sh
