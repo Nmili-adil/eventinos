@@ -1,8 +1,8 @@
 // Application version - This file is auto-updated by GitHub Actions
 // Do not manually edit the version constant
 
-export const APP_VERSION = '1.0.3'
-export const BUILD_DATE = '2026-02-04'
+export const APP_VERSION = '1.0.4'
+export const BUILD_DATE = '2026-02-06'
 
 // Version display format
 export const getVersionDisplay = () => `v${APP_VERSION}`
