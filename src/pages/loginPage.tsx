@@ -79,7 +79,7 @@ export default function LoginPage() {
             <h2 className="text-xl 2xl:text-2xl font-bold">Eventinas</h2>
           </div>
           <p className="text-xs text-slate-300">
-            Gérez vos événements professionnell
+            Gérez vos événements professionnellement et facilement
           </p>
           <p className="text-xs text-slate-400 mt-1">
             {getVersionDisplay()}
