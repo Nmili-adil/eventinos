@@ -187,6 +187,8 @@
     "title": "Événements",
     "addEvent": "Ajouter un événement",
     "editEvent": "Modifier l'événement",
+    "deleteError": "Erreur lors de la suppression de l'événement",
+    "deleteSuccess": "Événement supprimé avec succès",
     "eventName": "Nom de l'événement",
     "eventDescription": "Description",
     "eventDetails": "Détails de l'événement",

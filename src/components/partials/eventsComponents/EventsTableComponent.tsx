@@ -176,12 +176,22 @@ export function EventsTable() {
     
     setDeleteLoading(true)
     try {
-      await dispatch(deleteEventRequest(deleteDialog.eventId))
+      await toast.promise(
+        dispatch(deleteEventRequest(deleteDialog.eventId)) as unknown as Promise<void>,
+        {
+          loading: t('events.deleting') || 'Deleting event...',
+          success: t('events.deleteSuccess') || 'Event deleted successfully!',
+          error: t('events.deleteError') || 'Error deleting event.',
+        }
+      )
+      
       setDeleteDialog({ open: false, eventId: null, eventTitle: '' })
-      // The toast is handled by the promise in the dispatch
+      
+      // Reload the page to refresh the events list
+      window.location.reload()
     } catch (error) {
       console.error('Failed to delete event:', error)
-      handleAsyncError(error, t('events.deleteError'))
+      // Error toast is already shown by toast.promise
     } finally {
       setDeleteLoading(false)
     }

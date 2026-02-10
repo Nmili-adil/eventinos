@@ -1,5 +1,6 @@
 import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi, updateEventStatusApi } from "@/api/eventsApi";
 import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction, UPDATE_EVENT_STATUS_REQUEST, UPDATE_EVENT_STATUS_SUCCESS, UPDATE_EVENT_STATUS_FAILURE, type UpdateEventStatusRequestAction, type UpdateEventStatusSuccessAction, type UpdateEventStatusFailureAction } from "./events.type"
+import { toast } from "sonner";
 
 export const fetchEventsRequest = () => {
     return async (dispatch: any) => {
@@ -112,6 +113,7 @@ export const deleteEventRequest = (eventId: string) => {
     dispatch({ type: DELETE_EVENT_REQUEST, payload: eventId })
     try {
       await deleteEventApi(eventId)
+      
       // deleteEventApi returns response.data directly, not full response
       dispatch({ type: DELETE_EVENT_SUCCESS })
     } catch (error: any) {
