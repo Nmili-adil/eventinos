@@ -19,15 +19,12 @@
     "loadingErrorData": "Unable to load data. Please try again later."
   },
   "unauthorized": {
-    "title": "401",
-    "subtitle": "Unauthorized Access",
+    "title": "Access Denied",
     "restrictedArea": "Restricted Area",
     "insufficientPermissions": "Insufficient Permissions",
-    "noPermissions": "You don't have the necessary permissions to access this page. This area is restricted to authorized users only.",
-    "contactAdmin": "If you believe this is an error, please contact your system administrator.",
-    "goBack": "Go Back",
-    "dashboard": "Dashboard",
-    "needAccess": "Need access? Contact your administrator to request permissions."
+    "message": "You don't have the necessary permissions to access this page.",
+    "contactAdmin": "This area is restricted to administrators and organizers only. If you believe this is an error, please contact your system administrator.",
+    "returnToLogin": "Return to Login"
   },
   "common": {
     "welcome": "Welcome back",
@@ -375,8 +372,6 @@
       "viewMembers": "Manage members"
     }
   },
-  
-
   "eventForm": {
     "title": "Create New Event",
     "description": "Fill in the event details step by step",
@@ -609,13 +604,13 @@
     "title": "Members",
     "description": "Manage your members",
     "addMember": "Add Member",
-     "participantStatus": "Participant Status",
-     "verificationStatus": "Verification Status",
-    "organizer":"Organizer",
+    "participantStatus": "Participant Status",
+    "verificationStatus": "Verification Status",
+    "organizer": "Organizer",
     "unverified": "Unverified",
     "participantStatusLabel": "Participant Status",
     "role": "Role",
-    "member":"Member",
+    "member": "Member",
     "memberSearchPlaceholder": "Search members by name, email, phone, or location",
     "status": {
       "all": "All Status",
@@ -661,7 +656,6 @@
     "notAvailable": "Not available",
     "deleting": "Deleting...",
     "verified": "Verified",
-    "unverified": "Unverified",
     "addFirstMember": "Add First Member",
     "emptyState": {
       "title": "No Members Found",
@@ -830,17 +824,9 @@
         "lastUpdated": "Last Updated",
         "memberId": "Member ID"
       },
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive",
-        "registrationComplete": "Complete",
-        "registrationPending": "Pending",
-        "completed": "Completed",
-        "pending": "Pending"
-      },
+      "status": "Status",
       "notAvailable": "Not available",
       "notProvided": "Not provided",
-      "status": "Status",
       "active": "Active",
       "inactive": "Inactive",
       "registration": "Registration",
@@ -910,45 +896,45 @@
         "return": "Return to Previous Page"
       }
     },
-     "list": {
-        "name": "Name",
-        "status": "Status",
-        "type": "Member Type",
-        "participantStatus": "Participant Status",
-        "verified": "Verified",
-        "gender": "Gender",
-        "registration": "Registration",
-        "joinDate": "Join Date",
-        "tags": "Tags",
-        "actions": "Actions"
+    "list": {
+      "name": "Name",
+      "status": "Status",
+      "type": "Member Type",
+      "participantStatus": "Participant Status",
+      "verified": "Verified",
+      "gender": "Gender",
+      "registration": "Registration",
+      "joinDate": "Join Date",
+      "tags": "Tags",
+      "actions": "Actions"
+    },
+    "statusDialog": {
+      "title": "Change Participant Status",
+      "description": "Select the new status for this participant.",
+      "memberLabel": "Participant:",
+      "statusLabel": "Status",
+      "qrCode": "QR Code",
+      "updating": "Updating...",
+      "update": "Update",
+      "selectStatus": "Select Status",
+      "currentStatus": "Current Status",
+      "newStatus": "New Status",
+      "buttons": {
+        "cancel": "Cancel",
+        "update": "Update Status",
+        "updating": "Updating..."
       },
-       "statusDialog": {
-        "title": "Change Participant Status",
-        "description": "Select the new status for this participant.",
-        "memberLabel": "Participant:",
-        "statusLabel": "Status",
-        "qrCode": "QR Code",
-        "updating": "Updating...",
-        "update": "Update",
-        "selectStatus": "Select Status",
-        "currentStatus": "Current Status",
-        "newStatus": "New Status",
-        "buttons": {
-          "cancel": "Cancel",
-          "update": "Update Status",
-          "updating": "Updating..."
+      "statusOptions": {
+        "active": {
+          "label": "Active",
+          "description": "The participant is active"
         },
-        "statusOptions": {
-          "active": {
-            "label": "Active",
-            "description": "The participant is active"
-          },
-          "inactive": {
-            "label": "Inactive",
-            "description": "The participant is inactive"
-          }
+        "inactive": {
+          "label": "Inactive",
+          "description": "The participant is inactive"
         }
       }
+    }
   },
   "categories": {
     "title": "Categories",
@@ -1596,14 +1582,6 @@
       "admin": "Admins"
     }
   },
-  "unauthorized": {
-    "title": "Access Denied",
-    "restrictedArea": "Restricted Area",
-    "insufficientPermissions": "Insufficient Permissions",
-    "message": "You don't have the necessary permissions to access this page.",
-    "contactAdmin": "This area is restricted to administrators and organizers only. If you believe this is an error, please contact your system administrator.",
-    "returnToLogin": "Return to Login"
-  },
   "profile": {
     "notFound": {
       "title": "No User Data",
@@ -1699,5 +1677,395 @@
     "unableToLoad": "Unable to load Google Maps",
     "loading": "Loading Google Maps…",
     "error": "Error loading maps"
+  },
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "services": "Services",
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "pricing": "Pricing",
+      "testimonials": "Testimonials",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "getStarted": "Get Started",
+      "login": "Login"
+    },
+    "hero": {
+      "badge": "All-in-One Event Platform",
+      "title": "Eventinas",
+      "titleHighlight": "The All-in-One Event Platform",
+      "description": "Eventinas is a complete online event platform designed for the promotion, management, and networking of your events, whether physical, hybrid, or virtual. From showcasing your event to participant registration, through personalized badge generation and facilitating connections between participants, institutions, and experts, Eventinas creates a true interaction space. Thanks to its innovative and technological features, the platform simplifies engagement with your target audience and accelerates all phases of planning and execution of your event.",
+      "ctaPrimary": "Discover Our Offers",
+      "ctaSecondary": "Learn More",
+      "stats": {
+        "events": "Active Events",
+        "participants": "Participants",
+        "satisfaction": "Satisfaction Rate"
+      }
+    },
+    "services": {
+      "badge": "Services",
+      "title": "Why",
+      "titleHighlight": "Eventinas is Unique?",
+      "description": "Welcome to the application that enables you to embrace the digital transformation revolutionizing the event industry.",
+      "learnMore": "Learn More",
+      "items": [
+        {
+          "title": "Corporate Events & Networking",
+          "description": "Conferences, exhibitions, festivals, summits… Eventinas adapts perfectly to your communication and networking priorities, while enhancing the image and value of your event among your exhibitors, sponsors, and participants."
+        },
+        {
+          "title": "Expos, Fairs & Summits",
+          "description": "Eventinas integrates innovative tools dedicated to building large and diverse communities. The platform brings together partners from public and private sectors, national and international, and facilitates smart connections between different profiles through an efficient and automated matching system."
+        },
+        {
+          "title": "Internal Events & Team Building",
+          "description": "For inspiring internal events — team building, product launches — the Eventinas networking platform has been designed to bolster your performance by providing all the conditions for success."
+        },
+        {
+          "title": "Networking Experiences",
+          "description": "Offer your participants immersive experiences that foster engagement, loyalty and maximize the return on investment of your event. Eventinas anticipates the needs of your clients, partners, and participants."
+        }
+      ]
+    },
+    "features": {
+      "badge": "Features",
+      "title": "Complete Features",
+      "titleHighlight": "for Optimal Event Management",
+      "description": "Eventinas offers a complete suite of tools to simplify every aspect of your event.",
+      "items": [
+        {
+          "title": "Participant Management & Communication",
+          "description": "Guide presentation of the event with personalized information, instant notifications and email communication."
+        },
+        {
+          "title": "Badge Creation & Printing",
+          "description": "Create and print personalized badges for all your participants with ease."
+        },
+        {
+          "title": "Real-Time Analytics",
+          "description": "Generate detailed reports in real time throughout the duration of your event."
+        },
+        {
+          "title": "Business Card Scanning",
+          "description": "Scan business cards for automatic creation of contact databases."
+        },
+        {
+          "title": "Event Photo Gallery",
+          "description": "Complete photo gallery of the event, accessible to all participants."
+        },
+        {
+          "title": "Online Payment & Registration",
+          "description": "Online payment module and participant registration with 0% commission on ticketing."
+        }
+      ]
+    },
+    "communication": {
+      "badge": "Communication",
+      "title": "An Excellent",
+      "titleHighlight": "Communication Tool",
+      "appTitle": "Eventinas",
+      "appSubtitle": "Your event, your way",
+      "menuItems": [
+        "My Events",
+        "Networking",
+        "Badges"
+      ],
+      "items": [
+        "Increase your event visibility with a white-label mobile application (iOS and Android)",
+        "Benefit from an optimal combination of modern design and exceptional user experience",
+        "Offer premium visibility to your sponsors and exhibitors",
+        "Enhance your partners and experts by providing them with a dedicated space to strengthen their impact and influence"
+      ]
+    },
+    "howItWorks": {
+      "badge": "How It Works",
+      "title": "Eventinas",
+      "titleHighlight": "The Solution to Ensure Your Event Success",
+      "description": "Each event is unique. Eventinas supports you at every stage.",
+      "items": [
+        {
+          "title": "Before the Event",
+          "description": "Optimize your time with an advanced platform that automates repetitive tasks and simplifies organization."
+        },
+        {
+          "title": "During the Event",
+          "description": "Your participants — speakers, sponsors, exhibitors or guests — can easily schedule relevant meetings and enjoy an enriching experience."
+        },
+        {
+          "title": "After the Event",
+          "description": "Create satisfaction surveys, accurately measure your event performance, analyze results, demonstrate your return on investment, and plan your future events with the collected data."
+        }
+      ]
+    },
+    "interface": {
+      "badge": "Interface",
+      "title": "Pleasant and",
+      "titleHighlight": "Accessible Interface",
+      "description": "Eventinas has been designed to offer a smooth, ergonomic and pleasant experience. The platform offers a personalized experience for your participants and sponsors, creating a lasting and memorable impact.",
+      "features": [
+        "Intuitive Design",
+        "Personalized Experience",
+        "Multi-Device",
+        "Real-Time Data"
+      ],
+      "stats": [
+        {
+          "label": "Mobile App",
+          "value": "iOS & Android"
+        },
+        {
+          "label": "Accessibility",
+          "value": "100% Responsive"
+        },
+        {
+          "label": "Performance",
+          "value": "Ultra Fast"
+        },
+        {
+          "label": "Security",
+          "value": "Enterprise Grade"
+        }
+      ]
+    },
+    "pricing": {
+      "badge": "Pricing",
+      "title": "Simple and",
+      "titleHighlight": "Flexible Pricing",
+      "description": "An offer tailored to your goals and your event strategy.",
+      "highlights": [
+        "Unlimited number of events",
+        "Ticketing, badges with 0% commission"
+      ],
+      "plans": {
+        "basic": {
+          "name": "Basic",
+          "subtitle": "Single use",
+          "features": [
+            "Use for a single event",
+            "Access to all features",
+            "Platform access 2 months before and 2 months after the event",
+            "Dedicated support from our team"
+          ],
+          "cta": "Choose Basic"
+        },
+        "premium": {
+          "name": "Premium",
+          "subtitle": "Multiple use",
+          "badge": "Popular",
+          "features": [
+            "Use for multiple events",
+            "Full access to all features",
+            "Platform access all year round",
+            "Complete support and dedicated assistance"
+          ],
+          "cta": "Choose Premium"
+        }
+      },
+      "support": {
+        "title": "Need assistance or support?",
+        "description": "Our team are at your disposal to facilitate the use of Eventinas",
+        "team": "Our team will be available to assist you in all areas from conception to realization of your event.",
+        "cta": "Contact us for personalized support."
+      }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Frequently",
+      "titleHighlight": "Asked Questions",
+      "items": [
+        {
+          "question": "What types of events does Eventinas support?",
+          "answer": "Eventinas supports all types of events — conferences, exhibitions, festivals, summits, team building, product launches, internal conventions, and more. Whether physical, hybrid, or virtual, the platform adapts flawlessly to your needs."
+        },
+        {
+          "question": "Is there a commission on ticketing?",
+          "answer": "No, Eventinas charges 0% commission on ticketing, badges, and registrations. You keep 100% of your ticket revenue."
+        },
+        {
+          "question": "Can I customize the mobile application?",
+          "answer": "Yes, Eventinas offers a white-label mobile application (iOS and Android) that you can fully customize to match your event branding and identity."
+        },
+        {
+          "question": "How does the networking system work?",
+          "answer": "Eventinas includes a smart matching system that connects participants, exhibitors, sponsors, and speakers based on profiles, interests, and goals — before, during, and after the event."
+        },
+        {
+          "question": "What kind of support do you offer?",
+          "answer": "We provide dedicated support at every stage — from conception to post-event analytics. Our team assists you with setup, customization, and technical guidance to ensure your event's success."
+        }
+      ]
+    },
+    "testimonials": {
+      "badge": "Testimonials",
+      "title": "What Our",
+      "titleHighlight": "Clients Say",
+      "description": "What our clients say about us.",
+      "items": [
+        {
+          "name": "Sarah Johnson",
+          "role": "Event Director",
+          "text": "Eventinas is an inspiring and motivating platform, with no limits. The experience offered is unique and allows participation in events from anywhere."
+        },
+        {
+          "name": "Michael Chen",
+          "role": "Marketing Manager",
+          "text": "An innovative, efficient and extremely useful application for organizing events. It greatly contributed to the success of our event."
+        },
+        {
+          "name": "Emma Martinez",
+          "role": "Conference Organizer",
+          "text": "Eventinas is a truly practical application; I love creating my events on it because it offers a wide variety of event categories. The reporting at the end of the event allowed us to reflect on the next event, which will surely be managed with your team."
+        }
+      ]
+    },
+    "mission": {
+      "badge": "Our Mission",
+      "title": "Our Mission",
+      "titleHighlight": "and Vision",
+      "description": "Events are essential spaces for meeting, collaboration, and creating opportunities. However, bringing people together is not enough. They need a simple and effective way to connect, and it is Eventinas's mission. We place human values — trust, empathy, integrity, and collaboration — at the heart of our approach. Through innovation and technology, we help our clients create more performing, engaging, and growth-oriented events.",
+      "values": [
+        {
+          "title": "Trust",
+          "description": "Building lasting relationships based on transparency"
+        },
+        {
+          "title": "Empathy",
+          "description": "Understanding and anticipating your needs"
+        },
+        {
+          "title": "Innovation",
+          "description": "Cutting-edge technology for your events"
+        },
+        {
+          "title": "Collaboration",
+          "description": "Working together for your success"
+        }
+      ]
+    },
+    "team": {
+      "badge": "Our Team",
+      "title": "Our Experts",
+      "titleHighlight": "at Your Service",
+      "description": "Eventinas is available on all your devices, allowing you to manage your events at any time, wherever you are.",
+      "features": [
+        "Fast Support",
+        "Multi-Device",
+        "Secure Platform",
+        "Expert Team"
+      ],
+      "newsletter": {
+        "title": "Stay Informed",
+        "description": "Subscribe to our newsletter to receive our latest news and updates.",
+        "placeholder": "Enter your email",
+        "cta": "Subscribe"
+      }
+    },
+    "contact": {
+      "badge": "Contact Us",
+      "title": "Get in",
+      "titleHighlight": "Touch",
+      "subtitle": "Have a question? A partnership request? An idea to share?",
+      "description": "Contact us via the form. Our team will respond as soon as possible.",
+      "form": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phone": "Phone",
+        "message": "Your Message",
+        "messagePlaceholder": "Tell us about your event...",
+        "submit": "Send Message",
+        "sending": "Sending...",
+        "cooldown": "Please wait before sending again",
+        "successTitle": "Message Sent!",
+        "successMessage": "Thank you for reaching out. Our team will get back to you shortly.",
+        "errorMessage": "Something went wrong. Please try again later."
+      },
+      "validation": {
+        "firstName": {
+          "required": "First name is required",
+          "min": "First name must be at least 2 characters",
+          "max": "First name must be at most 50 characters",
+          "invalid": "First name contains invalid characters"
+        },
+        "lastName": {
+          "required": "Last name is required",
+          "min": "Last name must be at least 2 characters",
+          "max": "Last name must be at most 50 characters",
+          "invalid": "Last name contains invalid characters"
+        },
+        "email": {
+          "required": "Email address is required",
+          "invalid": "Please enter a valid email address",
+          "max": "Email must be at most 100 characters"
+        },
+        "phone": {
+          "max": "Phone number must be at most 20 characters",
+          "invalid": "Please enter a valid phone number"
+        },
+        "message": {
+          "required": "Message is required",
+          "min": "Message must be at least 10 characters",
+          "max": "Message must be at most 2000 characters"
+        }
+      },
+      "info": [
+        {
+          "title": "Address",
+          "text": "123 Event Street, Tech City, TC 12345",
+          "link": "View on Map"
+        },
+        {
+          "title": "Email",
+          "text": "support@eventinas.com",
+          "link": "Send Email"
+        },
+        {
+          "title": "Phone",
+          "text": "+1 (555) 123-4567",
+          "link": "Call Us"
+        }
+      ]
+    },
+    "footer": {
+      "description": "The all-in-one event platform to simplify, engage, and succeed.",
+      "company": {
+        "title": "Company",
+        "links": [
+          "About Us",
+          "Our Mission",
+          "Careers",
+          "Pricing",
+          "Contact"
+        ]
+      },
+      "product": {
+        "title": "Product",
+        "links": [
+          "Features",
+          "Badge Creation",
+          "Networking",
+          "Analytics",
+          "Mobile App"
+        ]
+      },
+      "legal": {
+        "title": "Legal",
+        "links": [
+          "Privacy Policy",
+          "Terms & Conditions",
+          "Cookie Policy",
+          "GDPR"
+        ]
+      },
+      "copyright": "© {{year}} Eventinas. All rights reserved.",
+      "social": [
+        "Twitter",
+        "LinkedIn",
+        "Facebook",
+        "Instagram"
+      ]
+    }
   }
 }

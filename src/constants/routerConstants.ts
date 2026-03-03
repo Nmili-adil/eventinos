@@ -1,4 +1,5 @@
-export const LOGIN_PAGE = '/'
+export const LANDING_PAGE = '/'
+export const LOGIN_PAGE = '/login'
 export const FORGOTPASSWORD_PAGE = '/forgot-password'
 export const PRIVACY_PAGE = '/privacy'
 export const DELETE_ACCOUNT_PAGE = '/account-deletion'

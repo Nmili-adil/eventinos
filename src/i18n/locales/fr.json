@@ -23,15 +23,14 @@
     "connectionErrorMessage": "Impossible de contacter le serveur. Veuillez vérifier votre connexion internet et réessayer."
   },
   "unauthorized": {
-    "title": "401",
-    "subtitle": "Accès non autorisé",
-    "restrictedArea": "Zone restreinte",
-    "insufficientPermissions": "Permissions insuffisantes",
-    "noPermissions": "Vous n'avez pas les permissions nécessaires pour accéder à cette page. Cette zone est réservée aux utilisateurs autorisés uniquement.",
-    "contactAdmin": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter votre administrateur système.",
+    "title": "Accès Refusé",
+    "restrictedArea": "Zone Restreinte",
+    "insufficientPermissions": "Permissions Insuffisantes",
+    "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+    "contactAdmin": "Cette zone est réservée aux administrateurs et organisateurs uniquement. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter votre administrateur système.",
     "goBack": "Retour",
     "dashboard": "Tableau de bord",
-    "needAccess": "Besoin d'accès ? Contactez votre administrateur pour demander les permissions."
+    "needAccess": "Besoin d'accès ? Contactez votre administrateur"
   },
   "common": {
     "welcome": "Bienvenue",
@@ -70,21 +69,10 @@
     "myAccount": "Mon Compte"
   },
   "auth": {
-    "login": "Connexion",
-    "loginTitle": "Connexion",
-    "loginDescription": "Entrez vos identifiants pour accéder à votre compte",
-    "email": "Email",
-    "emailPlaceholder": "votre@email.com",
-    "password": "Mot de passe",
-    "passwordPlaceholder": "Votre mot de passe",
-    "forgotPassword": "Mot de passe oublié ?",
-    "loginButton": "Se connecter",
-    "loggingIn": "Connexion...",
-    "loginSuccess": "Connexion réussie!",
-    "loginError": "Erreur de connexion",
-    "welcome": "Bienvenue",
-    "accessAccount": "Accédez à votre compte",
-    "account": "Eventify"
+    "verifyingAuthentication": "Vérification de l'authentification...",
+    "accessDenied": "Accès Refusé",
+    "restrictedToAdminOrganizer": "Cette application est réservée aux administrateurs et organisateurs uniquement.",
+    "returnToLogin": "Retour à la connexion"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -595,10 +583,10 @@
     "participantStatusLabel": "Statut du participant",
     "role": "Rôle",
     "addMember": "Ajouter un membre",
-     "participantStatus": "Statut du participant",
-    "organizer":"Organisateur",
+    "participantStatus": "Statut du participant",
+    "organizer": "Organisateur",
     "verificationStatus": "Statut de vérification",
-    "member":"Membre",
+    "member": "Membre",
     "memberSearchPlaceholder": "Rechercher des membres par nom, email, téléphone ou localisation",
     "status": {
       "all": "Tous les statuts",
@@ -610,45 +598,31 @@
       "expired": "Expiré"
     },
     "list": {
-        "name": "Nom",
-        "status": "Statut",
-        "type": "Type de membre",
-        "participantStatus": "Statut du participant",
-        "registration": "Inscription",
-        "verifiedStatus": "Statut vérifié",
-        "verified": "Vérifié",
-        "joinDate": "Date d'adhésion",
-        "gender": "Genre",
-        "tags": "Étiquettes",
-        "actions": "Actions"
-      },
-       "statusDialog": {
-        "title": "Changer le statut du participant",
-        "description": "Sélectionnez le nouveau statut pour ce participant.",
-        "memberLabel": "Participant :",
-        "statusLabel": "Statut",
-        "qrCode": "Code QR",
-        "updating": "Mise à jour en cours...",
-        "update": "Mettre à jour",
-        "selectStatus": "Sélectionnez le statut",
-        "currentStatus": "Statut actuel",
-        "newStatus": "Nouveau statut",
-        "buttons": {
-          "cancel": "Annuler",
-          "update": "Mettre à jour",
-          "updating": "Mise à jour en cours..."
-        },
-        "statusOptions": {
-          "active": {
-            "label": "Actif",
-            "description": "Le participant est actif"
-          },
-          "inactive": {
-            "label": "Inactif",
-            "description": "Le participant est inactif"
-          }
-        }
-      },
+      "name": "Nom",
+      "status": "Statut",
+      "type": "Type de membre",
+      "participantStatus": "Statut du participant",
+      "registration": "Inscription",
+      "verifiedStatus": "Statut vérifié",
+      "verified": "Vérifié",
+      "joinDate": "Date d'adhésion",
+      "gender": "Genre",
+      "tags": "Étiquettes",
+      "actions": "Actions"
+    },
+    "statusDialog": {
+      "title": "Changer le statut du participant",
+      "description": "Mettre à jour le statut d'invitation pour {{name}}",
+      "statusLabel": "Statut d'invitation",
+      "selectStatus": "Sélectionner le statut",
+      "pending": "EN ATTENTE",
+      "accepted": "ACCEPTÉ",
+      "refused": "REFUSÉ",
+      "expired": "EXPIRÉ",
+      "updating": "Mise à jour...",
+      "update": "Mettre à jour le statut",
+      "qrCode": "Code QR"
+    },
     "registration": {
       "all": "Toutes les inscriptions",
       "completed": "Complété",
@@ -672,9 +646,6 @@
     "activated": "Activer",
     "deactivated": "Désactiver",
     "verified": "Vérifié",
-    "unverified": "Non vérifié",
-    "organizer": "Organisateur",
-    "member": "Membre",
     "delete": "Supprimer",
     "preview": "Aperçu",
     "edit": "Modifier",
@@ -683,8 +654,6 @@
     "joinedOn": "Rejoint le",
     "notAvailable": "Non disponible",
     "deleting": "Suppression en cours...",
-    "verified": "Vérifié",
-    "unverified": "Non vérifié",
     "addFirstMember": "Ajouter le premier membre",
     "emptyState": {
       "title": "Aucun membre trouvé",
@@ -853,17 +822,9 @@
         "lastUpdated": "Dernière mise à jour",
         "memberId": "ID membre"
       },
-      "status": {
-        "active": "Actif",
-        "inactive": "Inactif",
-        "registrationComplete": "Complété",
-        "registrationPending": "En attente",
-        "completed": "Complété",
-        "pending": "En attente"
-      },
+      "status": "Statut",
       "notAvailable": "Non disponible",
       "notProvided": "Non fourni",
-      "status": "Statut",
       "active": "Actif",
       "inactive": "Inactif",
       "registration": "Inscription",
@@ -909,23 +870,8 @@
         "close": "Fermer",
         "editMember": "Modifier le membre",
         "deleteMember": "Supprimer le membre"
-      },
-      "notAvailable": "Non disponible"
+      }
     },
-    "statusDialog": {
-      "title": "Changer le statut du participant",
-      "description": "Mettre à jour le statut d'invitation pour {{name}}",
-      "statusLabel": "Statut d'invitation",
-      "selectStatus": "Sélectionner le statut",
-      "pending": "EN ATTENTE",
-      "accepted": "ACCEPTÉ",
-      "refused": "REFUSÉ",
-      "expired": "EXPIRÉ",
-      "updating": "Mise à jour...",
-      "update": "Mettre à jour le statut",
-      "qrCode": "Code QR"
-    },
-    "participantStatus": "Statut du participant",
     "notEventParticipant": "Ce membre n'est pas un participant d'événement",
     "statusUpdateSuccess": "Statut du participant mis à jour avec succès",
     "statusUpdateError": "Échec de la mise à jour du statut du participant",
@@ -1190,15 +1136,13 @@
   },
   "permissions": {
     "dialog": {
-      "title": "Gérer les permissions",
-      "description": "Sélectionnez les permissions que vous souhaitez attribuer. Vous pouvez sélectionner toutes les permissions d'un groupe ou des permissions individuelles.",
-      "selectAll": "Tout sélectionner",
-      "of": "sur",
-      "selected": "sélectionnées",
-      "noPermissions": "Aucune permission disponible",
+      "title": "Gérer les Permissions",
+      "description": "Sélectionnez les permissions à attribuer à cet utilisateur",
       "cancel": "Annuler",
       "save": "Enregistrer",
-      "saving": "Enregistrement..."
+      "selectAll": "Tout Sélectionner",
+      "of": "sur",
+      "selected": "sélectionné(s)"
     }
   },
   "footer": {
@@ -1625,22 +1569,6 @@
       "admin": "Admins"
     }
   },
-  "unauthorized": {
-    "title": "Accès Refusé",
-    "restrictedArea": "Zone Restreinte",
-    "insufficientPermissions": "Permissions Insuffisantes",
-    "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
-    "contactAdmin": "Cette zone est réservée aux administrateurs et organisateurs uniquement. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter votre administrateur système.",
-    "goBack": "Retour",
-    "dashboard": "Tableau de bord",
-    "needAccess": "Besoin d'accès ? Contactez votre administrateur"
-  },
-  "auth": {
-    "verifyingAuthentication": "Vérification de l'authentification...",
-    "accessDenied": "Accès Refusé",
-    "restrictedToAdminOrganizer": "Cette application est réservée aux administrateurs et organisateurs uniquement.",
-    "returnToLogin": "Retour à la connexion"
-  },
   "profile": {
     "notFound": {
       "title": "Aucune Donnée Utilisateur",
@@ -1650,17 +1578,6 @@
     "error": {
       "title": "Erreur de Chargement du Profil",
       "tryAgain": "Réessayer"
-    }
-  },
-  "permissions": {
-    "dialog": {
-      "title": "Gérer les Permissions",
-      "description": "Sélectionnez les permissions à attribuer à cet utilisateur",
-      "cancel": "Annuler",
-      "save": "Enregistrer",
-      "selectAll": "Tout Sélectionner",
-      "of": "sur",
-      "selected": "sélectionné(s)"
     }
   },
   "location": {
@@ -1704,5 +1621,395 @@
     "unableToLoad": "Impossible de charger Google Maps",
     "loading": "Chargement de Google Maps...",
     "error": "Erreur de chargement des cartes"
+  },
+  "landing": {
+    "nav": {
+      "home": "Accueil",
+      "services": "Services",
+      "features": "Fonctionnalités",
+      "howItWorks": "Comment ça marche",
+      "pricing": "Tarifs",
+      "testimonials": "Témoignages",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "getStarted": "Commencer",
+      "login": "Connexion"
+    },
+    "hero": {
+      "badge": "Plateforme événementielle tout-en-un",
+      "title": "Eventinas",
+      "titleHighlight": "La plateforme événementielle tout-en-un",
+      "description": "Eventinas est une plateforme événementielle en ligne complète, conçue pour la promotion, la gestion et le networking de vos événements, qu'ils soient physiques, hybrides ou virtuels. De la mise en valeur de votre événement à l'inscription des participants, en passant par la génération de badges personnalisés et la facilitation des connexions entre participants, institutions et experts, Eventinas crée un véritable espace d'interaction. Grâce à ses fonctionnalités innovantes et technologiques, la plateforme simplifie l'engagement avec votre audience cible et accélère toutes les phases de planification et d'exécution de votre événement.",
+      "ctaPrimary": "Découvrir nos offres",
+      "ctaSecondary": "En savoir plus",
+      "stats": {
+        "events": "Événements actifs",
+        "participants": "Participants",
+        "satisfaction": "Taux de satisfaction"
+      }
+    },
+    "services": {
+      "badge": "Services",
+      "title": "Pourquoi",
+      "titleHighlight": "Eventinas est unique ?",
+      "description": "Bienvenue dans l'application qui vous permet d'accompagner la transformation digitale qui révolutionne le monde de l'événementiel.",
+      "learnMore": "En savoir plus",
+      "items": [
+        {
+          "title": "Événements corporate & Networking",
+          "description": "Conférences, expositions, festivals, sommets… Eventinas s'adapte parfaitement à vos priorités en matière de communication et de networking, tout en renforçant l'image et la valeur de votre événement auprès de vos exposants, sponsors et participants."
+        },
+        {
+          "title": "Salons, Foires & Sommets",
+          "description": "Eventinas intègre des outils innovants dédiés au développement de communautés larges et diversifiées. La plateforme rassemble des partenaires issus d'horizons publics et privés, nationaux et internationaux, et facilite la mise en relation intelligente entre les différents profils grâce à un système de matching efficace et automatisé."
+        },
+        {
+          "title": "Événements internes & Team Building",
+          "description": "Convention annuelle, team building, lancements de produits… Pour créer des événements internes inspirants et fidéliser vos collaborateurs ou vos clients, la plateforme Eventinas met à votre disposition toutes les conditions de réussite grâce à des innovations technologiques conçues pour maximiser votre performance."
+        },
+        {
+          "title": "Expériences de Networking",
+          "description": "Offrez à vos participants des expériences immersives qui favorisent leur engagement, leur fidélité et maximisent le retour sur investissement de votre événement. Eventinas anticipe les besoins de vos clients, partenaires et participants."
+        }
+      ]
+    },
+    "features": {
+      "badge": "Fonctionnalités",
+      "title": "Des fonctionnalités complètes",
+      "titleHighlight": "pour une gestion événementielle optimale",
+      "description": "Eventinas propose une suite complète d'outils pour simplifier chaque aspect de votre événement.",
+      "items": [
+        {
+          "title": "Gestion des participants et communication",
+          "description": "Guide de présentation de l'événement avec informations personnalisées, notifications instantanées et communication par email."
+        },
+        {
+          "title": "Création et impression de badges",
+          "description": "Créez et imprimez des badges personnalisés pour tous vos participants avec facilité."
+        },
+        {
+          "title": "Analyse en temps réel",
+          "description": "Génération de rapports détaillés en temps réel pendant toute la durée de l'événement."
+        },
+        {
+          "title": "Scan de cartes de visite",
+          "description": "Scan de cartes de visite pour la création automatique de bases de données."
+        },
+        {
+          "title": "Galerie photos de l'événement",
+          "description": "Galerie photos complète de l'événement, accessible à tous les participants."
+        },
+        {
+          "title": "Paiement en ligne et inscription",
+          "description": "Module de paiement en ligne et inscription des participants avec 0 % de commission sur la billetterie."
+        }
+      ]
+    },
+    "communication": {
+      "badge": "Communication",
+      "title": "Un puissant",
+      "titleHighlight": "outil de communication",
+      "appTitle": "Eventinas",
+      "appSubtitle": "Votre événement, à votre façon",
+      "menuItems": [
+        "Mes événements",
+        "Networking",
+        "Badges"
+      ],
+      "items": [
+        "Augmentez la visibilité de votre événement grâce à une application mobile en marque blanche (iOS et Android)",
+        "Profitez d'une combinaison optimale entre design moderne et expérience utilisateur exceptionnelle",
+        "Offrez une visibilité premium à vos sponsors et exposants",
+        "Valorisez vos partenaires et experts en leur offrant un espace dédié pour renforcer leur impact et leur influence"
+      ]
+    },
+    "howItWorks": {
+      "badge": "Comment ça marche",
+      "title": "Eventinas",
+      "titleHighlight": "La solution pour garantir le succès de votre événement",
+      "description": "Chaque événement est unique. Eventinas vous accompagne à chaque étape.",
+      "items": [
+        {
+          "title": "Avant l'événement",
+          "description": "Optimisez votre temps grâce à une plateforme avancée qui automatise les tâches répétitives et simplifie l'organisation."
+        },
+        {
+          "title": "Pendant l'événement",
+          "description": "Vos participants — speakers, sponsors, exposants ou invités — peuvent planifier facilement des rendez-vous pertinents et vivre une expérience enrichissante."
+        },
+        {
+          "title": "Après l'événement",
+          "description": "Créez des enquêtes de satisfaction, mesurez précisément la performance de votre événement, analysez les résultats et démontrez votre retour sur investissement, et planifiez vos futurs événements grâce aux données collectées."
+        }
+      ]
+    },
+    "interface": {
+      "badge": "Interface",
+      "title": "Une interface intuitive",
+      "titleHighlight": "et accessible",
+      "description": "Eventinas a été conçu pour offrir une expérience fluide, ergonomique et agréable. La plateforme propose une expérience personnalisée pour vos participants et sponsors, créant un impact durable et mémorable.",
+      "features": [
+        "Design intuitif",
+        "Expérience personnalisée",
+        "Multi-appareils",
+        "Données en temps réel"
+      ],
+      "stats": [
+        {
+          "label": "Application mobile",
+          "value": "iOS & Android"
+        },
+        {
+          "label": "Accessibilité",
+          "value": "100% Responsive"
+        },
+        {
+          "label": "Performance",
+          "value": "Ultra rapide"
+        },
+        {
+          "label": "Sécurité",
+          "value": "Niveau entreprise"
+        }
+      ]
+    },
+    "pricing": {
+      "badge": "Tarification",
+      "title": "Tarification simple",
+      "titleHighlight": "et flexible",
+      "description": "Une offre adaptée à vos objectifs et à votre stratégie événementielle.",
+      "highlights": [
+        "Nombre illimité d'événements",
+        "Billetterie, badges avec 0 % de commission"
+      ],
+      "plans": {
+        "basic": {
+          "name": "Basic",
+          "subtitle": "Usage unique",
+          "features": [
+            "Utilisation pour un seul événement",
+            "Accès à toutes les fonctionnalités",
+            "Accès à la plateforme 2 mois avant et 2 mois après l'événement",
+            "Support dédié de notre équipe"
+          ],
+          "cta": "Choisir Basic"
+        },
+        "premium": {
+          "name": "Premium",
+          "subtitle": "Usage multiple",
+          "badge": "Populaire",
+          "features": [
+            "Utilisation pour plusieurs événements",
+            "Accès complet à toutes les fonctionnalités",
+            "Accès à la plateforme toute l'année",
+            "Support complet et accompagnement dédié"
+          ],
+          "cta": "Choisir Premium"
+        }
+      },
+      "support": {
+        "title": "Besoin d'aide ou de support ?",
+        "description": "Notre équipe vous accompagne à chaque étape",
+        "team": "Notre équipe sera disponible pour vous assister dans tous les domaines, de la conception à la réalisation de votre événement.",
+        "cta": "Contactez-nous pour bénéficier d'un accompagnement personnalisé."
+      }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Questions",
+      "titleHighlight": "fréquemment posées",
+      "items": [
+        {
+          "question": "Quels types d'événements Eventinas prend-il en charge ?",
+          "answer": "Eventinas prend en charge tous les types d'événements — conférences, expositions, festivals, sommets, team building, lancements de produits, conventions internes, et plus encore. Qu'ils soient physiques, hybrides ou virtuels, la plateforme s'adapte parfaitement à vos besoins."
+        },
+        {
+          "question": "Y a-t-il une commission sur la billetterie ?",
+          "answer": "Non, Eventinas ne prend aucune commission sur la billetterie, les badges et les inscriptions. Vous conservez 100 % de vos revenus de billetterie."
+        },
+        {
+          "question": "Puis-je personnaliser l'application mobile ?",
+          "answer": "Oui, Eventinas propose une application mobile en marque blanche (iOS et Android) que vous pouvez entièrement personnaliser pour correspondre à l'identité et à l'image de votre événement."
+        },
+        {
+          "question": "Comment fonctionne le système de networking ?",
+          "answer": "Eventinas inclut un système de matching intelligent qui connecte les participants, exposants, sponsors et intervenants en fonction des profils, intérêts et objectifs — avant, pendant et après l'événement."
+        },
+        {
+          "question": "Quel type de support offrez-vous ?",
+          "answer": "Nous fournissons un support dédié à chaque étape — de la conception à l'analyse post-événement. Notre équipe vous assiste dans la configuration, la personnalisation et l'accompagnement technique pour garantir le succès de votre événement."
+        }
+      ]
+    },
+    "testimonials": {
+      "badge": "Témoignages",
+      "title": "Ce que nos",
+      "titleHighlight": "clients disent de nous",
+      "description": "Ce que nos clients disent de nous.",
+      "items": [
+        {
+          "name": "Sophie Dubois",
+          "role": "Directrice événementielle",
+          "text": "Eventinas est une plateforme inspirante et motivante, sans limites. L'expérience offerte est unique et permet de participer à des événements depuis n'importe où."
+        },
+        {
+          "name": "Marc Lefebvre",
+          "role": "Responsable Marketing",
+          "text": "Une application innovante, efficace et extrêmement utile pour organiser des événements. Elle a grandement contribué à la réussite de notre événement."
+        },
+        {
+          "name": "Julie Martin",
+          "role": "Organisatrice de conférences",
+          "text": "Eventinas est une solution pratique et complète. Les rapports générés nous ont permis d'améliorer significativement l'organisation de nos futurs événements."
+        }
+      ]
+    },
+    "mission": {
+      "badge": "Notre mission",
+      "title": "Notre mission",
+      "titleHighlight": "et notre vision",
+      "description": "Les événements sont des espaces essentiels de rencontre, de collaboration et de création d'opportunités. Cependant, réunir des personnes ne suffit pas. Elles ont besoin d'un moyen simple et efficace de se connecter. C'est la mission de Eventinas. Nous plaçons les valeurs humaines — confiance, empathie, intégrité et collaboration — au cœur de notre approche. Grâce à l'innovation et à la technologie, nous aidons nos clients à créer des événements plus performants, plus engageants et porteurs de croissance.",
+      "values": [
+        {
+          "title": "Confiance",
+          "description": "Bâtir des relations durables basées sur la transparence"
+        },
+        {
+          "title": "Empathie",
+          "description": "Comprendre et anticiper vos besoins"
+        },
+        {
+          "title": "Innovation",
+          "description": "Technologie de pointe pour vos événements"
+        },
+        {
+          "title": "Collaboration",
+          "description": "Travailler ensemble pour votre succès"
+        }
+      ]
+    },
+    "team": {
+      "badge": "Notre équipe",
+      "title": "Nos Experts",
+      "titleHighlight": "à votre service",
+      "description": "Eventinas est disponible sur tous vos appareils, vous permettant de gérer vos événements à tout moment, où que vous soyez.",
+      "features": [
+        "Support rapide",
+        "Multi-appareils",
+        "Plateforme sécurisée",
+        "Équipe d'experts"
+      ],
+      "newsletter": {
+        "title": "Restez informé",
+        "description": "Inscrivez-vous à notre newsletter pour recevoir nos dernières actualités et nouveautés.",
+        "placeholder": "Entrez votre email",
+        "cta": "S'inscrire"
+      }
+    },
+    "contact": {
+      "badge": "Nous contacter",
+      "title": "Contactez",
+      "titleHighlight": "nous",
+      "subtitle": "Une question ? Une demande de partenariat ? Une idée à partager ?",
+      "description": "Contactez-nous via le formulaire. Notre équipe vous répondra dans les plus brefs délais.",
+      "form": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse email",
+        "phone": "Téléphone",
+        "message": "Votre message",
+        "messagePlaceholder": "Parlez-nous de votre événement...",
+        "submit": "Envoyer le message",
+        "sending": "Envoi en cours...",
+        "cooldown": "Veuillez patienter avant de renvoyer",
+        "successTitle": "Message envoyé !",
+        "successMessage": "Merci de nous avoir contactés. Notre équipe vous répondra dans les plus brefs délais.",
+        "errorMessage": "Une erreur est survenue. Veuillez réessayer plus tard."
+      },
+      "validation": {
+        "firstName": {
+          "required": "Le prénom est requis",
+          "min": "Le prénom doit contenir au moins 2 caractères",
+          "max": "Le prénom ne doit pas dépasser 50 caractères",
+          "invalid": "Le prénom contient des caractères invalides"
+        },
+        "lastName": {
+          "required": "Le nom est requis",
+          "min": "Le nom doit contenir au moins 2 caractères",
+          "max": "Le nom ne doit pas dépasser 50 caractères",
+          "invalid": "Le nom contient des caractères invalides"
+        },
+        "email": {
+          "required": "L'adresse email est requise",
+          "invalid": "Veuillez entrer une adresse email valide",
+          "max": "L'email ne doit pas dépasser 100 caractères"
+        },
+        "phone": {
+          "max": "Le numéro de téléphone ne doit pas dépasser 20 caractères",
+          "invalid": "Veuillez entrer un numéro de téléphone valide"
+        },
+        "message": {
+          "required": "Le message est requis",
+          "min": "Le message doit contenir au moins 10 caractères",
+          "max": "Le message ne doit pas dépasser 2000 caractères"
+        }
+      },
+      "info": [
+        {
+          "title": "Adresse",
+          "text": "123 rue des Événements, Tech City, TC 12345",
+          "link": "Voir sur la carte"
+        },
+        {
+          "title": "Email",
+          "text": "support@eventinas.com",
+          "link": "Envoyer un email"
+        },
+        {
+          "title": "Téléphone",
+          "text": "+1 (555) 123-4567",
+          "link": "Appelez-nous"
+        }
+      ]
+    },
+    "footer": {
+      "description": "La plateforme événementielle tout-en-un pour simplifier, engager et réussir.",
+      "company": {
+        "title": "Entreprise",
+        "links": [
+          "À propos",
+          "Notre mission",
+          "Carrières",
+          "Tarifs",
+          "Contact"
+        ]
+      },
+      "product": {
+        "title": "Produit",
+        "links": [
+          "Fonctionnalités",
+          "Création de badges",
+          "Networking",
+          "Analyses",
+          "Application mobile"
+        ]
+      },
+      "legal": {
+        "title": "Légal",
+        "links": [
+          "Politique de confidentialité",
+          "Conditions générales",
+          "Politique des cookies",
+          "RGPD"
+        ]
+      },
+      "copyright": "© {{year}} Eventinas. Tous droits réservés.",
+      "social": [
+        "Twitter",
+        "LinkedIn",
+        "Facebook",
+        "Instagram"
+      ]
+    }
   }
 }

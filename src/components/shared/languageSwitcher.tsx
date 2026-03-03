@@ -8,15 +8,23 @@ import {
 import { Button } from '@/components/ui/button'
 import { GB, FR, MA } from 'country-flag-icons/string/3x2'
 
-const languages = [
+const allLanguages = [
   { code: 'en', name: 'English', flag: GB },
   { code: 'fr', name: 'Français', flag: FR },
   { code: 'ar', name: 'العربية', flag: MA },
 ]
 
+interface LanguageSwitcherProps {
+  allowedLanguages?: string[]
+}
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({ allowedLanguages }: LanguageSwitcherProps = {}) => {
   const { i18n } = useTranslation()
+
+  // Filter languages based on allowedLanguages prop
+  const languages = allowedLanguages 
+    ? allLanguages.filter(lang => allowedLanguages.includes(lang.code))
+    : allLanguages
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng)
