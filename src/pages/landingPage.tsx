@@ -147,6 +147,13 @@ export default function LandingPage() {
     [formErrors]
   );
 
+  useEffect(() => {
+    if (formStatus === "success") {
+      const timer = setTimeout(() => setFormStatus("idle"), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [formStatus]);
+
   const handleContactSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -214,11 +221,8 @@ export default function LandingPage() {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
-          <button onClick={() => scrollTo("hero")} className="flex items-center gap-2 text-2xl font-bold tracking-tight">
-            <Calendar className="size-7 text-purple-600" />
-            <span className="bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
-              Eventinas
-            </span>
+          <button onClick={() => scrollTo("hero")}  >
+            <img src="/eventinos-logo.jpeg" alt="Eventinas Logo" className="h-10 w-auto object-contain" />
           </button>
 
           {/* Desktop nav */}
@@ -347,58 +351,15 @@ export default function LandingPage() {
             </div>
           </AnimatedSection>
 
-          {/* Illustration / phone mockup */}
+          {/* App banner image */}
           <AnimatedSection delay={200} className="flex justify-center">
             <div className="relative">
               <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-purple-400/20 to-purple-400/20 blur-2xl" />
-              <div className="relative rounded-3xl bg-gradient-to-br from-purple-600 to-purple-700 p-8 shadow-2xl shadow-purple-300/30">
-                <div className="mx-auto w-64 space-y-4 sm:w-72">
-                  {/* Mock phone UI */}
-                  <div className="rounded-2xl bg-white/10 p-4 backdrop-blur">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Calendar className="size-5 text-white" />
-                      </div>
-                      <div>
-                        <div className="h-3 w-24 rounded bg-white/30" />
-                        <div className="mt-1.5 h-2 w-16 rounded bg-white/20" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-2.5 w-full rounded bg-white/20" />
-                      <div className="h-2.5 w-3/4 rounded bg-white/15" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { icon: Users, label: "Attendees", count: "1,250" },
-                      { icon: BadgeCheck, label: "Badges", count: "890" },
-                      { icon: BarChart3, label: "Reports", count: "24" },
-                      { icon: Globe, label: "Countries", count: "18" },
-                    ].map((item) => (
-                      <div
-                        key={item.label}
-                        className="rounded-xl bg-white/10 p-3 backdrop-blur text-center"
-                      >
-                        <item.icon className="mx-auto size-5 text-white/80" />
-                        <p className="mt-1 text-lg font-bold text-white">
-                          {item.count}
-                        </p>
-                        <p className="text-[10px] text-white/60">{item.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="rounded-xl bg-white/10 p-3 backdrop-blur">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-white/70">Event Progress</span>
-                      <span className="text-xs font-bold text-white">78%</span>
-                    </div>
-                    <div className="mt-2 h-2 rounded-full bg-white/20 overflow-hidden">
-                      <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-emerald-400 to-green-400" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <img
+                src="/banner.png"
+                alt="Eventinas Mobile App"
+                className="relative w-72 sm:w-80 lg:w-96 rounded-3xl drop-shadow-2xl"
+              />
             </div>
           </AnimatedSection>
         </div>
@@ -524,44 +485,13 @@ export default function LandingPage() {
           </AnimatedSection>
 
           <AnimatedSection delay={200} className="flex justify-center">
-            <div className="relative w-64 sm:w-72">
+            <div className="relative">
               <div className="absolute -inset-6 rounded-[2rem] bg-white/5 blur-2xl" />
-              {/* Phone frame */}
-              <div className="relative rounded-[2.5rem] border-4 border-white/20 bg-slate-900 p-3 shadow-2xl">
-                <div className="rounded-[2rem] bg-gradient-to-b from-purple-500/30 to-purple-900 p-6 min-h-[400px] flex flex-col justify-between">
-                  <div className="text-center">
-                    <Calendar className="mx-auto size-10 text-white/80" />
-                    <h3 className="mt-3 text-lg font-bold">{t("landing.communication.appTitle")}</h3>
-                    <p className="mt-1 text-xs text-white/60">
-                      {t("landing.communication.appSubtitle")}
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    {[0, 1, 2].map((i) => (
-                      <div
-                        key={i}
-                        className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur"
-                      >
-                        <div className="h-8 w-8 rounded-lg bg-white/15" />
-                        <span className="text-sm font-medium">{t(`landing.communication.menuItems.${i}`)}</span>
-                        <ChevronRight className="ml-auto size-4 text-white/40" />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-around pt-4 border-t border-white/10">
-                    {[Calendar, Users, BarChart3, MonitorSmartphone].map(
-                      (Icon, idx) => (
-                        <Icon
-                          key={idx}
-                          className={`size-5 ${
-                            idx === 0 ? "text-white" : "text-white/40"
-                          }`}
-                        />
-                      )
-                    )}
-                  </div>
-                </div>
-              </div>
+              <img
+                src="/banner.png"
+                alt="Eventinas Mobile App"
+                className="relative w-72 sm:w-80 lg:w-96 rounded-3xl drop-shadow-2xl"
+              />
             </div>
           </AnimatedSection>
         </div>

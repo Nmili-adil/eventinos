@@ -6,7 +6,7 @@ import type { ContactFormData } from "@/schema/contactFormSchema";
  * Sends a POST request without authorization headers.
  */
 export const submitContactForm = async (data: ContactFormData) => {
-  const response = await api.post("/contacts/public", data, {
+  const response = await api.post("/api/contact", data, {
     headers: {
       "Content-Type": "application/json",
     },
