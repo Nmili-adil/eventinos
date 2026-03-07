@@ -282,17 +282,17 @@ export default function LandingPage() {
     <div className="landing-page min-h-screen bg-white text-slate-800 overflow-x-hidden">
       {/* ═══════════  NAVBAR  ═══════════ */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 h-24 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled ? "bg-white/90 backdrop-blur-lg shadow-md" : "bg-transparent"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
           {/* Logo */}
-          <button onClick={() => scrollTo("hero")}>
+          <button onClick={() => scrollTo("hero")} className="cursor-pointer">
             <img
-              src="/eventinos-logo.jpeg"
+              src="/eventinos-logo.png"
               alt="Eventinas Logo"
-              className="h-10 w-auto object-contain"
+              className="h-20 w-auto object-contain"
             />
           </button>
 
@@ -302,7 +302,7 @@ export default function LandingPage() {
               <button
                 key={l.id}
                 onClick={() => scrollTo(l.id)}
-                className="text-sm font-medium text-slate-600 transition hover:text-purple-600"
+                className="text-sm font-medium text-slate-600 transition hover:text-purple-600 cursor-pointer"
               >
                 {l.label}
               </button>
@@ -314,13 +314,13 @@ export default function LandingPage() {
             <LanguageSwitcher allowedLanguages={["en", "fr"]} />
             <Button
               variant="ghost"
-              className="text-sm font-medium"
+              className="text-sm font-medium cursor-pointer"
               onClick={() => navigate("/login")}
             >
               {t("landing.nav.login")}
             </Button>
             <Button
-              className="rounded-full bg-gradient-to-r from-purple-700 to-purple-500 px-6 text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-shadow"
+              className="rounded-full bg-gradient-to-r cursor-pointer from-purple-700 to-purple-500 px-6 text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-shadow"
               onClick={() => scrollTo("contact")}
             >
               {t("landing.nav.getStarted")}
@@ -371,7 +371,7 @@ export default function LandingPage() {
       {/* ═══════════  HERO  ═══════════ */}
       <section
         id="hero"
-        className="relative flex min-h-screen items-center overflow-hidden pt-20"
+        className="relative flex min-h-screen items-center overflow-hidden pt-28"
       >
         {/* Background decorations */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -395,7 +395,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-8 flex  gap-4">
               <Button
-                className="md:h-12 h-9 rounded-full bg-gradient-to-r from-purple-700  to-purple-500 px-8 text-base text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all hover:scale-105 text-xs sm:text-base"
+                className="md:h-12 cursor-pointer h-9 rounded-full bg-gradient-to-r from-purple-700  to-purple-500 px-8 text-base text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all hover:scale-105 text-xs sm:text-base"
                 onClick={() => scrollTo("pricing")}
               >
                 {t("landing.hero.ctaPrimary")}
@@ -403,7 +403,7 @@ export default function LandingPage() {
               </Button>
               <Button
                 variant="outline"
-                className="md:h-12 h-9 rounded-full px-8 text-base border-slate-300 hover:border-purple-300 hover:bg-purple-50 transition-all text-xs sm:text-base"
+                className="md:h-12 cursor-pointer h-9 rounded-full px-8 text-base border-slate-300 hover:border-purple-300 hover:bg-purple-50 transition-all text-xs sm:text-base"
                 onClick={() => scrollTo("how-it-works")}
               >
                 <Play className="mr-1 size-4 text-purple-600" />
@@ -847,7 +847,7 @@ export default function LandingPage() {
                   value={`faq-${i}`}
                   className="rounded-xl border border-slate-200 bg-white px-6 shadow-sm data-[state=open]:shadow-md transition-shadow"
                 >
-                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                  <AccordionTrigger className="text-left font-semibold hover:no-underline cursor-pointer">
                     {t(`landing.faq.items.${i}.question`)}
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-500 leading-relaxed">
@@ -1006,7 +1006,7 @@ export default function LandingPage() {
                     placeholder={t("landing.team.newsletter.placeholder")}
                     className="h-11 flex-1 rounded-full border-white/20 bg-white/10 text-white placeholder:text-white/50 focus-visible:border-white/40 focus-visible:ring-white/20"
                   />
-                  <Button className="h-11 rounded-full bg-white px-6 text-purple-700 font-semibold hover:bg-white/90 transition">
+                  <Button className="h-11 rounded-full bg-white px-6 text-purple-700 font-semibold cursor-pointer hover:bg-white/90 transition">
                     {t("landing.team.newsletter.cta")}
                   </Button>
                 </div>
@@ -1202,7 +1202,7 @@ export default function LandingPage() {
                   <Button
                     type="submit"
                     disabled={formStatus === "loading" || cooldown}
-                    className="h-11 w-full rounded-full bg-gradient-to-r from-purple-700 to-purple-500 text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-shadow disabled:opacity-60"
+                    className="h-11 w-full rounded-full bg-gradient-to-r from-purple-700 to-purple-500 text-white shadow-lg shadow-purple-200 cursor-pointer hover:shadow-purple-300 transition-shadow disabled:opacity-60"
                   >
                     {formStatus === "loading" ? (
                       <Loader2 className="mr-1.5 size-4 animate-spin" />
@@ -1227,15 +1227,13 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="flex flex-col items-center text-center">
             {/* Brand */}
-            <button
-              onClick={() => scrollTo("hero")}
-              className="flex items-center cursor-pointer gap-2 text-xl font-bold"
-            >
-              <Calendar className="size-6 text-purple-600" />
-              <span className="bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
-                Eventinas
-              </span>
-            </button>
+            <button onClick={() => scrollTo("hero")} className="cursor-pointer">
+            <img
+              src="/eventinos-logo.png"
+              alt="Eventinas Logo"
+              className="h-20 w-auto object-contain"
+            />
+          </button>
             <p className="mt-4 max-w-md text-sm text-slate-500 leading-relaxed">
               {t("landing.footer.description")}
             </p>

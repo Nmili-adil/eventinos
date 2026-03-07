@@ -28,6 +28,7 @@ i18n
         translation: egTranslations,
       },
     },
+    lng: localStorage.getItem('selectedLanguage') || 'fr',
     fallbackLng: 'fr',
     supportedLngs: ['en', 'fr', 'ar', 'eg'],
     interpolation: {

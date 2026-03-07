@@ -15,22 +15,11 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Brand Section */}
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg blur opacity-20"></div>
-              <img 
-                src="/Eventinas Logo.jpeg" 
-                alt="Eventinas Logo" 
-                className="relative h-10 w-10 rounded-lg object-cover border-2 border-white shadow-md"
-              />
-            </div>
-            <div className="hidden sm:block">
-              <h3 className="text-sm font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                Eventinas
-              </h3>
-              <p className="text-xs text-slate-500">
-                {t('footer.tagline', 'Event Management Platform')}
-              </p>
-            </div>
+            <img 
+              src="/Eventinas Logo.jpeg" 
+              alt="Eventinas Logo" 
+              className="h-14 w-14 object-cover"
+            />
           </div>
 
           {/* Separator for mobile */}
