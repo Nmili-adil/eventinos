@@ -38,7 +38,7 @@ const LanguageSwitcher = ({ allowedLanguages }: LanguageSwitcherProps = {}) => {
     // }
   }
 
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0]
+  const currentLanguage = languages.find((lang) => lang.code === i18n.resolvedLanguage) || languages[0]
 
   return (
     <DropdownMenu>
@@ -64,7 +64,7 @@ const LanguageSwitcher = ({ allowedLanguages }: LanguageSwitcherProps = {}) => {
             key={language.code}
             onClick={() => changeLanguage(language.code)}
             className={`flex items-center gap-3 cursor-pointer ${
-              i18n.language === language.code
+              i18n.resolvedLanguage === language.code
                 ? 'bg-blue-50 text-blue-600 font-medium'
                 : 'hover:bg-gray-100'
             }`}
@@ -74,7 +74,7 @@ const LanguageSwitcher = ({ allowedLanguages }: LanguageSwitcherProps = {}) => {
               dangerouslySetInnerHTML={{ __html: language.flag }}
             />
             <span className="flex-1 text-xs">{language.name}</span>
-            {i18n.language === language.code && (
+            {i18n.resolvedLanguage === language.code && (
               <span className="text-blue-600">✓</span>
             )}
           </DropdownMenuItem>
