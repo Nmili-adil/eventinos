@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { contactFormSchema, type ContactFormData } from "@/schema/contactFormSchema";
+import {
+  contactFormSchema,
+  type ContactFormData,
+} from "@/schema/contactFormSchema";
 import { submitContactForm } from "@/api/landingContactApi";
 import { Loader2, Milestone } from "lucide-react";
 import {
@@ -50,6 +53,62 @@ import {
 import { Input } from "@/components/ui/input";
 import LanguageSwitcher from "@/components/shared/languageSwitcher";
 
+// ─── Store URLs ──────────────────────────────────────────────────────
+const GOOGLE_PLAY_URL =
+  "https://play.google.com/store/apps/details?id=com.eventinas.app&pcampaignid=web_share";
+const APP_STORE_URL = "#"; // TODO: replace with actual App Store URL
+
+// ─── Store download buttons ──────────────────────────────────────────
+function StoreButtons({ variant = "dark" }: { variant?: "dark" | "light" }) {
+  const base =
+    "inline-flex items-center gap-3 rounded-md px-5 py-3 sm:px-7 sm:py-3.5 transition-all duration-200 border flex-1 sm:flex-none sm:min-w-[200px]";
+  const style =
+    variant === "dark"
+      ? "bg-black hover:bg-neutral-900 text-white border-neutral-800 hover:scale-[1.02]"
+      : "bg-black/80 hover:bg-black text-white border-white/20 backdrop-blur hover:scale-[1.02]";
+  return (
+    <div className="flex gap-3 sm:gap-4">
+      {/* Google Play */}
+      <a
+        href={GOOGLE_PLAY_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${base} ${style}`}
+      >
+        <svg
+          viewBox="0 0 466 511.98"
+          className="h-8 w-8 shrink-0"
+        >
+          <path fill="#EA4335" d="M199.9 237.8l-198.5 232.37c7.22,24.57 30.16,41.81 55.8,41.81 11.16,0 20.93,-2.79 29.3,-8.37l0 0 244.16 -139.46 -130.76 -126.35z" />
+          <path fill="#FBBC04" d="M433.91 205.1l0 0 -104.65 -60 -111.61 110.22 113.01 108.83 104.64 -58.6c18.14,-9.77 30.7,-29.3 30.7,-50.23 -1.4,-20.93 -13.95,-40.46 -32.09,-50.22z" />
+          <path fill="#34A853" d="M199.42 273.45l129.85 -128.35 -241.37 -136.73c-8.37,-5.58 -19.54,-8.37 -30.7,-8.37 -26.5,0 -50.22,18.14 -55.8,41.86 0,0 0,0 0,0l198.02 231.59z" />
+          <path fill="#4285F4" d="M1.39 41.86c-1.39,4.18 -1.39,9.77 -1.39,15.34l0 397.64c0,5.57 0,9.76 1.4,15.34l216.27 -214.86 -216.28 -213.46z" />
+        </svg>
+        <div className="text-left leading-tight">
+          <span className="block text-xs md:text-[11px] uppercase tracking-wider opacity-80">GET IT ON</span>
+          <span className="block text-sm md:text-lg font-semibold -mt-0.5">Google Play</span>
+        </div>
+      </a>
+
+      {/* App Store */}
+      <a
+        href={APP_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${base} ${style}`}
+      >
+        <svg viewBox="0 0 24 24" className="h-8 w-8 shrink-0" fill="white">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11Z" />
+        </svg>
+        <div className="text-left leading-tight">
+          <span className="block text-xs md:text-[11px] uppercase tracking-wider opacity-80">Download on the</span>
+          <span className="block text-sm md:text-lg font-semibold -mt-0.5">App Store</span>
+        </div>
+      </a>
+    </div>
+  );
+}
+
 // ─── Smooth scroll helper ────────────────────────────────────────────
 function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -69,7 +128,7 @@ function useInView(threshold = 0.15) {
           obs.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -128,8 +187,12 @@ export default function LandingPage() {
     phone: "",
     message: "",
   });
-  const [formErrors, setFormErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
-  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [formErrors, setFormErrors] = useState<
+    Partial<Record<keyof ContactFormData, string>>
+  >({});
+  const [formStatus, setFormStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [cooldown, setCooldown] = useState(false);
 
   const handleFormChange = useCallback(
@@ -144,7 +207,7 @@ export default function LandingPage() {
         });
       }
     },
-    [formErrors]
+    [formErrors],
   );
 
   useEffect(() => {
@@ -179,7 +242,13 @@ export default function LandingPage() {
       try {
         await submitContactForm(result.data);
         setFormStatus("success");
-        setFormData({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
         // Cooldown to prevent spam
         setCooldown(true);
         setTimeout(() => setCooldown(false), 30000); // 30s cooldown
@@ -190,7 +259,7 @@ export default function LandingPage() {
         setTimeout(() => setFormStatus("idle"), 5000);
       }
     },
-    [formData, cooldown, formStatus, t]
+    [formData, cooldown, formStatus, t],
   );
 
   useEffect(() => {
@@ -214,15 +283,17 @@ export default function LandingPage() {
       {/* ═══════════  NAVBAR  ═══════════ */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-lg shadow-md"
-            : "bg-transparent"
+          scrolled ? "bg-white/90 backdrop-blur-lg shadow-md" : "bg-transparent"
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
-          <button onClick={() => scrollTo("hero")}  >
-            <img src="/eventinos-logo.jpeg" alt="Eventinas Logo" className="h-10 w-auto object-contain" />
+          <button onClick={() => scrollTo("hero")}>
+            <img
+              src="/eventinos-logo.jpeg"
+              alt="Eventinas Logo"
+              className="h-10 w-auto object-contain"
+            />
           </button>
 
           {/* Desktop nav */}
@@ -240,7 +311,7 @@ export default function LandingPage() {
 
           {/* CTA */}
           <div className="hidden items-center gap-3 lg:flex">
-            <LanguageSwitcher allowedLanguages={['en', 'fr']} />
+            <LanguageSwitcher allowedLanguages={["en", "fr"]} />
             <Button
               variant="ghost"
               className="text-sm font-medium"
@@ -261,15 +332,19 @@ export default function LandingPage() {
             className="lg:hidden text-slate-700"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {mobileOpen ? (
+              <X className="size-6" />
+            ) : (
+              <Menu className="size-6" />
+            )}
           </button>
         </div>
 
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="lg:hidden bg-white/95 backdrop-blur-lg border-t px-6 pb-6 pt-2 shadow-lg">
-            <div className="mb-4 pt-2">
-              <LanguageSwitcher allowedLanguages={['en', 'fr']} />
+            <div className="mb-4 pt-2 flex justify-end">
+              <LanguageSwitcher allowedLanguages={["en", "fr"]} />
             </div>
             {navLinks.map((l) => (
               <button
@@ -318,9 +393,9 @@ export default function LandingPage() {
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-slate-600">
               {t("landing.hero.description")}
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex  gap-4">
               <Button
-                className="h-12 rounded-full bg-gradient-to-r from-purple-700 to-purple-500 px-8 text-base text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all hover:scale-105"
+                className="md:h-12 h-9 rounded-full bg-gradient-to-r from-purple-700  to-purple-500 px-8 text-base text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all hover:scale-105 text-xs sm:text-base"
                 onClick={() => scrollTo("pricing")}
               >
                 {t("landing.hero.ctaPrimary")}
@@ -328,12 +403,17 @@ export default function LandingPage() {
               </Button>
               <Button
                 variant="outline"
-                className="h-12 rounded-full px-8 text-base border-slate-300 hover:border-purple-300 hover:bg-purple-50 transition-all"
+                className="md:h-12 h-9 rounded-full px-8 text-base border-slate-300 hover:border-purple-300 hover:bg-purple-50 transition-all text-xs sm:text-base"
                 onClick={() => scrollTo("how-it-works")}
               >
                 <Play className="mr-1 size-4 text-purple-600" />
                 {t("landing.hero.ctaSecondary")}
               </Button>
+            </div>
+
+            {/* Store download buttons */}
+            <div className="mt-6">
+              <StoreButtons variant="dark" />
             </div>
 
             {/* Stats */}
@@ -344,7 +424,9 @@ export default function LandingPage() {
                 { value: "99%", label: t("landing.hero.stats.satisfaction") },
               ].map((s) => (
                 <div key={s.label}>
-                  <p className="text-2xl font-bold text-purple-600">{s.value}</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {s.value}
+                  </p>
                   <p className="text-sm text-slate-500">{s.label}</p>
                 </div>
               ))}
@@ -372,7 +454,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.services.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.services.title")}{" "}
-              <span className="text-purple-600">{t("landing.services.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.services.titleHighlight")}
+              </span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-500">
               {t("landing.services.description")}
@@ -398,12 +482,15 @@ export default function LandingPage() {
                     >
                       <Icon className="size-6" />
                     </div>
-                    <h3 className="text-lg font-semibold">{t(`landing.services.items.${i}.title`)}</h3>
+                    <h3 className="text-lg font-semibold">
+                      {t(`landing.services.items.${i}.title`)}
+                    </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-500">
                       {t(`landing.services.items.${i}.description`)}
                     </p>
                     <div className="mt-4 flex items-center gap-1 text-sm font-medium text-purple-600 opacity-0 transition group-hover:opacity-100">
-                      {t("landing.services.learnMore")} <ChevronRight className="size-4" />
+                      {t("landing.services.learnMore")}{" "}
+                      <ChevronRight className="size-4" />
                     </div>
                   </div>
                 </AnimatedSection>
@@ -420,7 +507,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.features.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.features.title")}{" "}
-              <span className="text-purple-600">{t("landing.features.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.features.titleHighlight")}
+              </span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-500">
               {t("landing.features.description")}
@@ -429,7 +518,14 @@ export default function LandingPage() {
 
           <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[0, 1, 2, 3, 4, 5].map((i) => {
-              const icons = [BadgeCheck, ScanLine, Image, BarChart3, Mail, ClipboardCheck];
+              const icons = [
+                BadgeCheck,
+                ScanLine,
+                Image,
+                BarChart3,
+                Mail,
+                ClipboardCheck,
+              ];
               const Icon = icons[i];
               return (
                 <AnimatedSection key={i} delay={i * 80}>
@@ -438,7 +534,9 @@ export default function LandingPage() {
                       <Icon className="size-5" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">{t(`landing.features.items.${i}.title`)}</h3>
+                      <h3 className="font-semibold">
+                        {t(`landing.features.items.${i}.title`)}
+                      </h3>
                       <p className="mt-1 text-sm leading-relaxed text-slate-500">
                         {t(`landing.features.items.${i}.description`)}
                       </p>
@@ -464,7 +562,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.communication.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl text-white">
               {t("landing.communication.title")}{" "}
-              <span className="text-white/80">{t("landing.communication.titleHighlight")}</span>
+              <span className="text-white/80">
+                {t("landing.communication.titleHighlight")}
+              </span>
             </h2>
             <ul className="mt-8 space-y-5">
               {[0, 1, 2, 3].map((i) => {
@@ -482,6 +582,9 @@ export default function LandingPage() {
                 );
               })}
             </ul>
+            <div className="mt-8">
+              <StoreButtons variant="light" />
+            </div>
           </AnimatedSection>
 
           <AnimatedSection delay={200} className="flex justify-center">
@@ -504,7 +607,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.howItWorks.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.howItWorks.title")}{" "}
-              <span className="text-purple-600">{t("landing.howItWorks.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.howItWorks.titleHighlight")}
+              </span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-500">
               {t("landing.howItWorks.description")}
@@ -535,7 +640,9 @@ export default function LandingPage() {
                     >
                       <Icon className="size-6" />
                     </div>
-                    <h3 className="relative text-xl font-bold">{t(`landing.howItWorks.items.${i}.title`)}</h3>
+                    <h3 className="relative text-xl font-bold">
+                      {t(`landing.howItWorks.items.${i}.title`)}
+                    </h3>
                     <p className="relative mt-3 text-sm leading-relaxed text-slate-500">
                       {t(`landing.howItWorks.items.${i}.description`)}
                     </p>
@@ -555,7 +662,9 @@ export default function LandingPage() {
               <SectionBadge>{t("landing.interface.badge")}</SectionBadge>
               <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
                 {t("landing.interface.title")}{" "}
-                <span className="text-purple-600">{t("landing.interface.titleHighlight")}</span>
+                <span className="text-purple-600">
+                  {t("landing.interface.titleHighlight")}
+                </span>
               </h2>
               <p className="mt-5 text-slate-500 leading-relaxed">
                 {t("landing.interface.description")}
@@ -566,7 +675,9 @@ export default function LandingPage() {
                     <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
                       <Check className="size-3.5" />
                     </div>
-                    <span className="text-sm font-medium text-slate-600">{t(`landing.interface.features.${i}`)}</span>
+                    <span className="text-sm font-medium text-slate-600">
+                      {t(`landing.interface.features.${i}`)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -580,10 +691,17 @@ export default function LandingPage() {
                     const icons = [Smartphone, Palette, Zap, Shield];
                     const Icon = icons[i];
                     return (
-                      <div key={i} className="rounded-xl bg-slate-50 p-4 text-center transition hover:bg-purple-50 hover:shadow-md">
+                      <div
+                        key={i}
+                        className="rounded-xl bg-slate-50 p-4 text-center transition hover:bg-purple-50 hover:shadow-md"
+                      >
                         <Icon className="mx-auto size-7 text-purple-600" />
-                        <p className="mt-2 text-sm font-semibold text-slate-700">{t(`landing.interface.stats.${i}.label`)}</p>
-                        <p className="text-xs text-slate-400">{t(`landing.interface.stats.${i}.value`)}</p>
+                        <p className="mt-2 text-sm font-semibold text-slate-700">
+                          {t(`landing.interface.stats.${i}.label`)}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {t(`landing.interface.stats.${i}.value`)}
+                        </p>
                       </div>
                     );
                   })}
@@ -601,7 +719,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.pricing.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.pricing.title")}{" "}
-              <span className="text-purple-600">{t("landing.pricing.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.pricing.titleHighlight")}
+              </span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-slate-500">
               {t("landing.pricing.description")}
@@ -626,11 +746,16 @@ export default function LandingPage() {
                   <span className="rounded-full bg-slate-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-600">
                     {t("landing.pricing.plans.basic.name")}
                   </span>
-                  <p className="mt-2 text-sm text-slate-500">{t("landing.pricing.plans.basic.subtitle")}</p>
+                  <p className="mt-2 text-sm text-slate-500">
+                    {t("landing.pricing.plans.basic.subtitle")}
+                  </p>
                 </div>
                 <ul className="space-y-4">
                   {[0, 1, 2, 3].map((i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-sm text-slate-600"
+                    >
                       <Check className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                       {t(`landing.pricing.plans.basic.features.${i}`)}
                     </li>
@@ -656,11 +781,16 @@ export default function LandingPage() {
                   <span className="rounded-full bg-purple-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-purple-700">
                     {t("landing.pricing.plans.premium.name")}
                   </span>
-                  <p className="mt-2 text-sm text-slate-500">{t("landing.pricing.plans.premium.subtitle")}</p>
+                  <p className="mt-2 text-sm text-slate-500">
+                    {t("landing.pricing.plans.premium.subtitle")}
+                  </p>
                 </div>
                 <ul className="space-y-4">
                   {[0, 1, 2, 3].map((i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-sm text-slate-600"
+                    >
                       <Check className="mt-0.5 size-4 shrink-0 text-purple-500" />
                       {t(`landing.pricing.plans.premium.features.${i}`)}
                     </li>
@@ -679,12 +809,14 @@ export default function LandingPage() {
           {/* Support note */}
           <AnimatedSection delay={200} className="mt-12 text-center">
             <div className="mx-auto max-w-2xl rounded-2xl bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-100 p-8">
-              <h3 className="text-lg font-bold text-slate-800">{t("landing.pricing.support.title")}</h3>
+              <h3 className="text-lg font-bold text-slate-800">
+                {t("landing.pricing.support.title")}
+              </h3>
               <p className="mt-2 text-sm text-slate-500 leading-relaxed">
                 {t("landing.pricing.support.description")}
               </p>
               <Button
-                className="mt-4 rounded-full bg-gradient-to-r from-purple-700 to-purple-500 px-6 text-white shadow-lg shadow-purple-200"
+                className="mt-4 rounded-full bg-gradient-to-r from-purple-700 to-purple-500 px-6 text-white shadow-lg shadow-purple-200 whitespace-normal text-center h-auto py-3"
                 onClick={() => scrollTo("contact")}
               >
                 {t("landing.pricing.support.cta")}
@@ -701,7 +833,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.faq.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.faq.title")}{" "}
-              <span className="text-purple-600">{t("landing.faq.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.faq.titleHighlight")}
+              </span>
             </h2>
           </AnimatedSection>
 
@@ -733,7 +867,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.testimonials.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.testimonials.title")}{" "}
-              <span className="text-purple-600">{t("landing.testimonials.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.testimonials.titleHighlight")}
+              </span>
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-500">
               {t("landing.testimonials.description")}
@@ -764,8 +900,12 @@ export default function LandingPage() {
                         .join("")}
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">{t(`landing.testimonials.items.${i}.name`)}</p>
-                      <p className="text-xs text-slate-500">{t(`landing.testimonials.items.${i}.role`)}</p>
+                      <p className="font-semibold text-sm">
+                        {t(`landing.testimonials.items.${i}.name`)}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {t(`landing.testimonials.items.${i}.role`)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -787,7 +927,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.mission.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl text-white">
               {t("landing.mission.title")}{" "}
-              <span className="text-purple-400">{t("landing.mission.titleHighlight")}</span>
+              <span className="text-purple-400">
+                {t("landing.mission.titleHighlight")}
+              </span>
             </h2>
             <p className="mx-auto mt-6 max-w-3xl text-lg text-white/70 leading-relaxed">
               {t("landing.mission.description")}
@@ -804,8 +946,12 @@ export default function LandingPage() {
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-white/10 backdrop-blur">
                       <Icon className="size-6 text-purple-400" />
                     </div>
-                    <h3 className="font-bold text-lg">{t(`landing.mission.values.${i}.title`)}</h3>
-                    <p className="mt-2 text-sm text-white/60">{t(`landing.mission.values.${i}.description`)}</p>
+                    <h3 className="font-bold text-lg">
+                      {t(`landing.mission.values.${i}.title`)}
+                    </h3>
+                    <p className="mt-2 text-sm text-white/60">
+                      {t(`landing.mission.values.${i}.description`)}
+                    </p>
                   </div>
                 </AnimatedSection>
               );
@@ -822,7 +968,9 @@ export default function LandingPage() {
               <SectionBadge>{t("landing.team.badge")}</SectionBadge>
               <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
                 {t("landing.team.title")}{" "}
-                <span className="text-purple-600">{t("landing.team.titleHighlight")}</span>
+                <span className="text-purple-600">
+                  {t("landing.team.titleHighlight")}
+                </span>
               </h2>
               <p className="mt-4 text-slate-500 leading-relaxed">
                 {t("landing.team.description")}
@@ -836,7 +984,9 @@ export default function LandingPage() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
                         <Icon className="size-5" />
                       </div>
-                      <span className="font-medium text-sm">{t(`landing.team.features.${i}`)}</span>
+                      <span className="font-medium text-sm">
+                        {t(`landing.team.features.${i}`)}
+                      </span>
                     </div>
                   );
                 })}
@@ -845,7 +995,9 @@ export default function LandingPage() {
 
             <AnimatedSection delay={200}>
               <div className="rounded-2xl bg-gradient-to-br from-purple-600 to-purple-700 p-10 text-white shadow-xl">
-                <h3 className="text-2xl font-bold">{t("landing.team.newsletter.title")}</h3>
+                <h3 className="text-2xl font-bold">
+                  {t("landing.team.newsletter.title")}
+                </h3>
                 <p className="mt-3 text-sm text-white/70">
                   {t("landing.team.newsletter.description")}
                 </p>
@@ -871,7 +1023,9 @@ export default function LandingPage() {
             <SectionBadge>{t("landing.contact.badge")}</SectionBadge>
             <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
               {t("landing.contact.title")}{" "}
-              <span className="text-purple-600">{t("landing.contact.titleHighlight")}</span>
+              <span className="text-purple-600">
+                {t("landing.contact.titleHighlight")}
+              </span>
             </h2>
           </AnimatedSection>
 
@@ -887,8 +1041,12 @@ export default function LandingPage() {
                       <Icon className="size-5" />
                     </div>
                     <div>
-                      <p className="font-semibold">{t(`landing.contact.info.${i}.title`)}</p>
-                      <p className="text-sm text-slate-500">{t(`landing.contact.info.${i}.text`)}</p>
+                      <p className="font-semibold">
+                        {t(`landing.contact.info.${i}.title`)}
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        {t(`landing.contact.info.${i}.text`)}
+                      </p>
                       <button className="mt-1 text-xs font-semibold uppercase tracking-wide text-purple-600 hover:text-purple-700 transition">
                         {t(`landing.contact.info.${i}.link`)}
                       </button>
@@ -926,53 +1084,68 @@ export default function LandingPage() {
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label className="mb-1.5 block text-sm font-medium">
-                        {t("landing.contact.form.firstName")} <span className="text-red-500">*</span>
+                        {t("landing.contact.form.firstName")}{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <Input
                         placeholder="John"
                         className={`h-11 rounded-lg ${formErrors.firstName ? "border-red-400 focus-visible:ring-red-200" : ""}`}
                         value={formData.firstName}
-                        onChange={(e) => handleFormChange("firstName", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("firstName", e.target.value)
+                        }
                         disabled={formStatus === "loading"}
                         maxLength={50}
                       />
                       {formErrors.firstName && (
-                        <p className="mt-1 text-xs text-red-500">{formErrors.firstName}</p>
+                        <p className="mt-1 text-xs text-red-500">
+                          {formErrors.firstName}
+                        </p>
                       )}
                     </div>
                     <div>
                       <label className="mb-1.5 block text-sm font-medium">
-                        {t("landing.contact.form.lastName")} <span className="text-red-500">*</span>
+                        {t("landing.contact.form.lastName")}{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <Input
                         placeholder="Doe"
                         className={`h-11 rounded-lg ${formErrors.lastName ? "border-red-400 focus-visible:ring-red-200" : ""}`}
                         value={formData.lastName}
-                        onChange={(e) => handleFormChange("lastName", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("lastName", e.target.value)
+                        }
                         disabled={formStatus === "loading"}
                         maxLength={50}
                       />
                       {formErrors.lastName && (
-                        <p className="mt-1 text-xs text-red-500">{formErrors.lastName}</p>
+                        <p className="mt-1 text-xs text-red-500">
+                          {formErrors.lastName}
+                        </p>
                       )}
                     </div>
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label className="mb-1.5 block text-sm font-medium">
-                        {t("landing.contact.form.email")} <span className="text-red-500">*</span>
+                        {t("landing.contact.form.email")}{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <Input
                         type="email"
                         placeholder="john@example.com"
                         className={`h-11 rounded-lg ${formErrors.email ? "border-red-400 focus-visible:ring-red-200" : ""}`}
                         value={formData.email}
-                        onChange={(e) => handleFormChange("email", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("email", e.target.value)
+                        }
                         disabled={formStatus === "loading"}
                         maxLength={100}
                       />
                       {formErrors.email && (
-                        <p className="mt-1 text-xs text-red-500">{formErrors.email}</p>
+                        <p className="mt-1 text-xs text-red-500">
+                          {formErrors.email}
+                        </p>
                       )}
                     </div>
                     <div>
@@ -984,18 +1157,23 @@ export default function LandingPage() {
                         placeholder="+1 234 567 890"
                         className={`h-11 rounded-lg ${formErrors.phone ? "border-red-400 focus-visible:ring-red-200" : ""}`}
                         value={formData.phone}
-                        onChange={(e) => handleFormChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleFormChange("phone", e.target.value)
+                        }
                         disabled={formStatus === "loading"}
                         maxLength={20}
                       />
                       {formErrors.phone && (
-                        <p className="mt-1 text-xs text-red-500">{formErrors.phone}</p>
+                        <p className="mt-1 text-xs text-red-500">
+                          {formErrors.phone}
+                        </p>
                       )}
                     </div>
                   </div>
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">
-                      {t("landing.contact.form.message")} <span className="text-red-500">*</span>
+                      {t("landing.contact.form.message")}{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       rows={4}
@@ -1006,12 +1184,16 @@ export default function LandingPage() {
                           : "border-slate-200 focus:border-purple-400 focus:ring-2 focus:ring-purple-100"
                       }`}
                       value={formData.message}
-                      onChange={(e) => handleFormChange("message", e.target.value)}
+                      onChange={(e) =>
+                        handleFormChange("message", e.target.value)
+                      }
                       disabled={formStatus === "loading"}
                       maxLength={2000}
                     />
                     {formErrors.message && (
-                      <p className="mt-1 text-xs text-red-500">{formErrors.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {formErrors.message}
+                      </p>
                     )}
                     <p className="mt-1 text-xs text-slate-400 text-right">
                       {formData.message.length}/2000
@@ -1043,75 +1225,30 @@ export default function LandingPage() {
       {/* ═══════════  FOOTER  ═══════════ */}
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16">
-          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-col items-center text-center">
             {/* Brand */}
-            <div>
-              <button
-                onClick={() => scrollTo("hero")}
-                className="flex items-center gap-2 text-xl font-bold"
-              >
-                <Calendar className="size-6 text-purple-600" />
-                <span className="bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
-                  Eventinas
-                </span>
-              </button>
-              <p className="mt-4 text-sm text-slate-500 leading-relaxed">
-                {t("landing.footer.description")}
-              </p>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-wide text-slate-800">
-                {t("landing.footer.company.title")}
-              </h4>
-              <ul className="mt-4 space-y-2.5">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <li key={i}>
-                    <button className="text-sm text-slate-500 hover:text-purple-600 transition">
-                      {t(`landing.footer.company.links.${i}`)}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-wide text-slate-800">
-                {t("landing.footer.product.title")}
-              </h4>
-              <ul className="mt-4 space-y-2.5">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <li key={i}>
-                    <button className="text-sm text-slate-500 hover:text-purple-600 transition">
-                      {t(`landing.footer.product.links.${i}`)}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-wide text-slate-800">
-                {t("landing.footer.legal.title")}
-              </h4>
-              <ul className="mt-4 space-y-2.5">
-                {[0, 1, 2, 3].map((i) => (
-                  <li key={i}>
-                    <button className="text-sm text-slate-500 hover:text-purple-600 transition">
-                      {t(`landing.footer.legal.links.${i}`)}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <button
+              onClick={() => scrollTo("hero")}
+              className="flex items-center cursor-pointer gap-2 text-xl font-bold"
+            >
+              <Calendar className="size-6 text-purple-600" />
+              <span className="bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
+                Eventinas
+              </span>
+            </button>
+            <p className="mt-4 max-w-md text-sm text-slate-500 leading-relaxed">
+              {t("landing.footer.description")}
+            </p>
+            <div className="mt-5">
+              <StoreButtons variant="dark" />
             </div>
           </div>
 
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-8 sm:flex-row">
             <p className="text-sm text-slate-400">
-              {t("landing.footer.copyright", { year: new Date().getFullYear() })}
+              {t("landing.footer.copyright", {
+                year: new Date().getFullYear(),
+              })}
             </p>
             <div className="flex gap-4">
               {[0, 1, 2, 3].map((i) => (
