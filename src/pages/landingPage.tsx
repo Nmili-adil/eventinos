@@ -1047,9 +1047,9 @@ export default function LandingPage() {
                       <p className="text-sm text-slate-500">
                         {t(`landing.contact.info.${i}.text`)}
                       </p>
-                      <button className="mt-1 text-xs font-semibold uppercase tracking-wide text-purple-600 hover:text-purple-700 transition">
+                      {/* <button className="mt-1 text-xs font-semibold uppercase tracking-wide text-purple-600 hover:text-purple-700 transition">
                         {t(`landing.contact.info.${i}.link`)}
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 );
