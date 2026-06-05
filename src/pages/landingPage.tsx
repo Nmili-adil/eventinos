@@ -56,7 +56,7 @@ import LanguageSwitcher from "@/components/shared/languageSwitcher";
 // ─── Store URLs ──────────────────────────────────────────────────────
 const GOOGLE_PLAY_URL =
   "https://play.google.com/store/apps/details?id=com.eventinas.app&pcampaignid=web_share";
-const APP_STORE_URL = "#"; // TODO: replace with actual App Store URL
+const APP_STORE_URL = "https://apps.apple.com/us/app/eventinas/id6764275134"; // TODO: replace with actual App Store URL
 
 // ─── Store download buttons ──────────────────────────────────────────
 function StoreButtons({ variant = "dark" }: { variant?: "dark" | "light" }) {
