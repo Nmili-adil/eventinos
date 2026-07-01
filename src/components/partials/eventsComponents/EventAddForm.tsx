@@ -35,6 +35,7 @@ import { fetchCategoriesRequest } from "@/store/features/categories/categories.a
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
 import { EventPreview } from "./EventPreview";
+import { EventLogoInput } from "@/components/partials/eventsComponents/EventLogoInput";
 import {
   LocationSelector,
   type LocationValue,
@@ -51,6 +52,9 @@ interface EventAddFormProps {
   onSubmit: (data: EventFormData) => void;
   isLoading?: boolean;
 }
+
+const isFileValue = (value: unknown): value is File =>
+  typeof File !== "undefined" && value instanceof File;
 
 const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -91,6 +95,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       name: "",
       description: "",
       image: "",
+      logo: "",
       visibility: "PUBLIC",
       type: "FACETOFACE",
       isNearestEvent: false,
@@ -253,9 +258,15 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       }
     };
 
+    const cleanUploadValue = (value: unknown) => {
+      if (isFileValue(value)) return value;
+      return typeof value === "string" ? value.trim() : "";
+    };
+
     const cleaned = {
       ...data,
-      image: data.image?.trim() || "",
+      image: cleanUploadValue(data.image),
+      logo: cleanUploadValue(data.logo),
       socialNetworks: {
         facebook: data.socialNetworks?.facebook?.trim() || "",
         instagram: data.socialNetworks?.instagram?.trim() || "",
@@ -438,26 +449,54 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                           {t("eventForm.sections.basicInfo")}
                         </h3>
 
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                {t("eventForm.fields.name")} *
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder={t(
-                                    "eventForm.placeholders.enterEventName"
-                                  )}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 items-start">
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
+                                  {t("eventForm.fields.name")} *
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder={t(
+                                      "eventForm.placeholders.enterEventName"
+                                    )}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="logo"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
+                                  {t("eventForm.fields.eventLogo", "Event Logo")}
+                                </FormLabel>
+                                <FormControl>
+                                  <EventLogoInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    disabled={isLoading}
+                                    chooseLabel={t("common.upload", "Upload")}
+                                    clearLabel={t("common.delete", "Delete")}
+                                    placeholder={t(
+                                      "eventForm.placeholders.enterLogoUrl",
+                                      "https://example.com/logo.jpg"
+                                    )}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
 
                         <FormField
                           control={form.control}
@@ -646,7 +685,11 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                       onUploadComplete={(url) =>
                                         field.onChange(url)
                                       }
-                                      currentUrl={field.value || ""}
+                                      currentUrl={
+                                        typeof field.value === "string"
+                                          ? field.value
+                                          : ""
+                                      }
                                       label={t("eventForm.buttons.uploadImage")}
                                       accept="image/*"
                                       disabled={isLoading}
@@ -661,7 +704,11 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                         "eventForm.placeholders.enterImageUrl"
                                       )}
                                       {...field}
-                                      value={field.value || ""}
+                                      value={
+                                        typeof field.value === "string"
+                                          ? field.value
+                                          : ""
+                                      }
                                       onChange={(e) =>
                                         field.onChange(e.target.value)
                                       }
@@ -1498,9 +1545,18 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                     />
                                   )}
                                   <div className="flex-1 flex items-center justify-between min-w-0">
-                                    <h4 className="font-medium truncate text-sm">
-                                      {field.fullName}
-                                    </h4>
+                                    <div className="min-w-0">
+                                      <h4 className="font-medium truncate text-sm">
+                                        {field.fullName}
+                                      </h4>
+                                      {(field.fonction || field.nationality) && (
+                                        <p className="text-xs text-muted-foreground truncate">
+                                          {[field.fonction, field.nationality]
+                                            .filter(Boolean)
+                                            .join(" - ")}
+                                        </p>
+                                      )}
+                                    </div>
                                     <div className="flex gap-2 mt-2">
                                       <Button
                                         type="button"
@@ -1567,9 +1623,18 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                     />
                                   )}
                                   <div className="flex-1 flex items-center justify-between min-w-0">
-                                    <h4 className="font-medium truncate text-sm">
-                                      {field.fullName}
-                                    </h4>
+                                    <div className="min-w-0">
+                                      <h4 className="font-medium truncate text-sm">
+                                        {field.fullName}
+                                      </h4>
+                                      {(field.fonction || field.nationality) && (
+                                        <p className="text-xs text-muted-foreground truncate">
+                                          {[field.fonction, field.nationality]
+                                            .filter(Boolean)
+                                            .join(" - ")}
+                                        </p>
+                                      )}
+                                    </div>
                                     <div className="flex gap-2 mt-2">
                                       <Button
                                         type="button"
@@ -1753,6 +1818,8 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
               _id: person._id,
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             };
             form.setValue("speakers", current);
@@ -1761,6 +1828,8 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
             appendSpeaker({
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             } as any);
           }
@@ -1781,6 +1850,8 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
               _id: person._id,
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             };
             form.setValue("exhibitors", current);
@@ -1789,6 +1860,8 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
             appendExhibitor({
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             } as any);
           }

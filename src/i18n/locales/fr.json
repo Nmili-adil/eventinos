@@ -370,6 +370,7 @@
       "name": "Nom de l'événement",
       "description": "Description",
       "image": "Image de l'événement",
+      "eventLogo": "Logo de l'événement",
       "visibility": "Visibilité",
       "type": "Type d'événement",
       "tags": "Étiquettes",
@@ -399,7 +400,9 @@
       "fullName": "Nom complet",
       "picture": "URL de l'image",
       "logo": "URL du logo",
-      "sponsorName": "Nom du sponsor"
+      "sponsorName": "Nom du sponsor",
+      "fonction": "Fonction",
+      "nationality": "Nationalité"
     },
     "placeholders": {
       "enterEventName": "Entrez le nom de l'événement",
@@ -425,6 +428,10 @@
       "enterProgram": "Entrez le programme détaillé",
       "enterImageUrlManual": "Ou entrez l'URL de l'image manuellement :",
       "enterImageUrlGallery": "Ou entrez l'URL de l'image (https://...)",
+      "enterLogoUrl": "https://exemple.com/logo.jpg",
+      "enterLogoUrlManual": "Ou entrez l'URL du logo manuellement",
+      "enterFonction": "Entrez la fonction",
+      "enterNationality": "Entrez la nationalité",
       "enterExhibitorName": "Entrez le nom de l'exposant",
       "enterExhibitorPicture": "https://exemple.com/image.jpg",
       "enterSponsorName": "Entrez le nom du sponsor",
@@ -515,7 +522,8 @@
       "buttons": {
         "cancel": "Annuler",
         "add": "Ajouter l'exposant",
-        "adding": "Ajout en cours..."
+        "adding": "Ajout en cours...",
+        "addExhibitor": "Ajouter l'exposant"
       },
       "validation": {
         "required": "Ce champ est obligatoire",

@@ -1,5 +1,10 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/store/app/store";
+import { deleteEventRequest } from "@/store/features/events/events.actions";
+import { toast } from "sonner";
+import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import {
   Calendar,
   Clock,
@@ -30,7 +35,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { GoogleMapWrapper, SingleMarkerMap } from "@/components/shared/GoogleMap";
-import { EVENT_EDIT_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants";
+import { EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,22 +60,31 @@ interface EventDetailsProps {
   event: any;
 }
 
+const EVENT_IMAGE_FALLBACK_SRC =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23f1f5f9'/%3E%3Ctext x='400' y='205' text-anchor='middle' font-family='Arial,sans-serif' font-size='32' fill='%2364758b'%3EEvent Image%3C/text%3E%3C/svg%3E";
+
+const GALLERY_IMAGE_FALLBACK_SRC =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Crect width='600' height='600' fill='%23f1f5f9'/%3E%3Ctext x='300' y='310' text-anchor='middle' font-family='Arial,sans-serif' font-size='28' fill='%2364758b'%3EImage not found%3C/text%3E%3C/svg%3E";
+
+const getImageSrc = (value: unknown, fallback = EVENT_IMAGE_FALLBACK_SRC) =>
+  typeof value === "string" && value.trim() ? value : fallback;
+
+const setImageFallback = (
+  event: { currentTarget: HTMLImageElement },
+  fallback = EVENT_IMAGE_FALLBACK_SRC
+) => {
+  event.currentTarget.onerror = null;
+  event.currentTarget.src = fallback;
+};
+
 const EventDetails = ({ event }: EventDetailsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [activeTab, setActiveTab] = useState("details");
   // const [isBookmarked, setIsBookmarked] = useState(false);
 
   const [open, setOpen] = useState<boolean>(false);
-  const [deleteDialog, setDeleteDialog] = useState<{
-    open: boolean;
-    eventId: string | null;
-    eventTitle?: string;
-  }>({
-    open: false,
-    eventId: null,
-    eventTitle: "",
-  });
   const [isLoading, setIsLoading] = useState(false);
   
   // New states for modals
@@ -172,7 +186,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
   const safeEvent = {
     name: event.name || t('events.details.untitledEvent', 'Untitled Event'),
     description: event.description || t('events.details.noDescription', 'No description available.'),
-    image: event.image || "/placeholder-image.jpg",
+    image: getImageSrc(event.image),
     status: event.status || "DRAFT",
     type: event.type || "FACETOFACE",
     visibility: event.visibility || "PUBLIC",
@@ -200,13 +214,18 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     setOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     setIsLoading(true);
-    // Add your delete logic here
-    console.log("Deleting event:", event._id);
-    // After deletion, you might want to navigate away or show a message
-    setIsLoading(false);
-    setOpen(false);
+    try {
+      await dispatch(deleteEventRequest(event._id) as any);
+      toast.success(t('events.deleteSuccess', 'Event deleted successfully!'));
+      setOpen(false);
+      navigate(EVENT_LISTE_PAGE);
+    } catch (error) {
+      handleAsyncError(error, t('events.deleteError', 'Error deleting event.'));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancelDelete = () => {
@@ -326,10 +345,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 src={safeEvent.image}
                 alt={safeEvent.name}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src =
-                    "https://via.placeholder.com/800x400?text=Event+Image";
-                }}
+                onError={(e) => setImageFallback(e)}
               />
               <div className="absolute top-4 left-4 flex space-x-2">
                 <Badge className={getStatusColor(safeEvent.status)}>
@@ -599,10 +615,9 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                           src={image}
                           alt={`Event gallery ${index + 1}`}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          onError={(e) => {
-                            e.currentTarget.src =
-                              "https://via.placeholder.com/300x300?text=Image+Not+Found";
-                          }}
+                          onError={(e) =>
+                            setImageFallback(e, GALLERY_IMAGE_FALLBACK_SRC)
+                          }
                         />
                       </div>
                     ))}
@@ -819,10 +834,9 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 src={selectedImage}
                 alt="Event gallery preview"
                 className="w-full h-auto max-h-[80vh] object-cover rounded-lg"
-                onError={(e) => {
-                  e.currentTarget.src =
-                    "https://via.placeholder.com/800x600?text=Image+Not+Found";
-                }}
+                onError={(e) =>
+                  setImageFallback(e, GALLERY_IMAGE_FALLBACK_SRC)
+                }
               />
             )}
           </div>

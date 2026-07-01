@@ -184,11 +184,11 @@ export function EventsTable() {
           error: t('events.deleteError') || 'Error deleting event.',
         }
       )
-      
+
       setDeleteDialog({ open: false, eventId: null, eventTitle: '' })
-      
-      // Reload the page to refresh the events list
-      window.location.reload()
+
+      // Refresh the events list without a full page reload
+      dispatch(fetchEventsRequest())
     } catch (error) {
       console.error('Failed to delete event:', error)
       // Error toast is already shown by toast.promise

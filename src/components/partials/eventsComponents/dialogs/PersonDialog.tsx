@@ -37,6 +37,8 @@ export const PersonDialog = ({
       name: type === "sponsor" ? "" : undefined,
       picture: type === "sponsor" ? undefined : "",
       logo: type === "sponsor" ? "" : undefined,
+      fonction: type === "sponsor" ? undefined : "",
+      nationality: type === "sponsor" ? undefined : "",
       socialNetworks: {
         facebook: "",
         instagram: "",
@@ -53,10 +55,12 @@ export const PersonDialog = ({
     } else {
       setFormData({
         _id: undefined,
-        fullName: type === "exhibitor" ? "" : undefined,
+        fullName: type === "sponsor" ? undefined : "",
         name: type === "sponsor" ? "" : undefined,
-        picture: type === "exhibitor" ? "" : undefined,
+        picture: type === "sponsor" ? undefined : "",
         logo: type === "sponsor" ? "" : undefined,
+        fonction: type === "sponsor" ? undefined : "",
+        nationality: type === "sponsor" ? undefined : "",
         socialNetworks: {
           facebook: "",
           instagram: "",
@@ -77,6 +81,8 @@ useEffect(() => {
           name: type === "sponsor" ? "" : undefined,
           picture: type === "sponsor" ? undefined : "",
           logo: type === "sponsor" ? "" : undefined,
+          fonction: type === "sponsor" ? undefined : "",
+          nationality: type === "sponsor" ? undefined : "",
           socialNetworks: {
             facebook: "",
             instagram: "",
@@ -147,6 +153,53 @@ useEffect(() => {
               }
             />
           </div>
+
+          {type !== "sponsor" && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">
+                  {t("eventForm.fields.fonction", "Function")}
+                </label>
+                <Input
+                  value={formData.fonction || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      fonction: e.target.value,
+                    })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSave();
+                    }
+                  }}
+                  placeholder={t("eventForm.placeholders.enterFonction", "Enter job function")}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  {t("eventForm.fields.nationality", "Nationality")}
+                </label>
+                <Input
+                  value={formData.nationality || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      nationality: e.target.value,
+                    })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSave();
+                    }
+                  }}
+                  placeholder={t("eventForm.placeholders.enterNationality", "Enter nationality")}
+                />
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="text-sm font-medium">

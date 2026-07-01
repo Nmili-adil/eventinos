@@ -365,7 +365,8 @@ const EventCard: React.FC<EventCardProps> = ({
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
-                  target.src = 'https://via.placeholder.com/400x200?text=No+Image'
+                  target.onerror = null
+                  target.style.display = 'none'
                 }}
               />
             </div>

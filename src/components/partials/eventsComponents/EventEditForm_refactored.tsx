@@ -126,6 +126,8 @@ const EventEditForm = ({
         _id: speaker._id || "",
         fullName: speaker.fullName || "",
         picture: speaker.picture || "",
+        fonction: speaker.fonction || "",
+        nationality: speaker.nationality || "",
         socialNetworks: {
           facebook: speaker.socialNetworks?.facebook || "",
           instagram: speaker.socialNetworks?.instagram || "",
@@ -140,6 +142,8 @@ const EventEditForm = ({
         _id: exhibitor._id || "",
         fullName: exhibitor.fullName || "",
         picture: exhibitor.picture || "",
+        fonction: exhibitor.fonction || "",
+        nationality: exhibitor.nationality || "",
         socialNetworks: {
           facebook: exhibitor.socialNetworks?.facebook || "",
           instagram: exhibitor.socialNetworks?.instagram || "",
@@ -642,7 +646,11 @@ const EventEditForm = ({
                                       onUploadComplete={(url) =>
                                         field.onChange(url)
                                       }
-                                      currentUrl={field.value}
+                                      currentUrl={
+                                        typeof field.value === "string"
+                                          ? field.value
+                                          : ""
+                                      }
                                       label={t("eventForm.buttons.uploadImage")}
                                       accept="image/*"
                                       disabled={isLoading}
@@ -657,7 +665,11 @@ const EventEditForm = ({
                                         "eventForm.placeholders.enterImageUrl"
                                       )}
                                       {...field}
-                                      value={field.value || ""}
+                                      value={
+                                        typeof field.value === "string"
+                                          ? field.value
+                                          : ""
+                                      }
                                     />
                                   </div>
                                 </FormControl>
@@ -1449,6 +1461,8 @@ const EventEditForm = ({
                                   appendExhibitor({
                                     fullName: "",
                                     picture: "",
+                                    fonction: "",
+                                    nationality: "",
                                     socialNetworks: {
                                       facebook: "",
                                       instagram: "",

@@ -52,6 +52,7 @@ import type { RootState } from "@/store/app/rootReducer";
 import { fetchCategoriesRequest } from "@/store/features/categories/categories.actions";
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
+import { EventLogoInput } from "@/components/partials/eventsComponents/EventLogoInput";
 import { useTranslation } from "react-i18next";
 import { EventPreview } from "./EventPreview";
 import {
@@ -140,6 +141,7 @@ const EventEditForm = ({
       name: event.name || "",
       description: event.description || "",
       image: event.image || "",
+      logo: event.logo || "",
       visibility: event.visibility || "PUBLIC",
       type: event.type || "FACETOFACE",
       isNearestEvent: event.isNearestEvent || false,
@@ -175,6 +177,8 @@ const EventEditForm = ({
             _id: speaker._id || "",
             fullName: speaker.fullName || "",
             picture: speaker.picture || "",
+            fonction: speaker.fonction || "",
+            nationality: speaker.nationality || "",
             socialNetworks: {
               facebook: speaker.socialNetworks?.facebook || "",
               instagram: speaker.socialNetworks?.instagram || "",
@@ -191,6 +195,8 @@ const EventEditForm = ({
             _id: exhibitor._id || "",
             fullName: exhibitor.fullName || "",
             picture: exhibitor.picture || "",
+            fonction: exhibitor.fonction || "",
+            nationality: exhibitor.nationality || "",
             socialNetworks: {
               facebook: exhibitor.socialNetworks?.facebook || "",
               instagram: exhibitor.socialNetworks?.instagram || "",
@@ -477,26 +483,54 @@ const EventEditForm = ({
                             {t("eventForm.sections.basicInfo")}
                           </h3>
 
-                          <FormField
-                            control={form.control as any}
-                            name="name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
-                                  {t("eventForm.fields.name")}
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={t(
-                                      "eventForm.placeholders.enterEventName"
-                                    )}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 items-start">
+                            <FormField
+                              control={form.control as any}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>
+                                    {t("eventForm.fields.name")}
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={t(
+                                        "eventForm.placeholders.enterEventName"
+                                      )}
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control as any}
+                              name="logo"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>
+                                    {t("eventForm.fields.eventLogo", "Event Logo")}
+                                  </FormLabel>
+                                  <FormControl>
+                                    <EventLogoInput
+                                      value={field.value}
+                                      onChange={field.onChange}
+                                      disabled={isLoading || isSaving}
+                                      chooseLabel={t("common.upload", "Upload")}
+                                      clearLabel={t("common.delete", "Delete")}
+                                      placeholder={t(
+                                        "eventForm.placeholders.enterLogoUrl",
+                                        "https://example.com/logo.jpg"
+                                      )}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
 
                           <FormField
                             control={form.control as any}
@@ -695,7 +729,11 @@ const EventEditForm = ({
                                       onUploadComplete={(url) =>
                                         field.onChange(url)
                                       }
-                                      currentUrl={field.value}
+                                      currentUrl={
+                                        typeof field.value === "string"
+                                          ? field.value
+                                          : ""
+                                      }
                                       label={t("eventForm.buttons.uploadImage")}
                                       accept="image/*"
                                       disabled={isLoading}
@@ -710,7 +748,11 @@ const EventEditForm = ({
                                         "eventForm.placeholders.enterImageUrl"
                                       )}
                                       {...field}
-                                      value={field.value || ""}
+                                      value={
+                                        typeof field.value === "string"
+                                          ? field.value
+                                          : ""
+                                      }
                                     />
                                   </div>
                                 </FormControl>
@@ -1747,9 +1789,18 @@ const EventEditForm = ({
                                       />
                                     )}
                                     <div className="flex-1 flex items-center justify-between min-w-0">
-                                      <h4 className="font-medium truncate text-sm">
-                                        {field.fullName}
-                                      </h4>
+                                      <div className="min-w-0">
+                                        <h4 className="font-medium truncate text-sm">
+                                          {field.fullName}
+                                        </h4>
+                                        {(field.fonction || field.nationality) && (
+                                          <p className="text-xs text-muted-foreground truncate">
+                                            {[field.fonction, field.nationality]
+                                              .filter(Boolean)
+                                              .join(" - ")}
+                                          </p>
+                                        )}
+                                      </div>
                                       <div className="flex gap-2 mt-2">
                                         <Button
                                           type="button"
@@ -1819,9 +1870,18 @@ const EventEditForm = ({
                                       />
                                     )}
                                     <div className="flex-1 flex items-center justify-between min-w-0">
-                                      <h4 className="font-medium truncate text-sm">
-                                        {field.fullName}
-                                      </h4>
+                                      <div className="min-w-0">
+                                        <h4 className="font-medium truncate text-sm">
+                                          {field.fullName}
+                                        </h4>
+                                        {(field.fonction || field.nationality) && (
+                                          <p className="text-xs text-muted-foreground truncate">
+                                            {[field.fonction, field.nationality]
+                                              .filter(Boolean)
+                                              .join(" - ")}
+                                          </p>
+                                        )}
+                                      </div>
                                       <div className="flex gap-2 mt-2">
                                         <Button
                                           type="button"
@@ -2031,6 +2091,8 @@ const EventEditForm = ({
               _id: person._id,
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             };
             form.setValue("speakers", current);
@@ -2039,6 +2101,8 @@ const EventEditForm = ({
             appendSpeaker({
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             } as any);
           }
@@ -2059,6 +2123,8 @@ const EventEditForm = ({
               _id: person._id,
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             };
             form.setValue("exhibitors", current);
@@ -2067,6 +2133,8 @@ const EventEditForm = ({
             appendExhibitor({
               fullName: person.fullName,
               picture: person.picture,
+              fonction: person.fonction,
+              nationality: person.nationality,
               socialNetworks: person.socialNetworks,
             } as any);
           }

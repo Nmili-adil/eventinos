@@ -2,14 +2,17 @@
 import { api } from "@/lib/apiClient";
 import { getAuthToken } from "@/services/localStorage";
 
+const isFileValue = (value: unknown): value is File =>
+  typeof File !== 'undefined' && value instanceof File;
+
 // Update basic event information
 export const updateEventInfos = async (eventId: string, data: any) => {
   const formData = new FormData();
   
   // Add basic fields
   Object.keys(data).forEach(key => {
-    if (key === 'image' && data[key] instanceof File) {
-      formData.append('image', data[key]);
+    if ((key === 'image' || key === 'logo') && isFileValue(data[key])) {
+      formData.append(key, data[key]);
     } else if (typeof data[key] === 'object' && data[key] !== null) {
       formData.append(key, JSON.stringify(data[key]));
     } else if (data[key] !== undefined && data[key] !== null) {
@@ -44,9 +47,11 @@ export const updateEventSpeakers = async (eventId: string, speakers: any[]) => {
     // Add speaker fields
     if (speaker._id) formData.append(`speakers.${index}._id`, speaker._id);
     if (speaker.fullName) formData.append(`speakers.${index}.fullName`, speaker.fullName);
+    if (speaker.fonction) formData.append(`speakers.${index}.fonction`, speaker.fonction);
+    if (speaker.nationality) formData.append(`speakers.${index}.nationality`, speaker.nationality);
     
     // Handle picture file or URL
-    if (speaker.picture instanceof File) {
+    if (isFileValue(speaker.picture)) {
       formData.append(`speakers.${index}.picture`, speaker.picture);
     } else if (speaker.picture) {
       formData.append(`speakers.${index}.picture`, speaker.picture);
@@ -88,9 +93,11 @@ export const updateEventExhibitors = async (eventId: string, exhibitors: any[]) 
     // Add exhibitor fields
     if (exhibitor._id) formData.append(`exhibitors.${index}._id`, exhibitor._id);
     if (exhibitor.fullName) formData.append(`exhibitors.${index}.fullName`, exhibitor.fullName);
+    if (exhibitor.fonction) formData.append(`exhibitors.${index}.fonction`, exhibitor.fonction);
+    if (exhibitor.nationality) formData.append(`exhibitors.${index}.nationality`, exhibitor.nationality);
     
     // Handle picture file or URL
-    if (exhibitor.picture instanceof File) {
+    if (isFileValue(exhibitor.picture)) {
       formData.append(`exhibitors.${index}.picture`, exhibitor.picture);
     } else if (exhibitor.picture) {
       formData.append(`exhibitors.${index}.picture`, exhibitor.picture);
@@ -125,7 +132,7 @@ export const updateEventSponsors = async (eventId: string, sponsors: any[]) => {
     if (sponsor.name) formData.append(`sponsors.${index}.name`, sponsor.name);
     
     // Handle logo file or URL
-    if (sponsor.logo instanceof File) {
+    if (isFileValue(sponsor.logo)) {
       formData.append(`sponsors.${index}.logo`, sponsor.logo);
     } else if (sponsor.logo) {
       formData.append(`sponsors.${index}.logo`, sponsor.logo);

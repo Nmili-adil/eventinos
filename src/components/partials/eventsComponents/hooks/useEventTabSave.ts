@@ -26,6 +26,7 @@ export const useEventTabSave = (eventId: string) => {
         name: data.name,
         description: data.description,
         image: data.image,
+        logo: data.logo,
         visibility: data.visibility,
         type: data.type,
         status: data.status,

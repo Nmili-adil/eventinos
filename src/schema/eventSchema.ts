@@ -8,10 +8,18 @@ const socialNetworksSchema = z.object({
   website: z.string().optional().or(z.literal('')).default(''),
 });
 
+const uploadFieldSchema = z.union([
+  z.string().url("Invalid URL"),
+  z.literal(''),
+  z.custom<File>((value) => typeof File !== 'undefined' && value instanceof File),
+]).optional().default('');
+
 const speakerSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Full name is required"),
   picture: z.string().url().optional().or(z.literal('')).default(''),
+  fonction: z.string().optional().or(z.literal('')).default(''),
+  nationality: z.string().optional().or(z.literal('')).default(''),
   socialNetworks: socialNetworksSchema.default(() => ({
     facebook: '',
     instagram: '',
@@ -25,6 +33,8 @@ const exhibitorSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Exhibitor name is required"),
   picture: z.string().url().optional().or(z.literal('')).default(''),
+  fonction: z.string().optional().or(z.literal('')).default(''),
+  nationality: z.string().optional().or(z.literal('')).default(''),
   socialNetworks: socialNetworksSchema.default(() => ({
     facebook: '',
     instagram: '',
@@ -69,7 +79,8 @@ export const eventFormSchema = z.object({
   createdBy: z.string().optional().default(''),
   name: z.string().min(1, "Event name is required").max(100),
   description: z.string().default(''),
-  image: z.string().url("Invalid URL").optional().or(z.literal('')).default(''),
+  image: uploadFieldSchema,
+  logo: uploadFieldSchema,
   visibility: z.enum(["PUBLIC", "PRIVATE"]).default("PUBLIC"),
   type: z.enum(["FACETOFACE", "VIRTUEL", "HYBRID"]).default("FACETOFACE"), // Added HYBRID
   isNearestEvent: z.boolean().default(false),

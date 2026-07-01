@@ -113,12 +113,13 @@ export const deleteEventRequest = (eventId: string) => {
     dispatch({ type: DELETE_EVENT_REQUEST, payload: eventId })
     try {
       await deleteEventApi(eventId)
-      
+
       // deleteEventApi returns response.data directly, not full response
       dispatch({ type: DELETE_EVENT_SUCCESS })
     } catch (error: any) {
       console.error('Delete event error:', error);
       dispatch({ type: DELETE_EVENT_FAILURE, payload: error.response?.data?.message || error.message || 'Delete event failed' })
+      throw error
     }
   }
 }
