@@ -5,6 +5,7 @@ export const PRIVACY_PAGE = '/privacy'
 export const DELETE_ACCOUNT_PAGE = '/account-deletion'
 export const  DASHBOARD_OVERVIEW = '/dashboard'
 export const MEMBERS_PAGE = '/dashboard/members-page'
+export const SPONSOR_CATEGORIES_PAGE = '/dashboard/sponsor-categories'
 export const EVENT_LISTE_PAGE = '/dashboard/event-page'
 export const EVENT_ADD_PAGE = '/dashboard/event-page/add'
 export const EVENT_EDIT_PAGE = (eventId: string) => `/dashboard/event-page/edit/${eventId}`

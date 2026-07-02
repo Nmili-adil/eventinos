@@ -110,6 +110,7 @@
     "dashboard": "Dashboard",
     "events": "Events",
     "members": "Members",
+    "sponsorCategories": "Sponsor Categories",
     "accounts": "Accounts",
     "contacts": "Contacts"
   },
@@ -539,7 +540,9 @@
       "buttons": {
         "cancel": "Cancel",
         "addExhibitor": "Add Exhibitor",
-        "adding": "Adding..."
+        "adding": "Adding...",
+        "addSpeaker": "Add Speaker",
+        "addSponsor": "Add Sponsor"
       },
       "validation": {
         "required": "This field is required",
@@ -572,11 +575,13 @@
       "description": "Enter sponsor details",
       "fields": {
         "name": "Name",
-        "logo": "Logo URL"
+        "logo": "Logo URL",
+        "category": "Sponsor Category"
       },
       "placeholders": {
         "enterName": "Enter sponsor name",
-        "enterLogoUrl": "https://example.com/logo.jpg"
+        "enterLogoUrl": "https://example.com/logo.jpg",
+        "selectCategory": "Select a sponsor category"
       },
       "buttons": {
         "cancel": "Cancel",
@@ -1011,6 +1016,46 @@
       "description": "Description",
       "actions": "Actions",
       "showing": "Showing {{from}} to {{to}} of {{total}} entries"
+    }
+  },
+  "sponsorCategories": {
+    "title": "Sponsor Categories",
+    "manageCategories": "Manage your organizer sponsor categories",
+    "addCategory": "Add Category",
+    "editCategory": "Edit Sponsor Category",
+    "createCategory": "Create Category",
+    "categoryName": "Category Name",
+    "categoryNameRequired": "Category name is required",
+    "enterCategoryName": "Enter category name",
+    "addDescription": "Create a new sponsor category for your events.",
+    "editDescription": "Update the sponsor category name.",
+    "searchPlaceholder": "Search sponsor categories by name",
+    "loading": "Loading sponsor categories...",
+    "noCategoriesFound": "No sponsor categories found",
+    "createdSuccessfully": "Sponsor category created successfully",
+    "updatedSuccessfully": "Sponsor category updated successfully",
+    "deletedSuccessfully": "Sponsor category deleted successfully",
+    "createFailed": "Failed to create sponsor category",
+    "updateFailed": "Failed to update sponsor category",
+    "deleteFailed": "Failed to delete sponsor category",
+    "exportFailed": "Failed to export sponsor categories",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create Category",
+      "creating": "Creating...",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "export": "Export",
+      "exporting": "Exporting..."
+    },
+    "deleteDialog": {
+      "title": "Delete Sponsor Category",
+      "description": "Are you sure you want to delete this sponsor category? This will permanently remove it."
+    },
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "actions": "Actions"
     }
   },
   "badges": {

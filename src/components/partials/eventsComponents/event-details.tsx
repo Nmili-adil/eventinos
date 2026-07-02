@@ -750,6 +750,11 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                       <div className="font-medium">
                         {sponsor.name || t('events.details.sponsor', 'Sponsor')}
                       </div>
+                      {sponsor.category?.name && (
+                        <Badge variant="secondary" className="font-normal mt-1">
+                          {sponsor.category.name}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 ))}

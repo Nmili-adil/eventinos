@@ -1882,6 +1882,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
               _id: person._id,
               name: person.name,
               logo: person.logo,
+              category: person.category,
               socialNetworks: person.socialNetworks,
             };
             form.setValue("sponsors", current);
@@ -1890,6 +1891,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
             appendSponsor({
               name: person.name,
               logo: person.logo,
+              category: person.category,
               socialNetworks: person.socialNetworks,
             } as any);
           }

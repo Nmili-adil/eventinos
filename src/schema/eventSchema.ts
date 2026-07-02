@@ -48,6 +48,7 @@ const sponsorSchema = z.object({
   _id: z.string().optional(),
   name: z.string().min(1, "Sponsor name is required"),
   logo: z.string().url().optional().or(z.literal('')).default(''),
+  category: z.string().optional().or(z.literal('')).default(''),
   socialNetworks: socialNetworksSchema.default(() => ({
     facebook: '',
     instagram: '',

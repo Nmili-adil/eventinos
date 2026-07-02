@@ -78,6 +78,7 @@
     "dashboard": "Tableau de bord",
     "events": "Événements",
     "members": "Membres",
+    "sponsorCategories": "Catégories de sponsors",
     "accounts": "Comptes",
     "contacts": "Contacts"
   },
@@ -523,7 +524,9 @@
         "cancel": "Annuler",
         "add": "Ajouter l'exposant",
         "adding": "Ajout en cours...",
-        "addExhibitor": "Ajouter l'exposant"
+        "addExhibitor": "Ajouter l'exposant",
+        "addSpeaker": "Ajouter l'intervenant",
+        "addSponsor": "Ajouter le sponsor"
       },
       "validation": {
         "required": "Ce champ est obligatoire",
@@ -556,15 +559,17 @@
       "description": "Entrez les détails du sponsor",
       "fields": {
         "name": "Nom du sponsor",
-        "logo": "URL du logo du sponsor"
+        "logo": "URL du logo du sponsor",
+        "category": "Catégorie de sponsor"
       },
       "placeholders": {
         "enterName": "Entrez le nom du sponsor",
-        "enterLogo": "https://exemple.com/logo.jpg"
+        "enterLogo": "https://exemple.com/logo.jpg",
+        "selectCategory": "Sélectionnez une catégorie de sponsor"
       },
       "buttons": {
         "cancel": "Annuler",
-        "add": "Ajouter le sponsor",
+        "addSponsor"    : "Ajouter le sponsor",
         "adding": "Ajout en cours..."
       },
       "validation": {
@@ -1011,6 +1016,46 @@
       "description": "Description",
       "actions": "Actions",
       "showing": "Affichage de {{from}} à {{to}} sur {{total}} entrées"
+    }
+  },
+  "sponsorCategories": {
+    "title": "Catégories de sponsors",
+    "manageCategories": "Gérez les catégories de sponsors de votre organisation",
+    "addCategory": "Ajouter une catégorie",
+    "editCategory": "Modifier la catégorie de sponsor",
+    "createCategory": "Créer une catégorie",
+    "categoryName": "Nom de la catégorie",
+    "categoryNameRequired": "Le nom de la catégorie est requis",
+    "enterCategoryName": "Entrez le nom de la catégorie",
+    "addDescription": "Créez une nouvelle catégorie de sponsor pour vos événements.",
+    "editDescription": "Mettez à jour le nom de la catégorie de sponsor.",
+    "searchPlaceholder": "Rechercher des catégories de sponsors par nom",
+    "loading": "Chargement des catégories de sponsors...",
+    "noCategoriesFound": "Aucune catégorie de sponsor trouvée",
+    "createdSuccessfully": "Catégorie de sponsor créée avec succès",
+    "updatedSuccessfully": "Catégorie de sponsor mise à jour avec succès",
+    "deletedSuccessfully": "Catégorie de sponsor supprimée avec succès",
+    "createFailed": "Échec de la création de la catégorie de sponsor",
+    "updateFailed": "Échec de la mise à jour de la catégorie de sponsor",
+    "deleteFailed": "Échec de la suppression de la catégorie de sponsor",
+    "exportFailed": "Échec de l'exportation des catégories de sponsors",
+    "buttons": {
+      "cancel": "Annuler",
+      "create": "Créer la catégorie",
+      "creating": "Création en cours...",
+      "save": "Enregistrer",
+      "saving": "Enregistrement en cours...",
+      "export": "Exporter",
+      "exporting": "Exportation en cours..."
+    },
+    "deleteDialog": {
+      "title": "Supprimer la catégorie de sponsor",
+      "description": "Êtes-vous sûr de vouloir supprimer cette catégorie de sponsor ? Cela la supprimera définitivement."
+    },
+    "table": {
+      "id": "ID",
+      "name": "Nom",
+      "actions": "Actions"
     }
   },
   "badges": {

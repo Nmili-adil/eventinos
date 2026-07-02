@@ -83,6 +83,7 @@
     "dashboard": "لوحة التحكم",
     "events": "الفعاليات",
     "members": "الأعضاء",
+    "sponsorCategories": "فئات الرعاة",
     "accounts": "الحسابات",
     "contacts": "جهات الاتصال"
   },
@@ -525,7 +526,11 @@
       "buttons": {
         "cancel": "إلغاء",
         "addExhibitor": "إضافة العارض",
-        "adding": "جاري الإضافة..."
+        "adding": "جاري الإضافة...",
+        "addSpeaker": "إضافة المتحدث",
+        "addingSpeaker": "جاري إضافة المتحدث...",
+        "addSponsor": "إضافة الراعي",
+        "addingSponsor": "جاري إضافة الراعي..."
       },
       "validation": {
         "required": "هذا الحقل مطلوب",
@@ -537,11 +542,13 @@
       "description": "أضف راعيًا للمشاركة في هذا الحدث",
       "fields": {
         "name": "اسم الراعي",
-        "logo": "رابط شعار الراعي"
+        "logo": "رابط شعار الراعي",
+        "category": "فئة الراعي"
       },
       "placeholders": {
         "enterName": "أدخل اسم الراعي",
-        "enterLogo": "https://example.com/logo.jpg"
+        "enterLogo": "https://example.com/logo.jpg",
+        "selectCategory": "اختر فئة الراعي"
       },
       "buttons": {
         "cancel": "إلغاء",
@@ -988,6 +995,46 @@
       "description": "الوصف",
       "actions": "الإجراءات",
       "showing": "عرض {{from}} إلى {{to}} من {{total}} إدخال"
+    }
+  },
+  "sponsorCategories": {
+    "title": "فئات الرعاة",
+    "manageCategories": "إدارة فئات الرعاة الخاصة بالمنظم",
+    "addCategory": "إضافة فئة",
+    "editCategory": "تعديل فئة الراعي",
+    "createCategory": "إنشاء فئة",
+    "categoryName": "اسم الفئة",
+    "categoryNameRequired": "اسم الفئة مطلوب",
+    "enterCategoryName": "أدخل اسم الفئة",
+    "addDescription": "أنشئ فئة راعي جديدة لفعالياتك.",
+    "editDescription": "قم بتحديث اسم فئة الراعي.",
+    "searchPlaceholder": "ابحث عن فئات الرعاة بالاسم",
+    "loading": "جارٍ تحميل فئات الرعاة...",
+    "noCategoriesFound": "لم يتم العثور على فئات رعاة",
+    "createdSuccessfully": "تم إنشاء فئة الراعي بنجاح",
+    "updatedSuccessfully": "تم تحديث فئة الراعي بنجاح",
+    "deletedSuccessfully": "تم حذف فئة الراعي بنجاح",
+    "createFailed": "فشل إنشاء فئة الراعي",
+    "updateFailed": "فشل تحديث فئة الراعي",
+    "deleteFailed": "فشل حذف فئة الراعي",
+    "exportFailed": "فشل تصدير فئات الرعاة",
+    "buttons": {
+      "cancel": "إلغاء",
+      "create": "إنشاء الفئة",
+      "creating": "جارٍ الإنشاء...",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "export": "تصدير",
+      "exporting": "جارٍ التصدير..."
+    },
+    "deleteDialog": {
+      "title": "حذف فئة الراعي",
+      "description": "هل أنت متأكد من أنك تريد حذف فئة الراعي هذه؟ سيؤدي هذا إلى إزالتها نهائياً."
+    },
+    "table": {
+      "id": "المعرف",
+      "name": "الاسم",
+      "actions": "الإجراءات"
     }
   },
   "badges": {

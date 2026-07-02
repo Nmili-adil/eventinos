@@ -1649,6 +1649,7 @@ const EventEditForm = ({
                                   appendSponsor({
                                     name: "",
                                     logo: "",
+                                    category: "",
                                     socialNetworks: {
                                       facebook: "",
                                       instagram: "",

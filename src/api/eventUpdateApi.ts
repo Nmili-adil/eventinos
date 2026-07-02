@@ -130,7 +130,8 @@ export const updateEventSponsors = async (eventId: string, sponsors: any[]) => {
     // Add sponsor fields
     if (sponsor._id) formData.append(`sponsors.${index}._id`, sponsor._id);
     if (sponsor.name) formData.append(`sponsors.${index}.name`, sponsor.name);
-    
+    if (sponsor.category) formData.append(`sponsors.${index}.category`, sponsor.category);
+
     // Handle logo file or URL
     if (isFileValue(sponsor.logo)) {
       formData.append(`sponsors.${index}.logo`, sponsor.logo);

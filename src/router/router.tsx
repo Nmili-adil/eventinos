@@ -1,5 +1,5 @@
 import Layout from '@/app/_layout'
-import { DASHBOARD_OVERVIEW, EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE, LANDING_PAGE, LOGIN_PAGE, MEMBERS_PAGE, PROFILE_PAGE, SETTINGS_PAGE, CONTACTS_PAGE, COMPTES_PAGE, PRIVACY_PAGE, DELETE_ACCOUNT_PAGE  } from '@/constants/routerConstants'
+import { DASHBOARD_OVERVIEW, EVENT_ADD_PAGE, EVENT_DETAILS_PAGE, EVENT_EDIT_PAGE, EVENT_LISTE_PAGE, FORGOTPASSWORD_PAGE, LANDING_PAGE, LOGIN_PAGE, MEMBERS_PAGE, PROFILE_PAGE, SETTINGS_PAGE, CONTACTS_PAGE, COMPTES_PAGE, PRIVACY_PAGE, DELETE_ACCOUNT_PAGE, SPONSOR_CATEGORIES_PAGE  } from '@/constants/routerConstants'
 import LandingPage from '@/pages/landingPage'
 import EventAddPage from '@/pages/eventAdd-page'
 import EventDetailsPage from '@/pages/eventDetailsPage'
@@ -9,6 +9,7 @@ import ForgotPasswordPage from '@/pages/forgetPasswordPage'
 import LoginPage from '@/pages/loginPage'
 import PrivacyPage from '@/pages/privacyPage'
 import  { MembersPage } from '@/pages/memberPage'
+import SponsorCategoriesPage from '@/pages/sponsorCategoriesPage'
 import Overviewpage from '@/pages/overviewpage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import ProtectedRoute from '@/services/protectedRoute'
@@ -83,6 +84,14 @@ export const Router = createBrowserRouter([
                 element: (
                     <RoleProtectedRoute allowedRoles={['admin', 'organizer']}>
                         <MembersPage />
+                    </RoleProtectedRoute>
+                )
+            },
+            {
+                path: SPONSOR_CATEGORIES_PAGE,
+                element: (
+                    <RoleProtectedRoute allowedRoles={['admin', 'organizer']}>
+                        <SponsorCategoriesPage />
                     </RoleProtectedRoute>
                 )
             },

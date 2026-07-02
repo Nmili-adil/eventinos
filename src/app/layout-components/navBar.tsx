@@ -1,13 +1,14 @@
-import { COMPTES_PAGE, CONTACTS_PAGE, DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE } from "@/constants/routerConstants"
+import { COMPTES_PAGE, CONTACTS_PAGE, DASHBOARD_OVERVIEW, EVENT_LISTE_PAGE, MEMBERS_PAGE, SPONSOR_CATEGORIES_PAGE } from "@/constants/routerConstants"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from 'react-i18next'
 import { cn } from "@/lib/utils"
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  Users, 
-  UserCheck, 
-  MessageSquare 
+import {
+  LayoutDashboard,
+  Calendar,
+  Users,
+  UserCheck,
+  MessageSquare,
+  Award
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
@@ -31,10 +32,15 @@ const allNavLinks: NavLink[] = [
     path: EVENT_LISTE_PAGE, 
     icon: Calendar 
   },
-  { 
-    nameKey: 'navigation.members', 
-    path: MEMBERS_PAGE, 
-    icon: Users 
+  {
+    nameKey: 'navigation.members',
+    path: MEMBERS_PAGE,
+    icon: Users
+  },
+  {
+    nameKey: 'navigation.sponsorCategories',
+    path: SPONSOR_CATEGORIES_PAGE,
+    icon: Award
   },
   { 
     nameKey: 'navigation.accounts', 

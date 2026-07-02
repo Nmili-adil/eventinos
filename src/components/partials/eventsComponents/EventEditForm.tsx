@@ -213,6 +213,7 @@ const EventEditForm = ({
             _id: sponsor._id || "",
             name: sponsor.name || "",
             logo: sponsor.logo || "",
+            category: typeof sponsor.category === 'object' ? sponsor.category?._id || "" : sponsor.category || "",
             socialNetworks: {
               facebook: sponsor.socialNetworks?.facebook || "",
               instagram: sponsor.socialNetworks?.instagram || "",
@@ -2155,6 +2156,7 @@ const EventEditForm = ({
               _id: person._id,
               name: person.name,
               logo: person.logo,
+              category: person.category,
               socialNetworks: person.socialNetworks,
             };
             form.setValue("sponsors", current);
@@ -2163,6 +2165,7 @@ const EventEditForm = ({
             appendSponsor({
               name: person.name,
               logo: person.logo,
+              category: person.category,
               socialNetworks: person.socialNetworks,
             } as any);
           }

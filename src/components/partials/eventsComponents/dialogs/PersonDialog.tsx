@@ -1,5 +1,6 @@
 import { useState, useEffect, use } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,9 +11,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { FileUpload } from "../FileUpload";
 import { toast } from "sonner";
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
+import { fetchAllSponsorCategoriesRequest } from "@/store/features/sponsorCategories/sponsorCategories.actions";
+import type { RootState } from "@/store/app/rootReducer";
+import type { AppDispatch } from "@/store/app/store";
+
+const normalizeCategoryId = (category: any): string =>
+  typeof category === "object" && category !== null ? category._id || "" : category || "";
 
 interface PersonDialogProps {
   open: boolean;
@@ -37,6 +51,7 @@ export const PersonDialog = ({
       name: type === "sponsor" ? "" : undefined,
       picture: type === "sponsor" ? undefined : "",
       logo: type === "sponsor" ? "" : undefined,
+      category: type === "sponsor" ? "" : undefined,
       fonction: type === "sponsor" ? undefined : "",
       nationality: type === "sponsor" ? undefined : "",
       socialNetworks: {
@@ -51,7 +66,7 @@ export const PersonDialog = ({
 
   useEffect(() => {
     if (person) {
-      setFormData(person);
+      setFormData({ ...person, category: normalizeCategoryId(person.category) });
     } else {
       setFormData({
         _id: undefined,
@@ -59,6 +74,7 @@ export const PersonDialog = ({
         name: type === "sponsor" ? "" : undefined,
         picture: type === "sponsor" ? undefined : "",
         logo: type === "sponsor" ? "" : undefined,
+        category: type === "sponsor" ? "" : undefined,
         fonction: type === "sponsor" ? undefined : "",
         nationality: type === "sponsor" ? undefined : "",
         socialNetworks: {
@@ -75,12 +91,15 @@ export const PersonDialog = ({
 useEffect(() => {
     if (!open) {
       setFormData(
-        person || {
+        person
+          ? { ...person, category: normalizeCategoryId(person.category) }
+          : {
           _id: undefined,
           fullName: type === "sponsor" ? undefined : "",
           name: type === "sponsor" ? "" : undefined,
           picture: type === "sponsor" ? undefined : "",
           logo: type === "sponsor" ? "" : undefined,
+          category: type === "sponsor" ? "" : undefined,
           fonction: type === "sponsor" ? undefined : "",
           nationality: type === "sponsor" ? undefined : "",
           socialNetworks: {
@@ -94,6 +113,15 @@ useEffect(() => {
       );
     }
   }, [open]);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const sponsorCategories = useSelector((state: RootState) => state.sponsorCategories.all);
+
+  useEffect(() => {
+    if (open && type === "sponsor") {
+      dispatch(fetchAllSponsorCategoriesRequest());
+    }
+  }, [open, type, dispatch]);
 
   const handleSave = () => {
     if (type === "sponsor" && !formData.name) {
@@ -153,6 +181,31 @@ useEffect(() => {
               }
             />
           </div>
+
+          {type === "sponsor" && (
+            <div>
+              <label className="text-sm font-medium">
+                {t("eventForm.addSponsorDialog.fields.category") || "Sponsor Category"}
+              </label>
+              <Select
+                value={formData.category || undefined}
+                onValueChange={(value) => setFormData({ ...formData, category: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={t("eventForm.addSponsorDialog.placeholders.selectCategory") || "Select a sponsor category"}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {sponsorCategories.map((cat: any) => (
+                    <SelectItem key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {type !== "sponsor" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
