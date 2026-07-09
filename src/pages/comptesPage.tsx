@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/card";
 import {
   AlertDialog,
-  AlertDialogAction,
+  AlertDialogAction,  
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -87,7 +87,7 @@ import { PROFILE_PAGE } from "@/constants/routerConstants";
 import { formatDate } from "@/lib/helperFunctions";
 import AddAccountDialog from "@/components/partials/usersComponents/AddAccountDialog";
 import { MembersPagination } from "@/components/partials/membersComponents/MembersPagination";
-import { createUserApi, updateAccoutStatusApi } from "@/api/usersApi";
+import { createUserApi, deleteAccount, updateAccoutStatusApi } from "@/api/usersApi";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { getLayoutPreferences, setLayoutPreferences } from "@/services/localStorage";
@@ -294,13 +294,18 @@ export const ComptesPage: React.FC = () => {
   const handleDelete = async (user: User) => {
     setActionLoading(user._id?.toString());
     try {
-      // TODO: Implement delete API call
-      toast.success(
+      const res = await deleteAccount(user._id?.toString())
+      if (res.status ==200) {
+toast.success(
         t("accounts.messages.deleteSuccess", "User deleted successfully")
       );
       setDeleteDialogOpen(false);
       setSelectedUser(null);
       dispatch(fetchUsersRequest(currentPage, PAGE_SIZE, role));
+      } else {
+        console.log("error while deleting account: " ,res)
+      }
+      
     } catch (error: any) {
       handleAsyncError(
         error,

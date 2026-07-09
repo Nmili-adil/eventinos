@@ -121,3 +121,18 @@ export const updateOrganizerProfessionalInfoApi = async (organizerId: string, in
     throw error;
   }
 }
+
+export const deleteAccount = async (accountId: string) => {
+  try{
+    const response = await api.delete(`/users/${accountId}`, {
+      headers: {
+        'Content-Type' : 'application/json',
+        Authorization: `Bearer ${getAuthToken}`
+      }
+    })
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
