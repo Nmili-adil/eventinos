@@ -7,6 +7,7 @@ import { Calendar, MapPin, Clock, Users, Globe, Lock } from 'lucide-react'
 import type { EventFormData } from '@/schema/eventSchema'
 import { format } from 'date-fns'
 import { GoogleMapWrapper, SingleMarkerMap } from '@/components/shared/GoogleMap'
+import { getStatusColor } from '@/lib/events-utils'
 
 interface EventPreviewProps {
   formData: EventFormData
@@ -80,15 +81,7 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                 {formData.status && (
                   <Badge
                     variant="outline"
-                    className={`mt-2 ${
-                      formData.status === 'ACCEPTED'
-                        ? 'bg-green-100 text-green-800 border-green-200'
-                        : formData.status === 'PENDING'
-                        ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                        : formData.status === 'REFUSED'
-                        ? 'bg-red-100 text-red-800 border-red-200'
-                        : 'bg-gray-100 text-gray-800 border-gray-200'
-                    }`}
+                    className={`mt-2 ${getStatusColor(formData.status)}`}
                   >
                     {formData.status}
                   </Badge>

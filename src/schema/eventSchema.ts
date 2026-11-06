@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { EVENT_STATUSES } from '@/constants/eventStatuses';
 
 const socialNetworksSchema = z.object({
   facebook: z.string().optional().or(z.literal('')).default(''),
@@ -86,7 +87,7 @@ export const eventFormSchema = z.object({
   type: z.enum(["FACETOFACE", "VIRTUEL", "HYBRID"]).default("FACETOFACE"), // Added HYBRID
   isNearestEvent: z.boolean().default(false),
   isUpComingEvent: z.boolean().default(false), // Note: backend uses "isUpComingEvent" (different spelling)
-  status: z.enum(["PENDING", "ACCEPTED", "REFUSED", "CLOSED"]).default("PENDING"),
+  status: z.enum(EVENT_STATUSES).default("PENDING"),
   startDate: dateTimeSchema.default({ date: '', time: '' }),
   endDate: dateTimeSchema.default({ date: '', time: '' }),
   location: locationSchema.default({

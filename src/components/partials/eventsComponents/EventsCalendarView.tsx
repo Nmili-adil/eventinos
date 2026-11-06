@@ -297,9 +297,11 @@ const EventTicket: React.FC<EventTicketProps> = ({
         return 'bg-green-100 border-green-300 text-green-800 hover:bg-green-200'
       case 'PENDING':
         return 'bg-yellow-100 border-yellow-300 text-yellow-800 hover:bg-yellow-200'
-      case 'REJECTED':
+      case 'REFUSED':
         return 'bg-red-100 border-red-300 text-red-800 hover:bg-red-200'
-      case 'CANCELLED':
+      case 'DRAFT':
+        return 'bg-slate-100 border-slate-300 border-dashed text-slate-700 hover:bg-slate-200'
+      case 'CLOSED':
         return 'bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200'
       default:
         return 'bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200'

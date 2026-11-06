@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react"
+import type { EventStatus } from "@/constants/eventStatuses"
 
 export interface StatCardProps {
   title: string
@@ -14,7 +15,7 @@ export interface StatCardProps {
 
 export interface Event {
   _id: string
-  status: 'ACCEPTED' | 'PENDING' | 'REFUSED' | 'CLOSED'
+  status: EventStatus
   createdBy?: {
     _id: string
     firstName: string

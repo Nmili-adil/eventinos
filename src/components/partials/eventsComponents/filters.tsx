@@ -8,6 +8,7 @@ import { Calendar as CalendarIcon, Search, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
+import { EVENT_STATUSES, EVENT_STATUS_LABEL_KEYS } from '@/constants/eventStatuses'
 
 export function Filters({ filters, onFiltersChange }: FiltersProps) {
   const { t } = useTranslation()
@@ -117,11 +118,9 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t('events.allStatuses')}</SelectItem>
-              <SelectItem value="ACCEPTED">{t('events.statusAccepted')}</SelectItem>
-              <SelectItem value="PENDING">{t('events.statusPending')}</SelectItem>
-              <SelectItem value="REJECTED">{t('events.statusRejected')}</SelectItem>
-              <SelectItem value="CANCELLED">{t('events.statusCancelled')}</SelectItem>
-              <SelectItem value="CLOSED">{t('events.statusClosed')}</SelectItem>
+              {EVENT_STATUSES.map((status) => (
+                <SelectItem key={status} value={status}>{t(EVENT_STATUS_LABEL_KEYS[status])}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={filters.type} onValueChange={handleTypeChange}>

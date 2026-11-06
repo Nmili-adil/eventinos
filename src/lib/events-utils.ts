@@ -1,7 +1,7 @@
 
-import type { Event, EventStatus, SortDirection, SortField } from "@/types/eventsTypes"
+import type { Event, SortDirection, SortField } from "@/types/eventsTypes"
 
-export const getStatusColor = (status: EventStatus): string => {
+export const getStatusColor = (status: string): string => {
   switch (status) {
     case 'ACCEPTED':
       return 'bg-green-100 text-green-800 border-green-200'
@@ -9,12 +9,92 @@ export const getStatusColor = (status: EventStatus): string => {
       return 'bg-yellow-100 text-yellow-800 border-yellow-200'
     case 'REFUSED':
       return 'bg-red-100 text-red-800 border-red-200'
+    case 'DRAFT':
+      return 'bg-slate-100 text-slate-700 border-slate-300 border-dashed'
     case 'CLOSED':
       return 'bg-gray-100 text-gray-800 border-gray-200'
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200'
   }
 }
+
+const parseEventDate = (value: unknown): Date | null => {
+  if (value instanceof Date) return isNaN(value.getTime()) ? null : value
+  if (typeof value !== 'string' || !value) return null
+
+  // Events saved before the ISO format may still hold DD-MM-YYYY.
+  const legacy = /^(\d{2})-(\d{2})-(\d{4})$/.exec(value)
+  const parsed = legacy
+    ? new Date(Number(legacy[3]), Number(legacy[2]) - 1, Number(legacy[1]))
+    : new Date(value)
+  return isNaN(parsed.getTime()) ? null : parsed
+}
+
+const pad = (value: number) => String(value).padStart(2, '0')
+
+export const formatLocalTime = (date: Date): string =>
+  `${pad(date.getHours())}:${pad(date.getMinutes())}`
+
+// Value for an <input type="datetime-local">, which works in local time.
+export const formatDateTimeLocalInput = (value: unknown): string => {
+  const date = parseEventDate(value)
+  if (!date) return ''
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${formatLocalTime(date)}`
+}
+
+// The backend keeps a date and a separate local time. Merge them into the
+// instant they describe, so a date stored at midnight still shows the real hour.
+export const combineDateTime = (date: unknown, time?: string | null): Date | null => {
+  const parsed = parseEventDate(date)
+  if (!parsed) return null
+
+  const match = /^(\d{1,2}):(\d{2})/.exec(time ?? '')
+  if (!match) return parsed
+
+  const combined = new Date(parsed)
+  combined.setHours(Number(match[1]), Number(match[2]), 0, 0)
+  return combined
+}
+
+// Wire format of startDate/endDate: full ISO datetime plus local HH:mm.
+// `value` is a Date, a date string, or an object whose `date` is one of those.
+export const toEventDateTime = (value: unknown): { date: string; time: string } => {
+  const source =
+    value && typeof value === 'object' && !(value instanceof Date)
+      ? (value as { date?: unknown }).date
+      : value
+  const date = parseEventDate(source)
+  return date
+    ? { date: date.toISOString(), time: formatLocalTime(date) }
+    : { date: '', time: '' }
+}
+
+// Shape used by the forms and maps. The API may send either `location` or
+// `coordinates`; `location` wins because the forms only ever update that one.
+export const normalizeLocation = (loc: any) => ({
+  name: loc?.name || '',
+  address: loc?.address || '',
+  place_id: loc?.place_id || '',
+  city: loc?.city || '',
+  country: loc?.country || '',
+  countryCode: loc?.countryCode || '',
+  location: {
+    lat: Number(loc?.location?.lat ?? loc?.coordinates?.latitude) || 0,
+    lng: Number(loc?.location?.lng ?? loc?.coordinates?.longitude) || 0,
+  },
+})
+
+// Shape sent to POST /events and PUT /events/:id/location.
+export const buildLocationPayload = (loc: any) => {
+  const { location, ...rest } = normalizeLocation(loc)
+  return {
+    ...rest,
+    coordinates: { latitude: location.lat, longitude: location.lng },
+  }
+}
+
+export const normalizeCategoryId = (category: any): string =>
+  typeof category === 'object' && category !== null ? category._id || '' : category || ''
 
 
 // export const getStatusText = (status: EventStatus): string => {

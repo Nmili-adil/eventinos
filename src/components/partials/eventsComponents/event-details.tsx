@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/dialog";
 import EventParticipantsSection from "./EventParticipantsSection";
 import { useTranslation } from "react-i18next";
+import { getStatusColor } from "@/lib/events-utils";
 
 interface EventDetailsProps {
   event: any;
@@ -154,21 +155,6 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PUBLISHED":
-        return "bg-green-100 text-green-800";
-      case "DRAFT":
-        return "bg-gray-100 text-gray-800";
-      case "CANCELLED":
-        return "bg-red-100 text-red-800";
-      case "CLOSED":
-        return "bg-orange-100 text-orange-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   const getTypeColor = (type: string) => {
     switch (type) {
       case "FACETOFACE":
@@ -187,7 +173,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     name: event.name || t('events.details.untitledEvent', 'Untitled Event'),
     description: event.description || t('events.details.noDescription', 'No description available.'),
     image: getImageSrc(event.image),
-    status: event.status || "DRAFT",
+    status: event.status || "PENDING",
     type: event.type || "FACETOFACE",
     visibility: event.visibility || "PUBLIC",
     startDate: event.startDate || { date: "", time: "" },

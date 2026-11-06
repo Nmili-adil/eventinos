@@ -1,4 +1,6 @@
-export type EventStatus = 'ACCEPTED' | 'PENDING' | 'REFUSED' | 'CLOSED'
+import type { EventStatus } from '@/constants/eventStatuses'
+
+export type { EventStatus }
 export type EventType = 'FACETOFACE' | 'ONLINE' | 'HYBRID'
 export type EventVisibility = 'PUBLIC' | 'PRIVATE'
 
