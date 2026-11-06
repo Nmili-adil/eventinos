@@ -733,7 +733,9 @@
       },
       "buttons": {
         "addSpeaker": "إضافة المتحدث"
-      }
+      },
+      "title": "إضافة متحدث",
+      "description": "أدخل بيانات المتحدث"
     }
   },
   "notFound": {
