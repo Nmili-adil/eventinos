@@ -7,7 +7,8 @@ import { fetchEventParticipantsApi } from "@/api/guestsApi"
 import { deleteEventMemberApi } from "@/api/eventsApi"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
-import { Trash2, Mail, Phone, MapPin, User } from "lucide-react"
+import { Trash2, Mail, Phone, MapPin, User, Download } from "lucide-react"
+import { ParticipantsExportDialog } from "./dialogs/ParticipantsExportDialog"
 import { toast } from "sonner"
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler"
 import {
@@ -62,6 +63,7 @@ export const EventParticipantsSection = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<EventParticipant | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
 
   const loadParticipants = async () => {
     if (!eventId) return
@@ -163,6 +165,22 @@ export const EventParticipantsSection = ({
 
   return (
     <>
+      {eventId && (
+        <>
+          <div className="mb-4 flex justify-end">
+            <Button type="button" variant="outline" size="sm" className="gap-2" onClick={() => setExportOpen(true)}>
+              <Download className="h-4 w-4" />
+              {t('events.participants.export.openButton')}
+            </Button>
+          </div>
+          <ParticipantsExportDialog
+            open={exportOpen}
+            onOpenChange={setExportOpen}
+            eventId={eventId}
+            participants={participants}
+          />
+        </>
+      )}
       <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", className)}>
         {participants.map((member) => (
           <Card key={member._id} className="hover:shadow-md transition-shadow relative p-2">

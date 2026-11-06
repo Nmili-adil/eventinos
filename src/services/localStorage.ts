@@ -103,6 +103,24 @@ export const clearAuthData = () => {
   localStorage.removeItem(storageKeys.ROLE)
 }
 
+const exportPreferencesKey = () => {
+  const user = getUserData()
+  return `participants-export-preferences:${user?._id ?? user?.id ?? 'anonymous'}`
+}
+
+export const setExportPreferences = (preferences: object) => {
+  localStorage.setItem(exportPreferencesKey(), JSON.stringify(preferences))
+}
+
+export const getExportPreferences = (): Record<string, any> | null => {
+  try {
+    const stored = localStorage.getItem(exportPreferencesKey())
+    return stored ? JSON.parse(stored) : null
+  } catch {
+    return null
+  }
+}
+
 export const setRole = (role: string) => {
   localStorage.setItem(storageKeys.ROLE, role)
 }
