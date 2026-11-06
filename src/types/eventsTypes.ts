@@ -21,6 +21,15 @@ export interface Location {
   countryCode: string
 }
 
+export interface EventOrganizer {
+  name: string
+  logo?: string
+  website?: string
+  email?: string
+  phone?: string
+  user?: string
+}
+
 export interface Event {
   title: string
   _id: string
@@ -48,6 +57,7 @@ export interface Event {
     design: string
     image: string
   }
+  organizer?: EventOrganizer
   createdBy: {
     _id: string
     firstName: string

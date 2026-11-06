@@ -53,6 +53,7 @@ import { fetchCategoriesRequest } from "@/store/features/categories/categories.a
 import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
 import { EventLogoInput } from "@/components/partials/eventsComponents/EventLogoInput";
+import { OrganizerFields } from "./OrganizerFields";
 import { useTranslation } from "react-i18next";
 import { EventPreview } from "./EventPreview";
 import {
@@ -75,7 +76,7 @@ import { mapEventDateToForm, mapEventToForm } from "./mapEventToForm";
 // Only the fields that must be valid to save a tab. Other fields are not
 // checked here, so older events with unusual values can still be edited.
 const TAB_REQUIRED_FIELDS = {
-  basic: ["name", "category"],
+  basic: ["name", "category", "organizer"],
   datetime: ["startDate", "endDate"],
   exhibitors: ["speakers", "sponsors"],
 } as const;
@@ -456,6 +457,11 @@ const EventEditForm = ({ event, isLoading = false }: EventEditFormProps) => {
                               )}
                             />
                           </div>
+
+                          <OrganizerFields
+                            control={form.control}
+                            disabled={isLoading || isSaving}
+                          />
 
                           <FormField
                             control={form.control as any}

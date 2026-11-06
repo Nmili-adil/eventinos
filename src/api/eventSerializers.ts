@@ -57,3 +57,9 @@ export const appendSponsors = (formData: FormData, sponsors: any[]) => {
     appendSocialNetworks(formData, prefix, sponsor.socialNetworks);
   });
 };
+
+export const appendOrganizer = (formData: FormData, organizer: any) => {
+  ["name", "logo", "website", "email", "phone"].forEach((field) => {
+    appendIfPresent(formData, `organizer.${field}`, organizer?.[field]);
+  });
+};

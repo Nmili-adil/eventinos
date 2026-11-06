@@ -8,12 +8,15 @@ import type { EventFormData } from '@/schema/eventSchema'
 import { format } from 'date-fns'
 import { GoogleMapWrapper, SingleMarkerMap } from '@/components/shared/GoogleMap'
 import { getStatusColor } from '@/lib/events-utils'
+import { useTranslation } from 'react-i18next'
 
 interface EventPreviewProps {
   formData: EventFormData
 } 
 
 export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
+  const { t } = useTranslation()
+
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Not set'
     try {
@@ -78,6 +81,11 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                 <h2 className="text-xl font-bold text-gray-900 line-clamp-2">
                   {formData.name || 'Event Name'}
                 </h2>
+                {formData.organizer?.name && (
+                  <p className="mt-1 text-xs text-gray-500">
+                    {t('events.details.organizedBy', 'Organized by')} {formData.organizer.name}
+                  </p>
+                )}
                 {formData.status && (
                   <Badge
                     variant="outline"

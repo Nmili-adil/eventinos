@@ -19,6 +19,17 @@ const uploadFieldSchema = z.union([
   z.custom<File>((value) => typeof File !== 'undefined' && value instanceof File),
 ]).optional().default('');
 
+const organizerSchema = z.object({
+  name: z.string().trim().min(1, required('eventForm.validation.organizerRequired')),
+  logo: z.union([
+    z.string(),
+    z.custom<File>((value) => typeof File !== 'undefined' && value instanceof File),
+  ]).optional().default(''),
+  website: z.string().optional().default(''),
+  email: z.union([z.email(required('eventForm.validation.invalidEmail')), z.literal('')]).optional().default(''),
+  phone: z.string().optional().default(''),
+});
+
 const speakerSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, "Full name is required"),
@@ -87,6 +98,7 @@ export const eventFormSchema = z.object({
   description: z.string().default(''),
   image: uploadFieldSchema,
   logo: uploadFieldSchema,
+  organizer: organizerSchema,
   visibility: z.enum(["PUBLIC", "PRIVATE"]).default("PUBLIC"),
   type: z.enum(["FACETOFACE", "VIRTUEL", "HYBRID"]).default("FACETOFACE"), // Added HYBRID
   isNearestEvent: z.boolean().default(false),

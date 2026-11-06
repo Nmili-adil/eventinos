@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { getStatusColor } from '@/lib/events-utils'
+import { getStatusColor, normalizeLocation } from '@/lib/events-utils'
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { GoogleMapWrapper, MultiMarkerMap, type MapMarker } from '@/components/shared/GoogleMap'
@@ -46,13 +46,20 @@ interface EventsMapViewProps {
 }
 
 export const EventsMapView: React.FC<EventsMapViewProps> = ({
-  events,
+  events: rawEvents,
   onEventClick,
   onEdit,
   onChangeStatus,
   onDelete,
 }) => {
   const { t } = useTranslation()
+  const events = useMemo(
+    () =>
+      rawEvents.map((event) =>
+        event.location ? { ...event, location: { ...event.location, ...normalizeLocation(event.location) } } : event
+      ),
+    [rawEvents]
+  )
   const [selectedCity, setSelectedCity] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)

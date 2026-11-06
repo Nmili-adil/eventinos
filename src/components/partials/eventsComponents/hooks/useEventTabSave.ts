@@ -42,6 +42,7 @@ export const useEventTabSave = (eventId: string, initial: SavedValues = {}) => {
         description: data.description,
         image: data.image,
         logo: data.logo,
+        organizer: data.organizer,
         visibility: data.visibility,
         type: data.type,
         capacity: data.capacity,

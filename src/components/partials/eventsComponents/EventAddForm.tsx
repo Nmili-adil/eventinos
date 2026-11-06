@@ -36,6 +36,8 @@ import { fetchBadgesRequest } from "@/store/features/badges/badges.actions";
 import { FileUpload } from "./FileUpload";
 import { EventPreview } from "./EventPreview";
 import { EventLogoInput } from "@/components/partials/eventsComponents/EventLogoInput";
+import { OrganizerFields } from "./OrganizerFields";
+import { getDefaultOrganizerName } from "./mapEventToForm";
 import {
   LocationSelector,
   type LocationValue,
@@ -99,6 +101,13 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       description: "",
       image: "",
       logo: "",
+      organizer: {
+        name: getDefaultOrganizerName(),
+        logo: "",
+        website: "",
+        email: "",
+        phone: "",
+      },
       visibility: "PUBLIC",
       type: "FACETOFACE",
       isNearestEvent: false,
@@ -217,6 +226,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       case 0:
         return [
           "name",
+          "organizer",
           "description",
           "image",
           "visibility",
@@ -485,6 +495,8 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                             )}
                           />
                         </div>
+
+                        <OrganizerFields control={form.control} disabled={isLoading} />
 
                         <FormField
                           control={form.control}

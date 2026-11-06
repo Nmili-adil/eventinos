@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Eye, Edit, MoreVertical,  Pen, Trash } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, startOfWeek, endOfWeek, addMonths, subMonths } from 'date-fns'
 import { cn } from '@/lib/utils'
+import { combineDateTime } from '@/lib/events-utils'
 import type { Event } from '@/types/eventsTypes'
 import {
   DropdownMenu,
@@ -281,14 +282,9 @@ const EventTicket: React.FC<EventTicketProps> = ({
   onChangeStatus,
   onDelete,
 }) => {
-  const formatTime = (dateString: string) => {
-    if (!dateString) return ''
-    try {
-      const date = new Date(dateString)
-      return format(date, 'HH:mm')
-    } catch {
-      return ''
-    }
+  const formatTime = (dateString: string, time?: string) => {
+    const date = combineDateTime(dateString, time)
+    return date ? format(date, 'HH:mm') : ''
   }
 
   const getEventColor = (status: string) => {
@@ -333,7 +329,7 @@ const EventTicket: React.FC<EventTicketProps> = ({
               {event.startDate?.date && (
                 <div className="flex items-center gap-1 mt-0.5 text-[10px] opacity-80">
                   <Clock className="w-2.5 h-2.5 flex-shrink-0" />
-                  {formatTime(event.startDate.date)}
+                  {formatTime(event.startDate.date, event.startDate.time)}
                 </div>
               )}
               {event.location?.name && (

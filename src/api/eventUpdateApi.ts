@@ -2,7 +2,7 @@
 import { api } from "@/lib/apiClient";
 import { getAuthToken } from "@/services/localStorage";
 import { buildLocationPayload, toEventDateTime } from "@/lib/events-utils";
-import { appendExhibitors, appendSpeakers, appendSponsors, isFileValue } from "./eventSerializers";
+import { appendExhibitors, appendOrganizer, appendSpeakers, appendSponsors, isFileValue } from "./eventSerializers";
 
 // Update basic event information
 export const updateEventInfos = async (eventId: string, data: any) => {
@@ -12,6 +12,8 @@ export const updateEventInfos = async (eventId: string, data: any) => {
   Object.keys(data).forEach(key => {
     if ((key === 'image' || key === 'logo') && isFileValue(data[key])) {
       formData.append(key, data[key]);
+    } else if (key === 'organizer') {
+      appendOrganizer(formData, data[key]);
     } else if (typeof data[key] === 'object' && data[key] !== null) {
       formData.append(key, JSON.stringify(data[key]));
     } else if (data[key] !== undefined && data[key] !== null) {

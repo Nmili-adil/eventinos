@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Edit, Eye, Trash2, Pen, Calendar, MapPin, Globe } from 'lucide-react'
-import { getStatusColor, transformEventForTable } from '@/lib/events-utils'
+import { getEventOrganizer, getStatusColor, transformEventForTable } from '@/lib/events-utils'
 import type { Event } from '@/types/eventsTypes'
 import { useTranslation } from 'react-i18next'
 
@@ -20,6 +20,7 @@ interface TableRowProps {
 
 export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDelete }: TableRowProps) {
   const tableEvent = transformEventForTable(event)
+  const organizerName = getEventOrganizer(event).name
   const { t } = useTranslation()
 
   // Handle table row click, but ignore clicks from dropdown
@@ -45,7 +46,10 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
         className='border-slate-200 cursor-pointer hidden md:table-row hover:bg-slate-50 transition-colors duration-150' 
         onClick={handleRowClick}
       >
-        <TableCell className="font-medium text-slate-900">{tableEvent.name}</TableCell>
+        <TableCell className="font-medium text-slate-900">
+          {tableEvent.name}
+          {organizerName && <div className="text-xs font-normal text-slate-500">{organizerName}</div>}
+        </TableCell>
         <TableCell className="text-slate-700">{tableEvent.type}</TableCell>
         <TableCell className="text-slate-600 text-sm">{tableEvent.website}</TableCell>
         <TableCell className="text-slate-700">{tableEvent.location}</TableCell>
@@ -121,7 +125,10 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
             <div className="space-y-3">
               {/* Title and Status */}
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-semibold text-base line-clamp-2 flex-1 text-slate-900">{tableEvent.name}</h3>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-base line-clamp-2 text-slate-900">{tableEvent.name}</h3>
+                  {organizerName && <p className="text-xs text-slate-500 truncate">{organizerName}</p>}
+                </div>
                 <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} shrink-0 font-medium`}>
                   {tableEvent.status}
                 </Badge>

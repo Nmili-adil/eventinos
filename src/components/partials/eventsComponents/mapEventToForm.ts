@@ -5,6 +5,7 @@ import {
   normalizeCategoryId,
   normalizeLocation,
 } from "@/lib/events-utils";
+import { getRole, getUserData } from "@/services/localStorage";
 
 const mapSocialNetworks = (socialNetworks: any) => ({
   facebook: socialNetworks?.facebook || "",
@@ -20,6 +21,28 @@ export const mapEventDateToForm = (value: any) => {
   return date
     ? { date: date.toISOString(), time: formatLocalTime(date) }
     : { date: "", time: "" };
+};
+
+// Organizer accounts default to themselves; admins must name the organizer.
+export const getDefaultOrganizerName = (): string => {
+  if (getRole() !== "organizer") return "";
+  const user = getUserData();
+  return (
+    user?.organization?.name ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
+    ""
+  );
+};
+
+const mapOrganizer = (organizer: any) => {
+  const source = organizer && typeof organizer === "object" ? organizer : {};
+  return {
+    name: source.name || getDefaultOrganizerName(),
+    logo: source.logo || "",
+    website: source.website || "",
+    email: source.email || "",
+    phone: source.phone || "",
+  };
 };
 
 const mapPerson = (person: any) => ({
@@ -38,6 +61,7 @@ export const mapEventToForm = (event: any): EventFormData =>
     description: event.description || "",
     image: event.image || "",
     logo: event.logo || "",
+    organizer: mapOrganizer(event.organizer),
     visibility: event.visibility || "PUBLIC",
     type: event.type || "FACETOFACE",
     isNearestEvent: event.isNearestEvent || false,

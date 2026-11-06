@@ -69,6 +69,15 @@ export const toEventDateTime = (value: unknown): { date: string; time: string } 
     : { date: '', time: '' }
 }
 
+// Accepts { lat, lng }, { latitude, longitude } or a GeoJSON [lng, lat] pair.
+const readCoordinates = (value: any): { lat: number; lng: number } | null => {
+  if (Array.isArray(value)) return { lat: Number(value[1]) || 0, lng: Number(value[0]) || 0 }
+  if (!value || typeof value !== 'object') return null
+  const lat = value.lat ?? value.latitude
+  const lng = value.lng ?? value.longitude
+  return lat === undefined && lng === undefined ? null : { lat: Number(lat) || 0, lng: Number(lng) || 0 }
+}
+
 // Shape used by the forms and maps. The API may send either `location` or
 // `coordinates`; `location` wins because the forms only ever update that one.
 export const normalizeLocation = (loc: any) => ({
@@ -78,10 +87,7 @@ export const normalizeLocation = (loc: any) => ({
   city: loc?.city || '',
   country: loc?.country || '',
   countryCode: loc?.countryCode || '',
-  location: {
-    lat: Number(loc?.location?.lat ?? loc?.coordinates?.latitude) || 0,
-    lng: Number(loc?.location?.lng ?? loc?.coordinates?.longitude) || 0,
-  },
+  location: readCoordinates(loc?.location) ?? readCoordinates(loc?.coordinates) ?? { lat: 0, lng: 0 },
 })
 
 // Shape sent to POST /events and PUT /events/:id/location.
@@ -91,6 +97,22 @@ export const buildLocationPayload = (loc: any) => {
     ...rest,
     coordinates: { latitude: location.lat, longitude: location.lng },
   }
+}
+
+// Who to show as organizer. `createdBy` is only a fallback for older events:
+// it is the account that typed the event in, often an admin.
+export const getEventOrganizer = (event: any): { name: string; logo?: string } => {
+  const organizer = event?.organizer
+  if (organizer && typeof organizer === 'object' && organizer.name) {
+    return { name: organizer.name, logo: typeof organizer.logo === 'string' ? organizer.logo || undefined : undefined }
+  }
+
+  const creator = event?.createdBy
+  if (creator && typeof creator === 'object') {
+    const fullName = [creator.firstName, creator.lastName].filter(Boolean).join(' ')
+    return { name: fullName || creator.fullName || creator.name || '', logo: creator.picture || undefined }
+  }
+  return { name: '' }
 }
 
 export const normalizeCategoryId = (category: any): string =>

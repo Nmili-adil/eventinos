@@ -55,7 +55,7 @@ import {
 } from "@/components/ui/dialog";
 import EventParticipantsSection from "./EventParticipantsSection";
 import { useTranslation } from "react-i18next";
-import { getStatusColor } from "@/lib/events-utils";
+import { getEventOrganizer, getStatusColor, normalizeLocation, toEventDateTime } from "@/lib/events-utils";
 
 interface EventDetailsProps {
   event: any;
@@ -102,34 +102,10 @@ const EventDetails = ({ event }: EventDetailsProps) => {
   })
 
   // Safe data extraction functions
-  const getOrganizerName = () => {
-    if (!event.createdBy) return t('events.details.eventOrganizer', 'Event Organizer');
-
-    if (typeof event.createdBy === "string") {
-      return event.createdBy;
-    }
-
-    if (typeof event.createdBy === "object") {
-      if (event.createdBy.firstName && event.createdBy.lastName) {
-        return `${event.createdBy.firstName} ${event.createdBy.lastName}`;
-      }
-      if (event.createdBy.fullName) {
-        return event.createdBy.fullName;
-      }
-      if (event.createdBy.name) {
-        return event.createdBy.name;
-      }
-    }
-
-    return t('events.details.eventOrganizer', 'Event Organizer');
-  };
-
-  const getOrganizerAvatar = () => {
-    if (typeof event.createdBy === "object" && event.createdBy.picture) {
-      return event.createdBy.picture;
-    }
-    return undefined;
-  };
+  const organizer = getEventOrganizer(event);
+  const getOrganizerName = () =>
+    organizer.name || t('events.details.eventOrganizer', 'Event Organizer');
+  const getOrganizerAvatar = () => organizer.logo;
 
   const formatDate = (dateString: string) => {
     try {
@@ -168,6 +144,10 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     }
   };
 
+  // Older events may have a date without a separate time.
+  const withTime = (value: any) =>
+    value ? { ...value, time: value.time || toEventDateTime(value).time } : { date: "", time: "" };
+
   // Safe data access with fallbacks
   const safeEvent = {
     name: event.name || t('events.details.untitledEvent', 'Untitled Event'),
@@ -176,13 +156,11 @@ const EventDetails = ({ event }: EventDetailsProps) => {
     status: event.status || "PENDING",
     type: event.type || "FACETOFACE",
     visibility: event.visibility || "PUBLIC",
-    startDate: event.startDate || { date: "", time: "" },
-    endDate: event.endDate || { date: "", time: "" },
-    location: event.location || {
-      name: t('events.details.locationNotSpecified', 'Location not specified'),
-      city: "",
-      country: "",
-    },
+    startDate: withTime(event.startDate),
+    endDate: withTime(event.endDate),
+    location: event.location
+      ? normalizeLocation(event.location)
+      : { ...normalizeLocation(null), name: t('events.details.locationNotSpecified', 'Location not specified') },
     socialNetworks: event.socialNetworks || {},
     speakers: Array.isArray(event.speakers) ? event.speakers : [],
     exhibitors: Array.isArray(event.exhibitors) ? event.exhibitors : [],
@@ -278,7 +256,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 <AvatarFallback className="text-xs">
                   {getOrganizerName()
                     .split(" ")
-                    .map((n: any[]) => n[0])
+                    .map((n: string) => n[0])
                     .join("")}
                 </AvatarFallback>
               </Avatar>
@@ -399,7 +377,11 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   {/* Location */}
                   <GoogleMapWrapper>
                     <SingleMarkerMap
-                      location={safeEvent.location.location}
+                      location={
+                        safeEvent.location.location.lat || safeEvent.location.location.lng
+                          ? safeEvent.location.location
+                          : null
+                      }
                       name={safeEvent.location.name}
                       address={`${safeEvent.location.name}, ${safeEvent.location.city}, ${safeEvent.location.country}`}
                       height="300px"

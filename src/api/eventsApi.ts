@@ -1,7 +1,7 @@
 import { api } from "@/lib/apiClient"
 import { getAuthToken } from "@/services/localStorage"
 import { buildLocationPayload } from "@/lib/events-utils"
-import { appendExhibitors, appendSpeakers, appendSponsors, isFileValue } from "./eventSerializers"
+import { appendExhibitors, appendOrganizer, appendSpeakers, appendSponsors, isFileValue } from "./eventSerializers"
 
 export const fetchEvents = async () => {
   return api.get(`/events?limit=all`, {
@@ -49,6 +49,8 @@ const buildEventFormData = (event: any) => {
         // Other complex arrays - send as JSON string
         formData.append(key, JSON.stringify(event[key]));
       }
+    } else if (key === 'organizer') {
+      appendOrganizer(formData, event[key]);
     } else if (key === 'location' && typeof event[key] === 'object' && event[key] !== null) {
       formData.append(key, JSON.stringify(buildLocationPayload(event[key])));
     } else if (typeof event[key] === 'object' && event[key] !== null) {
