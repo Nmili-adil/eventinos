@@ -63,6 +63,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import EventParticipantsSection from "./EventParticipantsSection";
+import EventAttendanceSection from "./EventAttendanceSection";
 import { useTranslation } from "react-i18next";
 import { getEventStatusLabelKey } from "@/constants/eventStatuses";
 import { getEventOrganizer, getStatusColor, normalizeLocation, toEventDateTime } from "@/lib/events-utils";
@@ -348,8 +349,9 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 h-auto">
                 <TabsTrigger value="details">{t('events.details.tabs.details', 'Details')}</TabsTrigger>
+                <TabsTrigger value="attendance">{t('events.attendance.tab')}</TabsTrigger>
                 <TabsTrigger value="speakers">{t('events.details.tabs.speakers', 'Speakers')}</TabsTrigger>
                 <TabsTrigger value="program">{t('events.details.tabs.program', 'Program')}</TabsTrigger>
                 <TabsTrigger value="gallery">{t('events.details.tabs.gallery', 'Gallery')}</TabsTrigger>
@@ -472,6 +474,15 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                       </div>
                     </>
                   )}
+              </TabsContent>
+
+              {/* Attendance Tab */}
+              <TabsContent value="attendance" className="p-6">
+                <EventAttendanceSection
+                  eventId={eventIdentifier}
+                  startDate={event.startDate}
+                  endDate={event.endDate}
+                />
               </TabsContent>
 
               {/* Speakers Tab */}

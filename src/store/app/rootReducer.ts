@@ -10,6 +10,7 @@ import rolesReducer from '../features/roles/roles.reducer'
 import { membersReducer } from '../features/members/members.reducer'
 import rightsReducer from '../features/rights/rights.reducer'
 import { sponsorCategoriesReducer } from '../features/sponsorCategories/sponsorCategories.reducer'
+import { attendanceReducer } from '../features/attendance/attendance.reducer'
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   members: membersReducer,
   rights: rightsReducer,
   sponsorCategories: sponsorCategoriesReducer,
+  attendance: attendanceReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>
