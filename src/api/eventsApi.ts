@@ -1,8 +1,7 @@
 import { api } from "@/lib/apiClient"
 import { getAuthToken } from "@/services/localStorage"
-
-const isFileValue = (value: unknown): value is File =>
-  typeof File !== 'undefined' && value instanceof File;
+import { buildLocationPayload } from "@/lib/events-utils"
+import { appendExhibitors, appendSpeakers, appendSponsors, isFileValue } from "./eventSerializers"
 
 export const fetchEvents = async () => {
   return api.get(`/events?limit=all`, {
@@ -30,96 +29,16 @@ export const fetchEventByIdApi = async (eventId: string): Promise<any> => { // U
 const buildEventFormData = (event: any) => {
   const formData = new FormData();
 
-  // Helper function to append speakers data using the dot notation the
-  // backend's convertDotNotationToNested parser expects (see eventUpdateApi.ts)
-  const appendSpeakers = (speakers: any[]) => {
-    speakers.forEach((speaker, index) => {
-      if (speaker._id) formData.append(`speakers.${index}._id`, speaker._id);
-      if (speaker.fullName) formData.append(`speakers.${index}.fullName`, speaker.fullName);
-      if (speaker.fonction) formData.append(`speakers.${index}.fonction`, speaker.fonction);
-      if (speaker.nationality) formData.append(`speakers.${index}.nationality`, speaker.nationality);
-
-      // Handle picture file or URL
-      if (isFileValue(speaker.picture)) {
-        formData.append(`speakers.${index}.picture`, speaker.picture);
-      } else if (speaker.picture) {
-        formData.append(`speakers.${index}.picture`, speaker.picture);
-      }
-
-      // Add social networks
-      if (speaker.socialNetworks) {
-        Object.keys(speaker.socialNetworks).forEach(key => {
-          const value = speaker.socialNetworks[key];
-          if (value !== undefined && value !== null && value !== '') {
-            formData.append(`speakers.${index}.socialNetworks.${key}`, value);
-          }
-        });
-      }
-    });
-  };
-
-  // Helper function to append exhibitors data using dot notation
-  const appendExhibitors = (exhibitors: any[]) => {
-    exhibitors.forEach((exhibitor, index) => {
-      if (exhibitor._id) formData.append(`exhibitors.${index}._id`, exhibitor._id);
-      if (exhibitor.fullName) formData.append(`exhibitors.${index}.fullName`, exhibitor.fullName);
-      if (exhibitor.fonction) formData.append(`exhibitors.${index}.fonction`, exhibitor.fonction);
-      if (exhibitor.nationality) formData.append(`exhibitors.${index}.nationality`, exhibitor.nationality);
-
-      // Handle picture file or URL
-      if (isFileValue(exhibitor.picture)) {
-        formData.append(`exhibitors.${index}.picture`, exhibitor.picture);
-      } else if (exhibitor.picture) {
-        formData.append(`exhibitors.${index}.picture`, exhibitor.picture);
-      }
-
-      // Add social networks
-      if (exhibitor.socialNetworks) {
-        Object.keys(exhibitor.socialNetworks).forEach(key => {
-          const value = exhibitor.socialNetworks[key];
-          if (value !== undefined && value !== null && value !== '') {
-            formData.append(`exhibitors.${index}.socialNetworks.${key}`, value);
-          }
-        });
-      }
-    });
-  };
-
-  // Helper function to append sponsors data using dot notation
-  const appendSponsors = (sponsors: any[]) => {
-    sponsors.forEach((sponsor, index) => {
-      if (sponsor._id) formData.append(`sponsors.${index}._id`, sponsor._id);
-      if (sponsor.name) formData.append(`sponsors.${index}.name`, sponsor.name);
-
-      // Handle logo file or URL
-      if (isFileValue(sponsor.logo)) {
-        formData.append(`sponsors.${index}.logo`, sponsor.logo);
-      } else if (sponsor.logo) {
-        formData.append(`sponsors.${index}.logo`, sponsor.logo);
-      }
-
-      // Add social networks
-      if (sponsor.socialNetworks) {
-        Object.keys(sponsor.socialNetworks).forEach(key => {
-          const value = sponsor.socialNetworks[key];
-          if (value !== undefined && value !== null && value !== '') {
-            formData.append(`sponsors.${index}.socialNetworks.${key}`, value);
-          }
-        });
-      }
-    });
-  };
-
   // Add all fields to FormData
   Object.keys(event).forEach(key => {
     if ((key === 'image' || key === 'logo') && isFileValue(event[key])) {
       formData.append(key, event[key]);
     } else if (key === 'speakers' && Array.isArray(event[key]) && event[key].length > 0) {
-      appendSpeakers(event[key]);
+      appendSpeakers(formData, event[key]);
     } else if (key === 'exhibitors' && Array.isArray(event[key]) && event[key].length > 0) {
-      appendExhibitors(event[key]);
+      appendExhibitors(formData, event[key]);
     } else if (key === 'sponsors' && Array.isArray(event[key]) && event[key].length > 0) {
-      appendSponsors(event[key]);
+      appendSponsors(formData, event[key]);
     } else if (Array.isArray(event[key])) {
       // Handle other arrays - send as individual values for simple arrays
       if (key === 'badges' || key === 'gallery' || key === 'tags' || key === 'requirements') {
@@ -130,6 +49,8 @@ const buildEventFormData = (event: any) => {
         // Other complex arrays - send as JSON string
         formData.append(key, JSON.stringify(event[key]));
       }
+    } else if (key === 'location' && typeof event[key] === 'object' && event[key] !== null) {
+      formData.append(key, JSON.stringify(buildLocationPayload(event[key])));
     } else if (typeof event[key] === 'object' && event[key] !== null) {
       formData.append(key, JSON.stringify(event[key]));
     } else if (event[key] !== undefined && event[key] !== null) {
