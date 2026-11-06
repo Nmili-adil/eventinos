@@ -550,7 +550,7 @@ export const ParticipantsExportDialog = ({
                         onCheckedChange={(checked) => toggleStatus(status, checked === true)}
                       />
                       <Label htmlFor={`export-status-${status}`} className="font-normal">
-                        {t(`members.detailsDialog.statusOptions.${status.toLowerCase()}`, status)}
+                        {t(`members.status.${status.toLowerCase()}`, status)}
                       </Label>
                     </div>
                   ))}

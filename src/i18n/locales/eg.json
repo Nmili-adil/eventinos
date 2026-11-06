@@ -52,7 +52,9 @@
     "yes": "Yes",
     "no": "No",
     "all": "All",
-    "none": "None"
+    "none": "None",
+    "editSponsor": "تعديل الشريك",
+    "upload": "رفع"
   },
   "auth": {
     "login": "Login",
@@ -76,7 +78,8 @@
     "events": "Events",
     "members": "Members",
     "accounts": "Accounts",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "sponsorCategories": "أنواع الشركاء"
   },
   "header": {
     "searchPlaceholder": "Search events, members...",
@@ -205,7 +208,7 @@
     "faceToFace": "Face to Face",
     "virtual": "Virtual",
     "hybrid": "Hybrid",
-    "today":"Today",
+    "today": "Today",
     "inPerson": "In Person",
     "statusAccepted": "Accepted",
     "statusPending": "Pending",
@@ -223,11 +226,10 @@
       "program": "Program",
       "badges": "Badges",
       "gallery": "Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors",
-      "speakersExhibitorsSponsors": "Speakers, Exhibitors & Sponsors"
+      "exhibitorsSponsors": "العارضون والشركاء",
+      "speakersExhibitorsSponsors": "المتحدثون والعارضون والشركاء"
     },
-    
-   "table": {
+    "table": {
       "title": "Title",
       "startDate": "Start Date",
       "endDate": "End Date",
@@ -235,7 +237,7 @@
       "status": "Status",
       "actions": "Actions",
       "visibility": "Visibility",
-      "type":"Event Type",
+      "type": "Event Type",
       "changeStatus": "Change Status",
       "deleteEvent": "Delete Event",
       "previewEvent": "Preview Event",
@@ -288,14 +290,15 @@
       "eventType": "نوع الفعالية",
       "exhibitors": "العارضون",
       "exhibitor": "عارض",
-      "sponsors": "الرعاة",
-      "sponsor": "راعي",
+      "sponsors": "الشركاء",
+      "sponsor": "شريك",
       "deleteConfirmTitle": "هل أنت متأكد من حذف هذه الفعالية؟",
       "deleteConfirmDescription": "لا يمكن التراجع عن هذا الإجراء. الفعالية",
       "willBeDeleted": "ستُحذف نهائيًا من مؤسستك.",
       "speakerDetails": "تفاصيل المتحدث",
       "speaker": "متحدث",
-      "about": "نبذة عن"
+      "about": "نبذة عن",
+      "notFound": "الحدث غير موجود"
     },
     "status": {
       "published": "منشور",
@@ -316,7 +319,144 @@
       "subtitle": "اعرض جميع المشاركين في هذه الفعالية.",
       "totalLabel": "إجمالي المشاركين",
       "viewMembers": "إدارة الأعضاء"
-    }
+    },
+    "clearFilters": "مسح عوامل التصفية",
+    "statusDraft": "مسودة",
+    "statusChangeDialog": {
+      "statusOptions": {
+        "draft": {
+          "label": "مسودة",
+          "description": "الحدث قيد الإعداد وغير مرئي بعد"
+        },
+        "accepted": {
+          "description": "تمت الموافقة على الفعالية",
+          "label": "مقبول"
+        },
+        "closed": {
+          "description": "تم إغلاق الفعالية",
+          "label": "مغلق"
+        },
+        "pending": {
+          "description": "الفعالية في انتظار الموافقة",
+          "label": "قيد الانتظار"
+        },
+        "refused": {
+          "description": "تم رفض الفعالية",
+          "label": "مرفوض"
+        }
+      },
+      "buttons": {
+        "cancel": "إلغاء",
+        "update": "تحديث الحالة",
+        "updating": "جاري التحديث..."
+      },
+      "currentStatus": "الحالة الحالية",
+      "description": "اختر الحالة الجديدة لهذه الفعالية.",
+      "eventLabel": "الفعالية:",
+      "newStatus": "الحالة الجديدة",
+      "selectStatus": "اختر الحالة",
+      "statusLabel": "الحالة",
+      "title": "تغيير حالة الفعالية"
+    },
+    "participants": {
+      "export": {
+        "openButton": "تصدير",
+        "title": "تصدير المشاركين",
+        "description": "اختر الأعمدة وترتيبها وعوامل التصفية والتنسيق.",
+        "unavailable": "التصدير غير متاح بعد.",
+        "loadFailed": "تعذر تحميل خيارات التصدير.",
+        "columns": "الأعمدة",
+        "order": "ترتيب الأعمدة",
+        "filters": "عوامل التصفية",
+        "format": "التنسيق",
+        "preview": "معاينة",
+        "selectAll": "الكل",
+        "deselectAll": "لا شيء",
+        "resetDefault": "إعادة التعيين إلى الافتراضي",
+        "moveUp": "نقل لأعلى",
+        "moveDown": "نقل لأسفل",
+        "filterStatus": "الحالة",
+        "filterPresence": "الحضور",
+        "filterSearch": "بحث",
+        "presenceAll": "الجميع",
+        "presencePresent": "الحاضرون",
+        "presenceAbsent": "الغائبون",
+        "registeredFrom": "مسجل من",
+        "registeredTo": "مسجل حتى",
+        "invalidPeriod": "يجب أن يكون تاريخ النهاية بعد تاريخ البداية",
+        "csvSeparator": "فاصل CSV",
+        "matching": "المشاركون المطابقون: {{count}}",
+        "exportButton": "تصدير",
+        "noColumnSelected": "حدد عمودًا واحدًا على الأقل",
+        "success": "تم تنزيل الملف",
+        "failed": "فشل التصدير",
+        "presets": "النماذج المحفوظة",
+        "selectPreset": "اختر نموذجًا",
+        "presetName": "اسم النموذج",
+        "savePreset": "حفظ النموذج",
+        "deletePreset": "حذف النموذج",
+        "presetSaved": "تم حفظ النموذج",
+        "presetFailed": "تعذر تعديل النموذج",
+        "groups": {
+          "identity": "الهوية",
+          "contact": "جهة الاتصال",
+          "registration": "التسجيل",
+          "profile": "الملف الشخصي",
+          "attendance": "الحضور"
+        }
+      }
+    },
+    "attendance": {
+      "tab": "الحضور",
+      "unavailable": "الحضور غير متاح بعد.",
+      "loadFailed": "تعذر تحميل الحضور.",
+      "stats": {
+        "registered": "المسجلون",
+        "accepted": "المقبولون",
+        "present": "الحاضرون",
+        "absent": "الغائبون",
+        "attendanceRate": "نسبة الحضور",
+        "totalScans": "إجمالي عمليات المسح"
+      },
+      "chartTitle": "الدخول في الساعة",
+      "chartEmpty": "لا توجد عمليات دخول بعد",
+      "chartTooltip": "عمليات الدخول: {{count}}",
+      "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف",
+      "filterAll": "الجميع",
+      "filterPresent": "الحاضرون",
+      "filterAbsent": "الغائبون",
+      "columns": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "status": "الحالة",
+        "present": "الحضور",
+        "firstEntry": "أول دخول",
+        "lastEntry": "آخر دخول",
+        "scans": "عمليات المسح"
+      },
+      "empty": "لم يتم العثور على مشاركين",
+      "entityLabel": "المشاركين",
+      "present": "حاضر",
+      "absent": "غائب",
+      "multipleScans": "تم المسح أكثر من مرة",
+      "scansTitle": "سجل عمليات المسح",
+      "noScans": "لا توجد عمليات مسح",
+      "scanColumns": {
+        "time": "الوقت",
+        "result": "النتيجة",
+        "scannedBy": "تم المسح بواسطة"
+      },
+      "scanResults": {
+        "VALID": "صالح",
+        "ALREADY_CHECKED_IN": "تم الدخول مسبقًا",
+        "INVALID": "غير صالح",
+        "NOT_ACCEPTED": "غير مقبول",
+        "WRONG_EVENT": "حدث خاطئ"
+      }
+    },
+    "deleteError": "فشل في حذف الفعالية",
+    "deleteSuccess": "تم حذف الفعالية بنجاح"
   },
   "eventForm": {
     "title": "Create New Event",
@@ -333,8 +473,9 @@
       "program": "Event Program",
       "badges": "Badges",
       "gallery": "Event Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors",
-      "members": "Members"
+      "exhibitorsSponsors": "العارضون والشركاء",
+      "members": "Members",
+      "speakersExhibitorsSponsors": "المتحدثون والعارضون والشركاء"
     },
     "fields": {
       "name": "Event Name",
@@ -362,13 +503,22 @@
       "program": "Event Program",
       "galleryImages": "Gallery Images",
       "exhibitors": "Exhibitors",
-      "sponsors": "Sponsors",
+      "sponsors": "الشركاء",
       "fullName": "Full Name",
       "picture": "Picture URL",
       "logo": "Logo URL",
-      "sponsorName": "Sponsor Name",
+      "sponsorName": "اسم الشريك",
       "tags": "Tags",
-      "requirements": "Requirements"
+      "requirements": "Requirements",
+      "organizer": "المنظم",
+      "organizerLogo": "شعار المنظم",
+      "organizerWebsite": "موقع المنظم",
+      "organizerEmail": "البريد الإلكتروني للمنظم",
+      "organizerPhone": "هاتف المنظم",
+      "eventLogo": "شعار الحدث",
+      "fonction": "الوظيفة",
+      "nationality": "الجنسية",
+      "speakers": "المتحدثون"
     },
     "placeholders": {
       "enterEventName": "Enter event name",
@@ -394,10 +544,14 @@
       "enterImageUrlGallery": "Or enter image URL (https://...)",
       "enterExhibitorName": "Enter exhibitor name",
       "enterExhibitorPicture": "https://example.com/image.jpg",
-      "enterSponsorName": "Enter sponsor name",
+      "enterSponsorName": "أدخل اسم الشريك",
       "enterSponsorLogo": "https://example.com/logo.jpg",
       "enterTags": "Enter tags separated by commas",
-      "enterRequirements": "Enter event requirements"
+      "enterRequirements": "Enter event requirements",
+      "organizer": "أدخل اسم المنظم",
+      "enterFonction": "أدخل الوظيفة",
+      "enterLogoUrl": "https://example.com/logo.jpg",
+      "enterNationality": "أدخل الجنسية"
     },
     "options": {
       "visibility": {
@@ -436,10 +590,12 @@
       "addUrl": "Add URL",
       "addSpeaker": "Add Speaker",
       "addExhibitor": "Add Exhibitor",
-      "addSponsor": "Add Sponsor",
+      "addSponsor": "إضافة شريك",
       "uploadImage": "Upload Event Image",
       "uploadGalleryImage": "Upload Gallery Image",
-      "saveAndNext": "Save & Next"
+      "saveAndNext": "Save & Next",
+      "finish": "إنهاء",
+      "saving": "جاري الحفظ..."
     },
     "labels": {
       "eventHighlights": "Event Highlights",
@@ -453,19 +609,29 @@
       "noImages": "No images added yet",
       "noImagesDescription": "Add image URLs to create your event gallery",
       "noExhibitors": "No exhibitors added yet",
-      "noSponsors": "No sponsors added yet",
-      "imageNumber": "Image {{number}}"
+      "noSponsors": "لم تتم إضافة أي شركاء بعد",
+      "imageNumber": "Image {{number}}",
+      "toComplete": "يجب الإكمال",
+      "otherPartners": "شركاء آخرون",
+      "noSpeakers": "لم تتم إضافة أي متحدثين بعد"
     },
     "validation": {
       "required": "This field is required",
       "invalidUrl": "Please enter a valid URL",
       "invalidEmail": "Please enter a valid email address",
       "invalidDate": "Please enter a valid date",
-      "endDateBeforeStart": "End date must be after start date"
+      "endDateBeforeStart": "End date must be after start date",
+      "fixErrors": "يرجى تصحيح الحقول المحددة",
+      "categoryRequired": "الفئة مطلوبة",
+      "coordinatesRequired": "اختر الموقع على الخريطة",
+      "organizerRequired": "المنظم مطلوب"
     },
     "messages": {
       "debugLocation": "Location Data:",
-      "notSet": "Not set"
+      "notSet": "Not set",
+      "creating": "جارٍ إنشاء الحدث...",
+      "created": "تم إنشاء الحدث",
+      "createFailed": "تعذر إنشاء الحدث"
     },
     "addExhibitorDialog": {
       "title": "Add Exhibitor",
@@ -476,7 +642,8 @@
       },
       "placeholders": {
         "enterFullName": "Enter exhibitor name",
-        "enterPictureUrl": "https://example.com/image.jpg"
+        "enterPictureUrl": "https://example.com/image.jpg",
+        "enterName": "أدخل اسم العارض"
       },
       "buttons": {
         "cancel": "Cancel",
@@ -489,308 +656,360 @@
       }
     },
     "addSponsorDialog": {
-      "title": "Add Sponsor",
-      "description": "Enter sponsor details",
+      "title": "إضافة شريك",
+      "description": "أدخل بيانات الشريك",
       "fields": {
-        "name": "Name",
-        "logo": "Logo URL"
+        "name": "اسم الشريك",
+        "logo": "شعار الشريك",
+        "category": "نوع الشريك"
       },
       "placeholders": {
-        "enterName": "Enter sponsor name",
-        "enterLogoUrl": "https://example.com/logo.jpg"
+        "enterName": "أدخل اسم الشريك",
+        "enterLogoUrl": "https://example.com/logo.jpg",
+        "selectCategory": "اختر نوع الشريك"
       },
       "buttons": {
         "cancel": "Cancel",
-        "addSponsor": "Add Sponsor",
+        "addSponsor": "إضافة الشريك",
         "adding": "Adding..."
       },
       "validation": {
         "required": "This field is required",
-        "invalidUrl": "Please enter a valid URL"
+        "invalidUrl": "Please enter a valid URL",
+        "logoRequired": "الشعار مطلوب",
+        "categoryRequired": "نوع الشريك مطلوب"
+      },
+      "noCategories": "لا يوجد نوع شريك بعد. أنشئ نوعًا أولًا.",
+      "manageCategories": "إدارة أنواع الشركاء"
+    },
+    "actions": {
+      "saveDraft": "حفظ كمسودة",
+      "submitForReview": "إرسال للمراجعة"
+    },
+    "success": {
+      "draftSaved": "تم حفظ المسودة",
+      "submittedForReview": "تم إرسال الحدث للمراجعة",
+      "datesUpdated": "تم تحديث التواريخ بنجاح!",
+      "speakersUpdated": "تم تحديث المتحدثين بنجاح!",
+      "exhibitorsSponsorsUpdated": "تم تحديث العارضين والشركاء بنجاح!",
+      "badgesUpdated": "تم تحديث الشارات بنجاح!",
+      "basicInfoUpdated": "تم تحديث المعلومات الأساسية بنجاح!",
+      "galleryUpdated": "تم تحديث معرض الصور بنجاح!",
+      "locationUpdated": "تم تحديث معلومات الموقع بنجاح!",
+      "programUpdated": "تم تحديث برنامج الحدث بنجاح!",
+      "socialNetworksUpdated": "تم تحديث الشبكات الاجتماعية بنجاح!"
+    },
+    "errors": {
+      "submitFailed": "تعذر إرسال الحدث",
+      "updateFailed": "تعذر حفظ التغييرات"
+    },
+    "addSpeakerDialog": {
+      "fields": {
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "jobTitle": "الوظيفة",
+        "organization": "الجهة"
+      },
+      "placeholders": {
+        "firstName": "أدخل الاسم الأول",
+        "lastName": "أدخل اسم العائلة",
+        "jobTitle": "أدخل الوظيفة",
+        "organization": "أدخل الجهة"
+      },
+      "validation": {
+        "firstNameRequired": "الاسم الأول مطلوب",
+        "lastNameRequired": "اسم العائلة مطلوب",
+        "pictureRequired": "الصورة مطلوبة",
+        "jobTitleRequired": "الوظيفة مطلوبة",
+        "organizationRequired": "الجهة مطلوبة"
+      },
+      "buttons": {
+        "addSpeaker": "إضافة المتحدث"
       }
     }
   },
- "members": {
-      "title": "Members",
-      "description": "Manage your members",
-      "addMember": "Add Member",
-      "memberSearchPlaceholder": "Search members by name, email, phone, or location",
-      "status": {
-        "all": "All Status",
-        "active": "Active",
-        "inactive": "Inactive",
-        "pending": "Pending",
-        "accepted": "Accepted",
-        "refused": "Refused",
-        "expired": "Expired",
-        "verified": "Verified",
-        "unverified": "Unverified",
-        "organizer": "Organizer",
-        "member": "Member"
+  "members": {
+    "title": "Members",
+    "description": "Manage your members",
+    "addMember": "Add Member",
+    "memberSearchPlaceholder": "Search members by name, email, phone, or location",
+    "status": {
+      "all": "All Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "refused": "Refused",
+      "expired": "Expired",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "organizer": "Organizer",
+      "member": "Member"
+    },
+    "registration": {
+      "all": "All Registrations",
+      "completed": "Completed",
+      "pending": "Pending",
+      "status": "Registration"
+    },
+    "gender": {
+      "all": "All Genders",
+      "male": "Male",
+      "female": "Female"
+    },
+    "sort": {
+      "by": "Sort by",
+      "name": "Name",
+      "email": "Email",
+      "dateJoing": "Join Date",
+      "status": "Status"
+    },
+    "active": "Active",
+    "inActive": "Inactive",
+    "activated": "Activate",
+    "deactivated": "Deactivate",
+    "delete": "Delete",
+    "preview": "Preview",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "clearFilters": "Clear Filters",
+    "joinedOn": "Joined on",
+    "notAvailable": "Not available",
+    "deleting": "Deleting...",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "addFirstMember": "Add First Member",
+    "emptyState": {
+      "title": "No Members Found",
+      "noResults": "No members match your search criteria.",
+      "noMembers": "No members have been added yet."
+    },
+    "deleteDialog": {
+      "title": "Delete Member",
+      "description": "Are you sure you want to delete  This action cannot be undone."
+    },
+    "messages": {
+      "updateSuccess": "Member updated successfully",
+      "updateError": "Failed to update member",
+      "createSuccess": "Member created successfully",
+      "createError": "Failed to create member",
+      "deleteSuccess": "Member deleted successfully",
+      "deleteError": "Failed to delete member",
+      "activateSuccess": "Member activated successfully",
+      "deactivateSuccess": "Member deactivated successfully",
+      "statusUpdateError": "Failed to update member status"
+    },
+    "editDialog": {
+      "title": "Edit Member",
+      "description": "Update member information. Changes will be saved immediately.",
+      "sections": {
+        "personalInfo": "Personal Information",
+        "contactInfo": "Contact Information",
+        "locationInfo": "Location Information",
+        "accountStatus": "Account Status"
       },
-      "registration": {
-        "all": "All Registrations",
-        "completed": "Completed",
-        "pending": "Pending",
-        "status": "Registration"
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phoneNumber": "Phone Number",
+        "city": "City",
+        "country": "Country",
+        "gender": "Gender",
+        "accountStatus": "Account Status"
       },
-      "gender": {
-        "all": "All Genders",
+      "placeholders": {
+        "enterFirstName": "Enter first name",
+        "enterLastName": "Enter last name",
+        "enterEmail": "Enter email address",
+        "enterPhone": "Enter phone number",
+        "enterCity": "Enter city",
+        "enterCountry": "Enter country",
+        "selectGender": "Select gender",
+        "selectStatus": "Select status"
+      },
+      "genderOptions": {
         "male": "Male",
         "female": "Female"
       },
-      "sort": {
-        "by": "Sort by",
-        "name": "Name",
-        "email": "Email",
-        "dateJoing": "Join Date",
-        "status": "Status"
+      "statusOptions": {
+        "active": "Active",
+        "inactive": "Inactive"
       },
-      "active": "Active",
-      "inActive": "Inactive",
-      "activated": "Activate",
-      "deactivated": "Deactivate",
-      "delete": "Delete",
-      "preview": "Preview",
-      "edit": "Edit",
-      "cancel": "Cancel",
-      "clearFilters": "Clear Filters",
-      "joinedOn": "Joined on",
-      "notAvailable": "Not available",
-      "deleting": "Deleting...",
-      "verified": "Verified",
-      "unverified": "Unverified",
-      "addFirstMember": "Add First Member",
-      "emptyState": {
-        "title": "No Members Found",
-        "noResults": "No members match your search criteria.",
-        "noMembers": "No members have been added yet."
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "saving": "Saving..."
       },
-      "deleteDialog": {
-        "title": "Delete Member",
-        "description": "Are you sure you want to delete  This action cannot be undone."
+      "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Invalid email address"
+      }
+    },
+    "addDialog": {
+      "title": "Add New Member",
+      "description": "Create a new member account. All required fields must be filled.",
+      "sections": {
+        "personalInfo": "Personal Information",
+        "contactInfo": "Contact Information",
+        "locationInfo": "Location Information",
+        "accountInfo": "Account Information"
       },
-      "messages": {
-        "updateSuccess": "Member updated successfully",
-        "updateError": "Failed to update member",
-        "createSuccess": "Member created successfully",
-        "createError": "Failed to create member",
-        "deleteSuccess": "Member deleted successfully",
-        "deleteError": "Failed to delete member",
-        "activateSuccess": "Member activated successfully",
-        "deactivateSuccess": "Member deactivated successfully",
-        "statusUpdateError": "Failed to update member status"
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phoneNumber": "Phone Number",
+        "city": "City",
+        "country": "Country",
+        "gender": "Gender",
+        "password": "Password",
+        "accountStatus": "Account Status"
       },
-      "editDialog": {
-        "title": "Edit Member",
-        "description": "Update member information. Changes will be saved immediately.",
-        "sections": {
-          "personalInfo": "Personal Information",
-          "contactInfo": "Contact Information",
-          "locationInfo": "Location Information",
-          "accountStatus": "Account Status"
-        },
-        "fields": {
-          "firstName": "First Name",
-          "lastName": "Last Name",
-          "email": "Email Address",
-          "phoneNumber": "Phone Number",
-          "city": "City",
-          "country": "Country",
-          "gender": "Gender",
-          "accountStatus": "Account Status"
-        },
-        "placeholders": {
-          "enterFirstName": "Enter first name",
-          "enterLastName": "Enter last name",
-          "enterEmail": "Enter email address",
-          "enterPhone": "Enter phone number",
-          "enterCity": "Enter city",
-          "enterCountry": "Enter country",
-          "selectGender": "Select gender",
-          "selectStatus": "Select status"
-        },
-        "genderOptions": {
-          "male": "Male",
-          "female": "Female"
-        },
-        "statusOptions": {
-          "active": "Active",
-          "inactive": "Inactive"
-        },
-        "buttons": {
-          "cancel": "Cancel",
-          "save": "Save Changes",
-          "saving": "Saving..."
-        },
-        "validation": {
-          "required": "This field is required",
-          "invalidEmail": "Invalid email address"
-        }
+      "placeholders": {
+        "enterFirstName": "Enter first name",
+        "enterLastName": "Enter last name",
+        "enterEmail": "Enter email address",
+        "enterPhone": "Enter phone number",
+        "enterCity": "Enter city",
+        "enterCountry": "Enter country",
+        "enterPassword": "Enter password",
+        "selectGender": "Select gender",
+        "selectStatus": "Select status"
       },
-      "addDialog": {
-        "title": "Add New Member",
-        "description": "Create a new member account. All required fields must be filled.",
-        "sections": {
-          "personalInfo": "Personal Information",
-          "contactInfo": "Contact Information",
-          "locationInfo": "Location Information",
-          "accountInfo": "Account Information"
-        },
-        "fields": {
-          "firstName": "First Name",
-          "lastName": "Last Name",
-          "email": "Email Address",
-          "phoneNumber": "Phone Number",
-          "city": "City",
-          "country": "Country",
-          "gender": "Gender",
-          "password": "Password",
-          "accountStatus": "Account Status"
-        },
-        "placeholders": {
-          "enterFirstName": "Enter first name",
-          "enterLastName": "Enter last name",
-          "enterEmail": "Enter email address",
-          "enterPhone": "Enter phone number",
-          "enterCity": "Enter city",
-          "enterCountry": "Enter country",
-          "enterPassword": "Enter password",
-          "selectGender": "Select gender",
-          "selectStatus": "Select status"
-        },
-        "genderOptions": {
-          "male": "Male",
-          "female": "Female",
-          "other": "Other"
-        },
-        "statusOptions": {
-          "active": "Active",
-          "inactive": "Inactive"
-        },
-        "buttons": {
-          "cancel": "Cancel",
-          "create": "Create Member",
-          "creating": "Creating..."
-        },
-        "validation": {
-          "required": "This field is required",
-          "invalidEmail": "Invalid email address",
-          "passwordMinLength": "Password must be at least 6 characters"
-        }
-      }, "detailsDialog": {
-        "title": "تفاصيل العضو",
-        "description": "معلومات كاملة عن العضو",
-        "tabs": {
-          "overview": "نظرة عامة",
-          "events": "الفعاليات",
-          "activity": "النشاط"
-        },
-        "sections": {
-          "contactInfo": "معلومات الاتصال",
-          "personalInfo": "المعلومات الشخصية",
-          "accountInfo": "الجدول الزمني للحساب",
-          "timestamps": "الطوابع الزمنية"
-        },
-        "fields": {
-          "email": "البريد الإلكتروني",
-          "phone": "رقم الهاتف",
-          "location": "الموقع",
-          "firstName": "الاسم الأول",
-          "lastName": "الاسم الأخير",
-          "gender": "الجنس",
-          "birthday": "تاريخ الميلاد",
-          "accountStatus": "حالة الحساب",
-          "registrationStatus": "حالة التسجيل",
-          "userId": "معرف المستخدم",
-          "roleId": "معرف الدور",
-          "joinedDate": "تاريخ الانضمام",
-          "lastUpdated": "آخر تحديث",
-          "memberId": "معرف العضو"
-        },
-        "status": {
-          "active": "نشط",
-          "inactive": "غير نشط",
-          "registrationComplete": "مكتمل",
-          "registrationPending": "قيد الانتظار",
-          "completed": "مكتمل",
-          "pending": "قيد الانتظار"
-        },
-        "notAvailable": "غير متاح",
-        "notProvided": "غير متوفر",
-        "status": "الحالة",
-        "active": "نشط",
-        "inactive": "غير نشط",
-        "registration": "التسجيل",
-        "complete": "مكتمل",
-        "pending": "قيد الانتظار",
-        "contactInformation": "معلومات الاتصال",
+      "genderOptions": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "statusOptions": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create Member",
+        "creating": "Creating..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Invalid email address",
+        "passwordMinLength": "Password must be at least 6 characters"
+      }
+    },
+    "detailsDialog": {
+      "title": "تفاصيل العضو",
+      "description": "معلومات كاملة عن العضو",
+      "tabs": {
+        "overview": "نظرة عامة",
+        "events": "الفعاليات",
+        "activity": "النشاط"
+      },
+      "sections": {
+        "contactInfo": "معلومات الاتصال",
+        "personalInfo": "المعلومات الشخصية",
+        "accountInfo": "الجدول الزمني للحساب",
+        "timestamps": "الطوابع الزمنية"
+      },
+      "fields": {
         "email": "البريد الإلكتروني",
-        "phone": "الهاتف",
+        "phone": "رقم الهاتف",
         "location": "الموقع",
-        "personalDetails": "المعلومات الشخصية",
         "firstName": "الاسم الأول",
         "lastName": "الاسم الأخير",
         "gender": "الجنس",
         "birthday": "تاريخ الميلاد",
-        "accountTimeline": "الجدول الزمني للحساب",
-        "memberSince": "عضو منذ",
+        "accountStatus": "حالة الحساب",
+        "registrationStatus": "حالة التسجيل",
+        "userId": "معرف المستخدم",
+        "roleId": "معرف الدور",
+        "joinedDate": "تاريخ الانضمام",
         "lastUpdated": "آخر تحديث",
-        "events": {
-          "loading": "جاري تحميل الفعاليات...",
-          "noEvents": "لم يتم العثور على فعاليات",
-          "noParticipation": "لم يشارك هذا العضو في أي فعاليات بعد",
-          "untitledEvent": "فعالية بدون عنوان",
-          "date": "التاريخ",
-          "notSet": "غير محدد",
-          "unableToLoad": "تعذر تحميل فعاليات العضو."
-        },
-        "activity": {
-          "title": "نشاط الحساب",
-          "accountCreated": "تم إنشاء الحساب",
-          "lastProfileUpdate": "آخر تحديث للملف الشخصي",
-          "eventParticipations": "المشاركات في الفعاليات",
-          "event": "فعالية",
-          "events": "فعاليات"
-        },
-        "buttons": {
-          "close": "إغلاق",
-          "editMember": "تعديل العضو",
-          "deleteMember": "حذف العضو"
-        }
+        "memberId": "معرف العضو"
       },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "registrationComplete": "مكتمل",
+        "registrationPending": "قيد الانتظار",
+        "completed": "مكتمل",
+        "pending": "قيد الانتظار"
+      },
+      "notAvailable": "غير متاح",
+      "notProvided": "غير متوفر",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "registration": "التسجيل",
+      "complete": "مكتمل",
+      "pending": "قيد الانتظار",
+      "contactInformation": "معلومات الاتصال",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "location": "الموقع",
+      "personalDetails": "المعلومات الشخصية",
+      "firstName": "الاسم الأول",
+      "lastName": "الاسم الأخير",
+      "gender": "الجنس",
+      "birthday": "تاريخ الميلاد",
+      "accountTimeline": "الجدول الزمني للحساب",
+      "memberSince": "عضو منذ",
+      "lastUpdated": "آخر تحديث",
       "events": {
-        "selectorLabel": "Current event selection",
-        "loadingParticipants": "Loading participants...",
-        "participantsCount": "{{count}} participants",
-        "noSelection": "Select an event to focus on its participants",
-        "changeEvent": "Change event",
-        "selectEvent": "Select event",
-        "clearSelection": "Clear",
-        "dialog": {
-          "title": "Select an event",
-          "description": "Choose an event to display its registered members",
-          "empty": "No events available at the moment",
-          "searchPlaceholder": "Search events by name",
-          "noResults": "No events match your search"
-        },
-        "exitConfirm": {
-          "title": "Event Selection Required",
-          "description": "You must select an event to view its participants. Would you like to return to the previous page?",
-          "stay": "Stay Here",
-          "return": "Return to Previous Page"
-        }
+        "loading": "جاري تحميل الفعاليات...",
+        "noEvents": "لم يتم العثور على فعاليات",
+        "noParticipation": "لم يشارك هذا العضو في أي فعاليات بعد",
+        "untitledEvent": "فعالية بدون عنوان",
+        "date": "التاريخ",
+        "notSet": "غير محدد",
+        "unableToLoad": "تعذر تحميل فعاليات العضو."
       },
-      "list": {
-        "name": "Name",
-        "status": "Status",
-        "type": "Member Type",
-        "registration": "Registration",
-        "joinDate": "Join Date",
-        "tags": "Tags",
-        "actions": "Actions"
+      "activity": {
+        "title": "نشاط الحساب",
+        "accountCreated": "تم إنشاء الحساب",
+        "lastProfileUpdate": "آخر تحديث للملف الشخصي",
+        "eventParticipations": "المشاركات في الفعاليات",
+        "event": "فعالية",
+        "events": "فعاليات"
+      },
+      "buttons": {
+        "close": "إغلاق",
+        "editMember": "تعديل العضو",
+        "deleteMember": "حذف العضو"
       }
     },
+    "events": {
+      "selectorLabel": "Current event selection",
+      "loadingParticipants": "Loading participants...",
+      "participantsCount": "{{count}} participants",
+      "noSelection": "Select an event to focus on its participants",
+      "changeEvent": "Change event",
+      "selectEvent": "Select event",
+      "clearSelection": "Clear",
+      "dialog": {
+        "title": "Select an event",
+        "description": "Choose an event to display its registered members",
+        "empty": "No events available at the moment",
+        "searchPlaceholder": "Search events by name",
+        "noResults": "No events match your search"
+      },
+      "exitConfirm": {
+        "title": "Event Selection Required",
+        "description": "You must select an event to view its participants. Would you like to return to the previous page?",
+        "stay": "Stay Here",
+        "return": "Return to Previous Page"
+      }
+    },
+    "list": {
+      "name": "Name",
+      "status": "Status",
+      "type": "Member Type",
+      "registration": "Registration",
+      "joinDate": "Join Date",
+      "tags": "Tags",
+      "actions": "Actions"
+    }
+  },
   "categories": {
     "title": "Categories",
     "addCategory": "Add Category",
@@ -1297,5 +1516,44 @@
     "placeIdPlaceholder": "معرّف Google Place",
     "coordinates": "الإحداثيات",
     "coordinatesSet": "تم تعيين الإحداثيات:"
+  },
+  "sponsorCategories": {
+    "defaultBadge": "افتراضي",
+    "defaults": {
+      "official_partner": "شريك رسمي",
+      "hackathon_partner": "شريك الهاكاثون",
+      "institutional_partner": "شريك مؤسسي",
+      "media_partner": "شريك إعلامي",
+      "sponsor": "راعٍ"
+    },
+    "title": "أنواع الشركاء",
+    "manageCategories": "إدارة أنواع الشركاء الخاصة بك",
+    "addCategory": "إضافة نوع",
+    "editCategory": "تعديل نوع الشريك",
+    "createCategory": "إنشاء نوع",
+    "categoryName": "اسم النوع",
+    "categoryNameRequired": "اسم النوع مطلوب",
+    "enterCategoryName": "أدخل اسم النوع",
+    "addDescription": "أنشئ نوع شريك جديدًا لفعالياتك.",
+    "editDescription": "قم بتحديث اسم نوع الشريك.",
+    "searchPlaceholder": "ابحث عن أنواع الشركاء بالاسم",
+    "loading": "جارٍ تحميل أنواع الشركاء...",
+    "noCategoriesFound": "لم يتم العثور على أنواع شركاء",
+    "createdSuccessfully": "تم إنشاء نوع الشريك بنجاح",
+    "updatedSuccessfully": "تم تحديث نوع الشريك بنجاح",
+    "deletedSuccessfully": "تم حذف نوع الشريك بنجاح",
+    "createFailed": "فشل إنشاء نوع الشريك",
+    "updateFailed": "فشل تحديث نوع الشريك",
+    "deleteFailed": "فشل حذف نوع الشريك",
+    "exportFailed": "فشل تصدير أنواع الشركاء",
+    "deleteDialog": {
+      "title": "حذف نوع الشريك",
+      "description": "هل أنت متأكد من أنك تريد حذف نوع الشريك هذا؟ سيؤدي هذا إلى إزالته نهائيًا."
+    },
+    "table": {
+      "actions": "الإجراءات",
+      "id": "المعرف",
+      "name": "الاسم"
+    }
   }
 }

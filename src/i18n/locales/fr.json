@@ -43,7 +43,7 @@
     "edit": "Modifier",
     "editSpeaker": "Modifier l'intervenant",
     "editExhibitor": "Modifier l'exposant",
-    "editSponsor": "Modifier le sponsor",
+    "editSponsor": "Modifier le partenaire",
     "add": "Ajouter",
     "search": "Rechercher",
     "filter": "Filtrer",
@@ -66,7 +66,12 @@
     "settings": "Paramètres",
     "logout": "Déconnexion",
     "upload": "Télécharger",
-    "myAccount": "Mon Compte"
+    "myAccount": "Mon Compte",
+    "deleting": "Suppression...",
+    "no": "Non",
+    "yes": "Oui",
+    "retry": "Réessayer",
+    "type": "Type"
   },
   "auth": {
     "verifyingAuthentication": "Vérification de l'authentification...",
@@ -78,7 +83,7 @@
     "dashboard": "Tableau de bord",
     "events": "Événements",
     "members": "Membres",
-    "sponsorCategories": "Catégories de sponsors",
+    "sponsorCategories": "Types de partenaires",
     "accounts": "Comptes",
     "contacts": "Contacts"
   },
@@ -219,8 +224,8 @@
       "program": "Programme",
       "badges": "Badges",
       "gallery": "Galerie",
-      "exhibitorsSponsors": "Exposants et sponsors",
-      "speakersExhibitorsSponsors": "Intervenants, Exposants et Sponsors"
+      "exhibitorsSponsors": "Exposants et partenaires",
+      "speakersExhibitorsSponsors": "Intervenants, exposants et partenaires"
     },
     "table": {
       "title": "Titre",
@@ -278,6 +283,10 @@
         "closed": {
           "label": "Fermé",
           "description": "L'événement a été fermé"
+        },
+        "draft": {
+          "label": "Brouillon",
+          "description": "L'événement est en préparation et n'est pas encore visible"
         }
       }
     },
@@ -317,14 +326,15 @@
       "eventType": "Type d'événement",
       "exhibitors": "Exposants",
       "exhibitor": "Exposant",
-      "sponsors": "Sponsors",
-      "sponsor": "Sponsor",
+      "sponsors": "Partenaires",
+      "sponsor": "Partenaire",
       "deleteConfirmTitle": "Êtes-vous sûr de vouloir supprimer cet événement ?",
       "deleteConfirmDescription": "Cette action ne peut pas être annulée. L'événement",
       "willBeDeleted": "sera définitivement supprimé de votre organisation.",
       "speakerDetails": "Détails de l'intervenant",
       "speaker": "Intervenant",
-      "about": "À propos"
+      "about": "À propos",
+      "notFound": "Événement introuvable"
     },
     "status": {
       "published": "Publié",
@@ -345,6 +355,105 @@
       "subtitle": "Voir tous les participants à cet événement.",
       "totalLabel": "Total des participants",
       "viewMembers": "Gérer les membres"
+    },
+    "clearFilters": "Effacer les filtres",
+    "statusDraft": "Brouillon",
+    "participants": {
+      "export": {
+        "openButton": "Exporter",
+        "title": "Exporter les participants",
+        "description": "Choisissez les colonnes, leur ordre, les filtres et le format.",
+        "unavailable": "L'export n'est pas encore disponible.",
+        "loadFailed": "Impossible de charger les options d'export.",
+        "columns": "Colonnes",
+        "order": "Ordre des colonnes",
+        "filters": "Filtres",
+        "format": "Format",
+        "preview": "Aperçu",
+        "selectAll": "Tout",
+        "deselectAll": "Aucun",
+        "resetDefault": "Rétablir par défaut",
+        "moveUp": "Monter",
+        "moveDown": "Descendre",
+        "filterStatus": "Statut",
+        "filterPresence": "Présence",
+        "filterSearch": "Recherche",
+        "presenceAll": "Tous",
+        "presencePresent": "Présents",
+        "presenceAbsent": "Absents",
+        "registeredFrom": "Inscrit depuis le",
+        "registeredTo": "Inscrit jusqu'au",
+        "invalidPeriod": "La date de fin doit être après la date de début",
+        "csvSeparator": "Séparateur CSV",
+        "matching": "Participants correspondants : {{count}}",
+        "exportButton": "Exporter",
+        "noColumnSelected": "Sélectionnez au moins une colonne",
+        "success": "Export téléchargé",
+        "failed": "L'export a échoué",
+        "presets": "Modèles enregistrés",
+        "selectPreset": "Choisir un modèle",
+        "presetName": "Nom du modèle",
+        "savePreset": "Enregistrer le modèle",
+        "deletePreset": "Supprimer le modèle",
+        "presetSaved": "Modèle enregistré",
+        "presetFailed": "Le modèle n'a pas pu être modifié",
+        "groups": {
+          "identity": "Identité",
+          "contact": "Contact",
+          "registration": "Inscription",
+          "profile": "Profil",
+          "attendance": "Présence"
+        }
+      }
+    },
+    "attendance": {
+      "tab": "Présence",
+      "unavailable": "La présence n'est pas encore disponible.",
+      "loadFailed": "Impossible de charger la présence.",
+      "stats": {
+        "registered": "Inscrits",
+        "accepted": "Acceptés",
+        "present": "Présents",
+        "absent": "Absents",
+        "attendanceRate": "Taux de présence",
+        "totalScans": "Total des scans"
+      },
+      "chartTitle": "Entrées par heure",
+      "chartEmpty": "Aucune entrée pour le moment",
+      "chartTooltip": "Entrées : {{count}}",
+      "searchPlaceholder": "Rechercher par nom, e-mail ou téléphone",
+      "filterAll": "Tous",
+      "filterPresent": "Présents",
+      "filterAbsent": "Absents",
+      "columns": {
+        "name": "Nom",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "status": "Statut",
+        "present": "Présence",
+        "firstEntry": "Première entrée",
+        "lastEntry": "Dernière entrée",
+        "scans": "Scans"
+      },
+      "empty": "Aucun participant trouvé",
+      "entityLabel": "participants",
+      "present": "Présent",
+      "absent": "Absent",
+      "multipleScans": "Scanné plusieurs fois",
+      "scansTitle": "Historique des scans",
+      "noScans": "Aucun scan",
+      "scanColumns": {
+        "time": "Heure",
+        "result": "Résultat",
+        "scannedBy": "Scanné par"
+      },
+      "scanResults": {
+        "VALID": "Valide",
+        "ALREADY_CHECKED_IN": "Déjà entré",
+        "INVALID": "Invalide",
+        "NOT_ACCEPTED": "Non accepté",
+        "WRONG_EVENT": "Mauvais événement"
+      }
     }
   },
   "eventForm": {
@@ -364,7 +473,7 @@
       "program": "Programme de l'événement",
       "badges": "Badges",
       "gallery": "Galerie de l'événement",
-      "speakersExhibitorsSponsors": "Intervenants, Exposants et Sponsors",
+      "speakersExhibitorsSponsors": "Intervenants, exposants et partenaires",
       "members": "Membres"
     },
     "fields": {
@@ -396,14 +505,19 @@
       "program": "Programme de l'événement",
       "galleryImages": "Images de la galerie",
       "exhibitors": "Exposants",
-      "sponsors": "Sponsors",
+      "sponsors": "Partenaires",
       "speakers": "Intervenants",
       "fullName": "Nom complet",
       "picture": "URL de l'image",
       "logo": "URL du logo",
-      "sponsorName": "Nom du sponsor",
+      "sponsorName": "Nom du partenaire",
       "fonction": "Fonction",
-      "nationality": "Nationalité"
+      "nationality": "Nationalité",
+      "organizer": "Organisateur",
+      "organizerLogo": "Logo de l'organisateur",
+      "organizerWebsite": "Site web de l'organisateur",
+      "organizerEmail": "E-mail de l'organisateur",
+      "organizerPhone": "Téléphone de l'organisateur"
     },
     "placeholders": {
       "enterEventName": "Entrez le nom de l'événement",
@@ -435,8 +549,9 @@
       "enterNationality": "Entrez la nationalité",
       "enterExhibitorName": "Entrez le nom de l'exposant",
       "enterExhibitorPicture": "https://exemple.com/image.jpg",
-      "enterSponsorName": "Entrez le nom du sponsor",
-      "enterSponsorLogo": "https://exemple.com/logo.jpg"
+      "enterSponsorName": "Entrez le nom du partenaire",
+      "enterSponsorLogo": "https://exemple.com/logo.jpg",
+      "organizer": "Entrez le nom de l'organisateur"
     },
     "options": {
       "visibility": {
@@ -475,7 +590,7 @@
       "addUrl": "Ajouter l'URL",
       "addSpeaker": "Ajouter un intervenant",
       "addExhibitor": "Ajouter un exposant",
-      "addSponsor": "Ajouter un sponsor",
+      "addSponsor": "Ajouter un partenaire",
       "uploadImage": "Télécharger l'image de l'événement",
       "uploadGalleryImage": "Télécharger l'image de la galerie",
       "saveAndNext": "Enregistrer et suivant",
@@ -494,20 +609,29 @@
       "noImages": "Aucune image ajoutée pour le moment",
       "noImagesDescription": "Ajoutez des URL d'images pour créer votre galerie d'événement",
       "noExhibitors": "Aucun exposant ajouté pour le moment",
-      "noSponsors": "Aucun sponsor ajouté pour le moment",
+      "noSponsors": "Aucun partenaire ajouté pour le moment",
       "noSpeakers": "Aucun intervenant ajouté pour le moment",
-      "imageNumber": "Image {{number}}"
+      "imageNumber": "Image {{number}}",
+      "toComplete": "À compléter",
+      "otherPartners": "Autres partenaires"
     },
     "validation": {
       "required": "Ce champ est obligatoire",
       "invalidUrl": "Veuillez entrer une URL valide",
       "invalidEmail": "Veuillez entrer une adresse email valide",
       "invalidDate": "Veuillez entrer une date valide",
-      "endDateBeforeStart": "La date de fin doit être après la date de début"
+      "endDateBeforeStart": "La date de fin doit être après la date de début",
+      "fixErrors": "Veuillez corriger les champs signalés",
+      "categoryRequired": "La catégorie est obligatoire",
+      "coordinatesRequired": "Choisissez l'emplacement sur la carte",
+      "organizerRequired": "L'organisateur est obligatoire"
     },
     "messages": {
       "debugLocation": "Données de localisation :",
-      "notSet": "Non défini"
+      "notSet": "Non défini",
+      "creating": "Création de l'événement...",
+      "created": "Événement créé",
+      "createFailed": "Impossible de créer l'événement"
     },
     "addExhibitorDialog": {
       "title": "Ajouter un exposant",
@@ -526,7 +650,7 @@
         "adding": "Ajout en cours...",
         "addExhibitor": "Ajouter l'exposant",
         "addSpeaker": "Ajouter l'intervenant",
-        "addSponsor": "Ajouter le sponsor"
+        "addSponsor": "Ajouter le partenaire"
       },
       "validation": {
         "required": "Ce champ est obligatoire",
@@ -538,11 +662,19 @@
       "description": "Entrez les détails de l'intervenant",
       "fields": {
         "fullName": "Nom complet",
-        "picture": "URL de l'image"
+        "picture": "URL de l'image",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "jobTitle": "Fonction",
+        "organization": "Organisme"
       },
       "placeholders": {
         "enterName": "Entrez le nom de l'intervenant",
-        "enterPicture": "https://exemple.com/image.jpg"
+        "enterPicture": "https://exemple.com/image.jpg",
+        "firstName": "Entrez le prénom",
+        "lastName": "Entrez le nom",
+        "jobTitle": "Entrez la fonction",
+        "organization": "Entrez l'organisme"
       },
       "buttons": {
         "cancel": "Annuler",
@@ -551,31 +683,40 @@
       },
       "validation": {
         "required": "Ce champ est obligatoire",
-        "invalidUrl": "Veuillez entrer une URL valide"
+        "invalidUrl": "Veuillez entrer une URL valide",
+        "firstNameRequired": "Le prénom est obligatoire",
+        "lastNameRequired": "Le nom est obligatoire",
+        "pictureRequired": "La photo est obligatoire",
+        "jobTitleRequired": "La fonction est obligatoire",
+        "organizationRequired": "L'organisme est obligatoire"
       }
     },
     "addSponsorDialog": {
-      "title": "Ajouter un sponsor",
-      "description": "Entrez les détails du sponsor",
+      "title": "Ajouter un partenaire",
+      "description": "Entrez les détails du partenaire",
       "fields": {
-        "name": "Nom du sponsor",
-        "logo": "URL du logo du sponsor",
-        "category": "Catégorie de sponsor"
+        "name": "Nom du partenaire",
+        "logo": "Logo du partenaire",
+        "category": "Type de partenaire"
       },
       "placeholders": {
-        "enterName": "Entrez le nom du sponsor",
+        "enterName": "Entrez le nom du partenaire",
         "enterLogo": "https://exemple.com/logo.jpg",
-        "selectCategory": "Sélectionnez une catégorie de sponsor"
+        "selectCategory": "Sélectionnez un type de partenaire"
       },
       "buttons": {
         "cancel": "Annuler",
-        "addSponsor"    : "Ajouter le sponsor",
+        "addSponsor": "Ajouter le partenaire",
         "adding": "Ajout en cours..."
       },
       "validation": {
         "required": "Ce champ est obligatoire",
-        "invalidUrl": "Veuillez entrer une URL valide"
-      }
+        "invalidUrl": "Veuillez entrer une URL valide",
+        "logoRequired": "Le logo est obligatoire",
+        "categoryRequired": "Le type de partenaire est obligatoire"
+      },
+      "noCategories": "Aucun type de partenaire pour l'instant. Créez-en un d'abord.",
+      "manageCategories": "Gérer les types de partenaires"
     },
     "success": {
       "eventCreated": "Événement créé avec succès!",
@@ -586,7 +727,19 @@
       "programUpdated": "Programme de l'événement mis à jour avec succès!",
       "badgesUpdated": "Badges mis à jour avec succès!",
       "galleryUpdated": "Galerie de l'événement mise à jour avec succès!",
-      "exhibitorsSponsorsUpdated": "Exposants et sponsors mis à jour avec succès!"
+      "exhibitorsSponsorsUpdated": "Exposants et partenaires mis à jour avec succès !",
+      "draftSaved": "Brouillon enregistré",
+      "submittedForReview": "Événement soumis pour validation",
+      "datesUpdated": "Dates mises à jour avec succès !",
+      "speakersUpdated": "Intervenants mis à jour avec succès !"
+    },
+    "actions": {
+      "saveDraft": "Enregistrer comme brouillon",
+      "submitForReview": "Soumettre pour validation"
+    },
+    "errors": {
+      "submitFailed": "Impossible de soumettre l'événement",
+      "updateFailed": "Impossible d'enregistrer les modifications"
     }
   },
   "members": {
@@ -1019,26 +1172,26 @@
     }
   },
   "sponsorCategories": {
-    "title": "Catégories de sponsors",
-    "manageCategories": "Gérez les catégories de sponsors de votre organisation",
-    "addCategory": "Ajouter une catégorie",
-    "editCategory": "Modifier la catégorie de sponsor",
-    "createCategory": "Créer une catégorie",
-    "categoryName": "Nom de la catégorie",
-    "categoryNameRequired": "Le nom de la catégorie est requis",
-    "enterCategoryName": "Entrez le nom de la catégorie",
-    "addDescription": "Créez une nouvelle catégorie de sponsor pour vos événements.",
-    "editDescription": "Mettez à jour le nom de la catégorie de sponsor.",
-    "searchPlaceholder": "Rechercher des catégories de sponsors par nom",
-    "loading": "Chargement des catégories de sponsors...",
-    "noCategoriesFound": "Aucune catégorie de sponsor trouvée",
-    "createdSuccessfully": "Catégorie de sponsor créée avec succès",
-    "updatedSuccessfully": "Catégorie de sponsor mise à jour avec succès",
-    "deletedSuccessfully": "Catégorie de sponsor supprimée avec succès",
-    "createFailed": "Échec de la création de la catégorie de sponsor",
-    "updateFailed": "Échec de la mise à jour de la catégorie de sponsor",
-    "deleteFailed": "Échec de la suppression de la catégorie de sponsor",
-    "exportFailed": "Échec de l'exportation des catégories de sponsors",
+    "title": "Types de partenaires",
+    "manageCategories": "Gérez les types de partenaires de votre organisation",
+    "addCategory": "Ajouter un type",
+    "editCategory": "Modifier le type de partenaire",
+    "createCategory": "Créer un type",
+    "categoryName": "Nom du type",
+    "categoryNameRequired": "Le nom du type est requis",
+    "enterCategoryName": "Entrez le nom du type",
+    "addDescription": "Créez un nouveau type de partenaire pour vos événements.",
+    "editDescription": "Mettez à jour le nom du type de partenaire.",
+    "searchPlaceholder": "Rechercher des types de partenaires par nom",
+    "loading": "Chargement des types de partenaires...",
+    "noCategoriesFound": "Aucun type de partenaire trouvé",
+    "createdSuccessfully": "Type de partenaire créé avec succès",
+    "updatedSuccessfully": "Type de partenaire mis à jour avec succès",
+    "deletedSuccessfully": "Type de partenaire supprimé avec succès",
+    "createFailed": "Échec de la création du type de partenaire",
+    "updateFailed": "Échec de la mise à jour du type de partenaire",
+    "deleteFailed": "Échec de la suppression du type de partenaire",
+    "exportFailed": "Échec de l'exportation des types de partenaires",
     "buttons": {
       "cancel": "Annuler",
       "create": "Créer la catégorie",
@@ -1049,13 +1202,21 @@
       "exporting": "Exportation en cours..."
     },
     "deleteDialog": {
-      "title": "Supprimer la catégorie de sponsor",
-      "description": "Êtes-vous sûr de vouloir supprimer cette catégorie de sponsor ? Cela la supprimera définitivement."
+      "title": "Supprimer le type de partenaire",
+      "description": "Êtes-vous sûr de vouloir supprimer ce type de partenaire ? Cela le supprimera définitivement."
     },
     "table": {
       "id": "ID",
       "name": "Nom",
       "actions": "Actions"
+    },
+    "defaultBadge": "Par défaut",
+    "defaults": {
+      "official_partner": "Partenaire officiel",
+      "hackathon_partner": "Partenaire Hackathon",
+      "institutional_partner": "Partenaire institutionnel",
+      "media_partner": "Partenaire média",
+      "sponsor": "Sponsor"
     }
   },
   "badges": {

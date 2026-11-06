@@ -60,7 +60,13 @@
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
     "upload": "رفع",
-    "myAccount": "حسابي"
+    "myAccount": "حسابي",
+    "deleting": "جارٍ الحذف...",
+    "no": "لا",
+    "yes": "نعم",
+    "retry": "إعادة المحاولة",
+    "type": "النوع",
+    "editSponsor": "تعديل الشريك"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -83,7 +89,7 @@
     "dashboard": "لوحة التحكم",
     "events": "الفعاليات",
     "members": "الأعضاء",
-    "sponsorCategories": "فئات الرعاة",
+    "sponsorCategories": "أنواع الشركاء",
     "accounts": "الحسابات",
     "contacts": "جهات الاتصال"
   },
@@ -218,8 +224,8 @@
       "program": "البرنامج",
       "badges": "الشارات",
       "gallery": "المعرض",
-      "exhibitorsSponsors": "العارضون والرعاة",
-      "speakersExhibitorsSponsors": "المتحدثون والعارضون والرعاة"
+      "exhibitorsSponsors": "العارضون والشركاء",
+      "speakersExhibitorsSponsors": "المتحدثون والعارضون والشركاء"
     },
     "table": {
       "title": "العنوان",
@@ -277,6 +283,10 @@
         "closed": {
           "label": "مغلق",
           "description": "تم إغلاق الفعالية"
+        },
+        "draft": {
+          "label": "مسودة",
+          "description": "الحدث قيد الإعداد وغير مرئي بعد"
         }
       }
     },
@@ -316,14 +326,15 @@
       "eventType": "نوع الفعالية",
       "exhibitors": "العارضون",
       "exhibitor": "عارض",
-      "sponsors": "الرعاة",
-      "sponsor": "راعي",
+      "sponsors": "الشركاء",
+      "sponsor": "شريك",
       "deleteConfirmTitle": "هل أنت متأكد من حذف هذه الفعالية؟",
       "deleteConfirmDescription": "لا يمكن التراجع عن هذا الإجراء. الفعالية",
       "willBeDeleted": "ستُحذف نهائيًا من مؤسستك.",
       "speakerDetails": "تفاصيل المتحدث",
       "speaker": "متحدث",
-      "about": "نبذة عن"
+      "about": "نبذة عن",
+      "notFound": "الحدث غير موجود"
     },
     "status": {
       "published": "منشور",
@@ -344,6 +355,105 @@
       "subtitle": "اعرض جميع المشاركين في هذه الفعالية.",
       "totalLabel": "إجمالي المشاركين",
       "viewMembers": "إدارة الأعضاء"
+    },
+    "clearFilters": "مسح عوامل التصفية",
+    "statusDraft": "مسودة",
+    "participants": {
+      "export": {
+        "openButton": "تصدير",
+        "title": "تصدير المشاركين",
+        "description": "اختر الأعمدة وترتيبها وعوامل التصفية والتنسيق.",
+        "unavailable": "التصدير غير متاح بعد.",
+        "loadFailed": "تعذر تحميل خيارات التصدير.",
+        "columns": "الأعمدة",
+        "order": "ترتيب الأعمدة",
+        "filters": "عوامل التصفية",
+        "format": "التنسيق",
+        "preview": "معاينة",
+        "selectAll": "الكل",
+        "deselectAll": "لا شيء",
+        "resetDefault": "إعادة التعيين إلى الافتراضي",
+        "moveUp": "نقل لأعلى",
+        "moveDown": "نقل لأسفل",
+        "filterStatus": "الحالة",
+        "filterPresence": "الحضور",
+        "filterSearch": "بحث",
+        "presenceAll": "الجميع",
+        "presencePresent": "الحاضرون",
+        "presenceAbsent": "الغائبون",
+        "registeredFrom": "مسجل من",
+        "registeredTo": "مسجل حتى",
+        "invalidPeriod": "يجب أن يكون تاريخ النهاية بعد تاريخ البداية",
+        "csvSeparator": "فاصل CSV",
+        "matching": "المشاركون المطابقون: {{count}}",
+        "exportButton": "تصدير",
+        "noColumnSelected": "حدد عمودًا واحدًا على الأقل",
+        "success": "تم تنزيل الملف",
+        "failed": "فشل التصدير",
+        "presets": "النماذج المحفوظة",
+        "selectPreset": "اختر نموذجًا",
+        "presetName": "اسم النموذج",
+        "savePreset": "حفظ النموذج",
+        "deletePreset": "حذف النموذج",
+        "presetSaved": "تم حفظ النموذج",
+        "presetFailed": "تعذر تعديل النموذج",
+        "groups": {
+          "identity": "الهوية",
+          "contact": "جهة الاتصال",
+          "registration": "التسجيل",
+          "profile": "الملف الشخصي",
+          "attendance": "الحضور"
+        }
+      }
+    },
+    "attendance": {
+      "tab": "الحضور",
+      "unavailable": "الحضور غير متاح بعد.",
+      "loadFailed": "تعذر تحميل الحضور.",
+      "stats": {
+        "registered": "المسجلون",
+        "accepted": "المقبولون",
+        "present": "الحاضرون",
+        "absent": "الغائبون",
+        "attendanceRate": "نسبة الحضور",
+        "totalScans": "إجمالي عمليات المسح"
+      },
+      "chartTitle": "الدخول في الساعة",
+      "chartEmpty": "لا توجد عمليات دخول بعد",
+      "chartTooltip": "عمليات الدخول: {{count}}",
+      "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف",
+      "filterAll": "الجميع",
+      "filterPresent": "الحاضرون",
+      "filterAbsent": "الغائبون",
+      "columns": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "status": "الحالة",
+        "present": "الحضور",
+        "firstEntry": "أول دخول",
+        "lastEntry": "آخر دخول",
+        "scans": "عمليات المسح"
+      },
+      "empty": "لم يتم العثور على مشاركين",
+      "entityLabel": "المشاركين",
+      "present": "حاضر",
+      "absent": "غائب",
+      "multipleScans": "تم المسح أكثر من مرة",
+      "scansTitle": "سجل عمليات المسح",
+      "noScans": "لا توجد عمليات مسح",
+      "scanColumns": {
+        "time": "الوقت",
+        "result": "النتيجة",
+        "scannedBy": "تم المسح بواسطة"
+      },
+      "scanResults": {
+        "VALID": "صالح",
+        "ALREADY_CHECKED_IN": "تم الدخول مسبقًا",
+        "INVALID": "غير صالح",
+        "NOT_ACCEPTED": "غير مقبول",
+        "WRONG_EVENT": "حدث خاطئ"
+      }
     }
   },
   "eventForm": {
@@ -363,7 +473,7 @@
       "program": "برنامج الحدث",
       "badges": "الشارات",
       "gallery": "معرض الصور",
-      "speakersExhibitorsSponsors": "المتحدثون، العارضون والرعاة",
+      "speakersExhibitorsSponsors": "المتحدثون والعارضون والشركاء",
       "members": "الأعضاء"
     },
     "fields": {
@@ -393,13 +503,21 @@
       "galleryImages": "صور المعرض",
       "speakers": "المتحدثون",
       "exhibitors": "العارضون",
-      "sponsors": "الرعاة",
+      "sponsors": "الشركاء",
       "fullName": "الاسم الكامل",
       "picture": "رابط الصورة",
       "logo": "رابط الشعار",
-      "sponsorName": "اسم الراعي",
+      "sponsorName": "اسم الشريك",
       "requirements": "المتطلبات",
-      "tags": "العلامات"
+      "tags": "العلامات",
+      "organizer": "المنظم",
+      "organizerLogo": "شعار المنظم",
+      "organizerWebsite": "موقع المنظم",
+      "organizerEmail": "البريد الإلكتروني للمنظم",
+      "organizerPhone": "هاتف المنظم",
+      "eventLogo": "شعار الحدث",
+      "fonction": "الوظيفة",
+      "nationality": "الجنسية"
     },
     "placeholders": {
       "enterEventName": "أدخل اسم الحدث",
@@ -425,10 +543,14 @@
       "enterImageUrlGallery": "أو أدخل رابط الصورة (https://...)",
       "enterExhibitorName": "أدخل اسم العارض",
       "enterExhibitorPicture": "https://example.com/image.jpg",
-      "enterSponsorName": "أدخل اسم الراعي",
+      "enterSponsorName": "أدخل اسم الشريك",
       "enterSponsorLogo": "https://example.com/logo.jpg",
       "enterTags": "أدخل العلامات مفصولة بفواصل",
-      "enterRequirements": "أدخل متطلبات الحدث الخاصة بك"
+      "enterRequirements": "أدخل متطلبات الحدث الخاصة بك",
+      "organizer": "أدخل اسم المنظم",
+      "enterFonction": "أدخل الوظيفة",
+      "enterLogoUrl": "https://example.com/logo.jpg",
+      "enterNationality": "أدخل الجنسية"
     },
     "options": {
       "visibility": {
@@ -446,7 +568,7 @@
         "closed": "مغلق"
       }
     },
-     "success": {
+    "success": {
       "eventCreated": "تم إنشاء الحدث بنجاح!",
       "basicInfoUpdated": "تم تحديث المعلومات الأساسية بنجاح!",
       "dateTimeUpdated": "تم تحديث التاريخ والوقت بنجاح!",
@@ -455,7 +577,11 @@
       "programUpdated": "تم تحديث برنامج الحدث بنجاح!",
       "badgesUpdated": "تم تحديث الشارات بنجاح!",
       "galleryUpdated": "تم تحديث معرض الصور بنجاح!",
-      "exhibitorsSponsorsUpdated": "تم تحديث العارضين والرعاة بنجاح!"
+      "exhibitorsSponsorsUpdated": "تم تحديث العارضين والشركاء بنجاح!",
+      "draftSaved": "تم حفظ المسودة",
+      "submittedForReview": "تم إرسال الحدث للمراجعة",
+      "datesUpdated": "تم تحديث التواريخ بنجاح!",
+      "speakersUpdated": "تم تحديث المتحدثين بنجاح!"
     },
     "descriptions": {
       "capacity": "اضبط على 0 لسعة غير محدودة",
@@ -478,7 +604,7 @@
       "addUrl": "إضافة الرابط",
       "addSpeaker": "إضافة متحدث",
       "addExhibitor": "إضافة عارض",
-      "addSponsor": "إضافة راعي",
+      "addSponsor": "إضافة شريك",
       "uploadImage": "رفع صورة الحدث",
       "uploadGalleryImage": "رفع صورة المعرض",
       "saveAndNext": "حفظ والمتابعة",
@@ -497,20 +623,29 @@
       "noImages": "لم تتم إضافة أي صور بعد",
       "noImagesDescription": "أضف روابط الصور لإنشاء معرض الأحداث الخاص بك",
       "noExhibitors": "لم تتم إضافة أي عارضين بعد",
-      "noSponsors": "لم تتم إضافة أي رعاة بعد",
+      "noSponsors": "لم تتم إضافة أي شركاء بعد",
       "noSpeakers": "لم تتم إضافة أي متحدثين بعد",
-      "imageNumber": "الصورة {{number}}"
+      "imageNumber": "الصورة {{number}}",
+      "toComplete": "يجب الإكمال",
+      "otherPartners": "شركاء آخرون"
     },
     "validation": {
       "required": "هذا الحقل مطلوب",
       "invalidUrl": "يرجى إدخال رابط صحيح",
       "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
       "invalidDate": "يرجى إدخال تاريخ صحيح",
-      "endDateBeforeStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء"
+      "endDateBeforeStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+      "fixErrors": "يرجى تصحيح الحقول المحددة",
+      "categoryRequired": "الفئة مطلوبة",
+      "coordinatesRequired": "اختر الموقع على الخريطة",
+      "organizerRequired": "المنظم مطلوب"
     },
     "messages": {
       "debugLocation": "بيانات الموقع:",
-      "notSet": "غير محدد"
+      "notSet": "غير محدد",
+      "creating": "جارٍ إنشاء الحدث...",
+      "created": "تم إنشاء الحدث",
+      "createFailed": "تعذر إنشاء الحدث"
     },
     "addExhibitorDialog": {
       "title": "إضافة عارض",
@@ -529,8 +664,8 @@
         "adding": "جاري الإضافة...",
         "addSpeaker": "إضافة المتحدث",
         "addingSpeaker": "جاري إضافة المتحدث...",
-        "addSponsor": "إضافة الراعي",
-        "addingSponsor": "جاري إضافة الراعي..."
+        "addSponsor": "إضافة الشريك",
+        "addingSponsor": "جاري إضافة الشريك..."
       },
       "validation": {
         "required": "هذا الحقل مطلوب",
@@ -538,26 +673,62 @@
       }
     },
     "addSponsorDialog": {
-      "title": "إضافة راعي",
-      "description": "أضف راعيًا للمشاركة في هذا الحدث",
+      "title": "إضافة شريك",
+      "description": "أدخل بيانات الشريك",
       "fields": {
-        "name": "اسم الراعي",
-        "logo": "رابط شعار الراعي",
-        "category": "فئة الراعي"
+        "name": "اسم الشريك",
+        "logo": "شعار الشريك",
+        "category": "نوع الشريك"
       },
       "placeholders": {
-        "enterName": "أدخل اسم الراعي",
+        "enterName": "أدخل اسم الشريك",
         "enterLogo": "https://example.com/logo.jpg",
-        "selectCategory": "اختر فئة الراعي"
+        "selectCategory": "اختر نوع الشريك"
       },
       "buttons": {
         "cancel": "إلغاء",
-        "addSponsor": "إضافة الراعي",
+        "addSponsor": "إضافة الشريك",
         "adding": "جاري الإضافة..."
       },
       "validation": {
         "required": "هذا الحقل مطلوب",
-        "invalidUrl": "يرجى إدخال رابط صحيح"
+        "invalidUrl": "يرجى إدخال رابط صحيح",
+        "logoRequired": "الشعار مطلوب",
+        "categoryRequired": "نوع الشريك مطلوب"
+      },
+      "noCategories": "لا يوجد نوع شريك بعد. أنشئ نوعًا أولًا.",
+      "manageCategories": "إدارة أنواع الشركاء"
+    },
+    "actions": {
+      "saveDraft": "حفظ كمسودة",
+      "submitForReview": "إرسال للمراجعة"
+    },
+    "errors": {
+      "submitFailed": "تعذر إرسال الحدث",
+      "updateFailed": "تعذر حفظ التغييرات"
+    },
+    "addSpeakerDialog": {
+      "fields": {
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "jobTitle": "الوظيفة",
+        "organization": "الجهة"
+      },
+      "placeholders": {
+        "firstName": "أدخل الاسم الأول",
+        "lastName": "أدخل اسم العائلة",
+        "jobTitle": "أدخل الوظيفة",
+        "organization": "أدخل الجهة"
+      },
+      "validation": {
+        "firstNameRequired": "الاسم الأول مطلوب",
+        "lastNameRequired": "اسم العائلة مطلوب",
+        "pictureRequired": "الصورة مطلوبة",
+        "jobTitleRequired": "الوظيفة مطلوبة",
+        "organizationRequired": "الجهة مطلوبة"
+      },
+      "buttons": {
+        "addSpeaker": "إضافة المتحدث"
       }
     }
   },
@@ -578,12 +749,12 @@
     "description": "إدارة أعضائك",
     "addMember": "إضافة أعضاء",
     "participantStatus": "حالة المشارك",
-    "organizer":"منظم",
+    "organizer": "منظم",
     "verificationStatus": "حالة التحقق",
     "unverified": "غير مُتحقق",
     "participantStatusLabel": "حالة المشارك",
     "role": "الدور",
-    "member":"عضو",
+    "member": "عضو",
     "memberSearchPlaceholder": "ابحث عن الأعضاء حسب الاسم أو البريد الإلكتروني أو الهاتف أو الموقع",
     "status": {
       "all": "كل الحالة",
@@ -850,7 +1021,6 @@
         "event": "فعالية",
         "events": "فعاليات"
       },
-    
       "buttons": {
         "close": "إغلاق",
         "editMember": "تعديل العضو",
@@ -881,44 +1051,44 @@
       }
     },
     "list": {
-        "name": "الاسم",
-        "status": "الحالة",
-        "type": " النوع",
-        "participantStatus": "حالة المشارك",
-        "registration": "التسجيل",
-        "verified": "مُتحقق ",
-        "gender": "الجنس",
-        "joinDate": "تاريخ الانضمام",
-        "tags": "الوسوم",
-        "actions": "الإجراءات"
+      "name": "الاسم",
+      "status": "الحالة",
+      "type": " النوع",
+      "participantStatus": "حالة المشارك",
+      "registration": "التسجيل",
+      "verified": "مُتحقق ",
+      "gender": "الجنس",
+      "joinDate": "تاريخ الانضمام",
+      "tags": "الوسوم",
+      "actions": "الإجراءات"
+    },
+    "statusDialog": {
+      "title": "تغيير حالة المشارك",
+      "description": "اختر الحالة الجديدة لهذا المشارك.",
+      "memberLabel": "المشارك:",
+      "statusLabel": "الحالة",
+      "qrCode": "رمز الاستجابة السريعة",
+      "updating": "جاري التحديث...",
+      "update": "تحديث",
+      "selectStatus": "اختر الحالة",
+      "currentStatus": "الحالة الحالية",
+      "newStatus": "الحالة الجديدة",
+      "buttons": {
+        "cancel": "إلغاء",
+        "update": "تحديث الحالة",
+        "updating": "جاري التحديث..."
       },
-      "statusDialog": {
-        "title": "تغيير حالة المشارك",
-        "description": "اختر الحالة الجديدة لهذا المشارك.",
-        "memberLabel": "المشارك:",
-        "statusLabel": "الحالة",
-        "qrCode": "رمز الاستجابة السريعة",
-        "updating": "جاري التحديث...",
-        "update": "تحديث",
-        "selectStatus": "اختر الحالة",
-        "currentStatus": "الحالة الحالية",
-        "newStatus": "الحالة الجديدة",
-        "buttons": {
-          "cancel": "إلغاء",
-          "update": "تحديث الحالة",
-          "updating": "جاري التحديث..."
+      "statusOptions": {
+        "active": {
+          "label": "نشط",
+          "description": "المشارك نشط"
         },
-        "statusOptions": {
-          "active": {
-            "label": "نشط",
-            "description": "المشارك نشط"
-          },
-          "inactive": {
-            "label": "غير نشط",
-            "description": "المشارك غير نشط"
-          }
+        "inactive": {
+          "label": "غير نشط",
+          "description": "المشارك غير نشط"
         }
       }
+    }
   },
   "categories": {
     "title": "الفئات",
@@ -998,26 +1168,26 @@
     }
   },
   "sponsorCategories": {
-    "title": "فئات الرعاة",
-    "manageCategories": "إدارة فئات الرعاة الخاصة بالمنظم",
-    "addCategory": "إضافة فئة",
-    "editCategory": "تعديل فئة الراعي",
-    "createCategory": "إنشاء فئة",
-    "categoryName": "اسم الفئة",
-    "categoryNameRequired": "اسم الفئة مطلوب",
-    "enterCategoryName": "أدخل اسم الفئة",
-    "addDescription": "أنشئ فئة راعي جديدة لفعالياتك.",
-    "editDescription": "قم بتحديث اسم فئة الراعي.",
-    "searchPlaceholder": "ابحث عن فئات الرعاة بالاسم",
-    "loading": "جارٍ تحميل فئات الرعاة...",
-    "noCategoriesFound": "لم يتم العثور على فئات رعاة",
-    "createdSuccessfully": "تم إنشاء فئة الراعي بنجاح",
-    "updatedSuccessfully": "تم تحديث فئة الراعي بنجاح",
-    "deletedSuccessfully": "تم حذف فئة الراعي بنجاح",
-    "createFailed": "فشل إنشاء فئة الراعي",
-    "updateFailed": "فشل تحديث فئة الراعي",
-    "deleteFailed": "فشل حذف فئة الراعي",
-    "exportFailed": "فشل تصدير فئات الرعاة",
+    "title": "أنواع الشركاء",
+    "manageCategories": "إدارة أنواع الشركاء الخاصة بك",
+    "addCategory": "إضافة نوع",
+    "editCategory": "تعديل نوع الشريك",
+    "createCategory": "إنشاء نوع",
+    "categoryName": "اسم النوع",
+    "categoryNameRequired": "اسم النوع مطلوب",
+    "enterCategoryName": "أدخل اسم النوع",
+    "addDescription": "أنشئ نوع شريك جديدًا لفعالياتك.",
+    "editDescription": "قم بتحديث اسم نوع الشريك.",
+    "searchPlaceholder": "ابحث عن أنواع الشركاء بالاسم",
+    "loading": "جارٍ تحميل أنواع الشركاء...",
+    "noCategoriesFound": "لم يتم العثور على أنواع شركاء",
+    "createdSuccessfully": "تم إنشاء نوع الشريك بنجاح",
+    "updatedSuccessfully": "تم تحديث نوع الشريك بنجاح",
+    "deletedSuccessfully": "تم حذف نوع الشريك بنجاح",
+    "createFailed": "فشل إنشاء نوع الشريك",
+    "updateFailed": "فشل تحديث نوع الشريك",
+    "deleteFailed": "فشل حذف نوع الشريك",
+    "exportFailed": "فشل تصدير أنواع الشركاء",
     "buttons": {
       "cancel": "إلغاء",
       "create": "إنشاء الفئة",
@@ -1028,13 +1198,21 @@
       "exporting": "جارٍ التصدير..."
     },
     "deleteDialog": {
-      "title": "حذف فئة الراعي",
-      "description": "هل أنت متأكد من أنك تريد حذف فئة الراعي هذه؟ سيؤدي هذا إلى إزالتها نهائياً."
+      "title": "حذف نوع الشريك",
+      "description": "هل أنت متأكد من أنك تريد حذف نوع الشريك هذا؟ سيؤدي هذا إلى إزالته نهائيًا."
     },
     "table": {
       "id": "المعرف",
       "name": "الاسم",
       "actions": "الإجراءات"
+    },
+    "defaultBadge": "افتراضي",
+    "defaults": {
+      "official_partner": "شريك رسمي",
+      "hackathon_partner": "شريك الهاكاثون",
+      "institutional_partner": "شريك مؤسسي",
+      "media_partner": "شريك إعلامي",
+      "sponsor": "راعٍ"
     }
   },
   "badges": {

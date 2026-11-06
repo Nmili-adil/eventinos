@@ -258,7 +258,7 @@ export const EventAttendanceSection = ({ eventId, startDate, endDate }: EventAtt
                     <TableCell>{record.email || "—"}</TableCell>
                     <TableCell className="whitespace-nowrap">{record.phone || "—"}</TableCell>
                     <TableCell>
-                      {record.status ? t(`members.detailsDialog.statusOptions.${record.status.toLowerCase()}`, record.status) : "—"}
+                      {record.status ? t(`members.status.${record.status.toLowerCase()}`, record.status) : "—"}
                     </TableCell>
                     <TableCell>
                       {record.isPresent ? (

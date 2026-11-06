@@ -37,7 +37,7 @@
     "edit": "Edit",
     "editSpeaker": "Edit Speaker",
     "editExhibitor": "Edit Exhibitor",
-    "editSponsor": "Edit Sponsor",
+    "editSponsor": "Edit partner",
     "add": "Add",
     "search": "Search",
     "filter": "Filter",
@@ -110,7 +110,7 @@
     "dashboard": "Dashboard",
     "events": "Events",
     "members": "Members",
-    "sponsorCategories": "Sponsor Categories",
+    "sponsorCategories": "Partner types",
     "accounts": "Accounts",
     "contacts": "Contacts"
   },
@@ -245,8 +245,8 @@
       "program": "Program",
       "badges": "Badges",
       "gallery": "Gallery",
-      "exhibitorsSponsors": "Exhibitors & Sponsors",
-      "speakersExhibitorsSponsors": "Speakers, Exhibitors & Sponsors"
+      "exhibitorsSponsors": "Exhibitors & partners",
+      "speakersExhibitorsSponsors": "Speakers, exhibitors & partners"
     },
     "table": {
       "title": "Title",
@@ -304,6 +304,10 @@
         "closed": {
           "label": "Closed",
           "description": "Event has been closed"
+        },
+        "draft": {
+          "label": "Draft",
+          "description": "Event is being prepared and is not visible yet"
         }
       }
     },
@@ -343,14 +347,15 @@
       "eventType": "Event Type",
       "exhibitors": "Exhibitors",
       "exhibitor": "Exhibitor",
-      "sponsors": "Sponsors",
-      "sponsor": "Sponsor",
+      "sponsors": "Partners",
+      "sponsor": "Partner",
       "deleteConfirmTitle": "Are you sure you want to delete this event?",
       "deleteConfirmDescription": "This action cannot be undone. The event",
       "willBeDeleted": "will be permanently deleted from your organization.",
       "speakerDetails": "Speaker Details",
       "speaker": "Speaker",
-      "about": "About"
+      "about": "About",
+      "notFound": "Event not found"
     },
     "status": {
       "published": "Published",
@@ -371,6 +376,105 @@
       "subtitle": "View everyone participating in this event.",
       "totalLabel": "Total participants",
       "viewMembers": "Manage members"
+    },
+    "clearFilters": "Clear filters",
+    "statusDraft": "Draft",
+    "participants": {
+      "export": {
+        "openButton": "Export",
+        "title": "Export participants",
+        "description": "Choose the columns, their order, the filters and the format.",
+        "unavailable": "Export is not available yet.",
+        "loadFailed": "Could not load the export options.",
+        "columns": "Columns",
+        "order": "Column order",
+        "filters": "Filters",
+        "format": "Format",
+        "preview": "Preview",
+        "selectAll": "All",
+        "deselectAll": "None",
+        "resetDefault": "Reset to default",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "filterStatus": "Status",
+        "filterPresence": "Attendance",
+        "filterSearch": "Search",
+        "presenceAll": "Everyone",
+        "presencePresent": "Present",
+        "presenceAbsent": "Absent",
+        "registeredFrom": "Registered from",
+        "registeredTo": "Registered until",
+        "invalidPeriod": "The end date must be after the start date",
+        "csvSeparator": "CSV separator",
+        "matching": "Matching participants: {{count}}",
+        "exportButton": "Export",
+        "noColumnSelected": "Select at least one column",
+        "success": "Export downloaded",
+        "failed": "The export failed",
+        "presets": "Saved presets",
+        "selectPreset": "Choose a preset",
+        "presetName": "Preset name",
+        "savePreset": "Save preset",
+        "deletePreset": "Delete preset",
+        "presetSaved": "Preset saved",
+        "presetFailed": "The preset could not be changed",
+        "groups": {
+          "identity": "Identity",
+          "contact": "Contact",
+          "registration": "Registration",
+          "profile": "Profile",
+          "attendance": "Attendance"
+        }
+      }
+    },
+    "attendance": {
+      "tab": "Attendance",
+      "unavailable": "Attendance is not available yet.",
+      "loadFailed": "Could not load attendance.",
+      "stats": {
+        "registered": "Registered",
+        "accepted": "Accepted",
+        "present": "Present",
+        "absent": "Absent",
+        "attendanceRate": "Attendance rate",
+        "totalScans": "Total scans"
+      },
+      "chartTitle": "Check-ins per hour",
+      "chartEmpty": "No check-ins yet",
+      "chartTooltip": "Check-ins: {{count}}",
+      "searchPlaceholder": "Search by name, email or phone",
+      "filterAll": "Everyone",
+      "filterPresent": "Present",
+      "filterAbsent": "Absent",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "present": "Attendance",
+        "firstEntry": "First entry",
+        "lastEntry": "Last entry",
+        "scans": "Scans"
+      },
+      "empty": "No participants found",
+      "entityLabel": "participants",
+      "present": "Present",
+      "absent": "Absent",
+      "multipleScans": "Scanned more than once",
+      "scansTitle": "Scan history",
+      "noScans": "No scans",
+      "scanColumns": {
+        "time": "Time",
+        "result": "Result",
+        "scannedBy": "Scanned by"
+      },
+      "scanResults": {
+        "VALID": "Valid",
+        "ALREADY_CHECKED_IN": "Already checked in",
+        "INVALID": "Invalid",
+        "NOT_ACCEPTED": "Not accepted",
+        "WRONG_EVENT": "Wrong event"
+      }
     }
   },
   "eventForm": {
@@ -388,7 +492,7 @@
       "program": "Event Program",
       "badges": "Badges",
       "gallery": "Event Gallery",
-      "speakersExhibitorsSponsors": "Speakers, Exhibitors & Sponsors",
+      "speakersExhibitorsSponsors": "Speakers, exhibitors & partners",
       "members": "Members"
     },
     "fields": {
@@ -417,14 +521,22 @@
       "program": "Event Program",
       "galleryImages": "Gallery Images",
       "exhibitors": "Exhibitors",
-      "sponsors": "Sponsors",
+      "sponsors": "Partners",
       "speakers": "Speakers",
       "fullName": "Full Name",
       "picture": "Picture URL",
       "logo": "Logo URL",
-      "sponsorName": "Sponsor Name",
+      "sponsorName": "Partner name",
       "tags": "Tags",
-      "requirements": "Requirements"
+      "requirements": "Requirements",
+      "organizer": "Organizer",
+      "organizerLogo": "Organizer logo",
+      "organizerWebsite": "Organizer website",
+      "organizerEmail": "Organizer email",
+      "organizerPhone": "Organizer phone",
+      "eventLogo": "Event logo",
+      "fonction": "Job title",
+      "nationality": "Nationality"
     },
     "placeholders": {
       "enterEventName": "Enter event name",
@@ -450,10 +562,14 @@
       "enterImageUrlGallery": "Or enter image URL (https://...)",
       "enterExhibitorName": "Enter exhibitor name",
       "enterExhibitorPicture": "https://example.com/image.jpg",
-      "enterSponsorName": "Enter sponsor name",
+      "enterSponsorName": "Enter the partner name",
       "enterSponsorLogo": "https://example.com/logo.jpg",
       "enterTags": "Enter tags separated by commas",
-      "enterRequirements": "Enter event requirements"
+      "enterRequirements": "Enter event requirements",
+      "organizer": "Enter the organizer name",
+      "enterFonction": "Enter the job title",
+      "enterLogoUrl": "https://example.com/logo.jpg",
+      "enterNationality": "Enter the nationality"
     },
     "options": {
       "visibility": {
@@ -492,7 +608,7 @@
       "addUrl": "Add URL",
       "addSpeaker": "Add Speaker",
       "addExhibitor": "Add Exhibitor",
-      "addSponsor": "Add Sponsor",
+      "addSponsor": "Add partner",
       "uploadImage": "Upload Event Image",
       "uploadGalleryImage": "Upload Gallery Image",
       "saveAndNext": "Save & Next",
@@ -511,20 +627,29 @@
       "noImages": "No images added yet",
       "noImagesDescription": "Add image URLs to create your event gallery",
       "noExhibitors": "No exhibitors added yet",
-      "noSponsors": "No sponsors added yet",
+      "noSponsors": "No partners added yet",
       "noSpeakers": "No speakers added yet",
-      "imageNumber": "Image {{number}}"
+      "imageNumber": "Image {{number}}",
+      "toComplete": "To complete",
+      "otherPartners": "Other partners"
     },
     "validation": {
       "required": "This field is required",
       "invalidUrl": "Please enter a valid URL",
       "invalidEmail": "Please enter a valid email address",
       "invalidDate": "Please enter a valid date",
-      "endDateBeforeStart": "End date must be after start date"
+      "endDateBeforeStart": "End date must be after start date",
+      "fixErrors": "Please fix the highlighted fields",
+      "categoryRequired": "Category is required",
+      "coordinatesRequired": "Choose the location on the map",
+      "organizerRequired": "Organizer is required"
     },
     "messages": {
       "debugLocation": "Location Data:",
-      "notSet": "Not set"
+      "notSet": "Not set",
+      "creating": "Creating event...",
+      "created": "Event created",
+      "createFailed": "Could not create the event"
     },
     "addExhibitorDialog": {
       "title": "Add Exhibitor",
@@ -542,7 +667,7 @@
         "addExhibitor": "Add Exhibitor",
         "adding": "Adding...",
         "addSpeaker": "Add Speaker",
-        "addSponsor": "Add Sponsor"
+        "addSponsor": "Add partner"
       },
       "validation": {
         "required": "This field is required",
@@ -554,11 +679,19 @@
       "description": "Enter speaker details",
       "fields": {
         "fullName": "Full Name",
-        "picture": "Picture URL"
+        "picture": "Picture URL",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "jobTitle": "Job title",
+        "organization": "Organization"
       },
       "placeholders": {
         "enterName": "Enter speaker name",
-        "enterPictureUrl": "https://example.com/image.jpg"
+        "enterPictureUrl": "https://example.com/image.jpg",
+        "firstName": "Enter the first name",
+        "lastName": "Enter the last name",
+        "jobTitle": "Enter the job title",
+        "organization": "Enter the organization"
       },
       "buttons": {
         "cancel": "Cancel",
@@ -567,31 +700,40 @@
       },
       "validation": {
         "required": "This field is required",
-        "invalidUrl": "Please enter a valid URL"
+        "invalidUrl": "Please enter a valid URL",
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "pictureRequired": "Photo is required",
+        "jobTitleRequired": "Job title is required",
+        "organizationRequired": "Organization is required"
       }
     },
     "addSponsorDialog": {
-      "title": "Add Sponsor",
-      "description": "Enter sponsor details",
+      "title": "Add partner",
+      "description": "Enter the partner details",
       "fields": {
-        "name": "Name",
-        "logo": "Logo URL",
-        "category": "Sponsor Category"
+        "name": "Partner name",
+        "logo": "Partner logo",
+        "category": "Partner type"
       },
       "placeholders": {
-        "enterName": "Enter sponsor name",
+        "enterName": "Enter the partner name",
         "enterLogoUrl": "https://example.com/logo.jpg",
-        "selectCategory": "Select a sponsor category"
+        "selectCategory": "Select a partner type"
       },
       "buttons": {
         "cancel": "Cancel",
-        "addSponsor": "Add Sponsor",
+        "addSponsor": "Add partner",
         "adding": "Adding..."
       },
       "validation": {
         "required": "This field is required",
-        "invalidUrl": "Please enter a valid URL"
-      }
+        "invalidUrl": "Please enter a valid URL",
+        "logoRequired": "Logo is required",
+        "categoryRequired": "Partner type is required"
+      },
+      "noCategories": "No partner type yet. Create one first.",
+      "manageCategories": "Manage partner types"
     },
     "success": {
       "eventCreated": "Event created successfully!",
@@ -602,7 +744,19 @@
       "programUpdated": "Event program updated successfully!",
       "badgesUpdated": "Badges updated successfully!",
       "galleryUpdated": "Event gallery updated successfully!",
-      "exhibitorsSponsorsUpdated": "Exhibitors & sponsors updated successfully!"
+      "exhibitorsSponsorsUpdated": "Exhibitors & partners updated successfully!",
+      "draftSaved": "Draft saved",
+      "submittedForReview": "Event submitted for review",
+      "datesUpdated": "Dates updated successfully!",
+      "speakersUpdated": "Speakers updated successfully!"
+    },
+    "actions": {
+      "saveDraft": "Save as draft",
+      "submitForReview": "Submit for review"
+    },
+    "errors": {
+      "submitFailed": "Could not submit the event",
+      "updateFailed": "Could not save the changes"
     }
   },
   "members": {
@@ -1019,26 +1173,26 @@
     }
   },
   "sponsorCategories": {
-    "title": "Sponsor Categories",
-    "manageCategories": "Manage your organizer sponsor categories",
-    "addCategory": "Add Category",
-    "editCategory": "Edit Sponsor Category",
-    "createCategory": "Create Category",
-    "categoryName": "Category Name",
-    "categoryNameRequired": "Category name is required",
-    "enterCategoryName": "Enter category name",
-    "addDescription": "Create a new sponsor category for your events.",
-    "editDescription": "Update the sponsor category name.",
-    "searchPlaceholder": "Search sponsor categories by name",
-    "loading": "Loading sponsor categories...",
-    "noCategoriesFound": "No sponsor categories found",
-    "createdSuccessfully": "Sponsor category created successfully",
-    "updatedSuccessfully": "Sponsor category updated successfully",
-    "deletedSuccessfully": "Sponsor category deleted successfully",
-    "createFailed": "Failed to create sponsor category",
-    "updateFailed": "Failed to update sponsor category",
-    "deleteFailed": "Failed to delete sponsor category",
-    "exportFailed": "Failed to export sponsor categories",
+    "title": "Partner types",
+    "manageCategories": "Manage your partner types",
+    "addCategory": "Add type",
+    "editCategory": "Edit partner type",
+    "createCategory": "Create type",
+    "categoryName": "Type name",
+    "categoryNameRequired": "Type name is required",
+    "enterCategoryName": "Enter the type name",
+    "addDescription": "Create a new partner type for your events.",
+    "editDescription": "Update the partner type name.",
+    "searchPlaceholder": "Search partner types by name",
+    "loading": "Loading partner types...",
+    "noCategoriesFound": "No partner types found",
+    "createdSuccessfully": "Partner type created successfully",
+    "updatedSuccessfully": "Partner type updated successfully",
+    "deletedSuccessfully": "Partner type deleted successfully",
+    "createFailed": "Failed to create the partner type",
+    "updateFailed": "Failed to update the partner type",
+    "deleteFailed": "Failed to delete the partner type",
+    "exportFailed": "Failed to export partner types",
     "buttons": {
       "cancel": "Cancel",
       "create": "Create Category",
@@ -1049,13 +1203,21 @@
       "exporting": "Exporting..."
     },
     "deleteDialog": {
-      "title": "Delete Sponsor Category",
-      "description": "Are you sure you want to delete this sponsor category? This will permanently remove it."
+      "title": "Delete partner type",
+      "description": "Are you sure you want to delete this partner type? This will permanently remove it."
     },
     "table": {
       "id": "ID",
       "name": "Name",
       "actions": "Actions"
+    },
+    "defaultBadge": "Default",
+    "defaults": {
+      "official_partner": "Official partner",
+      "hackathon_partner": "Hackathon partner",
+      "institutional_partner": "Institutional partner",
+      "media_partner": "Media partner",
+      "sponsor": "Sponsor"
     }
   },
   "badges": {
