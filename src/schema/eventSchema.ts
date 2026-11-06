@@ -30,11 +30,24 @@ const organizerSchema = z.object({
   phone: z.string().optional().default(''),
 });
 
-const speakerSchema = z.object({
+// A URL once uploaded through the dialog; the API layer also accepts a File.
+const requiredImage = (key: string) =>
+  z.custom<string>(
+    (value) =>
+      (typeof value === 'string' && value.trim() !== '') ||
+      (typeof File !== 'undefined' && value instanceof File),
+    required(key),
+  );
+
+export const speakerSchema = z.object({
   _id: z.string().optional(),
-  fullName: z.string().min(1, "Full name is required"),
-  picture: z.string().url().optional().or(z.literal('')).default(''),
-  fonction: z.string().optional().or(z.literal('')).default(''),
+  firstName: z.string().trim().min(1, required('eventForm.addSpeakerDialog.validation.firstNameRequired')),
+  lastName: z.string().trim().min(1, required('eventForm.addSpeakerDialog.validation.lastNameRequired')),
+  fullName: z.string().optional().default(''), // derived, kept for backend compatibility
+  picture: requiredImage('eventForm.addSpeakerDialog.validation.pictureRequired'),
+  jobTitle: z.string().trim().min(1, required('eventForm.addSpeakerDialog.validation.jobTitleRequired')),
+  organization: z.string().trim().min(1, required('eventForm.addSpeakerDialog.validation.organizationRequired')),
+  fonction: z.string().optional().or(z.literal('')).default(''), // derived, kept for backend compatibility
   nationality: z.string().optional().or(z.literal('')).default(''),
   socialNetworks: socialNetworksSchema.default(() => ({
     facebook: '',
@@ -60,11 +73,11 @@ const exhibitorSchema = z.object({
   })),
 });
 
-const sponsorSchema = z.object({
+export const sponsorSchema = z.object({
   _id: z.string().optional(),
-  name: z.string().min(1, "Sponsor name is required"),
-  logo: z.string().url().optional().or(z.literal('')).default(''),
-  category: z.string().optional().or(z.literal('')).default(''),
+  name: z.string().trim().min(1, required('eventForm.addSponsorDialog.validation.required')),
+  logo: requiredImage('eventForm.addSponsorDialog.validation.logoRequired'),
+  category: z.string().min(1, required('eventForm.addSponsorDialog.validation.categoryRequired')),
   socialNetworks: socialNetworksSchema.default(() => ({
     facebook: '',
     instagram: '',

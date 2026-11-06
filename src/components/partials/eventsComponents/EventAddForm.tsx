@@ -37,6 +37,14 @@ import { FileUpload } from "./FileUpload";
 import { EventPreview } from "./EventPreview";
 import { EventLogoInput } from "@/components/partials/eventsComponents/EventLogoInput";
 import { OrganizerFields } from "./OrganizerFields";
+import { Badge } from "@/components/ui/badge";
+import {
+  getSpeakerName,
+  getSpeakerRole,
+  isSpeakerComplete,
+  isSponsorComplete,
+  toSpeakerValues,
+} from "@/lib/event-people";
 import { getDefaultOrganizerName } from "./mapEventToForm";
 import {
   LocationSelector,
@@ -1549,15 +1557,20 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                   <div className="flex-1 flex items-center justify-between min-w-0">
                                     <div className="min-w-0">
                                       <h4 className="font-medium truncate text-sm">
-                                        {field.fullName}
+                                        {getSpeakerName(field)}
                                       </h4>
-                                      {(field.fonction || field.nationality) && (
+                                      {(getSpeakerRole(field) || field.nationality) && (
                                         <p className="text-xs text-muted-foreground truncate">
-                                          {[field.fonction, field.nationality]
+                                          {[getSpeakerRole(field), field.nationality]
                                             .filter(Boolean)
                                             .join(" - ")}
                                         </p>
                                       )}
+                                        {!isSpeakerComplete(field) && (
+                                          <Badge variant="outline" className="mt-1 border-amber-300 bg-amber-50 text-amber-800 text-xs">
+                                            {t("eventForm.labels.toComplete")}
+                                          </Badge>
+                                        )}
                                     </div>
                                     <div className="flex gap-2 mt-2">
                                       <Button
@@ -1702,9 +1715,16 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                     />
                                   )}
                                   <div className="flex-1 flex items-center justify-between min-w-0">
-                                    <h4 className="font-medium truncate text-sm">
+                                    <div className="min-w-0">
+                                        <h4 className="font-medium truncate text-sm">
                                       {field.name}
                                     </h4>
+                                        {!isSponsorComplete(field) && (
+                                          <Badge variant="outline" className="mt-1 border-amber-300 bg-amber-50 text-amber-800 text-xs">
+                                            {t("eventForm.labels.toComplete")}
+                                          </Badge>
+                                        )}
+                                      </div>
                                     <div className="flex gap-2 mt-2">
                                       <Button
                                         type="button"
@@ -1770,7 +1790,9 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                         <Button
                           type="button"
                           disabled={isLoading}
-                          onClick={form.handleSubmit(handleSubmit)} // Explicitly trigger RHF submit
+                          onClick={form.handleSubmit(handleSubmit, () =>
+                            toast.error(t("eventForm.validation.fixErrors"))
+                          )}
                         >
                           {isLoading ? (
                             <>
@@ -1813,27 +1835,15 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
         onOpenChange={(open) => setSpeakerDialog({ open, person: null })}
         person={speakerDialog.person}
         onSave={(person) => {
+          const speaker = toSpeakerValues(person) as any;
           if (person.index !== undefined) {
             // Edit existing
             const current = form.getValues("speakers");
-            current[person.index] = {
-              _id: person._id,
-              fullName: person.fullName,
-              picture: person.picture,
-              fonction: person.fonction,
-              nationality: person.nationality,
-              socialNetworks: person.socialNetworks,
-            };
+            current[person.index] = speaker;
             form.setValue("speakers", current);
           } else {
             // Add new
-            appendSpeaker({
-              fullName: person.fullName,
-              picture: person.picture,
-              fonction: person.fonction,
-              nationality: person.nationality,
-              socialNetworks: person.socialNetworks,
-            } as any);
+            appendSpeaker(speaker);
           }
         }}
         type="speaker"

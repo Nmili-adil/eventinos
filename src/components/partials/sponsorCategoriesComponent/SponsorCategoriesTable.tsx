@@ -9,6 +9,9 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { getRole } from '@/services/localStorage'
+import { getPartnerTypeLabel } from '@/lib/event-people'
 import { Edit, Trash2 } from 'lucide-react'
 import DeleteConfirmationDialog from '@/components/shared/DeleteConfirmationDialog'
 import type { SponsorCategory, SponsorCategoryPagination } from '@/types/sponsorCategoriesTypes'
@@ -24,6 +27,7 @@ interface SponsorCategoriesTableProps {
 
 const SponsorCategoriesTable = ({ data, pagination, onPageChange, onEdit, onDelete }: SponsorCategoriesTableProps) => {
   const { t } = useTranslation()
+  const isAdmin = getRole() === 'admin'
   const [categoryToDelete, setCategoryToDelete] = useState<SponsorCategory | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -68,12 +72,20 @@ const SponsorCategoriesTable = ({ data, pagination, onPageChange, onEdit, onDele
                   <TableCell>
                     <span className="text-xs text-gray-500 font-mono">{category._id.slice(-8)}</span>
                   </TableCell>
-                  <TableCell className="font-medium">{category.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {getPartnerTypeLabel(t, category)}
+                    {category.isDefault && (
+                      <Badge variant="secondary" className="ml-2 text-xs font-normal">
+                        {t('sponsorCategories.defaultBadge')}
+                      </Badge>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-2">
                       <Button
                         variant="outline"
                         size="sm"
+                        disabled={category.isDefault && !isAdmin}
                         onClick={() => onEdit?.(category)}
                       >
                         <Edit className="h-4 w-4" />
@@ -81,6 +93,7 @@ const SponsorCategoriesTable = ({ data, pagination, onPageChange, onEdit, onDele
                       <Button
                         variant="destructive"
                         size="sm"
+                        disabled={category.isDefault && !isAdmin}
                         onClick={() => handleDeleteClick(category)}
                       >
                         <Trash2 className="h-4 w-4" />

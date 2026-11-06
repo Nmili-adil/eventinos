@@ -1,4 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch } from '@/store/app/store'
+import type { RootState } from '@/store/app/rootReducer'
+import { fetchAllSponsorCategoriesRequest } from '@/store/features/sponsorCategories/sponsorCategories.actions'
+import { getSpeakerName, getSpeakerRole, groupPartnersByType } from '@/lib/event-people'
 import { DeviceFrameset } from 'react-device-frameset'
 import 'react-device-frameset/styles/marvel-devices.min.css'
 import { CardContent } from '@/components/ui/card'
@@ -16,6 +21,13 @@ interface EventPreviewProps {
 
 export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
   const { t } = useTranslation()
+  const dispatch = useDispatch<AppDispatch>()
+  const partnerTypes = useSelector((state: RootState) => state.sponsorCategories.all)
+  const hasPartners = (formData.sponsors?.length ?? 0) > 0
+
+  useEffect(() => {
+    if (hasPartners) dispatch(fetchAllSponsorCategoriesRequest())
+  }, [hasPartners, dispatch])
 
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Not set'
@@ -168,6 +180,49 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                       showControls={false}
                     />
                   </GoogleMapWrapper>
+                </div>
+              )}
+
+              {/* Speakers Preview */}
+              {formData.speakers && formData.speakers.length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-gray-700 mb-2">
+                    {t('eventForm.fields.speakers')} ({formData.speakers.length})
+                  </p>
+                  <div className="space-y-2">
+                    {formData.speakers.map((speaker, idx) => (
+                      <div key={speaker._id || idx} className="flex items-center gap-2">
+                        {speaker.picture && (
+                          <img src={speaker.picture} alt="" className="w-8 h-8 rounded-full object-cover" />
+                        )}
+                        <div className="min-w-0 text-xs">
+                          <p className="font-medium text-gray-900 truncate">{getSpeakerName(speaker)}</p>
+                          <p className="text-gray-500 truncate">{getSpeakerRole(speaker)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Partners Preview */}
+              {formData.sponsors && formData.sponsors.length > 0 && (
+                <div className="space-y-2">
+                  {groupPartnersByType(t, formData.sponsors, partnerTypes).map((group) => (
+                    <div key={group.id || 'other'}>
+                      <p className="text-xs font-medium text-gray-700 mb-1">{group.label}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {group.partners.map((partner, idx) => (
+                          <div key={partner._id || idx} className="flex items-center gap-1 text-xs text-gray-600">
+                            {partner.logo && (
+                              <img src={partner.logo} alt="" className="w-6 h-6 rounded object-cover" />
+                            )}
+                            <span>{partner.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
 

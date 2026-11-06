@@ -1,7 +1,16 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
+import type { RootState } from "@/store/app/rootReducer";
+import { fetchAllSponsorCategoriesRequest } from "@/store/features/sponsorCategories/sponsorCategories.actions";
+import {
+  expandLegacySpeaker,
+  getSpeakerName,
+  getSpeakerRole,
+  groupPartnersByType,
+  isSpeakerComplete,
+} from "@/lib/event-people";
 import { deleteEventRequest } from "@/store/features/events/events.actions";
 import { toast } from "sonner";
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
@@ -102,6 +111,14 @@ const EventDetails = ({ event }: EventDetailsProps) => {
   })
 
   // Safe data extraction functions
+  const partnerTypes = useSelector((state: RootState) => state.sponsorCategories.all);
+
+  useEffect(() => {
+    dispatch(fetchAllSponsorCategoriesRequest());
+  }, [dispatch]);
+
+  const expandedSpeaker = (speaker: any) => ({ ...speaker, ...expandLegacySpeaker(speaker) });
+
   const organizer = getEventOrganizer(event);
   const getOrganizerName = () =>
     organizer.name || t('events.details.eventOrganizer', 'Event Organizer');
@@ -480,17 +497,17 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                             </AvatarFallback>
                           </Avatar>
                           <h4 className="font-semibold">
-                            {speaker.fullName || "Speaker"}
+                            {getSpeakerName(speaker) || "Speaker"}
                           </h4>
-                          {speaker.position && (
+                          {getSpeakerRole(speaker) && (
                             <p className="text-sm text-muted-foreground mt-1">
-                              {speaker.position}
+                              {getSpeakerRole(speaker)}
                             </p>
                           )}
-                          {speaker.company && (
-                            <p className="text-sm text-muted-foreground">
-                              {speaker.company}
-                            </p>
+                          {!isSpeakerComplete(expandedSpeaker(speaker)) && (
+                            <Badge variant="outline" className="mt-2 border-amber-300 bg-amber-50 text-amber-800 text-xs">
+                              {t("eventForm.labels.toComplete")}
+                            </Badge>
                           )}
                           <div className="flex justify-center space-x-2 mt-3">
                             {speaker.socialNetworks?.linkedin && (
@@ -700,7 +717,12 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                 <CardTitle>{t('events.details.sponsors', 'Sponsors')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {safeEvent.sponsors.map((sponsor: any) => (
+                {groupPartnersByType(t, safeEvent.sponsors, partnerTypes).map((group) => (
+                  <div key={group.id || "other"} className="space-y-3">
+                    <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {group.label}
+                    </h4>
+                {group.partners.map((sponsor: any) => (
                   <div
                     key={sponsor._id}
                     className="flex items-center space-x-3"
@@ -724,6 +746,8 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                         </Badge>
                       )}
                     </div>
+                  </div>
+                ))}
                   </div>
                 ))}
               </CardContent>
@@ -839,16 +863,11 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               <div className="flex-1 space-y-3">
                 <div>
                   <h3 className="text-xl font-semibold">
-                    {selectedSpeaker.fullName || t('events.details.speaker', 'Speaker')}
+                    {getSpeakerName(selectedSpeaker) || t('events.details.speaker', 'Speaker')}
                   </h3>
-                  {selectedSpeaker.position && (
+                  {getSpeakerRole(selectedSpeaker) && (
                     <p className="text-muted-foreground font-medium">
-                      {selectedSpeaker.position}
-                    </p>
-                  )}
-                  {selectedSpeaker.company && (
-                    <p className="text-muted-foreground">
-                      {selectedSpeaker.company}
+                      {getSpeakerRole(selectedSpeaker)}
                     </p>
                   )}
                 </div>

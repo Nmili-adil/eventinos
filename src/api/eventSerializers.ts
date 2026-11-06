@@ -27,7 +27,11 @@ export const appendSpeakers = (formData: FormData, speakers: any[]) => {
   speakers.forEach((speaker, index) => {
     const prefix = `speakers.${index}`;
     appendIfPresent(formData, `${prefix}._id`, speaker._id);
+    appendIfPresent(formData, `${prefix}.firstName`, speaker.firstName);
+    appendIfPresent(formData, `${prefix}.lastName`, speaker.lastName);
     appendIfPresent(formData, `${prefix}.fullName`, speaker.fullName);
+    appendIfPresent(formData, `${prefix}.jobTitle`, speaker.jobTitle);
+    appendIfPresent(formData, `${prefix}.organization`, speaker.organization);
     appendIfPresent(formData, `${prefix}.fonction`, speaker.fonction);
     appendIfPresent(formData, `${prefix}.nationality`, speaker.nationality);
     appendIfPresent(formData, `${prefix}.picture`, speaker.picture);

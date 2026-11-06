@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
@@ -19,14 +19,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FileUpload } from "../FileUpload";
-import { toast } from "sonner";
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import { fetchAllSponsorCategoriesRequest } from "@/store/features/sponsorCategories/sponsorCategories.actions";
 import type { RootState } from "@/store/app/rootReducer";
 import type { AppDispatch } from "@/store/app/store";
-
-const normalizeCategoryId = (category: any): string =>
-  typeof category === "object" && category !== null ? category._id || "" : category || "";
+import { SPONSOR_CATEGORIES_PAGE } from "@/constants/routerConstants";
+import { speakerSchema, sponsorSchema } from "@/schema/eventSchema";
+import { normalizeCategoryId } from "@/lib/events-utils";
+import { expandLegacySpeaker, getPartnerTypeLabel, toSpeakerValues } from "@/lib/event-people";
 
 interface PersonDialogProps {
   open: boolean;
@@ -36,6 +36,44 @@ interface PersonDialogProps {
   type: "speaker" | "exhibitor" | "sponsor";
 }
 
+const EMPTY_SOCIAL_NETWORKS = {
+  facebook: "",
+  instagram: "",
+  linkedin: "",
+  twitter: "",
+  website: "",
+};
+
+const toFormValues = (person: any, type: PersonDialogProps["type"]) => {
+  if (person) {
+    return {
+      ...person,
+      ...(type === "speaker" ? expandLegacySpeaker(person) : {}),
+      category: normalizeCategoryId(person.category),
+    };
+  }
+
+  if (type === "sponsor") {
+    return { _id: undefined, name: "", logo: "", category: "", socialNetworks: { ...EMPTY_SOCIAL_NETWORKS } };
+  }
+
+  return {
+    _id: undefined,
+    fullName: "",
+    firstName: "",
+    lastName: "",
+    jobTitle: "",
+    organization: "",
+    picture: "",
+    fonction: "",
+    nationality: "",
+    socialNetworks: { ...EMPTY_SOCIAL_NETWORKS },
+  };
+};
+
+const FieldError = ({ message }: { message?: string }) =>
+  message ? <p className="mt-1 text-sm text-destructive">{message}</p> : null;
+
 export const PersonDialog = ({
   open,
   onOpenChange,
@@ -44,78 +82,19 @@ export const PersonDialog = ({
   type,
 }: PersonDialogProps) => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState(
-    person || {
-      _id: undefined,
-      fullName: type === "sponsor" ? undefined : "",
-      name: type === "sponsor" ? "" : undefined,
-      picture: type === "sponsor" ? undefined : "",
-      logo: type === "sponsor" ? "" : undefined,
-      category: type === "sponsor" ? "" : undefined,
-      fonction: type === "sponsor" ? undefined : "",
-      nationality: type === "sponsor" ? undefined : "",
-      socialNetworks: {
-        facebook: "",
-        instagram: "",
-        linkedin: "",
-        twitter: "",
-        website: "",
-      },
-    }
-  );
+  const [formData, setFormData] = useState(() => toFormValues(person, type));
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (person) {
-      setFormData({ ...person, category: normalizeCategoryId(person.category) });
-    } else {
-      setFormData({
-        _id: undefined,
-        fullName: type === "sponsor" ? undefined : "",
-        name: type === "sponsor" ? "" : undefined,
-        picture: type === "sponsor" ? undefined : "",
-        logo: type === "sponsor" ? "" : undefined,
-        category: type === "sponsor" ? "" : undefined,
-        fonction: type === "sponsor" ? undefined : "",
-        nationality: type === "sponsor" ? undefined : "",
-        socialNetworks: {
-          facebook: "",
-          instagram: "",
-          linkedin: "",
-          twitter: "",
-          website: "",
-        },
-      });
-    }
-  }, [person, type]);
-
-useEffect(() => {
-    if (!open) {
-      setFormData(
-        person
-          ? { ...person, category: normalizeCategoryId(person.category) }
-          : {
-          _id: undefined,
-          fullName: type === "sponsor" ? undefined : "",
-          name: type === "sponsor" ? "" : undefined,
-          picture: type === "sponsor" ? undefined : "",
-          logo: type === "sponsor" ? "" : undefined,
-          category: type === "sponsor" ? "" : undefined,
-          fonction: type === "sponsor" ? undefined : "",
-          nationality: type === "sponsor" ? undefined : "",
-          socialNetworks: {
-            facebook: "",
-            instagram: "",
-            linkedin: "",
-            twitter: "",
-            website: "",
-          },
-        }
-      );
-    }
-  }, [open]);
+    setFormData(toFormValues(person, type));
+    setErrors({});
+  }, [person, type, open]);
 
   const dispatch = useDispatch<AppDispatch>();
-  const sponsorCategories = useSelector((state: RootState) => state.sponsorCategories.all);
+  const partnerTypes = useSelector((state: RootState) => state.sponsorCategories.all);
+  const isLoadingPartnerTypes = useSelector(
+    (state: RootState) => state.sponsorCategories.isLoadingAll
+  );
 
   useEffect(() => {
     if (open && type === "sponsor") {
@@ -123,18 +102,68 @@ useEffect(() => {
     }
   }, [open, type, dispatch]);
 
+  const validate = (schema: typeof speakerSchema | typeof sponsorSchema) => {
+    const result = schema.safeParse(formData);
+    if (result.success) {
+      setErrors({});
+      return true;
+    }
+    const nextErrors: Record<string, string> = {};
+    result.error.issues.forEach((issue) => {
+      const field = String(issue.path[0]);
+      nextErrors[field] ??= issue.message;
+    });
+    setErrors(nextErrors);
+    return false;
+  };
+
   const handleSave = () => {
-    if (type === "sponsor" && !formData.name) {
-      handleAsyncError(new Error("Validation error"), t("eventForm.addSponsorDialog.validation.required") || "Sponsor name is required");
-      return;
+    if (type === "speaker") {
+      if (!validate(speakerSchema)) return;
+      onSave({ ...formData, ...toSpeakerValues(formData) });
+    } else if (type === "sponsor") {
+      if (!validate(sponsorSchema)) return;
+      onSave(formData);
+    } else {
+      if (!formData.fullName) {
+        handleAsyncError(
+          new Error("Validation error"),
+          t("eventForm.addExhibitorDialog.validation.required") || "exhibitor name is required"
+        );
+        return;
+      }
+      onSave(formData);
     }
-    if ((type === "exhibitor" || type === "speaker") && !formData.fullName) {
-      handleAsyncError(new Error("Validation error"), t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.validation.required`) || `${type} name is required`);
-      return;
-    }
-    onSave(formData);
     onOpenChange(false);
   };
+
+  const submitOnEnter = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSave();
+    }
+  };
+
+  const renderTextField = (field: string, label: string, placeholder: string, isRequired = false) => (
+    <div>
+      <label className="text-sm font-medium">
+        {label}
+        {isRequired && " *"}
+      </label>
+      <Input
+        value={formData[field] || ""}
+        onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+        onKeyDown={submitOnEnter}
+        placeholder={placeholder}
+        aria-invalid={Boolean(errors[field])}
+      />
+      <FieldError message={errors[field]} />
+    </div>
+  );
+
+  const imageField = type === "sponsor" ? "logo" : "picture";
+  const imageValue = formData[imageField];
+  const isImageRequired = type !== "exhibitor";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -154,104 +183,109 @@ useEffect(() => {
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div>
-            <label className="text-sm font-medium">
-              {type === "sponsor"
-                ? t("eventForm.fields.sponsorName") || "Sponsor Name"
-                : t("eventForm.fields.fullName") || "Full Name"}
-            </label>
-            <Input
-              value={type === "sponsor" ? formData.name : formData.fullName}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  [type === "sponsor" ? "name" : "fullName"]: e.target.value,
-                })
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleSave();
-                }
-              }}
-              placeholder={
-                type === "sponsor"
-                  ? t("eventForm.addSponsorDialog.placeholders.enterName") || "Enter sponsor name"
-                  : type === "exhibitor" ? t("eventForm.addExhibitorDialog.placeholders.enterName") || "Enter full name" : t("eventForm.addSpeakerDialog.placeholders.enterName") || "Enter full name"
-              }
-            />
-          </div>
-
-          {type === "sponsor" && (
-            <div>
-              <label className="text-sm font-medium">
-                {t("eventForm.addSponsorDialog.fields.category") || "Sponsor Category"}
-              </label>
-              <Select
-                value={formData.category || undefined}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={t("eventForm.addSponsorDialog.placeholders.selectCategory") || "Select a sponsor category"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {sponsorCategories.map((cat: any) => (
-                    <SelectItem key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          {type === "speaker" && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {renderTextField(
+                  "firstName",
+                  t("eventForm.addSpeakerDialog.fields.firstName"),
+                  t("eventForm.addSpeakerDialog.placeholders.firstName"),
+                  true
+                )}
+                {renderTextField(
+                  "lastName",
+                  t("eventForm.addSpeakerDialog.fields.lastName"),
+                  t("eventForm.addSpeakerDialog.placeholders.lastName"),
+                  true
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {renderTextField(
+                  "jobTitle",
+                  t("eventForm.addSpeakerDialog.fields.jobTitle"),
+                  t("eventForm.addSpeakerDialog.placeholders.jobTitle"),
+                  true
+                )}
+                {renderTextField(
+                  "organization",
+                  t("eventForm.addSpeakerDialog.fields.organization"),
+                  t("eventForm.addSpeakerDialog.placeholders.organization"),
+                  true
+                )}
+              </div>
+              {renderTextField(
+                "nationality",
+                t("eventForm.fields.nationality", "Nationality"),
+                t("eventForm.placeholders.enterNationality", "Enter nationality")
+              )}
+            </>
           )}
 
-          {type !== "sponsor" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {type === "exhibitor" && (
+            <>
+              {renderTextField(
+                "fullName",
+                t("eventForm.fields.fullName") || "Full Name",
+                t("eventForm.addExhibitorDialog.placeholders.enterName") || "Enter full name"
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {renderTextField(
+                  "fonction",
+                  t("eventForm.fields.fonction", "Function"),
+                  t("eventForm.placeholders.enterFonction", "Enter job function")
+                )}
+                {renderTextField(
+                  "nationality",
+                  t("eventForm.fields.nationality", "Nationality"),
+                  t("eventForm.placeholders.enterNationality", "Enter nationality")
+                )}
+              </div>
+            </>
+          )}
+
+          {type === "sponsor" && (
+            <>
+              {renderTextField(
+                "name",
+                t("eventForm.fields.sponsorName") || "Sponsor Name",
+                t("eventForm.addSponsorDialog.placeholders.enterName") || "Enter sponsor name",
+                true
+              )}
               <div>
                 <label className="text-sm font-medium">
-                  {t("eventForm.fields.fonction", "Function")}
+                  {t("eventForm.addSponsorDialog.fields.category")} *
                 </label>
-                <Input
-                  value={formData.fonction || ""}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      fonction: e.target.value,
-                    })
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSave();
-                    }
-                  }}
-                  placeholder={t("eventForm.placeholders.enterFonction", "Enter job function")}
-                />
+                <Select
+                  value={formData.category || undefined}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger aria-invalid={Boolean(errors.category)}>
+                    <SelectValue placeholder={t("eventForm.addSponsorDialog.placeholders.selectCategory")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {partnerTypes.map((partnerType: any) => (
+                      <SelectItem key={partnerType._id} value={partnerType._id}>
+                        {getPartnerTypeLabel(t, partnerType)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FieldError message={errors.category} />
+                {!isLoadingPartnerTypes && partnerTypes.length === 0 && (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {t("eventForm.addSponsorDialog.noCategories")}{" "}
+                    <a
+                      href={SPONSOR_CATEGORIES_PAGE}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline"
+                    >
+                      {t("eventForm.addSponsorDialog.manageCategories")}
+                    </a>
+                  </p>
+                )}
               </div>
-              <div>
-                <label className="text-sm font-medium">
-                  {t("eventForm.fields.nationality", "Nationality")}
-                </label>
-                <Input
-                  value={formData.nationality || ""}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      nationality: e.target.value,
-                    })
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSave();
-                    }
-                  }}
-                  placeholder={t("eventForm.placeholders.enterNationality", "Enter nationality")}
-                />
-              </div>
-            </div>
+            </>
           )}
 
           <div>
@@ -259,34 +293,31 @@ useEffect(() => {
               {type === "sponsor"
                 ? t("eventForm.addSponsorDialog.fields.logo") || "Logo"
                 : t("eventForm.addExhibitorDialog.fields.picture") || "Picture"}
+              {isImageRequired && " *"}
             </label>
             <FileUpload
-  onUploadComplete={(url: string | null) => {
-    // ALWAYS update, even with empty string
-    setFormData((prev: any) => ({
-      ...prev,
-      [type === "sponsor" ? "logo" : "picture"]: url || "",
-    }));
-  }}
-  currentUrl={type === "sponsor" ? formData.logo : formData.picture}
-  label={' '}
-  accept="image/*"
-/>
-            {/* Add a more explicit check */}
-{(type === "sponsor" ? formData.logo : formData.picture) && 
- (type === "sponsor" ? formData.logo : formData.picture).trim() !== "" && (
-  <div className="mt-2">
-    <img
-      src={type === "sponsor" ? formData.logo : formData.picture}
-      alt="Preview"
-      className="w-20 h-20 object-cover rounded"
-      onError={(e) => {
-        // Hide the image if it fails to load
-        e.currentTarget.style.display = 'none';
-      }}
-    />
-  </div>
-)}
+              onUploadComplete={(url: string | null) => {
+                // ALWAYS update, even with empty string
+                setFormData((prev: any) => ({ ...prev, [imageField]: url || "" }));
+              }}
+              currentUrl={imageValue}
+              label={" "}
+              accept="image/*"
+            />
+            <FieldError message={errors[imageField]} />
+            {imageValue && imageValue.trim() !== "" && (
+              <div className="mt-2">
+                <img
+                  src={imageValue}
+                  alt="Preview"
+                  className="w-20 h-20 object-cover rounded"
+                  onError={(e) => {
+                    // Hide the image if it fails to load
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           <div>
@@ -294,34 +325,25 @@ useEffect(() => {
               {t("eventForm.sections.socialNetworks") || "Social Networks"}
             </h4>
             <div className="space-y-2">
-              {["facebook", "instagram", "linkedin", "twitter", "website"].map(
-                (platform) => (
-                  <div key={platform}>
-                    <label className="text-xs text-gray-600 capitalize">
-                      {platform}
-                    </label>
-                    <Input
-                      value={formData.socialNetworks?.[platform] || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          socialNetworks: {
-                            ...formData.socialNetworks,
-                            [platform]: e.target.value,
-                          },
-                        })
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleSave();
-                        }
-                      }}
-                      placeholder={`${platform} URL`}
-                    />
-                  </div>
-                )
-              )}
+              {["facebook", "instagram", "linkedin", "twitter", "website"].map((platform) => (
+                <div key={platform}>
+                  <label className="text-xs text-gray-600 capitalize">{platform}</label>
+                  <Input
+                    value={formData.socialNetworks?.[platform] || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        socialNetworks: {
+                          ...formData.socialNetworks,
+                          [platform]: e.target.value,
+                        },
+                      })
+                    }
+                    onKeyDown={submitOnEnter}
+                    placeholder={`${platform} URL`}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -331,12 +353,11 @@ useEffect(() => {
             {t("eventForm.buttons.cancel") || "Cancel"}
           </Button>
           <Button type="button" onClick={handleSave}>
-            {/* {t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Save"} */}
-            {
-                type === "sponsor"
-                  ? t("eventForm.addSponsorDialog.buttons.addSponsor") || "Add Sponsor"
-                  :type ==="exhibitor" ? t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor" : t("eventForm.addSpeakerDialog.buttons.addSpeaker") || "Add Speaker"
-              }
+            {type === "sponsor"
+              ? t("eventForm.addSponsorDialog.buttons.addSponsor") || "Add Sponsor"
+              : type === "exhibitor"
+                ? t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor"
+                : t("eventForm.addSpeakerDialog.buttons.addSpeaker") || "Add Speaker"}
           </Button>
         </DialogFooter>
       </DialogContent>

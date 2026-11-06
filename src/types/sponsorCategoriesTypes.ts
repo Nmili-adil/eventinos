@@ -2,6 +2,8 @@ export interface SponsorCategory {
   _id: string
   name: string
   organizer?: string
+  isDefault?: boolean
+  key?: string
   createdAt?: string
   updatedAt?: string
 }

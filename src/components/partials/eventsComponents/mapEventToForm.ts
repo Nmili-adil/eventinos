@@ -5,6 +5,7 @@ import {
   normalizeCategoryId,
   normalizeLocation,
 } from "@/lib/events-utils";
+import { expandLegacySpeaker } from "@/lib/event-people";
 import { getRole, getUserData } from "@/services/localStorage";
 
 const mapSocialNetworks = (socialNetworks: any) => ({
@@ -75,7 +76,12 @@ export const mapEventToForm = (event: any): EventFormData =>
     endDate: mapEventDateToForm(event.endDate),
     location: normalizeLocation(event.location),
     socialNetworks: mapSocialNetworks(event.socialNetworks),
-    speakers: Array.isArray(event.speakers) ? event.speakers.map(mapPerson) : [],
+    speakers: Array.isArray(event.speakers)
+      ? event.speakers.map((speaker: any) => ({
+          ...mapPerson(speaker),
+          ...expandLegacySpeaker(speaker),
+        }))
+      : [],
     exhibitors: Array.isArray(event.exhibitors) ? event.exhibitors.map(mapPerson) : [],
     sponsors: Array.isArray(event.sponsors)
       ? event.sponsors.map((sponsor: any) => ({
