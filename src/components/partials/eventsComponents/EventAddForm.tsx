@@ -47,6 +47,8 @@ import { PersonDialog } from "./dialogs/PersonDialog";
 import { toast } from "sonner";
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
 import { deleteFileApi } from "@/api/filesApi";
+import { getRole } from "@/services/localStorage";
+import { formatDateTimeLocalInput, toEventDateTime } from "@/lib/events-utils";
 
 interface EventAddFormProps {
   onSubmit: (data: EventFormData) => void;
@@ -83,6 +85,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
     person: null,
   });
   const { t } = useTranslation();
+  const isAdmin = getRole() === "admin";
 
   const dispatch = useDispatch<AppDispatch>();
   const { categories } = useSelector((state: RootState) => state.categories);
@@ -188,9 +191,19 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
   const handleNext = async () => {
     const fieldsToValidate = getSectionFields(currentSection);
     const isValid = await form.trigger(fieldsToValidate);
+    if (isValid && currentSection === 2 && !isLocationComplete()) {
+      toast.error(t("eventForm.validation.coordinatesRequired"));
+      return;
+    }
     if (isValid && currentSection < sections.length - 1) {
       setCurrentSection(currentSection + 1);
     }
+  };
+
+  const isLocationComplete = () => {
+    if (form.getValues("type") === "VIRTUEL") return true;
+    const { location, place_id } = form.getValues("location");
+    return Boolean(place_id || (Number(location?.lat) && Number(location?.lng)));
   };
 
   const handlePrevious = () => {
@@ -248,16 +261,6 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       return;
     }
 
-    const extractTime = (isoString: string): string => {
-      if (!isoString) return "";
-      try {
-        const date = new Date(isoString);
-        return date.toTimeString().slice(0, 5);
-      } catch {
-        return "";
-      }
-    };
-
     const cleanUploadValue = (value: unknown) => {
       if (isFileValue(value)) return value;
       return typeof value === "string" ? value.trim() : "";
@@ -274,14 +277,9 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
         twitter: data.socialNetworks?.twitter?.trim() || "",
         website: data.socialNetworks?.website?.trim() || "",
       },
-      startDate: {
-        date: data.startDate?.date || "",
-        time: extractTime(data.startDate?.date || ""),
-      },
-      endDate: {
-        date: data.endDate?.date || "",
-        time: extractTime(data.endDate?.date || ""),
-      },
+      startDate: toEventDateTime(data.startDate),
+      endDate: toEventDateTime(data.endDate),
+      registrationDeadline: toEventDateTime(data.registrationDeadline),
       location: {
         ...data.location,
         location: {
@@ -295,16 +293,6 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
     } as EventFormData;
 
     onSubmit(cleaned);
-  };
-
-  const formatDateForInput = (dateString: string): string => {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().slice(0, 16);
-    } catch {
-      return "";
-    }
   };
 
   const parseDateFromInput = (inputValue: string): string => {
@@ -624,6 +612,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                             )}
                           />
 
+                          {isAdmin && (
                           <FormField
                             control={form.control}
                             name="status"
@@ -672,6 +661,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                               </FormItem>
                             )}
                           />
+                          )}
                         </div>
                         <div className="min-h-[100px]">
                           <FormField
@@ -908,7 +898,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                     <Input
                                       type="datetime-local"
                                       {...field}
-                                      value={formatDateForInput(field.value)}
+                                      value={formatDateTimeLocalInput(field.value)}
                                       onChange={(e) => {
                                         const newValue = parseDateFromInput(
                                           e.target.value
@@ -940,7 +930,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                                     <Input
                                       type="datetime-local"
                                       {...field}
-                                      value={formatDateForInput(field.value)}
+                                      value={formatDateTimeLocalInput(field.value)}
                                       onChange={(e) => {
                                         const newValue = parseDateFromInput(
                                           e.target.value

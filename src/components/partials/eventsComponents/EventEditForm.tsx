@@ -67,25 +67,25 @@ import { useEventTabSave } from "./hooks/useEventTabSave";
 import { deleteFileApi } from "@/api/filesApi";
 import { toast } from "sonner";
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
-import { set } from "date-fns";
+import { fetchEventByIdApi } from "@/api/eventsApi";
+import { getRole } from "@/services/localStorage";
+import { combineDateTime, formatDateTimeLocalInput } from "@/lib/events-utils";
+import { mapEventDateToForm, mapEventToForm } from "./mapEventToForm";
+
+// Only the fields that must be valid to save a tab. Other fields are not
+// checked here, so older events with unusual values can still be edited.
+const TAB_REQUIRED_FIELDS = {
+  basic: ["name", "category"],
+  datetime: ["startDate", "endDate"],
+  exhibitors: ["speakers", "sponsors"],
+} as const;
 
 interface EventEditFormProps {
-  event?: any | null;
-  onSubmit: (data: EventFormData) => void;
+  event: any;
   isLoading?: boolean;
-  isFetching?: boolean;
 }
 
-const EventEditForm = ({
-  event,
-  onSubmit: _onSubmit, // Not used - kept for backward compatibility
-  isLoading = false,
-  isFetching = false,
-}: EventEditFormProps) => {
-  if (isFetching || !event) {
-    return <EventEditFormSkeleton />;
-  }
-
+const EventEditForm = ({ event, isLoading = false }: EventEditFormProps) => {
   const [activeTab, setActiveTab] = useState("basic");
   const [newImageUrl, setNewImageUrl] = useState("");
   const [showPreview, setShowPreview] = useState(true);
@@ -113,11 +113,15 @@ const EventEditForm = ({
   });
 
   const { t } = useTranslation();
+  const isAdmin = getRole() === "admin";
+  const [defaultValues] = useState(() => mapEventToForm(event));
   const eventIdentifier =
     typeof event._id === "string" ? event._id : event?._id?.$oid || "";
 
   const dispatch = useDispatch<AppDispatch>();
-  const { categories } = useSelector((state: RootState) => state.categories);
+  const { categories, isLoading: isLoadingCategories } = useSelector(
+    (state: RootState) => state.categories
+  );
   const { badges } = useSelector((state: RootState) => state.badges);
 
   // Use the custom hook for tab saving
@@ -132,106 +136,14 @@ const EventEditForm = ({
     saveGallery,
     saveSpeakers,
     saveExhibitorsSponsors,
-  } = useEventTabSave(eventIdentifier);
+  } = useEventTabSave(eventIdentifier, {
+    status: event.status,
+    category: defaultValues.category,
+  });
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema) as any,
-    defaultValues: {
-      createdBy: event.createdBy?._id || event.createdBy || "",
-      name: event.name || "",
-      description: event.description || "",
-      image: event.image || "",
-      logo: event.logo || "",
-      visibility: event.visibility || "PUBLIC",
-      type: event.type || "FACETOFACE",
-      isNearestEvent: event.isNearestEvent || false,
-      isUpComingEvent: event.isUpComingEvent || false, // Note: backend uses "isUpComingEvent" not "isUpCommingEvent"
-      status: event.status || "PENDING",
-      category: event.category?._id || event.categories || "", // Note: backend has "category" not "categories"
-      capacity: event.capacity || 0,
-      allowRegistration: event.allowRegistration || false,
-      registrationDeadline: event.registrationDeadline || {
-        date: "",
-        time: "",
-      },
-      startDate: event.startDate || { date: "", time: "" },
-      endDate: event.endDate || { date: "", time: "" },
-      location: event.location || {
-        location: { lat: 0, lng: 0 },
-        name: "",
-        place_id: "",
-        city: "",
-        country: "",
-        countryCode: "",
-      },
-      socialNetworks: event.socialNetworks || {
-        facebook: "",
-        instagram: "",
-        linkedin: "",
-        twitter: "",
-        website: "",
-      },
-      // Fix speakers - ensure socialNetworks structure
-      speakers: Array.isArray(event.speakers)
-        ? event.speakers.map((speaker: any) => ({
-            _id: speaker._id || "",
-            fullName: speaker.fullName || "",
-            picture: speaker.picture || "",
-            fonction: speaker.fonction || "",
-            nationality: speaker.nationality || "",
-            socialNetworks: {
-              facebook: speaker.socialNetworks?.facebook || "",
-              instagram: speaker.socialNetworks?.instagram || "",
-              linkedin: speaker.socialNetworks?.linkedin || "",
-              twitter: speaker.socialNetworks?.twitter || "",
-              website: speaker.socialNetworks?.website || "",
-            },
-          }))
-        : [],
-
-      // Fix exhibitors - ensure socialNetworks structure
-      exhibitors: Array.isArray(event.exhibitors)
-        ? event.exhibitors.map((exhibitor: any) => ({
-            _id: exhibitor._id || "",
-            fullName: exhibitor.fullName || "",
-            picture: exhibitor.picture || "",
-            fonction: exhibitor.fonction || "",
-            nationality: exhibitor.nationality || "",
-            socialNetworks: {
-              facebook: exhibitor.socialNetworks?.facebook || "",
-              instagram: exhibitor.socialNetworks?.instagram || "",
-              linkedin: exhibitor.socialNetworks?.linkedin || "",
-              twitter: exhibitor.socialNetworks?.twitter || "",
-              website: exhibitor.socialNetworks?.website || "",
-            },
-          }))
-        : [],
-
-      // Fix sponsors - ensure socialNetworks structure
-      sponsors: Array.isArray(event.sponsors)
-        ? event.sponsors.map((sponsor: any) => ({
-            _id: sponsor._id || "",
-            name: sponsor.name || "",
-            logo: sponsor.logo || "",
-            category: typeof sponsor.category === 'object' ? sponsor.category?._id || "" : sponsor.category || "",
-            socialNetworks: {
-              facebook: sponsor.socialNetworks?.facebook || "",
-              instagram: sponsor.socialNetworks?.instagram || "",
-              linkedin: sponsor.socialNetworks?.linkedin || "",
-              twitter: sponsor.socialNetworks?.twitter || "",
-              website: sponsor.socialNetworks?.website || "",
-            },
-          }))
-        : [],
-
-      gallery: Array.isArray(event.gallery) ? event.gallery : [],
-      badges: Array.isArray(event.badges)
-        ? event.badges.map((badge: any) => badge.id || badge._id || "")
-        : [],
-      program: event.program || "",
-      tags: Array.isArray(event.tags) ? event.tags : [],
-      requirements: Array.isArray(event.requirements) ? event.requirements : [],
-    },
+    defaultValues,
   });
 
   const navigate = useNavigate();
@@ -264,39 +176,51 @@ const EventEditForm = ({
     name: "sponsors",
   });
 
-  // Old submit handler - no longer used with tab-based saving
-  // const handleSubmitSend = (data: EventFormData) => {
-  //   console.log("Form submitted with data:", data);
-  //   const currentExhibitors = form.getValues("exhibitors");
-  //   const currentSponsors = form.getValues("sponsors");
-  //   const currentSpeakers = form.getValues("speakers");
-  //   const finalData = {
-  //     ...data,
-  //     exhibitors: data.exhibitors.map((exhibitor, index) => ({
-  //       ...exhibitor,
-  //       _id: currentExhibitors[index]?._id || exhibitor._id || undefined,
-  //     })),
-  //     sponsors: data.sponsors.map((sponsor, index) => ({
-  //       ...sponsor,
-  //       _id: currentSponsors[index]?._id || sponsor._id || undefined,
-  //     })),
-  //     speakers: data.speakers.map((speaker, index) => ({
-  //       ...speaker,
-  //       _id: currentSpeakers[index]?._id || speaker._id || undefined,
-  //     })),
-  //   };
-  //   console.log("Final data being submitted:", finalData);
-  //   console.log("Exhibitors with _id:", finalData.exhibitors);
-  //   console.log("Sponsors with _id:", finalData.sponsors);
-  //   onSubmit(finalData);
-  // };
-
   useEffect(() => {
     dispatch(fetchCategoriesRequest());
     dispatch(fetchBadgesRequest());
   }, [dispatch]);
 
   const formData = form.watch();
+
+  // Show what the server actually stored. This reads the API directly: going
+  // through the store would clear the event and unmount the form mid-edit.
+  const refreshStoredDates = async () => {
+    try {
+      const stored = await fetchEventByIdApi(eventIdentifier);
+      if (stored?.startDate) form.setValue("startDate", mapEventDateToForm(stored.startDate));
+      if (stored?.endDate) form.setValue("endDate", mapEventDateToForm(stored.endDate));
+    } catch {
+      // The save succeeded; the form just keeps the values that were sent.
+    }
+  };
+
+  // Runs the tab's validation, then its save. Errors from the save itself are
+  // already reported by useEventTabSave.
+  const saveTab = async (
+    tab: "basic" | "datetime" | "location" | "social" | "program" | "badges" | "gallery" | "exhibitors",
+    save: (data: any, onSuccess?: () => void) => Promise<void>,
+    nextTab: string
+  ) => {
+    // Drafts may stay incomplete until they are submitted.
+    const isDraft = form.getValues("status") === "DRAFT";
+    const fields: readonly string[] = isDraft
+      ? tab === "basic" ? ["name"] : []
+      : TAB_REQUIRED_FIELDS[tab as keyof typeof TAB_REQUIRED_FIELDS] ?? [];
+
+    if (fields.length > 0 && !(await form.trigger(fields as any, { shouldFocus: true }))) {
+      toast.error(t("eventForm.validation.fixErrors"));
+      return;
+    }
+
+    try {
+      await save(form.getValues(), () => setActiveTab(nextTab));
+    } catch {
+      return;
+    }
+
+    if (tab === "datetime") await refreshStoredDates();
+  };
 
   const handleLocationChange = (updated: LocationValue) => {
     const current = form.getValues("location");
@@ -568,7 +492,7 @@ const EventEditForm = ({
                                   </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
+                                    value={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -599,7 +523,7 @@ const EventEditForm = ({
 
                             <FormField
                               control={form.control as any}
-                              name="categories"
+                              name="category"
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>
@@ -607,7 +531,8 @@ const EventEditForm = ({
                                   </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
+                                    value={field.value || ""}
+                                    disabled={isLoadingCategories && !categories?.length}
                                   >
                                     <FormControl>
                                       <SelectTrigger className="truncate">
@@ -646,7 +571,7 @@ const EventEditForm = ({
                                   </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
+                                    value={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -674,6 +599,7 @@ const EventEditForm = ({
                               )}
                             />
 
+                            {isAdmin && (
                             <FormField
                               control={form.control as any}
                               name="status"
@@ -684,7 +610,7 @@ const EventEditForm = ({
                                   </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
+                                    value={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -714,6 +640,7 @@ const EventEditForm = ({
                                 </FormItem>
                               )}
                             />
+                            )}
                           </div>
 
                           <FormField
@@ -933,11 +860,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveBasicInfo(form.getValues(), () =>
-                                setActiveTab("datetime")
-                              )
-                            }
+                            onClick={() => saveTab("basic", saveBasicInfo, "datetime")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -971,8 +894,10 @@ const EventEditForm = ({
                                 name="startDate.date"
                                 render={({ field }) => (
                                   <DateTimePicker
-                                    date={field.value as any}
-                                    onDateChange={field.onChange}
+                                    date={combineDateTime(field.value) ?? undefined}
+                                    onDateChange={(date) =>
+                                      field.onChange(date ? date.toISOString() : "")
+                                    }
                                     placeholder={t(
                                       "eventForm.placeholders.enterEventName"
                                     )}
@@ -991,8 +916,10 @@ const EventEditForm = ({
                                 name="endDate.date"
                                 render={({ field }) => (
                                   <DateTimePicker
-                                    date={field.value as any}
-                                    onDateChange={field.onChange}
+                                    date={combineDateTime(field.value) ?? undefined}
+                                    onDateChange={(date) =>
+                                      field.onChange(date ? date.toISOString() : "")
+                                    }
                                     placeholder={t(
                                       "eventForm.placeholders.enterEventName"
                                     )}
@@ -1001,6 +928,11 @@ const EventEditForm = ({
                                   />
                                 )}
                               />
+                              {form.formState.errors.endDate?.date && (
+                                <p className="text-sm font-medium text-destructive">
+                                  {form.formState.errors.endDate.date.message}
+                                </p>
+                              )}
                             </div>
                             <FormField
                               control={form.control as any}
@@ -1041,7 +973,7 @@ const EventEditForm = ({
                                       <Input
                                         type="datetime-local"
                                         {...field}
-                                        value={field.value || ""}
+                                        value={formatDateTimeLocalInput(field.value)}
                                       />
                                     </FormControl>
                                     <FormDescription>
@@ -1060,11 +992,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveDateTime(form.getValues(), () =>
-                                setActiveTab("location")
-                              )
-                            }
+                            onClick={() => saveTab("datetime", saveDateTime, "location")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1110,11 +1038,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveLocation(form.getValues(), () =>
-                                setActiveTab("social")
-                              )
-                            }
+                            onClick={() => saveTab("location", saveLocation, "social")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1251,11 +1175,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveSocialNetworks(form.getValues(), () =>
-                                setActiveTab("program")
-                              )
-                            }
+                            onClick={() => saveTab("social", saveSocialNetworks, "program")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1306,11 +1226,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveProgram(form.getValues(), () =>
-                                setActiveTab("badges")
-                              )
-                            }
+                            onClick={() => saveTab("program", saveProgram, "badges")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1437,11 +1353,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveBadges(form.getValues(), () =>
-                                setActiveTab("gallery")
-                              )
-                            }
+                            onClick={() => saveTab("badges", saveBadges, "gallery")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1729,11 +1641,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveGallery(form.getValues(), () =>
-                                setActiveTab("exhibitors")
-                              )
-                            }
+                            onClick={() => saveTab("gallery", saveGallery, "exhibitors")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -1992,11 +1900,7 @@ const EventEditForm = ({
                         <div className="flex justify-end pt-4 border-t">
                           <Button
                             type="button"
-                            onClick={() =>
-                              saveExhibitorsSponsors(form.getValues(), () =>
-                                setActiveTab("members")
-                              )
-                            }
+                            onClick={() => saveTab("exhibitors", saveExhibitorsSponsors, "members")}
                             disabled={isSaving}
                             className="gap-2"
                           >
@@ -2178,7 +2082,7 @@ const EventEditForm = ({
 
 export default EventEditForm;
 
-const EventEditFormSkeleton = () => (
+export const EventEditFormSkeleton = () => (
   <div className="container mx-auto p-4 md:p-6 max-w-7xl">
     <div className="flex flex-col lg:flex-row gap-6">
       <div className="flex-1 space-y-6">

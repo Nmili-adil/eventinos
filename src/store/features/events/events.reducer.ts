@@ -75,6 +75,7 @@ const eventReducrer = (
     case FETCH_EVENT_BY_ID_REQUEST:
       return {
         ...state,
+        event: null,
         isLoading: true,
         error: null,
       };

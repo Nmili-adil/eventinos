@@ -91,9 +91,11 @@ export const createEventRequest = (event: any) => {
       const response = await createEventApi(event)
       // createEventApi returns response.data directly, not full response
       dispatch(createEventSuccess(response))
+      return response;
     } catch (error: any) {
       console.error('Create event error:', error);
       dispatch(createEventFailure(error.response?.data?.message || error.message || 'Create event failed'))
+      throw error;
     }
   };
 }

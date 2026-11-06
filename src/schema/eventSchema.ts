@@ -1,5 +1,9 @@
 import { z } from 'zod';
+import i18n from 'i18next';
 import { EVENT_STATUSES } from '@/constants/eventStatuses';
+
+// Messages are resolved at validation time, so they follow the current language.
+const required = (key: string) => ({ error: () => i18n.t(key) });
 
 const socialNetworksSchema = z.object({
   facebook: z.string().optional().or(z.literal('')).default(''),
@@ -109,7 +113,7 @@ export const eventFormSchema = z.object({
   speakers: z.array(speakerSchema).default([]),
   exhibitors: z.array(exhibitorSchema).default([]),
   sponsors: z.array(sponsorSchema).default([]),
-  category: z.string().optional().or(z.literal('')).default(''),
+  category: z.string().min(1, required('eventForm.validation.categoryRequired')),
   badges: z.array(z.string()).default([]),
   gallery: z.array(z.string().url()).default([]),
   program: z.string().default(''),

@@ -1,6 +1,14 @@
 import axios from 'axios'
 import { getAuthToken } from '@/services/localStorage'
 
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    // Handle a 5xx where the call is made instead of replacing the whole app
+    // with the server error page.
+    skipServerErrorPage?: boolean
+  }
+}
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 // Check environment - use VITE_APP_ENV from .env file, fallback to MODE
@@ -46,7 +54,7 @@ api.interceptors.response.use(
     }
 
     // Handle 500 errors globally by dispatching a custom event
-    if (error.response?.status >= 500 && error.response?.status < 600) {
+    if (error.response?.status >= 500 && error.response?.status < 600 && !error.config?.skipServerErrorPage) {
       if (isDevelopment) {
         console.error('Server Error (500+):', {
           status: error.response?.status,

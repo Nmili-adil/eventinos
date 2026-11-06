@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import type { RootState } from "@/store/app/rootReducer"
 import type { AppDispatch } from "@/store/app/store"
 import { createEventRequest } from "@/store/features/events/events.actions"
@@ -12,22 +13,22 @@ const EventAddPage = () => {
   const { isCreating } = useSelector((state: RootState) => state.events)
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const handleSubmit = async (data: EventFormData) => {
-  
+    const creation = dispatch(createEventRequest(data)) as unknown as Promise<unknown>
+    toast.promise(creation, {
+      loading: t("eventForm.messages.creating"),
+      success: t("eventForm.messages.created"),
+      error: (error: any) =>
+        error?.response?.data?.message || t("eventForm.messages.createFailed"),
+    })
+
     try {
-      toast.promise(
-        async () => await dispatch(createEventRequest(data)),
-        {
-          loading: 'Creating event...',
-          success: 'Event created successfully',
-          error: 'Failed to create event'
-        }
-      )
-      setTimeout(() => navigate(EVENT_LISTE_PAGE), 1500)
-      // setTimeout(() => window.location.replace(EVENT_LISTE_PAGE), 1500)
-    } catch (error) {
-      console.error("Failed to create event:", error)
+      await creation
+      navigate(EVENT_LISTE_PAGE)
+    } catch {
+      // Already shown by the toast. Stay on the form so nothing typed is lost.
     }
   }
 
