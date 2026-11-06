@@ -60,7 +60,7 @@ export const speakerSchema = z.object({
 
 const exhibitorSchema = z.object({
   _id: z.string().optional(),
-  fullName: z.string().min(1, "Exhibitor name is required"),
+  fullName: z.string().min(1, required('eventForm.validation.required')),
   picture: z.string().url().optional().or(z.literal('')).default(''),
   fonction: z.string().optional().or(z.literal('')).default(''),
   nationality: z.string().optional().or(z.literal('')).default(''),
@@ -107,7 +107,7 @@ const locationSchema = z.object({
 
 export const eventFormSchema = z.object({
   createdBy: z.string().optional().default(''),
-  name: z.string().min(1, "Event name is required").max(100),
+  name: z.string().min(1, required('eventForm.validation.eventNameRequired')).max(100),
   description: z.string().default(''),
   image: uploadFieldSchema,
   logo: uploadFieldSchema,
@@ -156,7 +156,7 @@ export const eventFormSchema = z.object({
   }
   return true;
 }, {
-  message: "End date must be equal to or after start date",
+  ...required('eventForm.validation.endDateBeforeStart'),
   path: ["endDate.date"],
 });
 

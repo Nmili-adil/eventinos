@@ -395,6 +395,14 @@ export const ParticipantsExportDialog = ({
   const no = t("common.no", "Non")
   const previewFields = values.fields
 
+  const previewCell = (participant: any, key: string) => {
+    const value = readParticipantValue(participant, key)
+    if (key === "status" && typeof value === "string") {
+      return t(`members.status.${value.toLowerCase()}`, value)
+    }
+    return formatPreviewValue(value, yes, no)
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -428,7 +436,7 @@ export const ParticipantsExportDialog = ({
               <section className="space-y-2">
                 <h3 className="text-sm font-semibold">{t("events.participants.export.presets")}</h3>
                 <div className="flex flex-wrap gap-2">
-                  <Select value={selectedPresetId || undefined} onValueChange={applyPreset}>
+                  <Select value={selectedPresetId} onValueChange={applyPreset}>
                     <SelectTrigger className="w-full sm:w-56">
                       <SelectValue placeholder={t("events.participants.export.selectPreset")} />
                     </SelectTrigger>
@@ -476,7 +484,10 @@ export const ParticipantsExportDialog = ({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setFields(availableFields.filter((field) => field.default).map((field) => field.key))}
+                  onClick={() => {
+                    setSelectedPresetId("")
+                    setFields(availableFields.filter((field) => field.default).map((field) => field.key))
+                  }}
                 >
                   {t("events.participants.export.resetDefault")}
                 </Button>
@@ -643,7 +654,7 @@ export const ParticipantsExportDialog = ({
                         <TableRow key={participant._id ?? index}>
                           {previewFields.map((key) => (
                             <TableCell key={key} className="whitespace-nowrap">
-                              {formatPreviewValue(readParticipantValue(participant, key), yes, no)}
+                              {previewCell(participant, key)}
                             </TableCell>
                           ))}
                         </TableRow>

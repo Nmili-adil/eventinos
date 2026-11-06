@@ -624,7 +624,8 @@
       "fixErrors": "Veuillez corriger les champs signalés",
       "categoryRequired": "La catégorie est obligatoire",
       "coordinatesRequired": "Choisissez l'emplacement sur la carte",
-      "organizerRequired": "L'organisateur est obligatoire"
+      "organizerRequired": "L'organisateur est obligatoire",
+      "eventNameRequired": "Le nom de l'événement est obligatoire"
     },
     "messages": {
       "debugLocation": "Données de localisation :",
@@ -662,7 +663,7 @@
       "description": "Entrez les détails de l'intervenant",
       "fields": {
         "fullName": "Nom complet",
-        "picture": "URL de l'image",
+        "picture": "Photo",
         "firstName": "Prénom",
         "lastName": "Nom",
         "jobTitle": "Fonction",

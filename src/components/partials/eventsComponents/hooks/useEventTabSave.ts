@@ -91,7 +91,9 @@ export const useEventTabSave = (eventId: string, initial: SavedValues = {}) => {
       // These two fields live on the date tab but belong to the /infos endpoint.
       await updateEventInfos(eventId, {
         allowRegistration: data.allowRegistration,
-        registrationDeadline: toEventDateTime(data.registrationDeadline),
+        ...(data.registrationDeadline?.date && {
+          registrationDeadline: toEventDateTime(data.registrationDeadline),
+        }),
       });
       toast.success(t("eventForm.success.datesUpdated") || "Dates updated successfully");
       onSuccess?.();

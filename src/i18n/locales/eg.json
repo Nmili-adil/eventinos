@@ -54,7 +54,9 @@
     "all": "All",
     "none": "None",
     "editSponsor": "تعديل الشريك",
-    "upload": "رفع"
+    "upload": "رفع",
+    "editSpeaker": "تعديل المتحدث",
+    "editExhibitor": "تعديل العارض"
   },
   "auth": {
     "login": "Login",
@@ -624,7 +626,8 @@
       "fixErrors": "يرجى تصحيح الحقول المحددة",
       "categoryRequired": "الفئة مطلوبة",
       "coordinatesRequired": "اختر الموقع على الخريطة",
-      "organizerRequired": "المنظم مطلوب"
+      "organizerRequired": "المنظم مطلوب",
+      "eventNameRequired": "اسم الحدث مطلوب"
     },
     "messages": {
       "debugLocation": "Location Data:",
@@ -708,7 +711,8 @@
         "firstName": "الاسم الأول",
         "lastName": "اسم العائلة",
         "jobTitle": "الوظيفة",
-        "organization": "الجهة"
+        "organization": "الجهة",
+        "picture": "الصورة"
       },
       "placeholders": {
         "firstName": "أدخل الاسم الأول",

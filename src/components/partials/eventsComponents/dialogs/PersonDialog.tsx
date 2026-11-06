@@ -170,9 +170,8 @@ export const PersonDialog = ({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {person?._id
-              ? t(`eventForm.edit${type.charAt(0).toUpperCase() + type.slice(1)}`) ||
-                `Edit ${type}`
+            {person
+              ? t(`common.edit${type.charAt(0).toUpperCase() + type.slice(1)}`)
               : t(`eventForm.add${type.charAt(0).toUpperCase() + type.slice(1)}Dialog.title`) ||
                 `Add ${type}`}
           </DialogTitle>
@@ -292,7 +291,7 @@ export const PersonDialog = ({
             <label className="text-sm font-medium">
               {type === "sponsor"
                 ? t("eventForm.addSponsorDialog.fields.logo") || "Logo"
-                : t("eventForm.addExhibitorDialog.fields.picture") || "Picture"}
+                : t(`eventForm.${type === "speaker" ? "addSpeakerDialog" : "addExhibitorDialog"}.fields.picture`) || "Picture"}
               {isImageRequired && " *"}
             </label>
             <FileUpload
@@ -353,11 +352,13 @@ export const PersonDialog = ({
             {t("eventForm.buttons.cancel") || "Cancel"}
           </Button>
           <Button type="button" onClick={handleSave}>
-            {type === "sponsor"
-              ? t("eventForm.addSponsorDialog.buttons.addSponsor") || "Add Sponsor"
-              : type === "exhibitor"
-                ? t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor"
-                : t("eventForm.addSpeakerDialog.buttons.addSpeaker") || "Add Speaker"}
+            {person
+              ? t("common.save")
+              : type === "sponsor"
+                ? t("eventForm.addSponsorDialog.buttons.addSponsor") || "Add Sponsor"
+                : type === "exhibitor"
+                  ? t("eventForm.addExhibitorDialog.buttons.addExhibitor") || "Add Exhibitor"
+                  : t("eventForm.addSpeakerDialog.buttons.addSpeaker") || "Add Speaker"}
           </Button>
         </DialogFooter>
       </DialogContent>

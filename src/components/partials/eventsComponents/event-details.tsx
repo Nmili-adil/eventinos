@@ -668,6 +668,11 @@ const EventDetails = ({ event }: EventDetailsProps) => {
                   <div className="text-muted-foreground">
                     {safeEvent.location.name}
                   </div>
+                  {(safeEvent.location.city || safeEvent.location.country) && (
+                    <div className="text-muted-foreground">
+                      {[safeEvent.location.city, safeEvent.location.country].filter(Boolean).join(", ")}
+                    </div>
+                  )}
                 </div>
               </div>
 

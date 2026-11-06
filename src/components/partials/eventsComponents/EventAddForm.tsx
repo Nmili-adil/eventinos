@@ -303,6 +303,11 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       sponsors: data.sponsors || [],
     } as EventFormData;
 
+    // An unset deadline is left out rather than sent as empty strings.
+    if (!cleaned.registrationDeadline.date) {
+      delete (cleaned as Partial<typeof cleaned>).registrationDeadline;
+    }
+
     return cleaned;
   };
 
@@ -325,7 +330,6 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
     if (!draft.category) delete draft.category;
     if (!draft.startDate.date) delete draft.startDate;
     if (!draft.endDate.date) delete draft.endDate;
-    if (!draft.registrationDeadline.date) delete draft.registrationDeadline;
     if (!draft.organizer?.name) delete draft.organizer;
     if (!draft.location.place_id && !draft.location.location.lat && !draft.location.location.lng) {
       delete draft.location;

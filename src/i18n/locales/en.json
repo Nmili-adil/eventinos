@@ -642,7 +642,8 @@
       "fixErrors": "Please fix the highlighted fields",
       "categoryRequired": "Category is required",
       "coordinatesRequired": "Choose the location on the map",
-      "organizerRequired": "Organizer is required"
+      "organizerRequired": "Organizer is required",
+      "eventNameRequired": "Event name is required"
     },
     "messages": {
       "debugLocation": "Location Data:",
@@ -679,7 +680,7 @@
       "description": "Enter speaker details",
       "fields": {
         "fullName": "Full Name",
-        "picture": "Picture URL",
+        "picture": "Photo",
         "firstName": "First name",
         "lastName": "Last name",
         "jobTitle": "Job title",
