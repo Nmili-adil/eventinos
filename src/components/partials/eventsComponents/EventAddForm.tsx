@@ -271,14 +271,7 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
     }
   };
 
-  const handleSubmit = (data: EventFormData) => {
-
-
-    if (currentSection !== sections.length - 1) {
-      console.log("Not on last section, preventing submission");
-      return;
-    }
-
+  const cleanFormData = (data: EventFormData) => {
     const cleanUploadValue = (value: unknown) => {
       if (isFileValue(value)) return value;
       return typeof value === "string" ? value.trim() : "";
@@ -310,7 +303,35 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
       sponsors: data.sponsors || [],
     } as EventFormData;
 
-    onSubmit(cleaned);
+    return cleaned;
+  };
+
+  const handleSubmit = (data: EventFormData) => {
+    if (currentSection !== sections.length - 1) {
+      return;
+    }
+    onSubmit(cleanFormData(data));
+  };
+
+  // A draft only needs a name. Fields left blank are not sent at all, so empty
+  // values cannot fail backend checks such as an empty category id.
+  const handleSaveDraft = async () => {
+    if (!(await form.trigger("name"))) {
+      setCurrentSection(0);
+      return;
+    }
+
+    const draft: any = { ...cleanFormData(form.getValues()), status: "DRAFT" };
+    if (!draft.category) delete draft.category;
+    if (!draft.startDate.date) delete draft.startDate;
+    if (!draft.endDate.date) delete draft.endDate;
+    if (!draft.registrationDeadline.date) delete draft.registrationDeadline;
+    if (!draft.organizer?.name) delete draft.organizer;
+    if (!draft.location.place_id && !draft.location.location.lat && !draft.location.location.lng) {
+      delete draft.location;
+    }
+
+    onSubmit(draft);
   };
 
   const parseDateFromInput = (inputValue: string): string => {
@@ -1785,7 +1806,15 @@ const EventAddForm = ({ onSubmit, isLoading = false }: EventAddFormProps) => {
                       )}
                     </div>
 
-                    <div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled={isLoading}
+                        onClick={handleSaveDraft}
+                      >
+                        {t("eventForm.actions.saveDraft")}
+                      </Button>
                       {currentSection === sections.length - 1 ? (
                         <Button
                           type="button"

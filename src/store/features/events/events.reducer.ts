@@ -19,6 +19,9 @@ import {
   UPDATE_EVENT_STATUS_REQUEST,
   UPDATE_EVENT_STATUS_SUCCESS,
   UPDATE_EVENT_STATUS_FAILURE,
+  SUBMIT_EVENT_REQUEST,
+  SUBMIT_EVENT_SUCCESS,
+  SUBMIT_EVENT_FAILURE,
 } from "./events.type";
 
 const initialState: EventState = {
@@ -157,6 +160,30 @@ const eventReducrer = (
         ),
       };
     case UPDATE_EVENT_STATUS_FAILURE:
+      return {
+        ...state,
+        isUpdating: false,
+        error: action.payload,
+      };
+    case SUBMIT_EVENT_REQUEST:
+      return {
+        ...state,
+        isUpdating: true,
+        error: null,
+      };
+    case SUBMIT_EVENT_SUCCESS:
+      return {
+        ...state,
+        isUpdating: false,
+        event:
+          state.event?._id === action.payload
+            ? { ...state.event, status: "PENDING" }
+            : state.event,
+        events: state.events.map((e) =>
+          e._id === action.payload ? { ...e, status: "PENDING" } : e
+        ),
+      };
+    case SUBMIT_EVENT_FAILURE:
       return {
         ...state,
         isUpdating: false,

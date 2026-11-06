@@ -5,10 +5,12 @@ import { TableRow, TableCell } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Edit, Eye, Trash2, Pen, Calendar, MapPin, Globe } from 'lucide-react'
+import { MoreHorizontal, Edit, Eye, Trash2, Pen, Calendar, MapPin, Globe, Send } from 'lucide-react'
 import { getEventOrganizer, getStatusColor, transformEventForTable } from '@/lib/events-utils'
 import type { Event } from '@/types/eventsTypes'
 import { useTranslation } from 'react-i18next'
+import { getEventStatusLabelKey } from '@/constants/eventStatuses'
+import { useSubmitEvent } from './hooks/useSubmitEvent'
 
 interface TableRowProps {
   event: Event
@@ -22,6 +24,8 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
   const tableEvent = transformEventForTable(event)
   const organizerName = getEventOrganizer(event).name
   const { t } = useTranslation()
+  const { submitEvent, isSubmitting } = useSubmitEvent()
+  const statusLabel = t(getEventStatusLabelKey(tableEvent.status) ?? tableEvent.status)
 
   // Handle table row click, but ignore clicks from dropdown
   const handleRowClick = (e: React.MouseEvent) => {
@@ -57,7 +61,7 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
         <TableCell className="text-slate-600">{tableEvent.endDate}</TableCell>
          <TableCell>
           <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} font-medium`}>
-            {tableEvent.status}
+            {statusLabel}
           </Badge>
         </TableCell>
         <TableCell className="text-slate-600 text-center">{event.totalParticipants ?? 0}</TableCell>
@@ -81,28 +85,38 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
               align="end"
               data-dropdown="true"
             >
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={(e) => handleDropdownAction(e, () => onEdit(event._id))}
                 data-dropdown="true"
               >
                 <Edit className="h-4 w-4 mr-2" />
                 {t('events.table.editEvent')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              {event.status === 'DRAFT' && (
+                <DropdownMenuItem
+                  disabled={isSubmitting}
+                  onClick={(e) => handleDropdownAction(e, () => submitEvent(event._id))}
+                  data-dropdown="true"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  {t('eventForm.actions.submitForReview')}
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem
                 onClick={(e) => handleDropdownAction(e, () => onChangeStatus(event._id))}
                 data-dropdown="true"
               >
                 <Pen className="h-4 w-4 mr-2" />
                 {t('events.table.changeStatus')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={(e) => handleDropdownAction(e, () => onPreview(event._id))}
                 data-dropdown="true"
               >
                 <Eye className="h-4 w-4 mr-2" />
                 {t('events.table.previewEvent')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={(e) => handleDropdownAction(e, () => onDelete(event._id, event.title))}
                 className="text-red-600"
                 data-dropdown="true"
@@ -130,7 +144,7 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
                   {organizerName && <p className="text-xs text-slate-500 truncate">{organizerName}</p>}
                 </div>
                 <Badge variant="outline" className={`${getStatusColor(tableEvent.status)} shrink-0 font-medium`}>
-                  {tableEvent.status}
+                  {statusLabel}
                 </Badge>
               </div>
 
@@ -180,28 +194,38 @@ export function EventTableRow({ event, onEdit, onChangeStatus, onPreview, onDele
                     align="end"
                     data-dropdown="true"
                   >
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       onClick={(e) => handleDropdownAction(e, () => onEdit(event._id))}
                       data-dropdown="true"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       {t('events.table.editEvent')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
+                    {event.status === 'DRAFT' && (
+                      <DropdownMenuItem
+                        disabled={isSubmitting}
+                        onClick={(e) => handleDropdownAction(e, () => submitEvent(event._id))}
+                        data-dropdown="true"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        {t('eventForm.actions.submitForReview')}
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem
                       onClick={(e) => handleDropdownAction(e, () => onChangeStatus(event._id))}
                       data-dropdown="true"
                     >
                       <Pen className="h-4 w-4 mr-2" />
                       {t('events.table.changeStatus')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       onClick={(e) => handleDropdownAction(e, () => onPreview(event._id))}
                       data-dropdown="true"
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       {t('events.table.previewEvent')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       onClick={(e) => handleDropdownAction(e, () => onDelete(event._id, event.title))}
                       className="text-red-600"
                       data-dropdown="true"

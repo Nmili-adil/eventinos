@@ -85,6 +85,7 @@ export const createEventApi = async (event: any) => {
 
   try {
     const response = await api.post('/events', formData, {
+      skipServerErrorPage: event.status === 'DRAFT',
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${getAuthToken()}`
@@ -127,6 +128,13 @@ export const updateEventStatusApi = async (id: string, status: string) => {
     console.error(`Error updating event status ${id}:`, error);
     throw error; // Re-throw to handle in the component
   }
+}
+
+export const submitEventApi = async (id: string) => {
+  const response = await api.put(`/events/${id}/submit`, undefined, {
+    skipServerErrorPage: true,
+  });
+  return response.data;
 }
 
 export const deleteEventMemberApi = async (eventId: string, memberId: string) => {

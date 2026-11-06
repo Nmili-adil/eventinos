@@ -19,7 +19,7 @@ const EventAddPage = () => {
     const creation = dispatch(createEventRequest(data)) as unknown as Promise<unknown>
     toast.promise(creation, {
       loading: t("eventForm.messages.creating"),
-      success: t("eventForm.messages.created"),
+      success: t(data.status === "DRAFT" ? "eventForm.success.draftSaved" : "eventForm.messages.created"),
       error: (error: any) =>
         error?.response?.data?.message || t("eventForm.messages.createFailed"),
     })

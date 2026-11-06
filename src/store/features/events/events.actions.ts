@@ -1,5 +1,5 @@
-import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, updateEventApi, updateEventStatusApi } from "@/api/eventsApi";
-import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction, UPDATE_EVENT_STATUS_REQUEST, UPDATE_EVENT_STATUS_SUCCESS, UPDATE_EVENT_STATUS_FAILURE, type UpdateEventStatusRequestAction, type UpdateEventStatusSuccessAction, type UpdateEventStatusFailureAction } from "./events.type"
+import { createEventApi, deleteEventApi, fetchEventByIdApi, fetchEvents, submitEventApi, updateEventApi, updateEventStatusApi } from "@/api/eventsApi";
+import { FETCH_EVENT_BY_ID_REQUEST, FETCH_EVENT_BY_ID_FAILURE, FETCH_EVENT_BY_ID_SUCCESS, FETCH_EVENTS_FAILURE, FETCH_EVENTS_REQUEST, FETCH_EVENTS_SUCCESS, type FetchEventByIdFailureAction, type FetchEventByIdSuccessAction, type FetchEventsFailureAction, type FetchEventsRequestAction, type FetchEventsSuccessAction, UPDATE_EVENT_REQUEST, type UpdateEventSuccessAction, type UpdateEventFailureAction, UPDATE_EVENT_SUCCESS, UPDATE_EVENT_FAILURE, type UpdateEventRequestAction, CREATE_EVENT_REQUEST, CREATE_EVENT_SUCCESS, CREATE_EVENT_FAILURE, type CreateEventRequestAction, type CreateEventSuccessAction, type CreateEventFailureAction, DELETE_EVENT_REQUEST, DELETE_EVENT_FAILURE, DELETE_EVENT_SUCCESS, type DeleteEventSuccessAction, type DeleteEventFailureAction, UPDATE_EVENT_STATUS_REQUEST, UPDATE_EVENT_STATUS_SUCCESS, UPDATE_EVENT_STATUS_FAILURE, SUBMIT_EVENT_REQUEST, SUBMIT_EVENT_SUCCESS, SUBMIT_EVENT_FAILURE, type UpdateEventStatusRequestAction, type UpdateEventStatusSuccessAction, type UpdateEventStatusFailureAction } from "./events.type"
 import { toast } from "sonner";
 
 export const fetchEventsRequest = () => {
@@ -158,3 +158,17 @@ export const updateEventStatusFailure = (error: string): UpdateEventStatusFailur
   type: UPDATE_EVENT_STATUS_FAILURE,
   payload: error,
 })
+
+// Draft -> PENDING. Rethrows so the caller can show the backend's missing fields.
+export const submitEventRequest = (eventId: string) => {
+  return async (dispatch: any) => {
+    dispatch({ type: SUBMIT_EVENT_REQUEST, payload: eventId })
+    try {
+      await submitEventApi(eventId)
+      dispatch({ type: SUBMIT_EVENT_SUCCESS, payload: eventId })
+    } catch (error: any) {
+      dispatch({ type: SUBMIT_EVENT_FAILURE, payload: error.response?.data?.message || error.message || 'Submit event failed' })
+      throw error
+    }
+  }
+}

@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { getStatusColor, normalizeLocation } from '@/lib/events-utils'
+import { getEventStatusLabelKey } from '@/constants/eventStatuses'
 import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { GoogleMapWrapper, MultiMarkerMap, type MapMarker } from '@/components/shared/GoogleMap'
@@ -134,7 +135,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
           }}>
             <Badge variant="secondary" className="text-xs">{event.location?.city}</Badge>
             <Badge className={cn('text-xs', getStatusColor(event.status))}>
-              {event.status}
+              {t(getEventStatusLabelKey(event.status) ?? event.status)}
             </Badge>
             <Badge className="text-xs bg-teal-500 text-black">{event.visibility}</Badge>
             <Badge  className="text-xs bg-fuchsia-500 text-white">{event.type}</Badge>
@@ -389,7 +390,7 @@ const EventCard: React.FC<EventCardProps> = ({
             {/* Status Badge - Only show status on mobile, all badges on larger screens */}
             <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
               <Badge className={cn('text-xs', getStatusColor(event.status))}>
-                {event.status}
+                {t(getEventStatusLabelKey(event.status) ?? event.status)}
               </Badge>
               {/* Hide additional badges on small screens */}
               <div className="hidden sm:flex gap-2">

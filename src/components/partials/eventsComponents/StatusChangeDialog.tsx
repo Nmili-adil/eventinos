@@ -46,6 +46,13 @@ export const StatusChangeDialog: React.FC<StatusChangeDialogProps> = ({
 
   // Get status options based on current language
   const statusOptions: { value: EventStatus; label: string; description: string }[] = [
+    ...(currentStatus === 'DRAFT'
+      ? [{
+          value: 'DRAFT' as const,
+          label: t('events.statusChangeDialog.statusOptions.draft.label'),
+          description: t('events.statusChangeDialog.statusOptions.draft.description'),
+        }]
+      : []),
     { 
       value: 'PENDING', 
       label: t('events.statusChangeDialog.statusOptions.pending.label', 'Pending'), 

@@ -64,6 +64,7 @@ import {
 } from "@/components/ui/dialog";
 import EventParticipantsSection from "./EventParticipantsSection";
 import { useTranslation } from "react-i18next";
+import { getEventStatusLabelKey } from "@/constants/eventStatuses";
 import { getEventOrganizer, getStatusColor, normalizeLocation, toEventDateTime } from "@/lib/events-utils";
 
 interface EventDetailsProps {
@@ -330,7 +331,7 @@ const EventDetails = ({ event }: EventDetailsProps) => {
               />
               <div className="absolute top-4 left-4 flex space-x-2">
                 <Badge className={getStatusColor(safeEvent.status)}>
-                  {String(t(`events.status.${safeEvent.status.toLowerCase()}`, safeEvent.status))}
+                  {t(getEventStatusLabelKey(safeEvent.status) ?? safeEvent.status)}
                 </Badge>
                 <Badge className={getTypeColor(safeEvent.type)}>
                   {String(t(`events.type.${safeEvent.type.toLowerCase()}`, safeEvent.type === "FACETOFACE" ? "In-Person" : safeEvent.type))}

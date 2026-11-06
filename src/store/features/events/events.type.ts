@@ -41,6 +41,10 @@ export const UPDATE_EVENT_STATUS_REQUEST = 'UPDATE_EVENT_STATUS_REQUEST'
 export const UPDATE_EVENT_STATUS_SUCCESS = 'UPDATE_EVENT_STATUS_SUCCESS'
 export const UPDATE_EVENT_STATUS_FAILURE = 'UPDATE_EVENT_STATUS_FAILURE'
 
+export const SUBMIT_EVENT_REQUEST = 'SUBMIT_EVENT_REQUEST'
+export const SUBMIT_EVENT_SUCCESS = 'SUBMIT_EVENT_SUCCESS'
+export const SUBMIT_EVENT_FAILURE = 'SUBMIT_EVENT_FAILURE'
+
 
 export interface FetchEventsRequestAction {
   type: typeof FETCH_EVENTS_REQUEST
@@ -133,6 +137,21 @@ export interface UpdateEventStatusFailureAction {
   payload: string
 }
 
+export interface SubmitEventRequestAction {
+  type: typeof SUBMIT_EVENT_REQUEST
+  payload: string
+}
+
+export interface SubmitEventSuccessAction {
+  type: typeof SUBMIT_EVENT_SUCCESS
+  payload: string
+}
+
+export interface SubmitEventFailureAction {
+  type: typeof SUBMIT_EVENT_FAILURE
+  payload: string
+}
+
 export type EventActionTypes =
   | FetchEventsRequestAction
   | FetchEventsSuccessAction
@@ -152,3 +171,6 @@ export type EventActionTypes =
   | UpdateEventStatusRequestAction
   | UpdateEventStatusSuccessAction
   | UpdateEventStatusFailureAction
+  | SubmitEventRequestAction
+  | SubmitEventSuccessAction
+  | SubmitEventFailureAction

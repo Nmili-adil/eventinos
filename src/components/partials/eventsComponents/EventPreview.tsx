@@ -13,6 +13,7 @@ import type { EventFormData } from '@/schema/eventSchema'
 import { format } from 'date-fns'
 import { GoogleMapWrapper, SingleMarkerMap } from '@/components/shared/GoogleMap'
 import { getStatusColor } from '@/lib/events-utils'
+import { getEventStatusLabelKey } from '@/constants/eventStatuses'
 import { useTranslation } from 'react-i18next'
 
 interface EventPreviewProps {
@@ -103,7 +104,7 @@ export const EventPreview: React.FC<EventPreviewProps> = ({ formData }) => {
                     variant="outline"
                     className={`mt-2 ${getStatusColor(formData.status)}`}
                   >
-                    {formData.status}
+                    {t(getEventStatusLabelKey(formData.status) ?? formData.status)}
                   </Badge>
                 )}
               </div>

@@ -45,6 +45,7 @@ import {
   Save,
   Pencil,
   Check,
+  Send,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "@/store/app/store";
@@ -73,6 +74,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import EventParticipantsSection from "./EventParticipantsSection";
 import { PersonDialog } from "./dialogs/PersonDialog";
 import { useEventTabSave } from "./hooks/useEventTabSave";
+import { useSubmitEvent } from "./hooks/useSubmitEvent";
 import { deleteFileApi } from "@/api/filesApi";
 import { toast } from "sonner";
 import { handleAsyncError } from "@/hooks/useGlobalErrorHandler";
@@ -150,6 +152,8 @@ const EventEditForm = ({ event, isLoading = false }: EventEditFormProps) => {
     category: defaultValues.category,
   });
 
+  const { submitEvent, isSubmitting } = useSubmitEvent();
+
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema) as any,
     defaultValues,
@@ -201,6 +205,12 @@ const EventEditForm = ({ event, isLoading = false }: EventEditFormProps) => {
       if (stored?.endDate) form.setValue("endDate", mapEventDateToForm(stored.endDate));
     } catch {
       // The save succeeded; the form just keeps the values that were sent.
+    }
+  };
+
+  const handleSubmitForReview = async () => {
+    if (await submitEvent(eventIdentifier)) {
+      form.setValue("status", "PENDING");
     }
   };
 
@@ -613,6 +623,20 @@ const EventEditForm = ({ event, isLoading = false }: EventEditFormProps) => {
                               )}
                             />
 
+                            {!isAdmin && formData.status === "DRAFT" && (
+                              <div className="flex items-end">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  disabled={isSubmitting || isSaving}
+                                  onClick={handleSubmitForReview}
+                                  className="gap-2"
+                                >
+                                  <Send className="w-4 h-4" />
+                                  {t("eventForm.actions.submitForReview")}
+                                </Button>
+                              </div>
+                            )}
                             {isAdmin && (
                             <FormField
                               control={form.control as any}
@@ -636,6 +660,11 @@ const EventEditForm = ({ event, isLoading = false }: EventEditFormProps) => {
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
+                                      {event.status === "DRAFT" && (
+                                        <SelectItem value="DRAFT">
+                                          {t("events.statusDraft")}
+                                        </SelectItem>
+                                      )}
                                       <SelectItem value="PENDING">
                                         {t("eventForm.options.status.pending")}
                                       </SelectItem>
