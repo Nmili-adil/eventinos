@@ -196,6 +196,7 @@
     "enterEventDescription": "Enter event description",
     "loadingEvents": "Loading events...",
     "noEventsFound": "No events found",
+    "reloadPage": "Reload Page",
     "resetFilters": "Reset filters",
     "searchPlaceholder": "Search for an event...",
     "mapView": "Map View",
@@ -244,7 +245,9 @@
       "deleteEvent": "Delete Event",
       "previewEvent": "Preview Event",
       "editEvent": "Edit Event",
-      "totalEvents": "Events found"
+      "totalEvents": "Events found",
+      "totalParticipants": "Total Participants",
+      "pendingParticipants": "Pending Participants"
     },
     "view": {
       "calendar": "Calendar View",
@@ -458,7 +461,8 @@
       }
     },
     "deleteError": "فشل في حذف الفعالية",
-    "deleteSuccess": "تم حذف الفعالية بنجاح"
+    "deleteSuccess": "تم حذف الفعالية بنجاح",
+    "deleting": "Deleting event..."
   },
   "eventForm": {
     "title": "Create New Event",
@@ -1552,6 +1556,15 @@
     "updateFailed": "فشل تحديث نوع الشريك",
     "deleteFailed": "فشل حذف نوع الشريك",
     "exportFailed": "فشل تصدير أنواع الشركاء",
+    "buttons": {
+      "cancel": "إلغاء",
+      "create": "إنشاء النوع",
+      "creating": "جارٍ الإنشاء...",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "export": "تصدير",
+      "exporting": "جارٍ التصدير..."
+    },
     "deleteDialog": {
       "title": "حذف نوع الشريك",
       "description": "هل أنت متأكد من أنك تريد حذف نوع الشريك هذا؟ سيؤدي هذا إلى إزالته نهائيًا."

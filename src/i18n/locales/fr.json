@@ -183,6 +183,7 @@
     "editEvent": "Modifier l'événement",
     "deleteError": "Erreur lors de la suppression de l'événement",
     "deleteSuccess": "Événement supprimé avec succès",
+    "deleting": "Suppression de l'événement...",
     "eventName": "Nom de l'événement",
     "eventDescription": "Description",
     "eventDetails": "Détails de l'événement",

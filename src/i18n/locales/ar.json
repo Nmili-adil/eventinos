@@ -185,6 +185,7 @@
     "editEvent": "تعديل الفعالية",
     "deleteError": "فشل في حذف الفعالية",
     "deleteSuccess": "تم حذف الفعالية بنجاح",
+    "deleting": "جارٍ حذف الفعالية...",
     "eventName": "اسم الفعالية",
     "eventDescription": "الوصف",
     "eventDetails": "تفاصيل الفعالية",

@@ -204,6 +204,7 @@
     "editEvent": "Edit Event",
     "deleteError": "Failed to delete event",
     "deleteSuccess": "Event deleted successfully",
+    "deleting": "Deleting event...",
     "eventName": "Event Name",
     "eventDescription": "Short summary: highlights, date and who should attend.",
     "eventDetails": "Event Details",
