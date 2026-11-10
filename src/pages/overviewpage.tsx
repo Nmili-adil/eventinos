@@ -11,6 +11,8 @@ import CityDistributionBarChart from "@/components/charts/CityDistributionChart"
 import GenderDistributionPieChart from "@/components/charts/GenderDistributionPieChart";
 import EventsByDayBarChart from "@/components/charts/EventsByDayBarChart";
 import { fetchAnalyticsByCity, fetchAnalyticsByDates, fetchAnalyticsByGender, fetchCountApi } from "@/api/analyticsApi";
+import { fetchMembersApi } from "@/api/membersApi";
+import { getRole } from "@/services/localStorage";
 import PageHead from "@/components/shared/page-head";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,8 @@ const Overviewpage = () => {
   const [genderData, setGenderData] = useState<any[]>([]);
   const [datesData, setDatesData] = useState<any[]>([]);
   const [countsData, setCountsData] = useState<any>(null);
+  // Total from GET /members, used when /analytics/counts reports no members.
+  const [membersTotal, setMembersTotal] = useState(0);
   const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('all');
@@ -136,13 +140,17 @@ const Overviewpage = () => {
 
   // Calculate real statistics from filtered events data
   const stats = useMemo(() => {
+    // The members total is all-time, so it only stands in for an unfiltered count.
+    const isUnfiltered = timePeriod === 'all' && !customStartDate && !customEndDate;
+    const fallbackUsers = (isUnfiltered ? membersTotal : 0) || usersCount;
+
     if (countsData) {
       return {
         totalEvents: countsData.events || 0,
         acceptedEvents: countsData.accepted || 0,
         refusedEvents: countsData.canceled || 0,
         pendingEvents: countsData.pending || 0,
-        totalUsers: countsData.members || usersCount,
+        totalUsers: countsData.members || fallbackUsers,
         pending_users: countsData.pending_users || 0,
       };
     }
@@ -163,10 +171,10 @@ const Overviewpage = () => {
       acceptedEvents,
       refusedEvents,
       pendingEvents,
-      totalUsers: usersCount,
+      totalUsers: fallbackUsers,
       pending_users: 0,
     };
-  }, [filteredEvents, usersCount, countsData]);
+  }, [filteredEvents, usersCount, countsData, membersTotal, timePeriod, customStartDate, customEndDate]);
 
   const dateRangeLabel = useMemo(() => {
     if (customStartDate || customEndDate) {
@@ -185,7 +193,8 @@ const Overviewpage = () => {
       try {
         setIsLoadingStats(true);
         await dispatch(fetchEventsRequest());
-        await dispatch(fetchUsersRequest());
+        // GET /users/all is admin-only; organizers get a permission error.
+        if (getRole() === 'admin') dispatch(fetchUsersRequest());
         
         // Fetch analytics data directly with individual error handling
         setIsLoadingAnalytics(true);
@@ -217,8 +226,7 @@ const Overviewpage = () => {
         });
         
         const datesPromise = fetchAnalyticsByDates(analyticsParams).catch(err => {
-          console.error('Dates API failed (likely CORS issue):', err);
-          console.warn('⚠️ The /analytics/events-per-dates endpoint has a CORS error. Please enable CORS on your backend for this endpoint.');
+          console.error('Events-per-dates API failed:', err);
           return null;
         });
         
@@ -227,11 +235,17 @@ const Overviewpage = () => {
           return null;
         });
         
-        const [cityResponse, genderResponse, datesResponse, countsResponse] = await Promise.all([
+        const membersPromise = fetchMembersApi(1, 1).catch(err => {
+          console.error('Members count failed:', err);
+          return null;
+        });
+
+        const [cityResponse, genderResponse, datesResponse, countsResponse, membersResponse] = await Promise.all([
           cityPromise,
           genderPromise,
           datesPromise,
-          countsPromise
+          countsPromise,
+          membersPromise,
         ]);
 
         
@@ -246,6 +260,10 @@ const Overviewpage = () => {
         }
         if (countsResponse && countsResponse.status === 200) {
           setCountsData(countsResponse.data.data || null);
+        }
+        if (membersResponse && membersResponse.status === 200) {
+          const total = membersResponse.data?.pagination?.totalItems ?? membersResponse.data?.count;
+          setMembersTotal(Number(total) || 0);
         }
         
         setIsLoadingAnalytics(false);
@@ -489,11 +507,9 @@ const Overviewpage = () => {
               value={stats.pending_users}
               icon={ShieldQuestionMark}
               description={
-                stats.totalUsers > 0
-                  ? `${stats.pending_users} ${
-                      stats.pending_users > 1 ? t('dashboard.pendingUsers') : t('dashboard.pendingUsers')
-                    }`
-                  : t('dashboard.noUsers')
+                stats.pending_users > 0
+                  ? `${stats.pending_users} ${t('dashboard.pendingUsers')}`
+                  : t('dashboard.noPendingUsers')
               }
               variant="info"
             />

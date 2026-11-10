@@ -103,6 +103,20 @@ export const isServerError = (error: any): boolean => {
 }
 
 /**
+ * Authenticated but not allowed. The backend currently answers these with
+ * 401 + `permission_error`, so the status alone can't be trusted to mean
+ * "session expired".
+ */
+type HttpErrorLike = { response?: { status?: number; data?: { message?: unknown } } } | null | undefined
+
+export const isPermissionError = (error: unknown): boolean => {
+  const response = (error as HttpErrorLike)?.response
+  const status = response?.status
+  const message = response?.data?.message
+  return status === 403 || message === 'permission_error'
+}
+
+/**
  * Utility function to handle errors in async operations
  * Automatically shows toast for server errors
  * Note: 500 errors are also handled globally by the App component
@@ -145,10 +159,14 @@ export const handleAsyncError = (error: any, customMessage?: string) => {
       title = t('globalErrors.accountInactive', 'Compte désactivé');
     } else if (isServerError(error)) {
       title = t('globalErrors.serverError', 'Erreur serveur');
+    } else if (isPermissionError(error)) {
+      toast.error(t('globalErrors.accessDenied', 'Accès refusé'), {
+        description: t('globalErrors.accessDeniedMessage', 'Vous n\'avez pas la permission d\'effectuer cette action.'),
+        duration: 5000,
+      })
+      return;
     } else if (error.response?.status === 401) {
       title = t('globalErrors.sessionExpired', 'Session expirée');
-    } else if (error.response?.status === 403) {
-      title = t('globalErrors.accessDenied', 'Accès refusé');
     } else if (error.response?.status === 404) {
       title = t('globalErrors.notFound', 'Non trouvé');
     } else if (error.response?.status === 400) {
@@ -174,6 +192,11 @@ export const handleAsyncError = (error: any, customMessage?: string) => {
     toast.error(t('globalErrors.serverError', 'Erreur serveur'), {
       description: displayMessage || t('globalErrors.serverErrorMessage', 'Une erreur est survenue. Veuillez réessayer plus tard.'),
       duration: 5000,
+    })
+  } else if (isPermissionError(error)) {
+    toast.error(t('globalErrors.accessDenied', 'Accès refusé'), {
+      description: t('globalErrors.accessDeniedMessage', 'Vous n\'avez pas la permission d\'effectuer cette action.'),
+      duration: 3000,
     })
   } else if (error.response?.status === 401) {
     toast.error(t('globalErrors.sessionExpired', 'Session expirée'), {

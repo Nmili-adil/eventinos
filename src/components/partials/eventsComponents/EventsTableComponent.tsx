@@ -1,7 +1,7 @@
 // components/events/events-table.tsx
 'use client'
 
-import { useState, useMemo,useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Table, TableBody } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { List, Plus, Calendar as CalendarIcon, Table2, MapPin } from 'lucide-react'
@@ -84,10 +84,7 @@ export function EventsTable() {
 
   const [statusLoading, setStatusLoading] = useState(false)
 
-  // Fetch all events once when component mounts
-  useEffect(() => {
-    dispatch(fetchEventsRequest())
-  }, [dispatch])
+  // Events are loaded by the page (eventsPage-list) before this table mounts.
 
   // Use events directly from Redux store
   let eventsData = events || []
@@ -151,9 +148,8 @@ export function EventsTable() {
     setStatusLoading(true)
     
     try {
+      // The thunk refetches the list itself.
       await dispatch(updateEventStatusRequest(eventId, newStatus))
-      // Refetch events to update UI immediately
-      await dispatch(fetchEventsRequest())
       toast.success('Event status updated successfully')
       setStatusDialog({ open: false, eventId: null, currentStatus: null })
     } catch (error: any) {

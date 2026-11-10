@@ -43,14 +43,15 @@ export default function CityDistributionBarChart({ data, isLoading, dateRangeLab
   useEffect(() => {
     if (data && Array.isArray(data)) {
       const formattedData = data.map((city: any) => ({
-        name: city.name || city.city,
-        users: city.users || city.count,
+        // A null/empty city is grouped by the backend; give it a readable label.
+        name: city?.name || city?.city || t('dashboard.cityChart.notSpecified', 'Not specified'),
+        users: Number(city?.users ?? city?.count) || 0,
         percentage: city.percentage || 0,
         color: city.color || '#0088FE'
       }))
       setCityData(formattedData)
     }
-  }, [data])
+  }, [data, t])
 
   if (isLoading) {
     return (
@@ -82,7 +83,7 @@ export default function CityDistributionBarChart({ data, isLoading, dateRangeLab
       <CardContent>
         <div className="h-80 min-h-[320px]">
           {cityData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%" minHeight={320}>
+            <ResponsiveContainer width="100%" height="100%" minHeight={320} initialDimension={{ width: 1, height: 320 }}>
               <BarChart
                 data={cityData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

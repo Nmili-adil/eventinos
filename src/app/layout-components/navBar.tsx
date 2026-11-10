@@ -12,13 +12,14 @@ import {
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/app/rootReducer'
-import { getRole, getUserData } from '@/services/localStorage'
+import { getRole } from '@/services/localStorage'
 
 interface NavLink {
   nameKey: string
   path: string
   icon: React.ComponentType<{ className?: string }>
-  requiresAdminOrOrganizer?: boolean
+  // Roles that see the link; omitted = every dashboard role.
+  allowedRoles?: string[]
 }
 
 const allNavLinks: NavLink[] = [
@@ -46,12 +47,13 @@ const allNavLinks: NavLink[] = [
     nameKey: 'navigation.accounts', 
     path: COMPTES_PAGE, 
     icon: UserCheck,
-    requiresAdminOrOrganizer: true
+    allowedRoles: ['admin']
   },
   { 
     nameKey: 'navigation.contacts', 
     path: CONTACTS_PAGE, 
-    icon: MessageSquare 
+    icon: MessageSquare,
+    allowedRoles: ['admin']
   },
 ]
 
@@ -63,13 +65,11 @@ const SimpleNavBar = ({ mobile = false }: SimpleNavBarProps) => {
   const location = useLocation()
   const { t } = useTranslation()
   const { role: authRole } = useSelector((state: RootState) => state.auth)
-  const userData = getUserData()
-  const userRole = authRole || userData?.user?.toLowerCase()
-  const isAdminOrOrganizer = getRole() === 'admin' 
-  
-  // Filter nav links based on user role
-  const navLinks = allNavLinks.filter(link => 
-    !link.requiresAdminOrOrganizer || isAdminOrOrganizer
+  const userRole = authRole || getRole() || ''
+
+  // Same role resolution as RoleProtectedRoute, so hidden links match blocked routes
+  const navLinks = allNavLinks.filter(link =>
+    !link.allowedRoles || link.allowedRoles.includes(userRole)
   )
 
   const isActive = (path: string): boolean => {

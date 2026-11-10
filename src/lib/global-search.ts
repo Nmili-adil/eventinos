@@ -2,6 +2,7 @@ import { fetchEvents } from '@/api/eventsApi'
 import { fetchMembersApi } from '@/api/membersApi'
 import { fetchUsers } from '@/api/usersApi'
 import { EVENT_DETAILS_PAGE, MEMBERS_PAGE, PROFILE_PAGE } from '@/constants/routerConstants'
+import { getRole } from '@/services/localStorage'
 import type { Event } from '@/types/eventsTypes'
 import type { Member } from '@/types/membersType'
 import type { User } from '@/types/usersType'
@@ -77,6 +78,8 @@ const ensureMembers = async (): Promise<Member[]> => {
 
 const ensureUsers = async (): Promise<User[]> => {
   if (cachedUsers) return cachedUsers
+  // GET /users/all is admin-only; skip the call that would fail for organizers.
+  if (getRole() !== 'admin') return []
   try {
     const response = await fetchUsers(1, 100, 'all')
     const data = Array.isArray(response?.data?.data) ? response.data.data : []

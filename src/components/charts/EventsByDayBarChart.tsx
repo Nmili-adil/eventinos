@@ -85,7 +85,7 @@ export default function EventsByDayBarChart({ data, isLoading }: EventsByDayBarC
       </CardHeader>
       <CardContent>
         <div className="h-80 min-h-[320px]">
-          <ResponsiveContainer width="100%" height="100%" minHeight={320}>
+          <ResponsiveContainer width="100%" height="100%" minHeight={320} initialDimension={{ width: 1, height: 320 }}>
             <LineChart
               data={eventsData}
               margin={{ top: 20, right: 30, left: 0, bottom: 30 }}

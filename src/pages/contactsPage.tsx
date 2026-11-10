@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 
 import { cn } from '@/lib/utils';
-import { handleAsyncError } from '@/hooks/useGlobalErrorHandler';
+import { handleAsyncError, isPermissionError } from '@/hooks/useGlobalErrorHandler';
 
 import {
   fetchContactsApi,
@@ -54,6 +54,7 @@ import {
   Search,
   ArrowLeft,
   Loader2,
+  ShieldAlert,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/app/rootReducer';
@@ -66,6 +67,8 @@ const ContactsPage: React.FC = () => {
   const { t } = useTranslation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  // Why the list could not load; an empty inbox and a failed fetch must look different.
+  const [loadError, setLoadError] = useState<'forbidden' | 'failed' | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -166,6 +169,7 @@ const ContactsPage: React.FC = () => {
   useEffect(() => {
     const loadContacts = async () => {
       setLoading(true);
+      setLoadError(null);
 
       try {
         const response = await fetchContactsApi();
@@ -188,6 +192,7 @@ const ContactsPage: React.FC = () => {
         setConversationMap(initialConversations);
       } catch (err: any) {
         console.error('Error fetching contacts:', err);
+        setLoadError(isPermissionError(err) ? 'forbidden' : 'failed');
         handleAsyncError(err, t('contacts.errors.fetchFailed', 'Failed to load contacts'));
       } finally {
         setLoading(false);
@@ -511,7 +516,23 @@ const ContactsPage: React.FC = () => {
             {/* All Inboxes List */}
             <ScrollArea className="flex-1 overflow-y-auto max-h-[calc(100vh-200px)] ">
               <div className="divide-y divide-slate-300">
-                {filteredContacts.length === 0 && (
+                {loadError && (
+                  <div className="p-8 text-center text-muted-foreground" role="alert">
+                    <ShieldAlert className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p className="font-semibold text-foreground mb-2">
+                      {loadError === 'forbidden'
+                        ? t('contacts.errors.accessDenied', 'Access denied')
+                        : t('contacts.errors.fetchFailed', 'Failed to load contacts')}
+                    </p>
+                    <p className="text-sm">
+                      {loadError === 'forbidden'
+                        ? t('contacts.errors.accessDeniedMessage', 'Your account is not allowed to read contact messages.')
+                        : t('contacts.errors.fetchFailedMessage', 'Please try again later.')}
+                    </p>
+                  </div>
+                )}
+
+                {!loadError && filteredContacts.length === 0 && (
                   <div className="p-8 text-center text-muted-foreground">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p className="font-semibold text-foreground mb-2">

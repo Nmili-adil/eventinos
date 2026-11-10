@@ -114,6 +114,7 @@
     "eventCreatorsPlural": "منشئي فعاليات",
     "noEvents": "لا توجد فعاليات",
     "noUsers": "لا يوجد أعضاء",
+    "noPendingUsers": "لا يوجد أعضاء معلقون",
     "ofTotal": "من الإجمالي",
     "loadingStats": "جاري تحميل الإحصائيات...",
     "timePeriod": "الفترة الزمنية",
@@ -148,7 +149,8 @@
       "genderNames": {
         "Male": "ذكر",
         "Female": "أنثى",
-        "Other": "غير ذلك"
+        "Other": "غير ذلك",
+        "Unknown": "غير محدد"
       }
     },
     "cityChart": {
@@ -160,7 +162,8 @@
       "activeCities": "المدن النشطة",
       "averagePerCity": "المتوسط لكل مدينة",
       "users": "مستخدمين",
-      "ofTotal": "٪ من الإجمالي"
+      "ofTotal": "٪ من الإجمالي",
+      "notSpecified": "غير محدد"
     },
     "eventsByDayChart": {
       "title": "عدد الفعاليات",
@@ -1763,6 +1766,9 @@
     },
     "errors": {
       "fetchFailed": "فشل في جلب جهات الاتصال",
+      "fetchFailedMessage": "يرجى المحاولة مرة أخرى لاحقًا.",
+      "accessDenied": "تم رفض الوصول",
+      "accessDeniedMessage": "حسابك غير مسموح له بقراءة رسائل الاتصال.",
       "deleteFailed": "فشل في حذف جهة الاتصال",
       "replyFailed": "فشل في إرسال الرد"
     },

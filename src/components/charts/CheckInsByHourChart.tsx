@@ -35,7 +35,7 @@ export default function CheckInsByHourChart({ data }: CheckInsByHourChartProps) 
         ) : (
           <>
             <div className="h-64" aria-hidden="true">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 1, height: 256 }}>
                 <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                   <CartesianGrid vertical={false} stroke="#e2e8f0" />
                   <XAxis dataKey="hour" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} tickMargin={8} />

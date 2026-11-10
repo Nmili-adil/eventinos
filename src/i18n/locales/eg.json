@@ -140,6 +140,9 @@
     },
     "errors": {
       "fetchFailed": "Failed to fetch contacts",
+      "fetchFailedMessage": "حاول تاني بعدين.",
+      "accessDenied": "مفيش صلاحية",
+      "accessDeniedMessage": "حسابك مش مسموح له يشوف رسائل التواصل.",
       "deleteFailed": "Failed to delete contact",
       "replyFailed": "Failed to send reply"
     },
@@ -161,6 +164,19 @@
     "eventCreatorsPlural": "event creators",
     "noEvents": "No events",
     "noUsers": "No users",
+    "noPendingUsers": "No pending users",
+    "genderChart": {
+      "genderNames": {
+        "Male": "Male",
+        "Female": "Female",
+        "Other": "Other",
+        "Unknown": "Not specified"
+      }
+    },
+    "cityChart": {
+      "notSpecified": "Not specified"
+    },
+    "pendingUsers": "Pending Users",
     "ofTotal": "of total",
     "loadingStats": "Loading statistics...",
     "timePeriod": "Time Period",

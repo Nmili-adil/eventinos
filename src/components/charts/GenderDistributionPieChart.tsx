@@ -19,14 +19,31 @@ interface GenderDistributionPieChartProps {
   dateRangeLabel?: string
 }
 
+type CanonicalGender = 'Male' | 'Female' | 'Other' | 'Unknown'
+
+// The backend has sent enums (MALE), English and French labels (Homme), and null.
+const GENDER_ALIASES: Record<string, CanonicalGender> = {
+  male: 'Male',
+  homme: 'Male',
+  m: 'Male',
+  female: 'Female',
+  femme: 'Female',
+  f: 'Female',
+  other: 'Other',
+  autre: 'Other',
+}
+
+const toCanonicalGender = (value: unknown): CanonicalGender | null => {
+  if (value === null || value === undefined || String(value).trim() === '') return 'Unknown'
+  return GENDER_ALIASES[String(value).trim().toLowerCase()] ?? null
+}
+
 // Gender colors - consistent across languages
-const GENDER_COLORS: { [key: string]: string } = {
-  'male': '#0088FE', // Blue
-  'female': '#FF69B4', // Pink
-  'homme': '#0088FE',
-  'femme': '#FF69B4',
-  'other': '#FFBB28', // Yellow for other genders
-  'autre': '#FFBB28',
+const GENDER_COLORS: Record<CanonicalGender, string> = {
+  Male: '#0088FE', // Blue
+  Female: '#FF69B4', // Pink
+  Other: '#FFBB28', // Yellow for other genders
+  Unknown: '#94A3B8', // Slate
 }
 
 const DEFAULT_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
@@ -94,33 +111,32 @@ export default function GenderDistributionPieChart({
   const [genderData, setGenderData] = useState<GenderData[]>([])
   const { t, i18n } = useTranslation()
   
-  // Function to translate gender names
-  const translateGender = (genderKey: string): string => {
-    return t(`genders.${genderKey.toLowerCase()}`, { defaultValue: genderKey })
-  }
-
   useEffect(() => {
     if (data && Array.isArray(data)) {
-      const totalCount = data.reduce((sum: number, item: any) => sum + item.count, 0)
-      
+      const counts = data.map((item: any) => Number(item?.count) || 0)
+      const totalCount = counts.reduce((sum, count) => sum + count, 0)
+
       const formattedData = data.map((item: any, index: number) => {
-        const genderName = item.gender
-        const percentage = totalCount > 0 ? Math.round((item.count / totalCount) * 100) : 0
-        const translatedName = translateGender(genderName)
-        const normalizedGender = genderName.toLowerCase()
-        
+        const rawGender = item?.gender
+        const canonical = toCanonicalGender(rawGender)
+        const count = counts[index]
+        const percentage = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0
+        const translatedName = canonical
+          ? t(`dashboard.genderChart.genderNames.${canonical}`, { defaultValue: canonical })
+          : String(rawGender)
+
         return {
-          name: genderName,
-          value: item.count,
+          name: canonical ?? String(rawGender),
+          value: count,
           percentage: percentage,
-          color: GENDER_COLORS[normalizedGender] || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+          color: (canonical && GENDER_COLORS[canonical]) || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
           translatedName: translatedName
         }
       })
       
       setGenderData(formattedData)
     }
-  }, [data, i18n.language]) // Re-run when language changes
+  }, [data, t, i18n.language]) // Re-run when language changes
 
   if (isLoading) {
     return (
@@ -155,7 +171,7 @@ export default function GenderDistributionPieChart({
       <CardContent>
         <div className="h-72 min-h-[288px]">
           {genderData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%" minHeight={288} className="my-4">
+            <ResponsiveContainer width="100%" height="100%" minHeight={288} initialDimension={{ width: 1, height: 288 }}>
               <PieChart>
                 <Pie
                   data={genderData}

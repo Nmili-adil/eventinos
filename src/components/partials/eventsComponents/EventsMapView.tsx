@@ -149,7 +149,7 @@ export const EventsMapView: React.FC<EventsMapViewProps> = ({
         </div>
       ),
     }))
-  }, [filteredEvents, pinIcon])
+  }, [filteredEvents, pinIcon, t])
 
   const handleMarkerClick = (marker: MapMarker) => {
     setSelectedEventId(marker.id)

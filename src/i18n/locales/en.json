@@ -133,6 +133,7 @@
     "eventCreatorsPlural": "event creators",
     "noEvents": "No events",
     "noUsers": "No members",
+    "noPendingUsers": "No pending members",
     "ofTotal": "of total",
     "loadingStats": "Loading statistics...",
     "timePeriod": "Time Period",
@@ -167,7 +168,8 @@
       "genderNames": {
         "Male": "Male",
         "Female": "Female",
-        "Other": "Other"
+        "Other": "Other",
+        "Unknown": "Not specified"
       }
     },
     "cityChart": {
@@ -179,7 +181,8 @@
       "activeCities": "Active cities",
       "averagePerCity": "Average per city",
       "users": "Users",
-      "ofTotal": "% of total"
+      "ofTotal": "% of total",
+      "notSpecified": "Not specified"
     },
     "eventsByDayChart": {
       "title": "Number of Events",
@@ -1772,6 +1775,9 @@
     },
     "errors": {
       "fetchFailed": "Failed to fetch contacts",
+      "fetchFailedMessage": "Please try again later.",
+      "accessDenied": "Access denied",
+      "accessDeniedMessage": "Your account is not allowed to read contact messages.",
       "deleteFailed": "Failed to delete contact",
       "replyFailed": "Failed to send reply"
     },

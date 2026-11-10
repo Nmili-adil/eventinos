@@ -113,7 +113,11 @@ export const Router = createBrowserRouter([
             },
             {
                 path: CONTACTS_PAGE,
-                element: <ContactsPage />
+                element: (
+                    <RoleProtectedRoute allowedRoles={['admin']}>
+                        <ContactsPage />
+                    </RoleProtectedRoute>
+                )
             },
             {
                 path: COMPTES_PAGE,
